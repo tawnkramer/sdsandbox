@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 '''
 Predict Server
 Create a server to accept image inputs and run them against a trained neural network.
 This then sends the steering output back to the client.
 Author: Tawn Kramer
 '''
+import os
 import argparse
 import sys
 import numpy as np
@@ -131,14 +133,17 @@ class SteeringHandler(asyncore.dispatcher):
 # ***** main loop *****
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='prediction server')
-  parser.add_argument('model', type=str, help='Path to model definition json. Model weights should be on the same path.')
+  parser.add_argument('model', type=str, help='model name. no json or keras.')
+  parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir') 
   args = parser.parse_args()
 
-  with open(args.model, 'r') as jfile:
+  model_json = os.path.join(args.path, args.model +'.json')
+
+  with open(model_json, 'r') as jfile:
     model = model_from_json(json.load(jfile))
 
   model.compile("sgd", "mse")
-  weights_file = args.model.replace('json', 'keras')
+  weights_file = model_json.replace('json', 'keras')
   model.load_weights(weights_file)
   
   address = ('0.0.0.0', 9090)

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Prepare Data
 Take the raw images and steering data and bundle them up in h5 files for training.
