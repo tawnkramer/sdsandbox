@@ -130,7 +130,7 @@ class SteeringHandler(asyncore.dispatcher):
 
 # ***** main loop *****
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser(description='prediction server)
+  parser = argparse.ArgumentParser(description='prediction server')
   parser.add_argument('model', type=str, help='Path to model definition json. Model weights should be on the same path.')
   args = parser.parse_args()
 

@@ -103,8 +103,17 @@ class SaveCB(Callback):
     with open(self.output + '.json', 'w') as outfile:
       json.dump(self.model.to_json(), outfile)
 
-def run_default_training(output):
-  model = get_model()
+def run_default_training(output, resume):
+  if resume:
+    with open(output + '.json', 'r') as jfile:
+      model = model_from_json(json.load(jfile))
+    model.compile(optimizer="adam", loss="mse")
+    weights_file = output + '.keras'
+    model.load_weights(weights_file)
+    print 'picking up from previous training run.'
+  else:
+    model = get_model()
+  
   model.fit_generator(
     gen(20, '127.0.0.1', port=5557),
     samples_per_epoch=10000,

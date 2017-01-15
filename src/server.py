@@ -3,11 +3,13 @@
 Note:
 Part of this code was copied and modified from github.com/mila-udem/fuel.git (MIT License)
 """
+import os
 import logging
 import glob
 import numpy
 import zmq
 from numpy.lib.format import header_data_from_array_1_0
+from dask_generator import datagen
 
 import six
 if six.PY3:
@@ -166,23 +168,38 @@ def start_server(data_stream, port=5557, hwm=20):
       logger.debug("sending StopIteration")
     send_arrays(socket, data, stop=stop)
 
-def run_default_train_server():
-  from dask_generator import datagen
-  import argparse
-  datapath = glob.glob("../dataset/camera/train_*")
-  gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
-  start_server(gen, port=5557, hwm=20)
+def run_default_train_server(datadir='../dataset', prefix='train_'):
+  '''
+  run a training server with mostly default values.
+  '''
+  try:
+    datapath = glob.glob(os.path.join(datadir, 'camera', prefix) + "*")
+    if len(datapath) == 0:
+      print 'no files found to train with'
+    else:
+      print 'training with', len(datapath), 'files'
+      gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
+      start_server(gen, port=5557, hwm=20)
+  except KeyboardInterrupt:
+    pass
 
-def run_default_validation_server():
-  from dask_generator import datagen
-  import argparse
-  datapath = glob.glob("../dataset/camera/val_*")
-  gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
-  start_server(gen, port=5556, hwm=20)
-
+def run_default_validation_server(datadir='../dataset', prefix='val_'):
+  '''
+  run a validation server with mostly default values.
+  '''
+  try:
+    datapath = glob.glob(os.path.join(datadir, 'camera', prefix) + "*")
+    if len(datapath) == 0:
+      print 'no files found to validate with'
+    else:
+      print 'validating with', len(datapath), 'files'
+      gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
+      start_server(gen, port=5556, hwm=20)
+  except KeyboardInterrupt:
+    pass
+    
 # Example
 if __name__ == "__main__":
-  from dask_generator import datagen
   import argparse
 
   # Parameters

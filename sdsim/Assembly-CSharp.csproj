@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\Marker.cs" />
      <Compile Include="Assets\Scripts\MathLib.cs" />
      <Compile Include="Assets\Scripts\MazeManager.cs" />
+     <Compile Include="Assets\Scripts\MenuHandler.cs" />
      <Compile Include="Assets\Scripts\NetworkClient.cs" />
      <Compile Include="Assets\Scripts\NetworkSteering.cs" />
      <Compile Include="Assets\Scripts\PIDController.cs" />
