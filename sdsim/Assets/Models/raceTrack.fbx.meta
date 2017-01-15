@@ -1,0 +1,166 @@
+fileFormatVersion: 2
+guid: 877f979076452499298fafea78d14453
+timeCreated: 1484169525
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: loftedSurface3
+    100002: loftedSurface4
+    100004: nurbsToPoly1
+    100006: nurbsToPoly2
+    100008: nurbsToPoly3
+    100010: //RootNode
+    100012: transform1
+    100014: transform2
+    100016: curve10
+    100018: curve11
+    100020: curve12
+    100022: curve13
+    100024: curve14
+    100026: curve15
+    100028: curve16
+    100030: curve17
+    100032: curve18
+    100034: curve19
+    100036: curve20
+    100038: curve21
+    100040: curve22
+    100042: curve23
+    100044: curve24
+    100046: curve25
+    100048: curve26
+    100050: curve27
+    100052: curve28
+    100054: curve29
+    100056: curve3
+    100058: curve30
+    100060: curve31
+    100062: curve32
+    100064: curve33
+    100066: curve34
+    100068: curve35
+    100070: curve4
+    100072: curve5
+    100074: curve6
+    100076: curve7
+    100078: curve8
+    100080: curve9
+    100082: loftedSurface1
+    400000: loftedSurface3
+    400002: loftedSurface4
+    400004: nurbsToPoly1
+    400006: nurbsToPoly2
+    400008: nurbsToPoly3
+    400010: //RootNode
+    400012: transform1
+    400014: transform2
+    400016: curve10
+    400018: curve11
+    400020: curve12
+    400022: curve13
+    400024: curve14
+    400026: curve15
+    400028: curve16
+    400030: curve17
+    400032: curve18
+    400034: curve19
+    400036: curve20
+    400038: curve21
+    400040: curve22
+    400042: curve23
+    400044: curve24
+    400046: curve25
+    400048: curve26
+    400050: curve27
+    400052: curve28
+    400054: curve29
+    400056: curve3
+    400058: curve30
+    400060: curve31
+    400062: curve32
+    400064: curve33
+    400066: curve34
+    400068: curve35
+    400070: curve4
+    400072: curve5
+    400074: curve6
+    400076: curve7
+    400078: curve8
+    400080: curve9
+    400082: loftedSurface1
+    2300000: nurbsToPoly3
+    2300002: loftedSurface1
+    3300000: nurbsToPoly3
+    3300002: loftedSurface1
+    4300000: nurbsToPoly3
+    4300002: loftedSurface1
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

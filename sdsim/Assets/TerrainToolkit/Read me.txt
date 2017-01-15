@@ -1,0 +1,28 @@
+Terrain Toolkit
+Version 1.0 (Release)
+Unity Summer of Code 2009
+By Sándor Moldán
+
+Installation instructions:
+
+Open the Unity project you wish to use the Terrain Toolkit in and double click "TerrainToolkit_v1.0.unitypackage" to import it into your project. You may need to unzip it first.
+
+Quick start guide:
+
+Attach the TerrainToolkit component to any Unity Terrain object either by dragging and dropping the script onto the terrain object or by selecting it through the Component/Scripts menu.
+
+The "Create" tab includes a number of tools for generating terrain heightmaps, plus some simple filters for smoothing and normalising terrain objects.
+
+The "Erode" tab contains a number of tools which apply various form of erosion to terrain objects. Erosion can be applied either as a filter, or in some cases can be painted directly onto the terrain object with a brush. 
+
+The brush tools appear in the lower half of the panel. Turn the brush on to start using it, hold down the SHIFT key to apply erosion. You can modify the size, opacity and softness of the brush in the panel.
+
+The "Texture" tab contains a tool which procedurally textures the terrain object based on the height and slope of the terrain.
+
+Hint: Generator and filter presets are a quick and easy way to get started.
+
+Documentation:
+
+Full documentation is included with the terrain toolkit in HTML format. Simply unzip the Documentation.zip file in the TerrainToolkit directory to your preferred location.
+
+The latest version of the documentation is maintained online here: http://www.sixtimesnothing.com/terraintoolkit
