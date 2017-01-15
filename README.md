@@ -14,7 +14,7 @@ Then validate the steering control by sending images to your neural network and 
 
 ## Setup
 
-You need to have [Unity](https://unity3d.com/get-unity/download) installed.
+You need to have [Unity](https://unity3d.com/get-unity/download) installed, and all python modules listed in the Requirements section below.
 
 
 
@@ -51,7 +51,7 @@ cd sdsandbox/src
 python prepare_data.py --clean
 ```
 
-7) Repeat 4, 5, 6 until you have lots of training data. 30gb+ is good. On your last run, perpare a validation set:  
+7) Repeat 4, 5, 6 until you have lots of training data. 30gb+ is good. On your last run, prepare a validation set:  
 
 ```bash
 python prepare_data.py --validation --clean
