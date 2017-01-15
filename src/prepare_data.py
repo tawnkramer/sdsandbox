@@ -1,3 +1,8 @@
+'''
+Prepare Data
+Take the raw images and steering data and bundle them up in h5 files for training.
+Author: Tawn Kramer
+'''
 import h5py
 import numpy as np
 import os

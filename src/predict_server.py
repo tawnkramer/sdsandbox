@@ -1,3 +1,9 @@
+'''
+Predict Server
+Create a server to accept image inputs and run them against a trained neural network.
+This then sends the steering output back to the client.
+Author: Tawn Kramer
+'''
 import argparse
 import sys
 import numpy as np
@@ -107,6 +113,7 @@ class SteeringHandler(asyncore.dispatcher):
             else: #assumed to be ArrayOfChannels
               img = lin_arr.reshape(self.num_channels, self.width, self.height)
             if view_image:
+              #this can be useful when validating that you have your images coming in correctly.
               vis_img = Image.fromarray(img.transpose(), 'RGB')
               vis_img.show()
               #this launches too many windows if we leave it up.
@@ -123,7 +130,7 @@ class SteeringHandler(asyncore.dispatcher):
 
 # ***** main loop *****
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser(description='Path viewer')
+  parser = argparse.ArgumentParser(description='prediction server)
   parser.add_argument('model', type=str, help='Path to model definition json. Model weights should be on the same path.')
   args = parser.parse_args()
 
