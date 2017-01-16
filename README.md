@@ -7,7 +7,7 @@ Self Driving Car Sandbox
 ## Summary
 
 Use Unity 3d game engine to simulate car physics in a 3d world. 
-Generate image steering pairs to train a neural network. 
+Generate image steering pairs to train a neural network. Uses comma ai training code with NVidia NN topology.
 Then validate the steering control by sending images to your neural network and feed steering back into the simulator to drive.
 
 
@@ -27,20 +27,20 @@ cd sdsandbox/src
 python predict_server.py highway
 ```
 
-2) Load the Unity project sdsandbox/sdunity in Unity.  
+2) Load the Unity project sdsandbox/sdsim in Unity.  
 
-3) Hit the start button to launch. Then the "Use NN Network Steering".  
+3) Hit the start button to launch. Then the "Use NN Steering".  
 
 
 ## Generate training data
 
-1) Load the Unity project sdsandbox/sdunity in Unity.  
+1) Load the Unity project sdsandbox/sdsim in Unity.  
 
-2) Create a dir sdsandbox/sdunity/log.  
+2) Create a dir sdsandbox/sdsim/log.  
 
 3) Hit the start arrow in Unity to launch project.  
 
-4) Hit button "Generate Training Data" to generate image and steering training data. See sdunity/log for output files.  
+4) Hit button "Generate Training Data" to generate image and steering training data. See sdsim/log for output files.  
 
 5) Stop Unity sim by clicking run arrow again.  
 
@@ -79,15 +79,14 @@ python predict_server.py mymodel
 
 2) Start Unity project sdunity  
 
-3) Push button "Use NN Network Steering"  
+3) Push button "Use NN Steering"  
 
 
 
 ## Requirements
 [python 2.7 64 bit](https://www.python.org/)  
 [tensorflow-0.9](https://github.com/tensorflow/tensorflow)  
-[keras-1.0.6](https://github.com/fchollet/keras)  
-[cv2](https://anaconda.org/menpo/opencv3)  
+[keras-1.0.6](https://github.com/fchollet/keras)   
 [h5](http://www.h5py.org/)  
 [pillow](https://python-pillow.org/)  
 [Unity 5.5+](https://unity3d.com/get-unity/download)  

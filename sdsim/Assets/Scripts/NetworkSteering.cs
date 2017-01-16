@@ -207,7 +207,7 @@ public class NetworkSteering : MonoBehaviour {
 				car.RequestThrottle(throttle);
 
 			if(ai_steering != null)
-				ai_steering.text = string.Format("AI: {0}", steeringMsg.steering);
+				ai_steering.text = string.Format("NN: {0}", steeringMsg.steering);
 
 			state = State.Idle;
 		}

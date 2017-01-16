@@ -1,33 +1,35 @@
+#!/usr/bin/env python
 import argparse
 import sys
 import numpy as np
 import h5py
-import pygame
 import json
 from keras.models import model_from_json
 import matplotlib.pyplot as plt
 import time
+import os
 
 # ***** main loop *****
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Path viewer')
-  parser.add_argument('model', type=str, help='Path to model definition json. Model weights should be on the same path.')
-  parser.add_argument('--dataset', type=str, default="tawn_Thu_Dec_29_15_52_43_2016", help='Dataset/video clip name')
+  parser.add_argument('model', type=str, help='model definition. Model weights should be on the same path.')
+  parser.add_argument('dataset', type=str, help='Dataset/video clip name')
   args = parser.parse_args()
+  model_file = os.path.join('..', 'outputs', 'steering_model', args.model) + ".json"
 
-  with open(args.model, 'r') as jfile:
+  with open(model_file, 'r') as jfile:
     model = model_from_json(json.load(jfile))
 
   model.compile("sgd", "mse")
-  weights_file = args.model.replace('json', 'keras')
+  weights_file = model_file.replace('json', 'keras')
   model.load_weights(weights_file)
 
   # default dataset is the validation data on the highway
   dataset = args.dataset
   skip = 300
 
-  log = h5py.File("dataset/log/"+dataset+".h5", "r")
-  cam = h5py.File("dataset/camera/"+dataset+".h5", "r")
+  log = h5py.File("../dataset/log/"+dataset+".h5", "r")
+  cam = h5py.File("../dataset/camera/"+dataset+".h5", "r")
 
   pred_steer = []
   actual_steer = []

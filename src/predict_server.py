@@ -10,7 +10,6 @@ import argparse
 import sys
 import numpy as np
 import h5py
-import pygame
 import json
 from keras.models import model_from_json
 #import matplotlib.pyplot as plt
@@ -148,7 +147,9 @@ if __name__ == "__main__":
   
   address = ('0.0.0.0', 9090)
   s = SteeringServer(address, model)
-  asyncore.loop()
-
+  try:
+    asyncore.loop()
+  except KeyboardInterrupt:
+    print 'stopping'
 
 
