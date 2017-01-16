@@ -3,6 +3,8 @@
 Self Driving Car Sandbox
 
 
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/e0AFMilaeMI/0.jpg)](https://www.youtube.com/watch?v=e0AFMilaeMI "self driving car sim")
+
 
 ## Summary
 
