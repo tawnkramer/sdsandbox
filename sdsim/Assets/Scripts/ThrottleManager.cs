@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class ThrottleManager : MonoBehaviour {
 
-	public Car car;
+	public GameObject carObj;
+	public ICar car;
 
 	public bool doControlThrottle = true;
 
@@ -21,33 +22,40 @@ public class ThrottleManager : MonoBehaviour {
 
 	public float turnSlowFactor = 3.0f;
 
-	void Start()
+	void Awake()
 	{
-		
+		car = carObj.GetComponent<ICar>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		speedFactor = car.Velocity().magnitude * (1.0f + Mathf.Abs(car.requestSteering));
+		speedFactor = car.GetVelocity().magnitude * (1.0f + Mathf.Abs(car.GetSteering()));
 	
 		if(speedometerUI != null)
-			speedometerUI.text = car.Velocity().magnitude.ToString();
+			speedometerUI.text = car.GetVelocity().magnitude.ToString();
 
 		if(speedFactorUI != null)
 			speedFactorUI.text = speedFactor.ToString();
 
-		float idealSpeedAdjusted = idealSpeed - (turnSlowFactor * Mathf.Abs(car.requestSteering));
+		float idealSpeedAdjusted = idealSpeed - (turnSlowFactor * Mathf.Abs(car.GetSteering()));
 
 		if(doControlThrottle)
 		{
 			if(speedFactor > brakeThresh)
 			{
-				car.Brake();
+				car.RequestThrottle(0.0f);
+				car.RequestFootBrake(1.0f);
 			}
-			else if(car.Velocity().magnitude < idealSpeedAdjusted)
+			else if(car.GetVelocity().magnitude < idealSpeedAdjusted)
 			{
+				car.RequestFootBrake(0.0f);
 				car.RequestThrottle(constThrottleReq);
+			}
+			else
+			{
+				car.RequestThrottle(0.0f);
+				car.RequestFootBrake(0.0f);
 			}
 		}
 	}

@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class PIDController : MonoBehaviour {
 
-	public Car car;
+	public GameObject carObj;
+	public ICar car;
 	public PathManager pm;
 
 	float errA, errB;
@@ -45,8 +46,14 @@ public class PIDController : MonoBehaviour {
 	public bool brakeOnEnd = true;
 
 	public bool doDrive = true;
+	public float maxSpeed = 5.0f;
 
 	public Text pid_steering;
+
+	void Awake()
+	{
+		car = carObj.GetComponent<ICar>();
+	}
 
 	void Start()
 	{
@@ -74,7 +81,7 @@ public class PIDController : MonoBehaviour {
 		if(!waitForStill && doDrive)
 			car.RequestThrottle(throttleVal);
 
-		car.SetStart();
+		car.RestorePosRot();
 	}
 		
 	// Update is called once per frame
@@ -88,9 +95,9 @@ public class PIDController : MonoBehaviour {
 
 		if(waitForStill)
 		{
-			car.Brake();
+			car.RequestFootBrake(1.0f);
 
-			if(car.Accel().magnitude < 0.001f)
+			if(car.GetAccel().magnitude < 0.001f)
 			{
 				waitForStill = false;
 
@@ -106,9 +113,9 @@ public class PIDController : MonoBehaviour {
 
 		float err = 0.0f;
 
-		float velMag = car.Velocity().magnitude;
+		float velMag = car.GetVelocity().magnitude;
 
-		Vector3 samplePos = car.transform.position + (car.transform.forward * velMag * Kv);
+		Vector3 samplePos = car.GetTransform().position + (car.GetTransform().forward * velMag * Kv);
 
 		samplePosMarker.position = samplePos;
 
@@ -116,9 +123,9 @@ public class PIDController : MonoBehaviour {
 		{
 			if(brakeOnEnd)
 			{
-				car.Brake();
+				car.RequestFootBrake(1.0f);
 
-				if(car.Accel().magnitude < 0.0001f)
+				if(car.GetAccel().magnitude < 0.0001f)
 				{
 					isDriving = false;
 
@@ -145,7 +152,12 @@ public class PIDController : MonoBehaviour {
 			car.RequestSteering(steeringReq);
 
 		if(doDrive)
-			car.RequestThrottle(throttleVal);
+		{
+			if(car.GetVelocity().magnitude < maxSpeed)
+				car.RequestThrottle(throttleVal);
+			else
+				car.RequestThrottle(0.0f);
+		}
 		
 		if(pid_steering != null)
 			pid_steering.text = string.Format("PID: {0}", steeringReq);
@@ -159,13 +171,13 @@ public class PIDController : MonoBehaviour {
 		float carPosErr = 0.0f;
 
 		//accumulate error at car, not steering decision point.
-		pm.path.GetCrossTrackErr(car.transform.position, ref carPosErr);
+		pm.path.GetCrossTrackErr(car.GetTransform().position, ref carPosErr);
 
 
 		//now get a measure of overall fitness.
 		//we don't with this to cancel out when it oscilates.
 		absTotalError += Mathf.Abs(carPosErr) + 
-		                 AccelErrFactor * car.Accel().magnitude;
+		                 AccelErrFactor * car.GetAccel().magnitude;
 
 	}
 }

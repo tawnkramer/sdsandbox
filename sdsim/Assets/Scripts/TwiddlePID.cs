@@ -12,8 +12,6 @@ public class TwiddlePID : MonoBehaviour
 	{
 		bool isDone;
 		PIDController cont;
-		Vector3 carStartPos;
-		Quaternion carStartRot;
 		Vector3 camPos;
 		Quaternion camRot;
 
@@ -29,9 +27,6 @@ public class TwiddlePID : MonoBehaviour
 			cont = c;
 			cont.endOfPathCB += OnPathDone;
 			maxTimePerRun = mt;
-
-			carStartPos = cont.car.transform.position;
-			carStartRot = cont.car.transform.rotation;
 
 			camPos = Camera.main.transform.position;
 			camRot = Camera.main.transform.rotation;
@@ -53,7 +48,7 @@ public class TwiddlePID : MonoBehaviour
 			Camera.main.transform.position = camPos;
 			Camera.main.transform.rotation = camRot;
 
-			cont.car.Set(carStartPos, carStartRot);
+			cont.car.RestorePosRot();
 			cont.StartDriving();
 		}
 		

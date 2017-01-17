@@ -6,7 +6,8 @@ using System.Threading;
 
 public class Logger : MonoBehaviour {
 
-	public Car car;
+	public GameObject carObj;
+	public ICar car;
 	public CameraSensor camSensor;
 	public int frameCounter = 0;
 
@@ -27,6 +28,8 @@ public class Logger : MonoBehaviour {
 
 	void Awake()
 	{
+		car = carObj.GetComponent<ICar>();
+
 		if(bDoLog && car != null)
 		{
 			string filename = Application.dataPath + outputFilename;
@@ -47,7 +50,7 @@ public class Logger : MonoBehaviour {
 	{
 		if(writer != null)
 		{
-			writer.WriteLine(string.Format("{0},{1},{2}", frameCounter.ToString(), car.requestSteering.ToString(), car.requestTorque.ToString()));
+			writer.WriteLine(string.Format("{0},{1},{2}", frameCounter.ToString(), car.GetSteering().ToString(), car.GetThrottle().ToString()));
 		}
 
 		if(camSensor != null)

@@ -5,11 +5,17 @@ using UnityEngine;
 public class TrainingManager : MonoBehaviour {
 
 	public PIDController controller;
-	public Car car;
+	public GameObject carObj;
+	public ICar car;
 	public Logger logger;
 
 	public int numTrainingRuns = 1;
 	int iRun = 0;
+
+	void Awake()
+	{
+		car = carObj.GetComponent<ICar>();
+	}
 
 	// Use this for initialization
 	void Start () 
@@ -19,7 +25,7 @@ public class TrainingManager : MonoBehaviour {
 
 	void StartNewRun()
 	{
-		car.ResetToStart();
+		car.RestorePosRot();
 		controller.pm.DestroyRoad();
 		controller.pm.InitNewRoad();
 		controller.StartDriving();
@@ -27,7 +33,7 @@ public class TrainingManager : MonoBehaviour {
 
 	void OnLastRunCompleted()
 	{
-		car.Brake();
+		car.RequestFootBrake(1.0f);
 		logger.Shutdown();
 	}
 
@@ -48,7 +54,7 @@ public class TrainingManager : MonoBehaviour {
 	void Update()
 	{
 		//watch the car and if we fall off the road, reset things.
-		if(car.transform.position.y < -1.0f)
+		if(car.GetTransform().position.y < -1.0f)
 		{
 			OnPathDone();
 		}

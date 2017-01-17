@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Car : MonoBehaviour {
+public class Car : MonoBehaviour, ICar {
 
 	public WheelCollider[] wheelColliders;
 	public Transform[] wheelMeshes;
@@ -21,7 +21,6 @@ public class Car : MonoBehaviour {
 
 	public Vector3 startPos;
 	public Quaternion startRot;
-	Vector3 startPosOffset = new Vector3(0, 1, 0);
 
 	public float length = 1.7f;
 
@@ -30,6 +29,9 @@ public class Car : MonoBehaviour {
 	//for logging
 	public float lastSteer = 0.0f;
 	public float lastAccel = 0.0f;
+
+	//max range human can turn the wheel with a joystick controller
+	public float humanSteeringMax = 15.0f;
 
 	// Use this for initialization
 	void Awake () 
@@ -44,18 +46,18 @@ public class Car : MonoBehaviour {
 		requestTorque = 0f;
 		requestSteering = 0f;
 
-		SetStart();
+		SavePosRot();
 	}
 
-	public void SetStart()
+	public void SavePosRot()
 	{
 		startPos = transform.position;
 		startRot = transform.rotation;
 	}
 
-	public void ResetToStart()
+	public void RestorePosRot()
 	{
-		Set(startPos + startPosOffset, startRot);
+		Set(startPos, startRot);
 	}
 
 	public void RequestThrottle(float val)
@@ -67,12 +69,6 @@ public class Car : MonoBehaviour {
 	public void RequestSteering(float val)
 	{
 		requestSteering = val;
-
-		//steering limits of car.
-		if(requestSteering > 45f)
-			requestSteering = 45f;
-		else if(requestSteering < -45f)
-			requestSteering = -45f;
 	}
 
 	public void Set(Vector3 pos, Quaternion rot)
@@ -80,6 +76,7 @@ public class Car : MonoBehaviour {
 		rb.position = pos;
 		rb.rotation = rot;
 
+		//just setting it once doesn't seem to work. Try setting it multiple times..
 		StartCoroutine(KeepSetting(pos, rot, 10));
 	}
 
@@ -97,12 +94,32 @@ public class Car : MonoBehaviour {
 		}
 	}
 
-	public Vector3 Velocity()
+	public float GetSteering()
+	{
+		return requestSteering;
+	}
+
+	public float GetThrottle()
+	{
+		return requestTorque;
+	}
+
+	public float GetFootBrake()
+	{
+		return requestBrake;
+	}
+
+	public float GetHandBrake()
+	{
+		return 0.0f;
+	}
+
+	public Vector3 GetVelocity()
 	{
 		return rb.velocity;
 	}
 
-	public Vector3 Accel()
+	public Vector3 GetAccel()
 	{
 		return acceleration;
 	}
@@ -113,14 +130,24 @@ public class Car : MonoBehaviour {
 		return Mathf.Atan2( dir.z, dir.x);
 	}
 
+	public Transform GetTransform()
+	{
+		return this.transform;
+	}
+
 	public bool IsStill()
 	{
 		return rb.IsSleeping();
 	}
 
-	public void Brake()
+	public void RequestFootBrake(float val)
 	{
-		requestBrake = 1.0f;
+		requestBrake = val;
+	}
+
+	public void RequestHandBrake(float val)
+	{
+		//todo
 	}
 	
 	// Update is called once per frame
@@ -132,14 +159,14 @@ public class Car : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		float accel = Input.GetAxis ("Vertical");
-		float steer = Input.GetAxis("Horizontal") * 15.0f;
+		float accel = Input.GetAxis ("Vertical") * maxTorque;
+		float steer = Input.GetAxis("Horizontal") * humanSteeringMax;
 		float brake = 0.0f;
 	
 		lastSteer = steer;
 		lastAccel = accel;
 
-		float throttle = accel * maxTorque;
+		float throttle = accel;
 
 		if(accel == 0.0f)
 		{

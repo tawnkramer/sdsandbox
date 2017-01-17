@@ -11,6 +11,9 @@ public class RoadBuilder : MonoBehaviour {
 	public bool doErodeTerrain = true;
 	public bool doGenerateTerrain = true;
 	public bool doFlattenArroundRoad = true;
+	public bool doLiftRoadToTerrain = false;
+
+	public Terrain terrain;
 
 	public GameObject roadPrefabMesh;
 
@@ -36,6 +39,7 @@ public class RoadBuilder : MonoBehaviour {
 		if(terToolkit != null && doGenerateTerrain)
 		{
 			terToolkit.PerlinGenerator(1, 0.1f, 10, 0.5f);
+			//terToolkit.NormaliseTerrain(0.0f, 0.001f, 0.5f);
 		}
 		
 		GameObject go = GameObject.Instantiate(roadPrefabMesh);
@@ -83,9 +87,14 @@ public class RoadBuilder : MonoBehaviour {
 				vLength = posB - posA;
 				vWidth = Vector3.Cross(vLength, Vector3.up);
 
-				if(terToolkit != null && doFlattenArroundRoad)
+				if(terToolkit != null && doFlattenArroundRoad  && (iVert % 10) == 0)
 				{
-					terToolkit.FlattenArround(posA + vWidth.normalized * roadOffsetW, 5.0f, 15.0f);
+					terToolkit.FlattenArround(posA + vWidth.normalized * roadOffsetW, 10.0f, 30.0f);
+				}
+
+				if(doLiftRoadToTerrain)
+				{
+					posA.y = terrain.SampleHeight(posA) + 1.0f;
 				}
 
 				posA.y += roadHeightOffset;
@@ -136,14 +145,16 @@ public class RoadBuilder : MonoBehaviour {
 
 		if(terToolkit != null && doErodeTerrain)
 		{
-			terToolkit.FastHydraulicErosion(20, 1.0f, 0.0f);
-			terToolkit.FastThermalErosion(20, 1.0f, 0.0f);
+			//terToolkit.FastThermalErosion(20, 0.0f, 0.0f); //creates pits
+			//terToolkit.FastHydraulicErosion(100, 1.0f, 0.0f); //creates washouts
+			//terToolkit.FullHydraulicErosion(1, 10.0f, 1.0f, .3f, 2.0f);
+			terToolkit.SmoothTerrain(10, 1.0f);
 
 			if(doFlattenArroundRoad)
 			{
 				foreach(PathNode n in path.nodes)
 				{
-					terToolkit.FlattenArround(n.pos, 5.0f, 8.0f);
+					terToolkit.FlattenArround(n.pos, 8.0f, 10.0f);
 				}
 			}
 

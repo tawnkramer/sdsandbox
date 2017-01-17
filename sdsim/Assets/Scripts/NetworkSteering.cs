@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class NetworkSteering : MonoBehaviour {
 
-	public Car car;
+	public GameObject carObj;
+	public ICar car;
 	public CameraSensor camSensor;
 	public string nnIPAddress = "127.0.0.1";
 	public int nnPort = 9090;
@@ -53,6 +54,11 @@ public class NetworkSteering : MonoBehaviour {
 	State prev_state = State.UnConnected;
 
 	ServerMessage steeringMsg = new ServerMessage();
+
+	void Awake()
+	{
+		car = carObj.GetComponent<ICar>();
+	}
 
 	void Start()
 	{
