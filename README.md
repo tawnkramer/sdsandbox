@@ -12,12 +12,12 @@ Use Unity 3d game engine to simulate car physics in a 3d world.
 Generate image steering pairs to train a neural network. Uses comma ai training code with NVidia NN topology.
 Then validate the steering control by sending images to your neural network and feed steering back into the simulator to drive.
 
-# Some videos to help you get started
+## Some videos to help you get started
 
-Downloading and training your first network
+### Downloading and training your first network
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/oe7fYuYw8GY/0.jpg)](https://www.youtube.com/watch?v=oe7fYuYw8GY "Getting Started w sdsandbox")
 
-World beautification
+### World beautification
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/FhAKaH3ysow/0.jpg)](https://www.youtube.com/watch?v=FhAKaH3ysow "Making a more interesting world.")
 
 ## Setup
