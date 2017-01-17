@@ -32,13 +32,15 @@ You need to have [Unity](https://unity3d.com/get-unity/download) installed, and 
 
 ```bash
 cd sdsandbox/src
-python predict_server.py highway
+python predict_server.py usc
 ```
 
-2) Load the Unity project sdsandbox/sdsim in Unity.  
+2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/UnityStandardCar to open that scene.  
 
 3) Hit the start button to launch. Then the "Use NN Steering".  
 
+
+#To create your own data and train
 
 ## Generate training data
 
