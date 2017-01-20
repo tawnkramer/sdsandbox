@@ -27,9 +27,13 @@ public class PathManager : MonoBehaviour {
 
 	public bool doBuildRoad = false;
 
+	public bool doChangeLanes = false;
+
 	public bool doTurnOffPathNodeRender = true;
 
 	public RoadBuilder roadBuilder;
+
+	public LaneChangeTrainer laneChTrainer;
 
 	void Awake () 
 	{
@@ -52,7 +56,20 @@ public class PathManager : MonoBehaviour {
 
 		//Should we build a road mesh along the path?
 		if(doBuildRoad && roadBuilder != null)
-			roadBuilder.InitRoad(path);		
+			roadBuilder.InitRoad(path);
+
+		if(laneChTrainer != null && doChangeLanes)
+		{
+			laneChTrainer.ModifyPath(ref path);
+
+			/*for(int iN = 0; iN < path.nodes.Count; iN++)
+			{
+				Vector3 np = path.nodes[iN].pos;
+				GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
+				go.tag = "pathNode";
+				go.transform.parent = this.transform;
+			}*/
+		}
 	}
 
 	public void DestroyRoad()

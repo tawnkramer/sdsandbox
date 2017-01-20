@@ -35,6 +35,12 @@ public interface ICar
 	Vector3 GetAccel();
 
 
+	//get the image prefix to label the current activity of the car when logging.
+	string GetActivityPrefix();
+
+	void SetActivityPrefix(string prefix);
+
+
 	//Save and restore State
 	void SavePosRot();
 

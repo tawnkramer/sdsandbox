@@ -111,6 +111,14 @@ public class PIDController : MonoBehaviour {
 			}
 		}
 
+		//set the activity prefix from the path node.
+		PathNode n = pm.path.GetActiveNode();
+
+		if(n != null && n.activity_prefix != null && n.activity_prefix.Length > 1)
+		{
+			car.SetActivityPrefix(n.activity_prefix);
+		}
+
 		float err = 0.0f;
 
 		float velMag = car.GetVelocity().magnitude;

@@ -6,6 +6,7 @@ public class PathNode
 {
 	public Vector3 pos;
 	public CarModel cm;
+	public string activity_prefix; //when this node is active, prefix images w this..
 }
 
 public class CarPath 
@@ -24,6 +25,14 @@ public class CarPath
 	public void ResetActiveSpan()
 	{
 		iActiveSpan = 0;
+	}
+
+	public PathNode GetActiveNode()
+	{
+		if (iActiveSpan < nodes.Count)
+			return nodes[iActiveSpan];
+
+		return null;
 	}
 
 	public bool GetCrossTrackErr(Vector3 pos, ref float err)

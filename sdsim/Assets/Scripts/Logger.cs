@@ -48,9 +48,11 @@ public class Logger : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		string activity_prefix = car.GetActivityPrefix();
+
 		if(writer != null)
 		{
-			writer.WriteLine(string.Format("{0},{1},{2}", frameCounter.ToString(), car.GetSteering().ToString(), car.GetThrottle().ToString()));
+			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity_prefix, car.GetSteering().ToString(), car.GetThrottle().ToString()));
 		}
 
 		if(camSensor != null)
@@ -58,7 +60,9 @@ public class Logger : MonoBehaviour {
 			Texture2D image = camSensor.GetImage();
 
 			ImageSaveJob ij = new ImageSaveJob();
-			ij.filename = Application.dataPath +  string.Format("/../log/image{0,8:D8}.png", frameCounter);
+
+
+			ij.filename = Application.dataPath +  string.Format("/../log/{0}{1,8:D8}.png", activity_prefix, frameCounter);
 			ij.bytes = image.EncodeToPNG();
 
 			lock(this)

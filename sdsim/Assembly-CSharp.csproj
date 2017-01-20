@@ -56,6 +56,7 @@
      <Compile Include="Assets\Scripts\CollisionSensor.cs" />
      <Compile Include="Assets\Scripts\DistanceSensor.cs" />
      <Compile Include="Assets\Scripts\ICar.cs" />
+     <Compile Include="Assets\Scripts\LaneChangeTrainer.cs" />
      <Compile Include="Assets\Scripts\Lines.cs" />
      <Compile Include="Assets\Scripts\Localizer.cs" />
      <Compile Include="Assets\Scripts\Logger.cs" />
