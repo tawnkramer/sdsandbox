@@ -111,12 +111,16 @@ public class PIDController : MonoBehaviour {
 			}
 		}
 
-		//set the activity prefix from the path node.
+		//set the activity from the path node.
 		PathNode n = pm.path.GetActiveNode();
 
-		if(n != null && n.activity_prefix != null && n.activity_prefix.Length > 1)
+		if(n != null && n.activity != null && n.activity.Length > 1)
 		{
-			car.SetActivityPrefix(n.activity_prefix);
+			car.SetActivity(n.activity);
+		}
+		else
+		{
+			car.SetActivity("image");
 		}
 
 		float err = 0.0f;
@@ -168,7 +172,7 @@ public class PIDController : MonoBehaviour {
 		}
 		
 		if(pid_steering != null)
-			pid_steering.text = string.Format("PID: {0}", steeringReq);
+			pid_steering.text = string.Format("PID: {0} {1}", steeringReq, car.GetActivity());
 
 		//accumulate total error
 		totalError += err;

@@ -6,7 +6,7 @@ public class PathNode
 {
 	public Vector3 pos;
 	public CarModel cm;
-	public string activity_prefix; //when this node is active, prefix images w this..
+	public string activity;
 }
 
 public class CarPath 
@@ -33,6 +33,23 @@ public class CarPath
 			return nodes[iActiveSpan];
 
 		return null;
+	}
+
+	public void SmoothPath(float factor = 0.5f)
+	{
+		LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
+
+		for(int iN = 1; iN < nodes.Count - 2; iN++)
+		{
+			PathNode p = nodes[iN - 1];
+			PathNode c = nodes[iN];
+			PathNode n = nodes[iN + 1];
+
+			LineSeg3d seg = new LineSeg3d(ref p.pos, ref n.pos);
+			Vector3 closestP = seg.ClosestPointOnSegmentTo(ref c.pos, ref segRes);
+			Vector3 dIntersect = closestP - c.pos;
+			c.pos += dIntersect.normalized * factor;
+		}
 	}
 
 	public bool GetCrossTrackErr(Vector3 pos, ref float err)

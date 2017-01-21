@@ -9,6 +9,7 @@ import time
 import logging
 import traceback
 import pdb
+import camera_format
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -83,8 +84,7 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False, show_t
   c5x, angle, speed, filters, hdf5_camera = concatenate(filter_names, time_len=time_len)
   filters_set = set(filters)
 
-  #ch, row, col = 3, 160, 320  # camera format
-  ch, row, col = 3, 256, 256  # camera format - todo read it in!
+  ch, row, col = camera_format.get_camera_image_dim()
 
   logger.info("camera files {}".format(len(c5x)))
 

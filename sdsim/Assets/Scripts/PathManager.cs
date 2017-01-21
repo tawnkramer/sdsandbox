@@ -29,7 +29,7 @@ public class PathManager : MonoBehaviour {
 
 	public bool doChangeLanes = false;
 
-	public bool doTurnOffPathNodeRender = true;
+	public bool doShowPath = false;
 
 	public RoadBuilder roadBuilder;
 
@@ -61,14 +61,17 @@ public class PathManager : MonoBehaviour {
 		if(laneChTrainer != null && doChangeLanes)
 		{
 			laneChTrainer.ModifyPath(ref path);
+		}
 
-			/*for(int iN = 0; iN < path.nodes.Count; iN++)
+		if(doShowPath)
+		{
+			for(int iN = 0; iN < path.nodes.Count; iN++)
 			{
 				Vector3 np = path.nodes[iN].pos;
 				GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
 				go.tag = "pathNode";
 				go.transform.parent = this.transform;
-			}*/
+			}
 		}
 	}
 
@@ -129,14 +132,6 @@ public class PathManager : MonoBehaviour {
 					PathNode p = new PathNode();
 					p.pos = np;
 					path.nodes.Add(p);
-					GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
-					go.tag = "pathNode";
-					go.transform.parent = this.transform;
-
-					if(doTurnOffPathNodeRender)
-					{
-						go.GetComponent<MeshRenderer>().enabled = false;
-					}
 
 					turn = dY;
 
@@ -168,14 +163,6 @@ public class PathManager : MonoBehaviour {
 			PathNode p = new PathNode();
 			p.pos = np;
 			path.nodes.Add(p);
-			GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
-			go.tag = "pathNode";
-			go.transform.parent = this.transform;
-
-			if(doTurnOffPathNodeRender)
-			{
-				go.GetComponent<MeshRenderer>().enabled = false;
-			}
 
 			float t = Random.Range(-1.0f * turnInc, turnInc);
 

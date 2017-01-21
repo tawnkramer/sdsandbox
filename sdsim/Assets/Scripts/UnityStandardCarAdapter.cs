@@ -12,7 +12,7 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	float handBrake = 0.0f;
 	Vector3 vel = Vector3.zero;
 	Vector3 accel = Vector3.zero;
-	public string activity_prefix = "lane_keeping";
+	public string activity = "keep_lane";
 
 	Rigidbody rb;
 
@@ -68,15 +68,14 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 		unityCar.Move(steering / MaximumSteerAngle, throttle, footBrake, handBrake);
 	}
 
-	//get the image prefix to label the current activity of the car when logging.
-	public string GetActivityPrefix()
+	public string GetActivity()
 	{
-		return activity_prefix;
+		return activity;
 	}
 
-	public void SetActivityPrefix(string prefix)
+	public void SetActivity(string act)
 	{
-		activity_prefix = prefix;
+		activity = act;
 	}
 
 }

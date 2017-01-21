@@ -5,6 +5,7 @@ import numpy as np
 import h5py
 import json
 import time
+import camera_format
 
 # ***** main loop *****
 if __name__ == "__main__":
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     iFrame = 1
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(('localhost', 9090))
-    ch, row, col = 3, 256, 256  # camera format - todo read it in!
+    ch, row, col = camera_format.get_camera_image_dim()
     while iFrame < 2:
         img = cam['X'][iFrame] #first image for now.
         bytes = img.tobytes()
@@ -39,5 +40,4 @@ if __name__ == "__main__":
         print 'took', duration, 'sec'
         iFrame += 1
     sock.close()
-else:
-    print 'not main'
+

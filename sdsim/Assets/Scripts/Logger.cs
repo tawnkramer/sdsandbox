@@ -10,9 +10,7 @@ public class Logger : MonoBehaviour {
 	public ICar car;
 	public CameraSensor camSensor;
 	public int frameCounter = 0;
-
 	public int maxFramesToLog = 14000;
-
 	public bool bDoLog = true;
 	string outputFilename = "/../log/log_car_controls.txt";
 	private StreamWriter writer;
@@ -48,11 +46,11 @@ public class Logger : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		string activity_prefix = car.GetActivityPrefix();
+		string activity = car.GetActivity();
 
 		if(writer != null)
 		{
-			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity_prefix, car.GetSteering().ToString(), car.GetThrottle().ToString()));
+			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
 		}
 
 		if(camSensor != null)
@@ -62,7 +60,7 @@ public class Logger : MonoBehaviour {
 			ImageSaveJob ij = new ImageSaveJob();
 
 
-			ij.filename = Application.dataPath +  string.Format("/../log/{0}{1,8:D8}.png", activity_prefix, frameCounter);
+			ij.filename = Application.dataPath +  string.Format("/../log/{0}_{1,8:D8}.png", activity, frameCounter);
 			ij.bytes = image.EncodeToPNG();
 
 			lock(this)
@@ -94,8 +92,6 @@ public class Logger : MonoBehaviour {
 			if(count > 0)
 			{
 				ImageSaveJob ij = imagesToSave[0];
-
-				//Debug.Log("saving image " + ij.filename);
 		
 				File.WriteAllBytes(ij.filename, ij.bytes);
 

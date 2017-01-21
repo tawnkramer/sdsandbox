@@ -12,6 +12,7 @@ from keras.callbacks import Callback
 from keras.models import model_from_json
 
 from server import client_generator
+import camera_format
 
 
 def gen(hwm, host, port):
@@ -25,7 +26,7 @@ def gen(hwm, host, port):
 
 #provided by comma ai
 def get_base_model(time_len=1):
-  ch, row, col = 3, 160, 320  # camera format
+  ch, row, col = camera_format.get_camera_image_dim()
 
   model = Sequential()
   model.add(Lambda(lambda x: x/127.5 - 1.,
@@ -51,8 +52,7 @@ def get_base_model(time_len=1):
 #nvidea
 #https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
 def get_model(time_len=1):
-  #ch, row, col = 3, 160, 320  # camera format
-  ch, row, col = 3, 256, 256  # camera format - todo read it in!
+  ch, row, col = camera_format.get_camera_image_dim()
 
   model = Sequential()
   model.add(Lambda(lambda x: x/127.5 - 1.,

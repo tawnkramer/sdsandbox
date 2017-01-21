@@ -33,7 +33,9 @@ public class Car : MonoBehaviour, ICar {
 	//max range human can turn the wheel with a joystick controller
 	public float humanSteeringMax = 15.0f;
 
-	public string activity_prefix = "lane_keeping";
+	//when the car is doing multiple things, we sometimes want to sort out parts of the training
+	//use this label to pull partial training samples from a run 
+	public string activity = "keep_lane";
 
 	// Use this for initialization
 	void Awake () 
@@ -158,15 +160,14 @@ public class Car : MonoBehaviour, ICar {
 		UpdateWheelPositions();
 	}
 
-	//get the image prefix to label the current activity of the car when logging.
-	public string GetActivityPrefix()
+	public string GetActivity()
 	{
-		return activity_prefix;
+		return activity;
 	}
 
-	public void SetActivityPrefix(string prefix)
+	public void SetActivity(string act)
 	{
-		activity_prefix = prefix;
+		activity = act;
 	}
 
 	void FixedUpdate()

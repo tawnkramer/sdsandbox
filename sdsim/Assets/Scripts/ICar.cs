@@ -35,10 +35,10 @@ public interface ICar
 	Vector3 GetAccel();
 
 
-	//get the image prefix to label the current activity of the car when logging.
-	string GetActivityPrefix();
+	//mark the current activity for partial selections when creating training sets later.
+	string GetActivity();
 
-	void SetActivityPrefix(string prefix);
+	void SetActivity(string act);
 
 
 	//Save and restore State

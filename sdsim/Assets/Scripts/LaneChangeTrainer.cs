@@ -19,6 +19,9 @@ public class LaneChangeTrainer : MonoBehaviour {
 	//How long to stay in this lane before changing
 	public float laneKeepDist = 20.0f;
 
+	//How much to smooth path. 0.0 - 1.0f
+	public float pathSmoothFactor = 0.5f;
+
 	public void ModifyPath(ref CarPath path)
 	{
 		float curLaneDist = 0.0f;
@@ -30,7 +33,7 @@ public class LaneChangeTrainer : MonoBehaviour {
 		Vector3 offset = Vector3.zero;
 		Vector3 laneChangeDp = Vector3.zero;
 
-		string activity_prefix = "lane_keep_";
+		string activity = "keep_lane";
 
 		for(int iN = 1; iN < path.nodes.Count; iN++)
 		{
@@ -39,9 +42,9 @@ public class LaneChangeTrainer : MonoBehaviour {
 
 			if(curLaneDist < laneKeepDist)
 			{
-				n.activity_prefix = activity_prefix;
+				n.activity = activity;
 
-				activity_prefix = "lane_keep_";
+				activity = "keep_lane";
 
 				//stay in current lane.
 				curLaneDist += dp.magnitude;
@@ -52,14 +55,14 @@ public class LaneChangeTrainer : MonoBehaviour {
 				initLaneChange = true;
 				laneChangeDp = new Vector3(-1 * NewLaneDir(changeLaneDir) * laneDist, 0.0f, laneKeepDist);
 
-				GetActivity(ref changeLaneDir, ref activity_prefix);
+				GetActivity(ref changeLaneDir, ref activity);
 
 				offset = laneChangeDp.normalized * dp.magnitude;
 				offset.z = 0.0f;
 				OffsetRemainingPath(ref path, iN, offset);
 				curTransDist += dp.magnitude;
 
-				n.activity_prefix = activity_prefix;
+				n.activity = activity;
 			}
 			else
 			{
@@ -68,7 +71,7 @@ public class LaneChangeTrainer : MonoBehaviour {
 				OffsetRemainingPath(ref path, iN, offset);
 				curTransDist += dp.magnitude;
 
-				n.activity_prefix = activity_prefix;
+				n.activity = activity;
 
 				if(curTransDist > transitionDist)
 				{
@@ -85,6 +88,36 @@ public class LaneChangeTrainer : MonoBehaviour {
 					//switch back to driving in the lane.
 					curLaneDist = 0.0f;
 					curTransDist = 0.0f;
+				}
+			}
+		}
+
+		OffsetLabelsBack(ref path);
+		OffsetLabelsBack(ref path);
+
+		path.SmoothPath(pathSmoothFactor);
+	}
+
+	void OffsetLabelsBack(ref CarPath path)
+	{
+		//we are setting our activity labels one node too late. Try setting them a bit early. And removing them one early too.
+		for(int iN = 1; iN < path.nodes.Count; iN++)
+		{
+			PathNode p = path.nodes[iN - 1];
+			PathNode c = path.nodes[iN];
+
+			if(p.activity == null || c.activity == null)
+				continue;
+
+			if(c.activity != p.activity)
+			{
+				if(c.activity.StartsWith("cl_"))
+				{
+					p.activity = c.activity;
+				}
+				else if(p.activity.StartsWith("cl_"))
+				{
+					p.activity = c.activity;
 				}
 			}
 		}
@@ -113,12 +146,12 @@ public class LaneChangeTrainer : MonoBehaviour {
 		return changeLaneDir;
 	}
 
-	void GetActivity(ref int changeLaneDir, ref string activity_prefix)
+	void GetActivity(ref int changeLaneDir, ref string activity)
 	{
 		if(changeLaneDir > 0)
-			activity_prefix = "cl_left_";
+			activity = "cl_left";
 		else
-			activity_prefix = "cl_right_";
+			activity = "cl_right";
 	}
 
 	void OnEnterNewLane(ref int changeLaneDir)

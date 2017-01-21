@@ -11,7 +11,7 @@ import time
 import glob
 from PIL import Image
 import camera_format
-
+import pdb
 
 def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
     t = time.ctime(os.path.getmtime(drivinglog))
@@ -82,7 +82,7 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
         path, name = os.path.split(img_filename)
         first_zero = name.find('0')
         first_period = name.find('.')
-        num_string = name[first_zero : first_period - 1]
+        num_string = name[first_zero : first_period]
         id = int(num_string)
         imgs_by_id[id] = img_filename
 
