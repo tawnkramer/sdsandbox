@@ -122,7 +122,7 @@ if __name__ == "__main__":
     parser.add_argument('--log-controls', dest='log_controls', default='log_car_controls.txt', help='control log filename')
     parser.add_argument('--log-images', dest='images', default='*.png', help='filemask for images')
     parser.add_argument('--out-path', dest='out_path', default='../dataset/', help='path for output.')
-    parser.add_argument('--out-prefix', dest='prefix', default='train_', help='prefix for output.')
+    parser.add_argument('--prefix', default='train_', help='prefix for output.')
     parser.add_argument('--validation', dest='validation', action='store_true', help='sets prefix for validation.')
     parser.add_argument('--clean', action='store_true', help='should we remove images and logs')
     parser.add_argument('--activity', dest='activity', default=None, help='activity prefix.')

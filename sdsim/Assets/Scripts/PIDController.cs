@@ -36,8 +36,6 @@ public class PIDController : MonoBehaviour {
 
 	public OnEndOfPathCB endOfPathCB;
 
-	public Transform samplePosMarker;
-
 	bool isDriving = false;
 	public bool waitForStill = true;
 
@@ -128,8 +126,6 @@ public class PIDController : MonoBehaviour {
 		float velMag = car.GetVelocity().magnitude;
 
 		Vector3 samplePos = car.GetTransform().position + (car.GetTransform().forward * velMag * Kv);
-
-		samplePosMarker.position = samplePos;
 
 		if(!pm.path.GetCrossTrackErr(samplePos, ref err))
 		{
