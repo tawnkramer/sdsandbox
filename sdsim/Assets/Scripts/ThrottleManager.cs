@@ -22,6 +22,9 @@ public class ThrottleManager : MonoBehaviour {
 
 	public float turnSlowFactor = 3.0f;
 
+	//give the network time to connect before turning on the throttle.
+	public float delayBeforeStart = 2.0f;
+
 	void Awake()
 	{
 		car = carObj.GetComponent<ICar>();
@@ -30,6 +33,12 @@ public class ThrottleManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if(delayBeforeStart > 0.0f)
+		{
+			delayBeforeStart -= Time.deltaTime;
+			return;
+		}
+		
 		speedFactor = car.GetVelocity().magnitude * (1.0f + Mathf.Abs(car.GetSteering()));
 	
 		if(speedometerUI != null)
