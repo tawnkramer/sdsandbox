@@ -14,11 +14,15 @@ Then validate the steering control by sending images to your neural network and 
 
 ## Some videos to help you get started
 
-### Downloading and training your first network
+### Training your first network
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/oe7fYuYw8GY/0.jpg)](https://www.youtube.com/watch?v=oe7fYuYw8GY "Getting Started w sdsandbox")
 
-### World beautification
+### World complexity
 [![IMAGE ALT TEXT](https://img.youtube.com/vi/FhAKaH3ysow/0.jpg)](https://www.youtube.com/watch?v=FhAKaH3ysow "Making a more interesting world.")
+
+### Creating a robust training set
+
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/_h8l7qoT4zQ/0.jpg)](https://www.youtube.com/watch?v=_h8l7qoT4zQ "Creating a robust sdc.")
 
 ## Setup
 
