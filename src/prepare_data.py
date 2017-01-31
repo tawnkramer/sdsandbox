@@ -52,7 +52,8 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
         tokens = lines[iLine].split(',')
         iLine += 1
         iRecord += 1
-        
+        if len(tokens) != 4:
+            continue
         log_activity = tokens[1]
         if activity is not None and activity != log_activity:
             continue;
