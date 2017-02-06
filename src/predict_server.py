@@ -129,6 +129,19 @@ class SteeringHandler(asyncore.dispatcher):
     def handle_close(self):
         self.close()
 
+def go(model_json, address):
+  with open(model_json, 'r') as jfile:
+      model = model_from_json(json.load(jfile))
+
+  model.compile("sgd", "mse")
+  weights_file = model_json.replace('json', 'keras')
+  model.load_weights(weights_file)
+  
+  s = SteeringServer(address, model)
+  try:
+    asyncore.loop()
+  except KeyboardInterrupt:
+    print 'stopping'
 
 # ***** main loop *****
 if __name__ == "__main__":
@@ -138,19 +151,6 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   model_json = os.path.join(args.path, args.model +'.json')
-
-  with open(model_json, 'r') as jfile:
-    model = model_from_json(json.load(jfile))
-
-  model.compile("sgd", "mse")
-  weights_file = model_json.replace('json', 'keras')
-  model.load_weights(weights_file)
-  
   address = ('0.0.0.0', 9090)
-  s = SteeringServer(address, model)
-  try:
-    asyncore.loop()
-  except KeyboardInterrupt:
-    print 'stopping'
-
+  go(model_json, address)
 

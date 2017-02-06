@@ -21,6 +21,17 @@ public class RoadBuilder : MonoBehaviour {
 
 	public Texture2D[] textures;
 
+	void Start()
+	{
+		if(terToolkit != null && doErodeTerrain)
+		{
+			//terToolkit.FastThermalErosion(20, 0.0f, 0.0f); //creates pits
+			//terToolkit.FastHydraulicErosion(100, 1.0f, 0.0f); //creates washouts
+			//terToolkit.FullHydraulicErosion(1, 10.0f, 1.0f, .3f, 2.0f);
+			terToolkit.SmoothTerrain(10, 1.0f);
+		}
+	}
+
 	public void DestroyRoad()
 	{
 		GameObject[] prev = GameObject.FindGameObjectsWithTag("road_mesh");
