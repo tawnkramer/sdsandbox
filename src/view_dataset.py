@@ -51,21 +51,10 @@ if __name__ == "__main__":
 
   while True:
     
-    keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_SPACE]:
-      play = play
-
-    if keys[pygame.K_RIGHT]:
-      if iFrame < iEnd - 1:
-        iFrame += 1
-
-    if keys[pygame.K_LEFT]:
-      if iFrame > 0:
-        iFrame += -1
-        
     if play and iFrame < iEnd - 1:
       iFrame += 1
+    else:
+        break
     
     img = cam['X'][iFrame]
     steering = model.predict(img[None, :, :, :])[0][0]
@@ -79,5 +68,6 @@ if __name__ == "__main__":
     camera_surface_2x = pygame.transform.scale2x(camera_surface)
     screen.blit(camera_surface_2x, (0,0))
     #steering value
-    screen_print(10, 10, str(steering), screen)
+    screen_print(10, 10, 'NN    :' + str(steering), screen)
+    screen_print(10, 30, 'Human :' + str(angle_steers), screen)
     pygame.display.flip()
