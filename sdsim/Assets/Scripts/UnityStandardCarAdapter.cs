@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 
@@ -13,6 +14,8 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	Vector3 vel = Vector3.zero;
 	Vector3 accel = Vector3.zero;
 	public string activity = "keep_lane";
+
+	public bool userInputs = false;
 
 	Rigidbody rb;
 
@@ -64,7 +67,19 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	{
 		accel = rb.velocity - vel;
 		vel = rb.velocity;
-		
+
+		if(userInputs)
+		{
+			// pass the input to the car!
+			float h = CrossPlatformInputManager.GetAxis("Horizontal");
+			float v = CrossPlatformInputManager.GetAxis("Vertical");
+			float handbrake = CrossPlatformInputManager.GetAxis("Jump");
+			RequestSteering(h * MaximumSteerAngle);
+			RequestThrottle(v);
+			RequestFootBrake(v);
+			RequestHandBrake(handbrake);
+		}
+
 		unityCar.Move(steering / MaximumSteerAngle, throttle, footBrake, handBrake);
 	}
 
@@ -77,5 +92,4 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	{
 		activity = act;
 	}
-
 }
