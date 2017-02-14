@@ -1,3 +1,7 @@
+'''
+An example of a client that connects to a predict_server
+It feeds the server with image data a recieves 
+'''
 import socket
 import argparse
 import sys

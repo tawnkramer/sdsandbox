@@ -19,9 +19,13 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 
 	Rigidbody rb;
 
+	public Vector3 startPos;
+	public Quaternion startRot;
+
 	void Awake()
 	{
 		rb = unityCar.GetComponent<Rigidbody>();
+		SavePosRot();
 	}
 
 	//all inputs require 0-1 input except steering which is in degrees, where 0 is center.
@@ -55,12 +59,38 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	//Save and restore State
 	public void SavePosRot() 
 	{ 
-		//todo
+		startPos = transform.position;
+		startRot = transform.rotation;
 	}
 
 	public void RestorePosRot()
 	{
-		//todo
+		Set(startPos, startRot);
+	}
+
+	public void Set(Vector3 pos, Quaternion rot)
+	{
+		rb.position = pos;
+		rb.rotation = rot;
+
+		//just setting it once doesn't seem to work. Try setting it multiple times..
+		StartCoroutine(KeepSetting(pos, rot, 10));
+	}
+
+	IEnumerator KeepSetting(Vector3 pos, Quaternion rot, int numIter)
+	{
+		while(numIter > 0)
+		{
+			rb.position = pos;
+			rb.rotation = rot;
+			transform.position = pos;
+			transform.rotation = rot;
+			rb.velocity = Vector3.zero;
+			rb.angularVelocity = Vector3.zero;
+
+			numIter--;
+			yield return new WaitForFixedUpdate();
+		}
 	}
 
 	private void FixedUpdate()

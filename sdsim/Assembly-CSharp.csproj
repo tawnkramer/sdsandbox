@@ -54,7 +54,10 @@
      <Compile Include="Assets\Scripts\CarPath.cs" />
      <Compile Include="Assets\Scripts\CarPusher.cs" />
      <Compile Include="Assets\Scripts\CollisionSensor.cs" />
+     <Compile Include="Assets\Scripts\CourseCheckpoint.cs" />
+     <Compile Include="Assets\Scripts\CourseManager.cs" />
      <Compile Include="Assets\Scripts\DistanceSensor.cs" />
+     <Compile Include="Assets\Scripts\GenPathFromDriving.cs" />
      <Compile Include="Assets\Scripts\ICar.cs" />
      <Compile Include="Assets\Scripts\LaneChangeTrainer.cs" />
      <Compile Include="Assets\Scripts\Lines.cs" />
@@ -67,6 +70,8 @@
      <Compile Include="Assets\Scripts\MenuHandler.cs" />
      <Compile Include="Assets\Scripts\NetworkClient.cs" />
      <Compile Include="Assets\Scripts\NetworkSteering.cs" />
+     <Compile Include="Assets\Scripts\Obstacle.cs" />
+     <Compile Include="Assets\Scripts\OffCourseDetector.cs" />
      <Compile Include="Assets\Scripts\PIDController.cs" />
      <Compile Include="Assets\Scripts\PathManager.cs" />
      <Compile Include="Assets\Scripts\PathPlanner.cs" />
@@ -79,11 +84,15 @@
      <Compile Include="Assets\Scripts\TwiddlePID.cs" />
      <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
+     <None Include="Assets\Resources\thunder_path copy.txt" />
+     <None Include="Assets\Resources\thunder_path_full.txt" />
+     <None Include="Assets\Resources\thunder_path.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
      <None Include="Assets\Resources\racePi2.txt" />
      <None Include="Assets\Resources\racePi.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
+     <None Include="Assets\Resources\thunder_path_curve.txt" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\CarGuidelines.txt" />
      <None Include="Assets\TerrainToolkit\Read me.txt" />

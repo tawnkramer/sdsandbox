@@ -25,9 +25,13 @@ public class PathManager : MonoBehaviour {
 
 	public bool doLoadScriptPath = false;
 
+	public bool doLoadPointPath = false;
+
 	public bool doBuildRoad = false;
 
 	public bool doChangeLanes = false;
+
+	public int smoothPathIter = 0;
 
 	public bool doShowPath = false;
 
@@ -53,6 +57,13 @@ public class PathManager : MonoBehaviour {
 		{
 			MakeScriptedPath();
 		}
+		else if(doLoadPointPath)
+		{
+			MakePointPath();
+		}
+
+		if(smoothPathIter > 0)
+			SmoothPath();
 
 		//Should we build a road mesh along the path?
 		if(doBuildRoad && roadBuilder != null)
@@ -84,6 +95,50 @@ public class PathManager : MonoBehaviour {
 
 		if(roadBuilder != null)
 			roadBuilder.DestroyRoad();
+	}
+
+	void SmoothPath()
+	{
+		while(smoothPathIter > 0)
+		{
+			path.SmoothPath();
+			smoothPathIter--;
+		}
+	}
+
+	void MakePointPath()
+	{
+		string filename = "thunder_path";
+
+		TextAsset bindata = Resources.Load(filename) as TextAsset;
+
+		if(bindata == null)
+			return;
+
+		string[] lines = bindata.text.Split('\n');
+
+		Debug.Log(string.Format("found {0} path points. to load", lines.Length));
+
+		path = new CarPath();
+
+		Vector3 np = Vector3.zero;
+
+		float offsetY = -0.1f;
+
+		foreach(string line in lines)
+		{
+			string[] tokens = line.Split(',');
+
+			if (tokens.Length != 3)
+				continue;
+			np.x = float.Parse(tokens[0]);
+			np.y = float.Parse(tokens[1]) + offsetY;
+			np.z = float.Parse(tokens[2]);
+			PathNode p = new PathNode();
+			p.pos = np;
+			path.nodes.Add(p);
+		}
+			
 	}
 
 	void MakeScriptedPath()

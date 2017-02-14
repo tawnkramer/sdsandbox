@@ -17,11 +17,17 @@ public class NetworkSteering : MonoBehaviour {
 	public float connectTimer = 3.0f;
 	float timer = 0.0f;
 	public bool doSend = true;
-	public float throttle = 0.3f;
 	public Text ai_steering;
 	public float timeInCurrentState = 0.0f;
-	public bool doConstantThrottle = true;
+	public bool doThrottle = false;
+	public float throttleScale = 1.0f / 255.0f;
 	public RawImage sensorPreview;
+
+	//profile the resonsiveness of the nn
+	public float time_asked = 0.0f;
+	public float total_req_time = 0.0f;
+	public float num_requests = 0.0f;
+	public float avg_req_time = 0.0f;
 
 	public enum State
 	{
@@ -48,12 +54,13 @@ public class NetworkSteering : MonoBehaviour {
 	public class ServerMessage
 	{
 		public float steering;
+		public float throttle;
 	}
 
 	public State state = State.UnConnected;
 	State prev_state = State.UnConnected;
 
-	ServerMessage steeringMsg = new ServerMessage();
+	ServerMessage controlMsg = new ServerMessage();
 
 	void Awake()
 	{
@@ -88,6 +95,9 @@ public class NetworkSteering : MonoBehaviour {
 
 	void SendNewImageHeader()
 	{
+		time_asked = Time.realtimeSinceStartup;
+		num_requests += 1;
+
 		ImageHeader im = new ImageHeader();
 		im.height = camSensor.height;
 		im.width = camSensor.width;
@@ -103,6 +113,19 @@ public class NetworkSteering : MonoBehaviour {
 		client.SendData( bytes );
 
 		state = State.WaitingForServerReadyImage;
+	}
+
+	void UpdateRequesProfiler()
+	{
+		float delta = Time.realtimeSinceStartup - time_asked;
+		total_req_time += delta;
+		avg_req_time = total_req_time / num_requests;
+
+		if(num_requests == 120)
+		{
+			num_requests = 0.0f;
+			total_req_time = 0.0f;
+		}
 	}
 
 	void OnDataRecv(byte[] bytes)
@@ -125,8 +148,7 @@ public class NetworkSteering : MonoBehaviour {
 		{
 			try
 			{
-				steeringMsg = JsonUtility.FromJson<ServerMessage>(str);
-
+				controlMsg = JsonUtility.FromJson<ServerMessage>(str);
 			}
 			catch(Exception e)
 			{
@@ -207,13 +229,22 @@ public class NetworkSteering : MonoBehaviour {
 		}
 		else if(state == State.ProcessSteering)
 		{
-			car.RequestSteering(steeringMsg.steering);
+			UpdateRequesProfiler();
 
-			if(doConstantThrottle)
-				car.RequestThrottle(throttle);
+			car.RequestSteering(controlMsg.steering);
+
+			if(doThrottle)
+			{
+				float val = controlMsg.throttle * throttleScale;
+
+				if(val > 0.0f)
+					car.RequestThrottle(val);
+				else
+					car.RequestFootBrake(-val);
+			}
 
 			if(ai_steering != null)
-				ai_steering.text = string.Format("NN: {0}", steeringMsg.steering);
+				ai_steering.text = string.Format("NN: {0}", controlMsg.steering /* avg_req_time */);
 
 			state = State.Idle;
 		}
