@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\GenPathFromDriving.cs" />
      <Compile Include="Assets\Scripts\ICar.cs" />
      <Compile Include="Assets\Scripts\LaneChangeTrainer.cs" />
+     <Compile Include="Assets\Scripts\Lidar.cs" />
      <Compile Include="Assets\Scripts\Lines.cs" />
      <Compile Include="Assets\Scripts\Localizer.cs" />
      <Compile Include="Assets\Scripts\Logger.cs" />
@@ -88,9 +89,6 @@
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\CarGuidelines.txt" />
      <None Include="Assets\TerrainToolkit\Read me.txt" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -105,9 +103,6 @@
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Purchasing">
- <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityPurchasing/UnityEngine.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>

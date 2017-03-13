@@ -10,6 +10,7 @@ public class Logger : MonoBehaviour {
 	public ICar car;
 	public CameraSensor camSensor;
     public CameraSensor optionlB_CamSensor;
+	public Lidar lidar;
     public int frameCounter = 0;
 	public int maxFramesToLog = 14000;
 	public bool bDoLog = true;
@@ -52,6 +53,20 @@ public class Logger : MonoBehaviour {
 		if(writer != null)
 		{
 			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
+		}
+
+		if(lidar != null)
+		{
+			LidarPointArray pa = lidar.GetOutput();
+
+			if(pa != null)
+			{
+				string json = JsonUtility.ToJson(pa);
+				var filename = string.Format("/../log/lidar_{0}_{1}.txt", frameCounter.ToString(), activity);
+				var f = File.CreateText(Application.dataPath + filename);
+				f.Write(json);
+				f.Close();
+			}
 		}
 
         if (optionlB_CamSensor != null)
