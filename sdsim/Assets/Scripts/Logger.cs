@@ -9,7 +9,8 @@ public class Logger : MonoBehaviour {
 	public GameObject carObj;
 	public ICar car;
 	public CameraSensor camSensor;
-	public int frameCounter = 0;
+    public CameraSensor optionlB_CamSensor;
+    public int frameCounter = 0;
 	public int maxFramesToLog = 14000;
 	public bool bDoLog = true;
 	string outputFilename = "/../log/log_car_controls.txt";
@@ -53,32 +54,46 @@ public class Logger : MonoBehaviour {
 			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
 		}
 
-		if(camSensor != null)
-		{
-			Texture2D image = camSensor.GetImage();
+        if (optionlB_CamSensor != null)
+        {
+            SaveCamSensor(camSensor, activity, "_a");
+            SaveCamSensor(optionlB_CamSensor, activity, "_b");
+        }
+        else
+        {
+            SaveCamSensor(camSensor, activity, "");
+        }
 
-			ImageSaveJob ij = new ImageSaveJob();
+        if (maxFramesToLog != -1 && frameCounter >= maxFramesToLog)
+        {
+            Shutdown();
+            this.gameObject.SetActive(false);
+        }
 
-
-			ij.filename = Application.dataPath +  string.Format("/../log/{0}_{1,8:D8}.png", activity, frameCounter);
-			ij.bytes = image.EncodeToPNG();
-
-			lock(this)
-			{
-				imagesToSave.Add(ij);
-			}
-
-			if(maxFramesToLog != -1 && frameCounter >= maxFramesToLog)
-			{
-				Shutdown();
-				this.gameObject.SetActive(false);
-			}
-		}
-
-		frameCounter = frameCounter + 1;
+        frameCounter = frameCounter + 1;
 	}
 
-	public void SaverThread()
+    //Save the camera sensor to an image. Use the suffix to distinguish between cameras.
+    void SaveCamSensor(CameraSensor cs, string prefix, string suffix)
+    {
+        if (cs != null)
+        {
+            Texture2D image = cs.GetImage();
+
+            ImageSaveJob ij = new ImageSaveJob();
+
+            ij.filename = Application.dataPath + string.Format("/../log/{0}_{1,8:D8}{2}.png", prefix, frameCounter, suffix);
+
+            ij.bytes = image.EncodeToPNG();
+
+            lock (this)
+            {
+                imagesToSave.Add(ij);
+            }
+        }
+    }
+
+    public void SaverThread()
 	{
 		while(true)
 		{
