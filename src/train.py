@@ -5,6 +5,7 @@ Start the training and validation servers in their own subprocess. Run the steer
 It can sometimes take multiple CTRL+C breaks to stop this.
 Author: Tawn Kramer
 '''
+from __future__ import print_function
 import os
 import multiprocessing as mp
 import server
@@ -24,7 +25,7 @@ def train(output, datadir, tprefix, vprefix, resume):
         train_steering_model.run_default_training(output, resume)
 
     except KeyboardInterrupt:
-        print 'stopping'
+        print('stopping')
 
 
 if __name__ == "__main__":

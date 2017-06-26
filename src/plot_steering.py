@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import argparse
 import sys
 import numpy as np
@@ -46,8 +47,8 @@ if __name__ == "__main__":
   end = time.time()
   duration = end - start
   num_frames = iEnd - iStart
-  print 'it took', duration, 'sec to process %d frames.' % (num_frames)
-  print 'or an avg of', duration / num_frames, 'per frame' 
+  print('it took', duration, 'sec to process %d frames.' % (num_frames))
+  print('or an avg of', duration / num_frames, 'per frame' )
   plt.plot(pred_steer, color='r')
   plt.plot(actual_steer, color='b')
   plt.show()

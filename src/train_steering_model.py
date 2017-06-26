@@ -2,6 +2,7 @@
 """
 Steering angle prediction model
 """
+from __future__ import print_function
 import os
 import argparse
 import json
@@ -10,9 +11,10 @@ from keras.layers import Dense, Dropout, Flatten, Lambda, ELU
 from keras.layers.convolutional import Convolution2D
 from keras.callbacks import Callback
 from keras.models import model_from_json
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from server import client_generator
-import camera_format
+import config
 
 
 def gen(hwm, host, port):
@@ -26,12 +28,11 @@ def gen(hwm, host, port):
 
 #provided by comma ai
 def get_base_model(time_len=1):
-  ch, row, col = camera_format.get_camera_image_dim()
+  input_shape = config.get_input_shape()
 
   model = Sequential()
   model.add(Lambda(lambda x: x/127.5 - 1.,
-            input_shape=(ch, row, col),
-            output_shape=(ch, row, col)))
+            input_shape=input_shape))
   model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
   model.add(ELU())
   model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
@@ -52,12 +53,11 @@ def get_base_model(time_len=1):
 #nvidea
 #https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
 def get_model(time_len=1):
-  ch, row, col = camera_format.get_camera_image_dim()
+  input_shape = config.get_input_shape()
 
   model = Sequential()
   model.add(Lambda(lambda x: x/127.5 - 1.,
-            input_shape=(ch, row, col),
-            output_shape=(ch, row, col)))
+            input_shape=input_shape))
   model.add(Convolution2D(24, 5, 5, subsample=(2, 2), border_mode="same"))
   model.add(ELU())
   model.add(Convolution2D(36, 5, 5, subsample=(2, 2), border_mode="same"))
@@ -81,46 +81,33 @@ def get_model(time_len=1):
 
   return model
 
-class SaveCB(Callback):
-  def __init__(self, output):
-    self.output = output
-
-  def on_epoch_end(self, epoch, logs={}):
-    self.save_weights()
-  
-  def on_train_begin(self, logs={}):
-    self.save_weights()
-
-  def on_train_end(self, logs={}):
-    self.save_weights()
-
-  def save_weights(self):
-    print("\nSaving model weights and configuration file.")
-    path, filename = os.path.split(self.output)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    self.model.save_weights(self.output + ".keras", True)
-    with open(self.output + '.json', 'w') as outfile:
-      json.dump(self.model.to_json(), outfile)
-
 def run_default_training(output, resume):
+  path, filename = os.path.split(self.output)
+  if not os.path.exists(path):
+      os.makedirs(path)
+
   if resume:
     with open(output + '.json', 'r') as jfile:
       model = model_from_json(json.load(jfile))
     model.compile(optimizer="adam", loss="mse")
     weights_file = output + '.keras'
     model.load_weights(weights_file)
-    print 'picking up from previous training run.'
+    print('picking up from previous training run.')
   else:
     model = get_model()
   
+  callbacks = [
+        EarlyStopping(monitor='val_loss', patience=6, verbose=0),
+        ModelCheckpoint(output, monitor='val_loss', save_best_only=True, verbose=0)
+    ]
+
   model.fit_generator(
     gen(20, '127.0.0.1', port=5557),
     samples_per_epoch=10000,
     nb_epoch=200,
     validation_data=gen(20, '127.0.0.1', port=5556),
     nb_val_samples=1000,
-    callbacks=[SaveCB(output)]
+    callbacks=callbacks
   )
 
 if __name__ == "__main__":
@@ -145,7 +132,7 @@ if __name__ == "__main__":
     model.compile(optimizer="adam", loss="mse")
     weights_file = args.resume.replace('json', 'keras')
     model.load_weights(weights_file)
-    print 'picking up from previous training run.'
+    print('picking up from previous training run.')
   else:
     model = get_model()
 

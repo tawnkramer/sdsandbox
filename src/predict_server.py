@@ -5,6 +5,7 @@ Create a server to accept image inputs and run them against a trained neural net
 This then sends the steering output back to the client.
 Author: Tawn Kramer
 '''
+from __future__ import print_function
 import os
 import argparse
 import sys
@@ -18,6 +19,7 @@ import asyncore
 import json
 import socket
 from PIL import Image
+import config
 
 class SteeringServer(asyncore.dispatcher):
     """Receives connections and establishes handlers for each client.
@@ -29,7 +31,7 @@ class SteeringServer(asyncore.dispatcher):
         self.set_reuse_addr()
         self.bind(address)
         self.address = self.socket.getsockname()
-        print 'binding to', self.address
+        print('binding to', self.address)
         self.listen(1)
         self.model = model
         return
@@ -38,7 +40,7 @@ class SteeringServer(asyncore.dispatcher):
         # Called when a client connects to our socket
         client_info = self.accept()
         #self.logger.debug('handle_accept() -> %s', client_info[1])
-        print 'got a new client', client_info[1]
+        print('got a new client', client_info[1])
         h = SteeringHandler(sock=client_info[0], chunk_size=8*1024, model=self.model)
         return
     
@@ -70,7 +72,7 @@ class SteeringHandler(asyncore.dispatcher):
     
     def handle_write(self):
         """Write as much as possible of the most recent message we have received."""
-        data = self.data_to_write.pop()
+        data = self.data_to_write.pop().encode()
         sent = self.send(data[:self.chunk_size])
         if sent < len(data):
             remaining = data[sent:]
@@ -87,7 +89,7 @@ class SteeringHandler(asyncore.dispatcher):
           self.handle_close()
         elif self.mode == self.IDLE:
           try:
-            jsonObj = json.loads(data)
+            jsonObj = json.loads(data.decode("utf-8"))
             self.num_bytes = jsonObj['num_bytes']
             self.width = jsonObj['width']
             self.height = jsonObj['height']
@@ -100,18 +102,22 @@ class SteeringHandler(asyncore.dispatcher):
             self.num_read = 0
           except:
             self.mode = self.IDLE
-            print 'failed to read json from: ', data
+            print('failed to read json from: ', data)
         elif self.mode == self.GETTING_IMG:
           self.image_byes.append(data)
           self.num_read += len(data)
           if self.num_read == self.num_bytes:
-            lin_arr = np.fromstring(''.join(self.image_byes), dtype=np.uint8)
+            try:
+              lin_arr = np.frombuffer(b''.join(self.image_byes), dtype=np.uint8)              
+            except:
+              lin_arr = np.fromstring(''.join(self.image_byes), dtype=np.uint8)
             self.mode = self.SENDING_STEERING
             if self.format == 'array_of_pixels':
               img = lin_arr.reshape(self.width, self.height, self.num_channels)
               if self.flip_y:
                 img = np.flipud(img)
-              img = img.transpose()
+              if config.image_tranposed:
+                img = img.transpose()
             else: #assumed to be ArrayOfChannels
               img = lin_arr.reshape(self.num_channels, self.width, self.height)
             if view_image:
@@ -123,8 +129,11 @@ class SteeringHandler(asyncore.dispatcher):
             steering = self.model.predict(img[None, :, :, :])
             reply = '{ "steering" : "%f" }' % steering
             self.data_to_write.append(reply)
+          elif self.num_read > self.num_bytes:
+            print('problem, read too many bytes!')
+            self.mode = self.IDLE
         else:
-            print "wasn't prepared to recv request!"
+            print("wasn't prepared to recv request!")
     
     def handle_close(self):
         self.close()
@@ -141,7 +150,7 @@ def go(model_json, address):
   try:
     asyncore.loop()
   except KeyboardInterrupt:
-    print 'stopping'
+    print('stopping')
 
 # ***** main loop *****
 if __name__ == "__main__":

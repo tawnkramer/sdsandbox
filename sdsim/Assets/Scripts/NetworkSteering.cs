@@ -248,17 +248,17 @@ public class NetworkSteering : MonoBehaviour {
 
 			state = State.Idle;
 		}
-		else if(state == State.WaitingForServerReadyImage && timeInCurrentState > 2.0f)
+		else if(state == State.WaitingForServerReadyImage && timeInCurrentState > 1.0f)
 		{
 			Debug.LogWarning("Stuck in " + state.ToString());
 			state = State.Idle;
-			Reconnect();
+			//Reconnect();
 		}
-		else if(state == State.WaitingForSteering && timeInCurrentState > 2.0f)
+		else if(state == State.WaitingForSteering && timeInCurrentState > 1.0f)
 		{
 			Debug.LogWarning("Stuck in " + state.ToString());
 			state = State.Idle;
-			Reconnect();
+			//Reconnect();
 		}
 	}
 }

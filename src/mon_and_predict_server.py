@@ -5,6 +5,7 @@ Create a server to accept image inputs and run them against a trained neural net
 This then sends the steering output back to the client.
 Author: Tawn Kramer
 '''
+from __future__ import print_function
 import os
 import argparse
 import sys
@@ -19,10 +20,10 @@ import json
 import socket
 from PIL import Image
 import pygame
-import camera_format
+import config
 
 pygame.init()
-ch, row, col = camera_format.get_camera_image_dim()
+ch, row, col = config.get_camera_image_dim()
 
 size = (col*2, row*2)
 pygame.display.set_caption("sdsandbox data monitor")
@@ -54,7 +55,7 @@ class SteeringServer(asyncore.dispatcher):
         self.set_reuse_addr()
         self.bind(address)
         self.address = self.socket.getsockname()
-        print 'binding to', self.address
+        print('binding to', self.address)
         self.listen(1)
         self.model = model
         return
@@ -63,7 +64,7 @@ class SteeringServer(asyncore.dispatcher):
         # Called when a client connects to our socket
         client_info = self.accept()
         #self.logger.debug('handle_accept() -> %s', client_info[1])
-        print 'got a new client', client_info[1]
+        print('got a new client', client_info[1])
         h = SteeringHandler(sock=client_info[0], chunk_size=8*1024, model=self.model)
         return
     
@@ -125,7 +126,7 @@ class SteeringHandler(asyncore.dispatcher):
             self.num_read = 0
           except:
             self.mode = self.IDLE
-            print 'failed to read json from: ', data
+            print('failed to read json from: ', data)
         elif self.mode == self.GETTING_IMG:
           self.image_byes.append(data)
           self.num_read += len(data)
@@ -147,7 +148,7 @@ class SteeringHandler(asyncore.dispatcher):
               display_img(img, steering)
             
         else:
-            print "wasn't prepared to recv request!"
+            print("wasn't prepared to recv request!")
     
     def handle_close(self):
         self.close()
@@ -174,6 +175,6 @@ if __name__ == "__main__":
   try:
     asyncore.loop()
   except KeyboardInterrupt:
-    print 'stopping'
+    print('stopping')
 
 

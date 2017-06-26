@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import argparse
 import sys
 import numpy as np
@@ -7,10 +8,10 @@ import pygame
 import json
 from keras.models import model_from_json
 import pdb
-import camera_format
+import config
 
 pygame.init()
-ch, row, col = camera_format.get_camera_image_dim()
+ch, row, col = config.get_camera_image_dim()
 
 size = (col*2, row*2)
 pygame.display.set_caption("sdsandbox data viewer")
@@ -42,7 +43,7 @@ if __name__ == "__main__":
   log = h5py.File("../dataset/log/"+dataset+".h5", "r")
   cam = h5py.File("../dataset/camera/"+dataset+".h5", "r")
 
-  print log.keys()
+  print(log.keys())
 
   iStart = 0
   iEnd = len(cam['X'])
@@ -61,7 +62,10 @@ if __name__ == "__main__":
     
     angle_steers = log['steering_angle'][iFrame]
     speed_ms = log['speed'][iFrame]
-    img = img.transpose().swapaxes(0, 1)
+    if config.image_tranposed:
+      img = img.transpose().swapaxes(0, 1)
+    else:
+      img = img.swapaxes(0, 1)
 
     # draw frame
     pygame.surfarray.blit_array(camera_surface, img)

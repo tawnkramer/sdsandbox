@@ -3,6 +3,7 @@
 Note:
 Part of this code was copied and modified from github.com/mila-udem/fuel.git (MIT License)
 """
+from __future__ import print_function
 import os
 import logging
 import glob
@@ -175,9 +176,9 @@ def run_default_train_server(datadir='../dataset', prefix='train_'):
   try:
     datapath = glob.glob(os.path.join(datadir, 'camera', prefix) + "*")
     if len(datapath) == 0:
-      print 'no files found to train with'
+      print('no files found to train with')
     else:
-      print 'training with', len(datapath), 'files'
+      print('training with', len(datapath), 'files')
       gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
       start_server(gen, port=5557, hwm=20)
   except KeyboardInterrupt:
@@ -190,9 +191,9 @@ def run_default_validation_server(datadir='../dataset', prefix='val_'):
   try:
     datapath = glob.glob(os.path.join(datadir, 'camera', prefix) + "*")
     if len(datapath) == 0:
-      print 'no files found to validate with'
+      print('no files found to validate with')
     else:
-      print 'validating with', len(datapath), 'files'
+      print('validating with', len(datapath), 'files')
       gen = datagen(datapath, time_len=1, batch_size=256, ignore_goods=False, show_time=False)
       start_server(gen, port=5556, hwm=20)
   except KeyboardInterrupt:

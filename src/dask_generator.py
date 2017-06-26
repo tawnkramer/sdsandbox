@@ -3,13 +3,14 @@ This file is named after `dask` for historical reasons. We first tried to
 use dask to coordinate the hdf5 buckets but it was slow and we wrote our own
 stuff.
 """
+from __future__ import print_function
 import numpy as np
 import h5py
 import time
 import logging
 import traceback
 import pdb
-import camera_format
+import config
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -57,12 +58,12 @@ def concatenate(camera_names, time_len):
     except IOError:
       import traceback
       traceback.print_exc()
-      print "failed to open", tword
+      print("failed to open", tword)
 
   angle = np.concatenate(angle, axis=0)
   speed = np.concatenate(speed, axis=0)
   filters = np.concatenate(filters, axis=0).ravel()
-  print "training on %d/%d examples" % (filters.shape[0], angle.shape[0])
+  print("training on %d/%d examples" % (filters.shape[0], angle.shape[0]))
   return c5x, angle, speed, filters, hdf5_camera
 
 
@@ -84,11 +85,14 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False, show_t
   c5x, angle, speed, filters, hdf5_camera = concatenate(filter_names, time_len=time_len)
   filters_set = set(filters)
 
-  ch, row, col = camera_format.get_camera_image_dim()
+  ch, row, col = config.get_camera_image_dim()
 
   logger.info("camera files {}".format(len(c5x)))
 
-  X_batch = np.zeros((batch_size, time_len, ch, row, col), dtype='uint8')
+  if config.image_tranposed:
+    X_batch = np.zeros((batch_size, time_len, ch, row, col), dtype='uint8')
+  else:
+    X_batch = np.zeros((batch_size, time_len, col, row, ch), dtype='uint8')
   angle_batch = np.zeros((batch_size, time_len, 1), dtype='float32')
   speed_batch = np.zeros((batch_size, time_len, 1), dtype='float32')
 
@@ -125,16 +129,19 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False, show_t
         count += 1
 
       # sanity check
-      assert X_batch.shape == (batch_size, time_len, ch, row, col)
+      if config.image_tranposed:
+        assert X_batch.shape == (batch_size, time_len, ch, row, col)
+      else:
+        assert X_batch.shape == (batch_size, time_len, col, row, ch)
 
       logging.debug("load image : {}s".format(time.time()-t))
       if show_time:
         print("%5.2f ms" % ((time.time()-start)*1000.0))
 
       if first:
-        print "X", X_batch.shape
-        print "angle", angle_batch.shape
-        print "speed", speed_batch.shape
+        print("X", X_batch.shape)
+        print("angle", angle_batch.shape)
+        print("speed", speed_batch.shape)
         first = False
 
       yield (X_batch, angle_batch, speed_batch)

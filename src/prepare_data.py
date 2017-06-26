@@ -4,28 +4,39 @@ Prepare Data
 Take the raw images and steering data and bundle them up in h5 files for training.
 Author: Tawn Kramer
 '''
+from __future__ import print_function
 import h5py
 import numpy as np
 import os
 import time
 import glob
 from PIL import Image
-import camera_format
 import pdb
+import config
 
 def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
     t = time.ctime(os.path.getmtime(drivinglog))
     t = t.replace(' ', '_')
     t = t.replace(':', '_')
     basename = prefix + t + ".h5"
-    outfilename = os.path.join(outputpath, "log", basename)
+
+    basepath_log = os.path.join(outputpath, "log")
+    basepath_camera = os.path.join(outputpath, "camera")
+
+    if not os.path.exists(basepath_log):
+        os.makedirs(basepath_log)
+
+    if not os.path.exists(basepath_camera):
+        os.makedirs(basepath_camera)
+
+    outfilename = os.path.join(basepath_log, basename)    
     infile = open(drivinglog, "r")
     lines = []
     for line in infile:
         lines.append(line)
     infile.close()
 
-    print 'gathering images', drivingimages
+    print('gathering images', drivingimages)
     images = glob.glob(drivingimages)
     num_images = len(images)
     num_records = len(lines)
@@ -38,7 +49,7 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
             num_images = num_records
             images = images[:num_images]
 
-    print len(lines), 'steering records'
+    print(len(lines), 'steering records')
     
     logf = h5py.File(outfilename, "w")
     dse = logf.create_dataset("steering_angle", (num_records, ), dtype='float64')
@@ -64,18 +75,21 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
         dse_speed[iIter] = np.array([speed])
         iIter += 1
         if iIter % 1000 == 0:
-            print iIter
+            print(iIter)
     if activity is not None:
-        print iIter, 'records found w activity', activity
+        print(iIter, 'records found w activity', activity)
     logf.close()
 
-    print 'done with log'
+    print('done with log')
 
-    outfilename = os.path.join(outputpath, "camera", basename)
+    outfilename = os.path.join(basepath_camera, basename)
     camf = h5py.File(outfilename, "w")
-    print num_images, 'images'
-    ch, rows, col = camera_format.get_camera_image_dim()
-    dse = camf.create_dataset("X", (num_images, ch, rows, col), dtype='uint8')
+    print(num_images, 'images')
+    ch, rows, col = config.get_camera_image_dim()
+    if config.image_tranposed:
+        dse = camf.create_dataset("X", (num_images, ch, rows, col), dtype='uint8')
+    else:
+        dse = camf.create_dataset("X", (num_images, col, rows, ch), dtype='uint8')
     images.sort()
     imgs_by_id = {}
 
@@ -93,20 +107,23 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
             img_filename = imgs_by_id[id]
             im = Image.open(img_filename).convert('RGB')
             if im.width != col or im.height != rows:
-                print 'Aborting! image:', img_filename, 'had the wrong dimension:', im.width, im.height, 'expecting', col, rows
+                print ('Aborting! image:', img_filename, 'had the wrong dimension:', im.width, im.height, 'expecting', col, rows)
                 #stopping because we are likely to see many of these..
-                return           
-            imarr = np.array(im).transpose()
+                return
+            if config.image_tranposed:
+                imarr = np.array(im).transpose()
+            else:
+                imarr = np.array(im)
             dse[iIter] = imarr
         except KeyError:
-            print 'no image for frame', id
+            print('no image for frame', id)
         iIter = iIter + 1
         if iIter % 1000 == 0:
-            print iIter
+            print(iIter)
     camf.close()
-    print 'done with images'
+    print('done with images')
     if activity is not None:
-        print iIter, 'images found w activity', activity
+        print(iIter, 'images found w activity', activity)
 
 def clean(controls_filename, images_filemask):
     os.unlink(controls_filename)
@@ -130,22 +147,22 @@ if __name__ == "__main__":
     
     args, more = parser.parse_known_args()
 
-    print "Argument summary:"
-    print "activity:", args.activity
-    print "images:", args.images
+    print("Argument summary:")
+    print("activity:", args.activity)
+    print("images:", args.images)
 
     controls_filename = os.path.join(args.log_path, args.log_controls)
     images_filemask = os.path.join(args.log_path, args.images)
 
-    print 'controls:', controls_filename
+    print('controls:', controls_filename)
 
     if args.validation:
         prefix = 'val_'
     else:
         prefix = args.prefix
 
-    print "prefix:", prefix
-    print
+    print("prefix:", prefix)
+    print("")
 
     prepare(controls_filename, images_filemask, args.out_path, prefix, args.activity)
 
