@@ -62,7 +62,7 @@ if __name__ == "__main__":
     
     angle_steers = log['steering_angle'][iFrame]
     speed_ms = log['speed'][iFrame]
-    if config.image_tranposed:
+    if config.is_model_image_input_transposed(model):
       img = img.transpose().swapaxes(0, 1)
     else:
       img = img.swapaxes(0, 1)

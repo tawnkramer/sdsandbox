@@ -203,7 +203,7 @@ class SteeringHandler(asyncore.dispatcher):
               img = np.flipud(img)
         
             #tranpose images if we've been configured to do so.
-            if config.image_tranposed:
+            if config.is_model_image_input_transposed(self.model):
               img = img.transpose()
             
             #call model.predict with our image and capture the output in the steering variable

@@ -35,8 +35,11 @@ def screen_print(x, y, msg, screen):
     label = myfont.render(msg, 1, (255,255,0))
     screen.blit(label, (x, y))
 
-def display_img(img, steering):
-    img = img.transpose().swapaxes(0, 1)
+def display_img(img, steering, do_transpose):
+    if do_transpose:
+        img = img.transpose().swapaxes(0, 1)
+    else:
+        img = img.swapaxes(0, 1)
     # draw frame
     pygame.surfarray.blit_array(camera_surface, img)
     camera_surface_2x = pygame.transform.scale2x(camera_surface)
@@ -118,7 +121,6 @@ class SteeringHandler(asyncore.dispatcher):
             self.width = jsonObj['width']
             self.height = jsonObj['height']
             self.num_channels = jsonObj['num_channels']
-            self.format = jsonObj['format']
             self.flip_y = jsonObj['flip_y']
             self.data_to_write.insert(0, "{ 'response' : 'ready_for_image' }")
             self.mode = self.GETTING_IMG
@@ -133,19 +135,19 @@ class SteeringHandler(asyncore.dispatcher):
           if self.num_read == self.num_bytes:
             lin_arr = np.fromstring(''.join(self.image_byes), dtype=np.uint8)
             self.mode = self.SENDING_STEERING
-            if self.format == 'array_of_pixels':
-              img = lin_arr.reshape(self.width, self.height, self.num_channels)
-              if self.flip_y:
-                img = np.flipud(img)
-              img = img.transpose()
-            else: #assumed to be ArrayOfChannels
-              img = lin_arr.reshape(self.num_channels, self.width, self.height)
+            img = lin_arr.reshape(self.width, self.height, self.num_channels)
+            if self.flip_y:
+            img = np.flipud(img)
+            tranposed = False
+            if config.is_model_image_input_transposed(self.model):
+                img = img.transpose()
+                tranposed = True
             steering = self.model.predict(img[None, :, :, :])[0][0]
             reply = '{ "steering" : "%f" }' % steering
             self.data_to_write.append(reply)
             if monitor:
               #this can be useful when validating that you have your images coming in correctly.
-              display_img(img, steering)
+              display_img(img, steering, tranposed)
             
         else:
             print("wasn't prepared to recv request!")
