@@ -156,3 +156,6 @@ if __name__ == "__main__":
     callbacks=[SaveCB(args.output)]
   )
 
+  print('done.')
+  
+
