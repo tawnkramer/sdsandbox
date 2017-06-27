@@ -9,15 +9,27 @@ public class MenuHandler : MonoBehaviour {
 	public GameObject Logger;
 	public GameObject NetworkSteering;
 	public GameObject menuPanel;
-	public UnityStandardCarAdapter carAdapter;
+	public GameObject carJSControl;
 
-	public void OnGenerateTrainingData()
+	public void OnPidGenerateTrainingData()
 	{
 		if(PIDContoller != null)
 			PIDContoller.SetActive(true);
 
-		if(carAdapter != null)
-			carAdapter.userInputs = true;
+		if(carJSControl != null)
+			carJSControl.SetActive(false);
+	
+		Logger.SetActive(true);
+		menuPanel.SetActive(false);
+	}
+
+	public void OnManualGenerateTrainingData()
+	{
+		if(PIDContoller != null)
+			PIDContoller.SetActive(false);
+
+		if(carJSControl != null)
+			carJSControl.SetActive(true);
 	
 		Logger.SetActive(true);
 		menuPanel.SetActive(false);
@@ -25,20 +37,31 @@ public class MenuHandler : MonoBehaviour {
 
 	public void OnUseNNNetworkSteering()
 	{
-		if(carAdapter != null)
-			carAdapter.userInputs = false;
+		if(carJSControl != null)
+			carJSControl.SetActive(false);
 		
 		NetworkSteering.SetActive(true);
 		menuPanel.SetActive(false);
 	}
 
-	public void OnJustDrive()
+	public void OnPidDrive()
 	{
 		if(PIDContoller != null)
 			PIDContoller.SetActive(true);
 
-		if(carAdapter != null)
-			carAdapter.userInputs = true;
+		if(carJSControl != null)
+			carJSControl.SetActive(false);
+
+		menuPanel.SetActive(false);
+	}
+
+	public void OnManualDrive()
+	{
+		if(PIDContoller != null)
+			PIDContoller.SetActive(false);
+
+		if(carJSControl != null)
+			carJSControl.SetActive(true);
 
 		menuPanel.SetActive(false);
 	}
