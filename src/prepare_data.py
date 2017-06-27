@@ -94,7 +94,7 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
     camf = h5py.File(outfilename, "w")
     print(num_images, 'images')
     ch, rows, col = config.get_camera_image_dim()
-    if config.image_tranposed:
+    if config.image_transposed:
         dse = camf.create_dataset("X", (num_images, ch, rows, col), dtype='uint8')
     else:
         dse = camf.create_dataset("X", (num_images, col, rows, ch), dtype='uint8')
@@ -118,7 +118,7 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
                 print ('Aborting! image:', img_filename, 'had the wrong dimension:', im.width, im.height, 'expecting', col, rows)
                 #stopping because we are likely to see many of these..
                 return
-            if config.image_tranposed:
+            if config.image_transposed:
                 imarr = np.array(im).transpose()
             else:
                 imarr = np.array(im)

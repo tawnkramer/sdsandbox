@@ -89,7 +89,7 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False, show_t
 
   logger.info("camera files {}".format(len(c5x)))
 
-  if config.image_tranposed:
+  if config.image_transposed:
     X_batch = np.zeros((batch_size, time_len, ch, row, col), dtype='uint8')
   else:
     X_batch = np.zeros((batch_size, time_len, col, row, ch), dtype='uint8')
@@ -129,7 +129,7 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False, show_t
         count += 1
 
       # sanity check
-      if config.image_tranposed:
+      if config.image_transposed:
         assert X_batch.shape == (batch_size, time_len, ch, row, col)
       else:
         assert X_batch.shape == (batch_size, time_len, col, row, ch)
