@@ -4,7 +4,8 @@ def get_camera_image_dim():
     return (3, 256, 256)
 
 #in previous versions, we set the image transposed in Theano order.
-#it can be changed to True if needed to be compatible with older models.
+#it is True to be compatible with older models. but when training new models
+#users can change this to be False to use Tensorflow recommended channel order.
 image_tranposed = False
 
 def get_input_shape():

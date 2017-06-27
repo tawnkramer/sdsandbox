@@ -52,6 +52,9 @@ def get_base_model(time_len=1):
 
 #nvidea
 #https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
+#this model with an additional conv layer to reduce weights
+#and he initial dense layer tuned to match output of conv layer
+#for the given input shape
 def get_model(time_len=1):
   input_shape = config.get_input_shape()
 
@@ -65,24 +68,28 @@ def get_model(time_len=1):
   model.add(Convolution2D(48, 3, 3, subsample=(2, 2), border_mode="same"))
   model.add(ELU())
   model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+  model.add(ELU())
+  #this additional Conv layer was not in NVidia's design
+  model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
   model.add(Flatten())
   model.add(Dropout(.2))
   model.add(ELU())
-  model.add(Dense(512))
+  #These fully connected layers were tweaked to match the input dimensions
+  model.add(Dense(4096))
   model.add(Dropout(.5))
   model.add(ELU())
-  model.add(Dense(256))
-  model.add(ELU())
-  model.add(Dense(128))
+  model.add(Dense(512))
   model.add(ELU())
   model.add(Dense(1))
 
   model.compile(optimizer="adam", loss="mse")
 
-  return model
+  print(model.summary())
 
+  return model
+    
 def run_default_training(output, resume):
-  path, filename = os.path.split(self.output)
+  path, filename = os.path.split(output)
   if not os.path.exists(path):
       os.makedirs(path)
 
@@ -95,10 +102,14 @@ def run_default_training(output, resume):
     print('picking up from previous training run.')
   else:
     model = get_model()
+
+    #save json model definition
+    with open(output + '.json', 'w') as outfile:
+          json.dump(model.to_json(), outfile)
   
   callbacks = [
         EarlyStopping(monitor='val_loss', patience=6, verbose=0),
-        ModelCheckpoint(output, monitor='val_loss', save_best_only=True, verbose=0)
+        ModelCheckpoint(output + ".keras", monitor='val_loss', save_best_only=True, verbose=0, save_weights_only=True)
     ]
 
   model.fit_generator(

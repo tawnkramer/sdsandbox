@@ -15,34 +15,40 @@ import pdb
 import config
 
 def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
+    #make a new filename that uses the last modified time stamp
+    #on the dir with the driving log. replace illegal filename characers.
     t = time.ctime(os.path.getmtime(drivinglog))
     t = t.replace(' ', '_')
     t = t.replace(':', '_')
     basename = prefix + t + ".h5"
 
+    #we save the steering, and other single channel data to log, images to camera
     basepath_log = os.path.join(outputpath, "log")
     basepath_camera = os.path.join(outputpath, "camera")
 
+    #make sure these paths exist so the file open will succeed
     if not os.path.exists(basepath_log):
         os.makedirs(basepath_log)
 
     if not os.path.exists(basepath_camera):
         os.makedirs(basepath_camera)
 
-    outfilename = os.path.join(basepath_log, basename)    
+    #open the logfile and read all lines
+    outfilename = os.path.join(basepath_log, basename)
     infile = open(drivinglog, "r")
     lines = []
     for line in infile:
         lines.append(line)
     infile.close()
 
+    #do a directery listing of all images
     print('gathering images', drivingimages)
     images = glob.glob(drivingimages)
     num_images = len(images)
     num_records = len(lines)
 
+    #when the counts don't match, use the smaller of the two.
     if(num_images != num_records):
-        #use the smaller of the two.
         if num_images < num_records:
             num_records = num_images
         else:
@@ -51,6 +57,8 @@ def prepare(drivinglog, drivingimages, outputpath, prefix, activity):
 
     print(len(lines), 'steering records')
     
+    #create a h5 file for the log data, and then create two datasets within that file
+    #for steering angle and speed
     logf = h5py.File(outfilename, "w")
     dse = logf.create_dataset("steering_angle", (num_records, ), dtype='float64')
     dse_speed = logf.create_dataset("speed", (num_records, ), dtype='float64')
