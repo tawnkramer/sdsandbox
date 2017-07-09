@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\DistanceSensor.cs" />
      <Compile Include="Assets\Scripts\GenPathFromDriving.cs" />
      <Compile Include="Assets\Scripts\ICar.cs" />
+     <Compile Include="Assets\Scripts\JoystickCarControl.cs" />
      <Compile Include="Assets\Scripts\LaneChangeTrainer.cs" />
      <Compile Include="Assets\Scripts\Lidar.cs" />
      <Compile Include="Assets\Scripts\Lines.cs" />
@@ -80,6 +81,10 @@
      <Compile Include="Assets\Scripts\Twiddle.cs" />
      <Compile Include="Assets\Scripts\TwiddlePID.cs" />
      <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
+     <Compile Include="Assets\Scripts\racing\GameManager.cs" />
+     <Compile Include="Assets\Scripts\racing\HiScorePoster.cs" />
+     <Compile Include="Assets\Scripts\racing\IOManager.cs" />
+     <Compile Include="Assets\Scripts\racing\SimpleJSON.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
      <None Include="Assets\Resources\racePi2.txt" />
