@@ -35,6 +35,8 @@ public class PathManager : MonoBehaviour {
 
 	public bool doShowPath = false;
 
+    public string pathToLoad = "none";
+
 	public RoadBuilder roadBuilder;
 
 	public LaneChangeTrainer laneChTrainer;
@@ -145,7 +147,7 @@ public class PathManager : MonoBehaviour {
 	{
 		TrackScript script = new TrackScript();
 
-		if(script.Read("racePi2"))
+		if(script.Read(pathToLoad))
 		{
 			path = new CarPath();
 			TrackParams tparams = new TrackParams();
