@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
+using System.IO;
 
 public class NetworkSteering : MonoBehaviour {
 
@@ -37,7 +39,56 @@ public class NetworkSteering : MonoBehaviour {
 		ProcessSteering
 	}
 
-	[Serializable]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class PacketHeader
+    {
+        public UInt16 type; //some indication of what type of message we are sending.
+        public UInt16 size; //size of payload data following this message (! message header size )
+
+        public PacketHeader(UInt16 t = 0)
+        {
+            type = t;
+            size = 0;
+        }
+
+        public Byte[] Wrap(byte[] message)
+        {
+            int sizofHeader = Marshal.SizeOf(typeof(PacketHeader));
+            int sizeOfMessage = message.Length;
+            size = (UInt16)(sizeOfMessage);
+            int offset = sizofHeader;
+
+            Byte[] bytes = new Byte[sizofHeader + sizeOfMessage];
+
+            GCHandle pinStructure = GCHandle.Alloc(this, GCHandleType.Pinned);
+            try
+            {
+                Marshal.Copy(pinStructure.AddrOfPinnedObject(), bytes, 0, bytes.Length);
+                System.Buffer.BlockCopy(message, 0, bytes, offset, message.Length);
+                return bytes;
+            }
+            finally
+            {
+                pinStructure.Free();
+            }
+        }        
+    }
+
+    PacketHeader ReadPacketHeader(BinaryReader reader)
+    {
+        var result = new PacketHeader();
+        result.type = reader.ReadUInt16();
+        result.size = reader.ReadUInt16();
+        return result;
+    }
+
+    Byte[] ReadPayload(BinaryReader reader, UInt16 size)
+    {
+        Byte[] bytes = reader.ReadBytes(size);
+        return bytes;
+    }
+
+    [Serializable]
 	public class ImageHeader
 	{
 		public int num_bytes;
@@ -119,7 +170,11 @@ public class NetworkSteering : MonoBehaviour {
 
 		byte[] bytes = System.Text.Encoding.UTF8.GetBytes(header);
 
-		client.SendData( bytes );
+        //ImageHeader type 1
+        //PacketHeader msgHeader = new PacketHeader(1);
+        //byte[] payload = msgHeader.Wrap(bytes);
+
+        client.SendData(bytes);
 
 		state = State.WaitingForServerReadyImage;
 	}
@@ -139,7 +194,13 @@ public class NetworkSteering : MonoBehaviour {
 
 	void OnDataRecv(byte[] bytes)
 	{
-		string str = System.Text.Encoding.UTF8.GetString(bytes);
+        //MemoryStream stream = new MemoryStream(bytes);
+        //BinaryReader reader = new BinaryReader(stream);
+        //PacketHeader header = ReadPacketHeader(reader);
+        //Byte[] payload = ReadPayload(reader, header.size);
+
+
+        string str = System.Text.Encoding.UTF8.GetString(bytes);
 
 		if(state == State.WaitingForServerReadyImage)
 		{
@@ -188,8 +249,12 @@ public class NetworkSteering : MonoBehaviour {
 
 			byte[] bytes = image.GetRawTextureData();
 
-			client.SendData(bytes);
+            //ImageData type 2
+            //PacketHeader msgHeader = new PacketHeader(2);
+            //byte[] payload = msgHeader.Wrap(bytes);
 
+            client.SendData(bytes);
+            
 			state = State.WaitingForSteering;
 
 			if(sensorPreview != null)

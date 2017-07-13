@@ -20,272 +20,122 @@ import socket
 from PIL import Image
 import config
 import throttle_manager
+import shutil
+import base64
 
-class SteeringServer(asyncore.dispatcher):
-    """
-      Receives network connections and establishes handlers for each client.
-      Each client connection is handled by a new instance of the SteeringHandler class.
-    """
+import socketio
+import eventlet
+import eventlet.wsgi
+from PIL import Image
+from flask import Flask
+from io import BytesIO
+from datetime import datetime
+
+sio = socketio.Server()
+app = Flask(__name__)
+throttle_man = throttle_manager.ThrottleManager()
+model = None
+
+@sio.on('telemetry')
+def telemetry(sid, data):
+    if data:
+        # The current steering angle of the car
+        steering_angle = float(data["steering_angle"])
+        # The current throttle of the car
+        throttle = float(data["throttle"])
+        # The current speed of the car
+        speed = float(data["speed"])
+        # The current image from the center camera of the car
+        imgString = data["image"]
+        image = Image.open(BytesIO(base64.b64decode(imgString)))
+        image_array = np.asarray(image)
+        #lin_arr = np.fromstring(base64.b64decode(imgString), dtype=np.uint8)              
+        #image_array = lin_arr.reshape(256, 256, 3)    
+        if config.is_model_image_input_transposed(model):
+              image_array = image_array.transpose()
     
-    def __init__(self, address, model, recv_image_cb=None):
-        asyncore.dispatcher.__init__(self)
-
-        #create a TCP socket to listen for connections
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        #in case we have shutdown recently, allow the os to reuse this address. helps when restarting
-        self.set_reuse_addr()
-
-        #let TCP stack know that we'd like to sit on this address and listen for connections
-        self.bind(address)
+        steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
         
-        #confirm for users what address we are listening on
-        self.address = self.socket.getsockname()
-        print('binding to', self.address)
-        
-        #let tcp stack know we plan to process one outstanding request to connect request each loop
-        self.listen(1)
+        #set throttle value here
+        throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
 
-        #keep a pointer to our model to pass to the handler
-        self.model = model
+        #print(steering_angle, throttle)
+        send_control(steering_angle, throttle)
 
-        #keep a pointer to a callback function for clients
-        #wanting to interact w images as we get them
-        self.recv_image_cb = recv_image_cb
+        # save frame
+        if args.image_folder != '':
+            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
+            image_filename = os.path.join(args.image_folder, timestamp)
+            #image.save('{}.jpg'.format(image_filename))
+    else:
+        # NOTE: DON'T EDIT THIS.
+        sio.emit('manual', data={}, skip_sid=True)
 
-    def handle_accept(self):
-        # Called when a client connects to our socket
-        client_info = self.accept()
-        
-        print('got a new client', client_info[1])
+@sio.on('connect')
+def connect(sid, environ):
+    print("connect ", sid)
+    send_control(0, 0)
 
-        #make a new steering handler to communicate with the client
-        SteeringHandler(sock=client_info[0], chunk_size=8*1024, model=self.model, recv_image_cb=self.recv_image_cb)
-        
-    
-    def handle_close(self):
-        # Called then server is shutdown
-        self.close()
-
-class SteeringHandler(asyncore.dispatcher):
-    """
-      Handles messages from a single TCP client.
-      Uses a state machine given by the self.mode which goes
-      through the IDLE, GETTING_IMAGES, and SENDING_CONTROLS states.
-      When IDLE, we are expecting to get a message as a json object.
-    """
-
-    IDLE = 1
-    GETTING_IMG = 2
-    SENDING_CONTROLS = 3
-    
-    def __init__(self, sock, chunk_size=256, model=None, recv_image_cb=None):
-        #we call our base class init
-        asyncore.dispatcher.__init__(self, sock=sock)
-        
-        #model is the pointer to our Keras model we use for prediction
-        self.model = model
-
-        #callback function when we get an image
-        self.recv_image_cb = recv_image_cb
-
-        #chunk size is the max number of bytes to read per network packet
-        self.chunk_size = chunk_size
-
-        #we make an empty list of packets to send to the client here
-        self.data_to_write = []
-
-        #and image bytes is an empty list of partial bytes of the image as it comes in
-        self.image_bytes = []
-
-        #we start in an idle state
-        self.mode = self.IDLE
-
-        #zero initial car vel
-        self.car_vel = (0., 0., 0.)
-
-        #manage throttle
-        self.throttle_man = throttle_manager.ThrottleManager()
-    
-    def writable(self):
-        """
-          We want to write if we have received data.
-        """
-        response = bool(self.data_to_write)
-
-        return response
-    
-    def handle_write(self):
-        """
-          Write as much as possible of the most recent message we have received.
-          This is only called by async manager when the socket is in a writable state
-          and when self.writable return true, that yes, we have data to send.
-        """
-
-        #pop the first element from the list. encode will make it into a byte stream
-        data = self.data_to_write.pop(0).encode()
-
-        #send a slice of that data, up to a max of the chunk_size
-        sent = self.send(data[:self.chunk_size])
-        
-        #if we didn't send all the data..
-        if sent < len(data):
-            #then slick off the portion that remains to be sent
-            remaining = data[sent:]
-
-            #since we've popped it off the list, add it back to the list to send next
-            #probably should change this to a deque...
-            self.data.to_write.insert(0, remaining)
-
-        elif self.mode == self.SENDING_CONTROLS:
-          #if we have just sent the steering data, then we are idle again waiting for the next
-          #image header information
-          self.mode = self.IDLE
-
-
-    def handle_read(self):
-        """
-          Read an incoming message from the client and put it into our outgoing queue.
-          handle_read should only be called when the given socket has data ready to be
-          processed.
-        """
-
-        #receive a chunK of data with the max size chunk_size from our client.
-        data = self.recv(self.chunk_size)
-        
-        if len(data) == 0:
-          #this only happens when the connection is dropped
-          self.handle_close()
-          print('connection dropped')
-
-        elif self.mode == self.IDLE:
-          '''
-          We are expecing a json object from the client telling us what kind of image they are sending.
-          '''
-          try:
-            #convert data into a string with decode, and then load it as a json object
-            jsonObj = json.loads(data.decode("utf-8"))
-
-            #num_bytes should be the total size of the image that will be sent next.
-            #this is commonly the same size each time
-            self.num_bytes = jsonObj['num_bytes']
-
-            #this is the width, height, and channel depth of the pixels of the image
-            self.width = jsonObj['width']
-            self.height = jsonObj['height']
-            self.num_channels = jsonObj['num_channels']
-
-            #some images come in a format that needs to be flipped in the y direction
-            self.flip_y = jsonObj['flip_y']
-
-            #car velocity tagging along
-            self.car_vel = (jsonObj['car_vel_x'], jsonObj['car_vel_y'], jsonObj['car_vel_z'] )
-
-            #add this json object to the array of data to send back to the client
-            self.data_to_write.insert(0, "{ 'response' : 'ready_for_image' }")
-
-            #and change our mode to let us know the next packet should be image data
-            self.mode = self.GETTING_IMG
-
-            #and reset our container which will hold image data as it comes in            
-            self.image_bytes = []
-            self.num_read = 0
-        
-          except:
-            #something bad happened, usually malformed json packet. jump back to idle and hope things continue
-            self.mode = self.IDLE
-            print('failed to read json from: ', data)
-        
-        elif self.mode == self.GETTING_IMG:
-          
-          #append each packet we've recieved into the image_bytes list
-          self.image_bytes.append(data)
-          self.num_read += len(data)
-          
-          #when we've read exactly as many bytes as was intented for this image..
-          if self.num_read == self.num_bytes:
-            #then try unpacking it into a numpy array, first by
-            #joining the array of image bytes, as python3 does
-            #and then as an array of string data, as python2 does..
-            try:
-              lin_arr = np.frombuffer(b''.join(self.image_bytes), dtype=np.uint8)              
-            except:
-              lin_arr = np.fromstring(''.join(self.image_bytes), dtype=np.uint8)
-            
-            #reshape the array into the image dimensions to make model.predict happy
-            img = lin_arr.reshape(self.width, self.height, self.num_channels)
-        
-            #flip images in y, if they need it
-            if self.flip_y:
-              img = np.flipud(img)
-        
-            #tranpose images if we've been configured to do so.
-            if config.is_model_image_input_transposed(self.model):
-              img = img.transpose()
-            
-            #call model.predict with our image and capture the output in the steering variable
-            steering = self.model.predict(img[None, :, :, :])
-
-            #set throttle value here
-            throttle, brake = self.throttle_man.get_throttle_brake(self.car_vel, steering)
-            
-            #our json object with control information
-            reply = '{ "steering" : "%f", "throttle" : "%f", "brake" : "%f" }' % ( steering, throttle, brake )
-            
-            #once we have image data, we are going to do our prediction and then send the
-            #steering information
-            self.mode = self.SENDING_CONTROLS
-
-            #queue the packet to send by adding it to our list of data_to_write
-            self.data_to_write.append(reply)
-
-            #if we have a callback, invoke here
-            if self.recv_image_cb is not None:
-              self.recv_image_cb(img, steering, config.is_model_image_input_transposed(self.model))
-        
-          elif self.num_read > self.num_bytes:
-            #oops, did we get too many bytes? Don't stall, just flip back to idle mode and hope for the best.            
-            print('problem, read too many bytes!')
-            self.mode = self.IDLE
-        
-        else:
-            print("wasn't prepared to recv request!")
-    
-    def handle_close(self):
-        #when client drops or closes connection
-        self.close()
+def send_control(steering_angle, throttle):
+    sio.emit(
+        "steer",
+        data={
+            'steering_angle': steering_angle.__str__(),
+            'throttle': throttle.__str__()
+        },
+        skip_sid=True)
 
 def go(model_json, address):
+    global model
+    global app
 
-  #load keras model from the json file
-  with open(model_json, 'r') as jfile:
-      model = model_from_json(json.load(jfile))
+    #load keras model from the json file
+    with open(model_json, 'r') as jfile:
+        model = model_from_json(json.load(jfile))
 
-  #In this mode, looks like we have to compile it
-  model.compile("sgd", "mse")
+    #In this mode, looks like we have to compile it
+    model.compile("sgd", "mse")
 
-  #load the weights file
-  weights_file = model_json.replace('json', 'keras')
-  model.load_weights(weights_file)
-  
-  #setup the steering server to serve predictions
-  s = SteeringServer(address, model)
+    #load the weights file
+    weights_file = model_json.replace('json', 'keras')
+    model.load_weights(weights_file)
 
-  try:
-    #asyncore.loop() will keep looping as long as any asyncore dispatchers are alive
-    asyncore.loop()
-  except KeyboardInterrupt:
-    #unless some hits Ctrl+C and then we get this interrupt
-    print('stopping')
+    # wrap Flask application with engineio's middleware
+    app = socketio.Middleware(sio, app)
+
+    # deploy as an eventlet WSGI server
+    try:
+        eventlet.wsgi.server(eventlet.listen(address), app)
+    except KeyboardInterrupt:
+        #unless some hits Ctrl+C and then we get this interrupt
+        print('stopping')
+
 
 # ***** main loop *****
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser(description='prediction server')
-  parser.add_argument('model', type=str, help='model name. no json or keras.')
-  parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir') 
-  args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='prediction server')
+    parser.add_argument('model', type=str, help='model name. no json or keras.')
+    parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir') 
+    parser.add_argument(
+          'image_folder',
+          type=str,
+          nargs='?',
+          default='',
+          help='Path to image folder. This is where the images from the run will be saved.'
+      )
 
-  model_json = os.path.join(args.path, args.model +'.json')
-  address = ('0.0.0.0', 9090)
-  go(model_json, address)
+    args = parser.parse_args()
+
+    if args.image_folder != '':
+        print("Creating image folder at {}".format(args.image_folder))
+        if not os.path.exists(args.image_folder):
+            os.makedirs(args.image_folder)
+        else:
+            shutil.rmtree(args.image_folder)
+            os.makedirs(args.image_folder)
+        print("RECORDING THIS RUN ...")
+
+    model_json = os.path.join(args.path, args.model +'.json')
+    address = ('0.0.0.0', 9090)
+    go(model_json, address)
 

@@ -1,0 +1,97 @@
+﻿using SocketIO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
+
+[RequireComponent (typeof(SocketIOComponent))]
+public class SocketIODriveClient : MonoBehaviour {
+
+    public GameObject carObj;
+    public ICar car;
+    public Camera camSensor;
+    private SocketIOComponent _socket;
+    bool collectData = false;
+
+    Thread thread;
+    Dictionary<string, string> data;
+
+
+    // Use this for initialization
+    void Start()
+    {
+        _socket = GetComponent<SocketIOComponent>();
+        _socket.On("open", OnOpen);
+        _socket.On("steer", OnSteer);
+        _socket.On("manual", onManual);
+
+        car = carObj.GetComponent<ICar>();
+
+        thread = new Thread(SendThread);
+        thread.Start();
+    }
+
+    //sending from the main thread was really slowing things down. Not sure why.
+    //Sending from this thread changed the framerate from 5fps to 60
+    public void SendThread()
+    {
+        while (true)
+        {
+            lock (this)
+            {
+                if(data != null)
+                {
+                    _socket.Emit("telemetry", new JSONObject(data));
+
+                    data = null;
+                }
+            }
+        }
+    }
+
+
+    private void Update()
+    {
+        if (collectData)
+        {
+            collectData = false;
+
+            // Collect Data from the Car
+            lock (this)
+            {
+                data = new Dictionary<string, string>();
+
+                data["steering_angle"] = car.GetSteering().ToString("N4");
+                data["throttle"] = car.GetThrottle().ToString("N4");
+                data["speed"] = car.GetVelocity().magnitude.ToString("N4");
+                data["image"] = System.Convert.ToBase64String(CameraHelper.CaptureFrame(camSensor));
+            }
+        }
+    }
+
+    void OnOpen(SocketIOEvent obj)
+    {
+        Debug.Log("Connection Open");
+        EmitTelemetry(obj);
+    }
+
+    void onManual(SocketIOEvent obj)
+    {
+        EmitTelemetry(obj);
+    }
+
+    void OnSteer(SocketIOEvent obj)
+    {
+        JSONObject jsonObject = obj.data;
+
+        car.RequestSteering( float.Parse(jsonObject.GetField("steering_angle").str));
+        car.RequestThrottle(float.Parse(jsonObject.GetField("throttle").str));
+
+        EmitTelemetry(obj);
+    }
+
+    void EmitTelemetry(SocketIOEvent obj)
+    {
+        collectData = true;
+    }
+}

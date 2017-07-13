@@ -31,12 +31,11 @@ class ThrottleManager(object):
         self.constThrottleReq = constThrottleReq
 
 
-    def get_throttle_brake(self, car_vel, car_steering):
+    def get_throttle_brake(self, car_vel_mag, car_steering):
         '''
         take the car velocity and steering
         returns a throttle and brake value
         '''
-        car_vel_mag = mag_vec3(car_vel)
         speedFactor = car_vel_mag * math.fabs(car_steering)
 
         idealSpeedAdjusted = self.idealSpeed - (self.turnSlowFactor * math.fabs(car_steering))
