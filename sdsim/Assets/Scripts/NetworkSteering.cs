@@ -19,8 +19,6 @@ public class NetworkSteering : MonoBehaviour {
 	public bool doSend = true;
 	public Text ai_steering;
 	public float timeInCurrentState = 0.0f;
-	public bool doThrottle = false;
-	public float throttleScale = 1.0f / 255.0f;
 	public RawImage sensorPreview;
 
 	//profile the resonsiveness of the nn
@@ -48,6 +46,11 @@ public class NetworkSteering : MonoBehaviour {
 		public int num_channels;
 		public string format;
 		public int flip_y;
+
+		//squeezing some car diagnostics in here to go along for the ride
+		public float car_vel_x;
+		public float car_vel_y;
+		public float car_vel_z;
 	}
 
 	[Serializable]
@@ -55,6 +58,7 @@ public class NetworkSteering : MonoBehaviour {
 	{
 		public float steering;
 		public float throttle;
+		public float brake;
 	}
 
 	public State state = State.UnConnected;
@@ -105,6 +109,11 @@ public class NetworkSteering : MonoBehaviour {
 		im.num_bytes = im.height * im.width * im.num_channels;
 		im.flip_y = 1;
 		im.format = "array_of_pixels";
+
+		Vector3 car_vel = car.GetVelocity();
+		im.car_vel_x = car_vel.x;
+		im.car_vel_y = car_vel.y;
+		im.car_vel_z = car_vel.z;
 		
 		string header = JsonUtility.ToJson(im);
 
@@ -232,16 +241,8 @@ public class NetworkSteering : MonoBehaviour {
 			UpdateRequesProfiler();
 
 			car.RequestSteering(controlMsg.steering);
-
-			if(doThrottle)
-			{
-				float val = controlMsg.throttle * throttleScale;
-
-				if(val > 0.0f)
-					car.RequestThrottle(val);
-				else
-					car.RequestFootBrake(-val);
-			}
+			car.RequestThrottle(controlMsg.throttle);
+			car.RequestFootBrake(controlMsg.brake);
 
 			if(ai_steering != null)
 				ai_steering.text = string.Format("NN: {0}", controlMsg.steering /* avg_req_time */);

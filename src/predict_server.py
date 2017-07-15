@@ -19,6 +19,7 @@ import json
 import socket
 from PIL import Image
 import config
+import throttle_manager
 
 class SteeringServer(asyncore.dispatcher):
     """
@@ -26,7 +27,7 @@ class SteeringServer(asyncore.dispatcher):
       Each client connection is handled by a new instance of the SteeringHandler class.
     """
     
-    def __init__(self, address, model):
+    def __init__(self, address, model, recv_image_cb=None):
         asyncore.dispatcher.__init__(self)
 
         #create a TCP socket to listen for connections
@@ -48,6 +49,10 @@ class SteeringServer(asyncore.dispatcher):
         #keep a pointer to our model to pass to the handler
         self.model = model
 
+        #keep a pointer to a callback function for clients
+        #wanting to interact w images as we get them
+        self.recv_image_cb = recv_image_cb
+
     def handle_accept(self):
         # Called when a client connects to our socket
         client_info = self.accept()
@@ -55,7 +60,7 @@ class SteeringServer(asyncore.dispatcher):
         print('got a new client', client_info[1])
 
         #make a new steering handler to communicate with the client
-        SteeringHandler(sock=client_info[0], chunk_size=8*1024, model=self.model)
+        SteeringHandler(sock=client_info[0], chunk_size=8*1024, model=self.model, recv_image_cb=self.recv_image_cb)
         
     
     def handle_close(self):
@@ -66,20 +71,23 @@ class SteeringHandler(asyncore.dispatcher):
     """
       Handles messages from a single TCP client.
       Uses a state machine given by the self.mode which goes
-      through the IDLE, GETTING_IMAGES, and SENDING_STEERING states.
+      through the IDLE, GETTING_IMAGES, and SENDING_CONTROLS states.
       When IDLE, we are expecting to get a message as a json object.
     """
 
     IDLE = 1
     GETTING_IMG = 2
-    SENDING_STEERING = 3
+    SENDING_CONTROLS = 3
     
-    def __init__(self, sock, chunk_size=256, model=None):
+    def __init__(self, sock, chunk_size=256, model=None, recv_image_cb=None):
         #we call our base class init
         asyncore.dispatcher.__init__(self, sock=sock)
         
         #model is the pointer to our Keras model we use for prediction
         self.model = model
+
+        #callback function when we get an image
+        self.recv_image_cb = recv_image_cb
 
         #chunk size is the max number of bytes to read per network packet
         self.chunk_size = chunk_size
@@ -92,6 +100,12 @@ class SteeringHandler(asyncore.dispatcher):
 
         #we start in an idle state
         self.mode = self.IDLE
+
+        #zero initial car vel
+        self.car_vel = (0., 0., 0.)
+
+        #manage throttle
+        self.throttle_man = throttle_manager.ThrottleManager()
     
     def writable(self):
         """
@@ -123,7 +137,7 @@ class SteeringHandler(asyncore.dispatcher):
             #probably should change this to a deque...
             self.data.to_write.insert(0, remaining)
 
-        elif self.mode == self.SENDING_STEERING:
+        elif self.mode == self.SENDING_CONTROLS:
           #if we have just sent the steering data, then we are idle again waiting for the next
           #image header information
           self.mode = self.IDLE
@@ -163,6 +177,9 @@ class SteeringHandler(asyncore.dispatcher):
 
             #some images come in a format that needs to be flipped in the y direction
             self.flip_y = jsonObj['flip_y']
+
+            #car velocity tagging along
+            self.car_vel = (jsonObj['car_vel_x'], jsonObj['car_vel_y'], jsonObj['car_vel_z'] )
 
             #add this json object to the array of data to send back to the client
             self.data_to_write.insert(0, "{ 'response' : 'ready_for_image' }")
@@ -208,16 +225,23 @@ class SteeringHandler(asyncore.dispatcher):
             
             #call model.predict with our image and capture the output in the steering variable
             steering = self.model.predict(img[None, :, :, :])
+
+            #set throttle value here
+            throttle, brake = self.throttle_man.get_throttle_brake(self.car_vel, steering)
             
-            #our json object with steering information
-            reply = '{ "steering" : "%f" }' % steering
+            #our json object with control information
+            reply = '{ "steering" : "%f", "throttle" : "%f", "brake" : "%f" }' % ( steering, throttle, brake )
             
             #once we have image data, we are going to do our prediction and then send the
             #steering information
-            self.mode = self.SENDING_STEERING
+            self.mode = self.SENDING_CONTROLS
 
             #queue the packet to send by adding it to our list of data_to_write
             self.data_to_write.append(reply)
+
+            #if we have a callback, invoke here
+            if self.recv_image_cb is not None:
+              self.recv_image_cb(img, steering, config.is_model_image_input_transposed(self.model))
         
           elif self.num_read > self.num_bytes:
             #oops, did we get too many bytes? Don't stall, just flip back to idle mode and hope for the best.            
