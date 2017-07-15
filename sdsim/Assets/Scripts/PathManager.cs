@@ -36,6 +36,7 @@ public class PathManager : MonoBehaviour {
 	public bool doShowPath = false;
 
 	public RoadBuilder roadBuilder;
+	public RoadBuilder semanticSegRoadBuilder;
 
 	public LaneChangeTrainer laneChTrainer;
 
@@ -68,6 +69,9 @@ public class PathManager : MonoBehaviour {
 		//Should we build a road mesh along the path?
 		if(doBuildRoad && roadBuilder != null)
 			roadBuilder.InitRoad(path);
+
+		if(doBuildRoad && semanticSegRoadBuilder != null)
+			semanticSegRoadBuilder.InitRoad(path);
 
 		if(laneChTrainer != null && doChangeLanes)
 		{
