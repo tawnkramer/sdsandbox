@@ -21,6 +21,12 @@ public class RoadBuilder : MonoBehaviour {
 
 	public int iRoadTexture = 0;
 	public Texture2D[] roadTextures;
+	public float[] roadOffsets;
+	public float[] roadWidths;
+
+	Texture2D customRoadTexure;
+
+	GameObject createdRoad;
 
 	void Start()
 	{
@@ -44,6 +50,31 @@ public class RoadBuilder : MonoBehaviour {
 		iRoadTexture += 1;
 	}
 
+	public void SetNewRoadVariation(int iVariation)
+	{
+		if(roadTextures.Length > 0)		
+			customRoadTexure = roadTextures[ iVariation % roadTextures.Length ];
+
+		if(roadOffsets.Length > 0)
+			roadOffsetW = roadOffsets[ iVariation % roadOffsets.Length ];
+
+		if(roadWidths.Length > 0)
+			roadWidth = roadWidths[ iVariation % roadWidths.Length ];
+		
+	}
+
+	public void NegateYTiling()
+	{
+		//todo
+		if(createdRoad == null)
+			return;
+		
+		MeshRenderer mr = createdRoad.GetComponent<MeshRenderer>();
+		Vector2 ms = mr.material.mainTextureScale;
+		ms.y *= -1.0f;
+		mr.material.mainTextureScale = ms;
+	}
+
 	public void InitRoad(CarPath path)
 	{
 		if(terToolkit != null && doFlattenAtStart)
@@ -58,9 +89,25 @@ public class RoadBuilder : MonoBehaviour {
 		}
 		
 		GameObject go = GameObject.Instantiate(roadPrefabMesh);
+		MeshRenderer mr = go.GetComponent<MeshRenderer>();
 		MeshFilter mf = go.GetComponent<MeshFilter>();
 		Mesh mesh = new Mesh();
 		mf.mesh = mesh;
+		createdRoad = go;
+
+		if(customRoadTexure != null)
+		{
+			mr.material.mainTexture = customRoadTexure;
+		}
+		else if(roadTextures != null && iRoadTexture < roadTextures.Length)
+		{
+			Texture2D t = roadTextures[iRoadTexture];
+
+			if(mr != null && t != null)
+			{
+				mr.material.mainTexture = t;
+			}
+		}
 
 		go.tag = "road_mesh";
 
@@ -158,16 +205,7 @@ public class RoadBuilder : MonoBehaviour {
 
 		mesh.RecalculateBounds();
 
-		if(roadTextures != null && iRoadTexture < roadTextures.Length)
-		{
-			Texture2D t = roadTextures[iRoadTexture];
-			MeshRenderer mr = go.GetComponent<MeshRenderer>();
 
-			if(mr != null && t != null)
-			{
-				mr.material.mainTexture = t;
-			}
-		}
 
 		if(terToolkit != null && doErodeTerrain)
 		{

@@ -11,9 +11,19 @@ public class Logger : MonoBehaviour {
 	public CameraSensor camSensor;
     public CameraSensor optionlB_CamSensor;
 	public Lidar lidar;
+
+	//what's the current frame index
     public int frameCounter = 0;
+
+	//is there an upper bound on the number of frames to log
 	public int maxFramesToLog = 14000;
+
+	//should we log when we are enabled
 	public bool bDoLog = true;
+
+	//We can output our logs in the style that matched the output from the udacity simulator
+	public bool UdacityStyle = false;
+
 	string outputFilename = "/../log/log_car_controls.txt";
 	private StreamWriter writer;
 
@@ -32,11 +42,21 @@ public class Logger : MonoBehaviour {
 
 		if(bDoLog && car != null)
 		{
+			if(UdacityStyle)
+			{
+				outputFilename = "/../log/driving_log.csv";
+			}
+
 			string filename = Application.dataPath + outputFilename;
 
 			writer = new StreamWriter(filename);
 
 			Debug.Log("Opening file for log at: " + filename);
+
+			if(UdacityStyle)
+			{
+				writer.WriteLine("center,left,right,steering,throttle,brake,speed");
+			}
 		}
 
 		imagesToSave = new List<ImageSaveJob>();
@@ -48,11 +68,23 @@ public class Logger : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if(!bDoLog)
+			return;
+		
 		string activity = car.GetActivity();
 
 		if(writer != null)
 		{
-			writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
+			if(UdacityStyle)
+			{
+				string image_filename = GetUdacityStyleImageFilename();
+				float steering = car.GetSteering() / 25.0f;
+				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", image_filename, "none", "none", steering.ToString(), car.GetThrottle().ToString(), "0", "0"));
+			}
+			else
+			{
+				writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
+			}
 		}
 
 		if(lidar != null)
@@ -88,6 +120,11 @@ public class Logger : MonoBehaviour {
         frameCounter = frameCounter + 1;
 	}
 
+	string GetUdacityStyleImageFilename()
+	{
+		return Application.dataPath + string.Format("/../log/IMG/center_{0,8:D8}.jpg", frameCounter);
+	}
+
     //Save the camera sensor to an image. Use the suffix to distinguish between cameras.
     void SaveCamSensor(CameraSensor cs, string prefix, string suffix)
     {
@@ -97,9 +134,18 @@ public class Logger : MonoBehaviour {
 
             ImageSaveJob ij = new ImageSaveJob();
 
-            ij.filename = Application.dataPath + string.Format("/../log/{0}_{1,8:D8}{2}.png", prefix, frameCounter, suffix);
+			if(UdacityStyle)
+			{
+				ij.filename = GetUdacityStyleImageFilename();
 
-            ij.bytes = image.EncodeToPNG();
+				ij.bytes = image.EncodeToJPG();
+			}
+			else
+			{
+            	ij.filename = Application.dataPath + string.Format("/../log/{0}_{1,8:D8}{2}.png", prefix, frameCounter, suffix);
+
+            	ij.bytes = image.EncodeToPNG();
+			}
 
             lock (this)
             {
@@ -146,6 +192,8 @@ public class Logger : MonoBehaviour {
 			thread.Abort();
 			thread = null;
 		}
+
+		bDoLog = false;
 	}
 
 	void OnDestroy()

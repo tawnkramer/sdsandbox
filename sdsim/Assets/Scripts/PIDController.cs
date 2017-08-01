@@ -81,6 +81,14 @@ public class PIDController : MonoBehaviour {
 
 		car.RestorePosRot();
 	}
+
+	public void StopDriving()
+	{
+		isDriving = false;
+		car.RequestThrottle(0.0f);
+		car.RequestHandBrake(1.0f);
+		car.RequestFootBrake(1.0f);
+	}
 		
 	// Update is called once per frame
 	void Update () 
