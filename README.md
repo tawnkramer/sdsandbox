@@ -107,6 +107,22 @@ python predict_server.py mymodel
 
 *Note also works with Python 3.5+. But you will need to train your own models. The stock models will not load.
 
+you can install requirements with pip
+```bash
+pip install -r requirements
+```
+
+Only tensorflow should be done manually. try 
+```bash
+pip install tensorflow 
+```
+or 
+```bash
+pip install tensorflow-gpu
+```
+
+if you have the gpu card and libraries installed.
+
 ## Credits
 
 Tawn Kramer, Riccardo Biasini, George Hotz, Sam Khalandovsky, Eder Santana, and Niel van der Westhuizen  
