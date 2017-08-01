@@ -20,6 +20,12 @@ public class RoadBuilder : MonoBehaviour {
 	public TerrainToolkit terToolkit;
 
 	public Texture2D[] textures;
+	public float[] roadOffsets;
+	public float[] roadWidths;
+
+	Texture2D customRoadTexure;
+
+	GameObject createdRoad;
 
 	void Start()
 	{
@@ -40,6 +46,31 @@ public class RoadBuilder : MonoBehaviour {
 			Destroy(g);
 	}
 
+	public void SetNewRoadVariation(int iVariation)
+	{
+		if(textures.Length > 0)		
+			customRoadTexure = textures[ iVariation % textures.Length ];
+
+		if(roadOffsets.Length > 0)
+			roadOffsetW = roadOffsets[ iVariation % roadOffsets.Length ];
+
+		if(roadWidths.Length > 0)
+			roadWidth = roadWidths[ iVariation % roadWidths.Length ];
+		
+	}
+
+	public void NegateYTiling()
+	{
+		//todo
+		if(createdRoad == null)
+			return;
+		
+		MeshRenderer mr = createdRoad.GetComponent<MeshRenderer>();
+		Vector2 ms = mr.material.mainTextureScale;
+		ms.y *= -1.0f;
+		mr.material.mainTextureScale = ms;
+	}
+
 	public void InitRoad(CarPath path)
 	{
 		if(terToolkit != null && doFlattenAtStart)
@@ -54,9 +85,16 @@ public class RoadBuilder : MonoBehaviour {
 		}
 		
 		GameObject go = GameObject.Instantiate(roadPrefabMesh);
+		MeshRenderer mr = go.GetComponent<MeshRenderer>();
 		MeshFilter mf = go.GetComponent<MeshFilter>();
 		Mesh mesh = new Mesh();
 		mf.mesh = mesh;
+		createdRoad = go;
+
+		if(customRoadTexure != null)
+		{
+			mr.material.mainTexture = customRoadTexure;
+		}
 
 		go.tag = "road_mesh";
 
