@@ -19,7 +19,8 @@ public class RoadBuilder : MonoBehaviour {
 
 	public TerrainToolkit terToolkit;
 
-	public Texture2D[] textures;
+	public int iRoadTexture = 0;
+	public Texture2D[] roadTextures;
 
 	void Start()
 	{
@@ -38,6 +39,9 @@ public class RoadBuilder : MonoBehaviour {
 
 		foreach(GameObject g in prev)
 			Destroy(g);
+
+		//advance road index into texture list.
+		iRoadTexture += 1;
 	}
 
 	public void InitRoad(CarPath path)
@@ -153,6 +157,17 @@ public class RoadBuilder : MonoBehaviour {
 		mesh.uv = uv;
 
 		mesh.RecalculateBounds();
+
+		if(roadTextures != null && iRoadTexture < roadTextures.Length)
+		{
+			Texture2D t = roadTextures[iRoadTexture];
+			MeshRenderer mr = go.GetComponent<MeshRenderer>();
+
+			if(mr != null && t != null)
+			{
+				mr.material.mainTexture = t;
+			}
+		}
 
 		if(terToolkit != null && doErodeTerrain)
 		{

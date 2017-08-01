@@ -168,7 +168,7 @@ public class PIDController : MonoBehaviour {
 		}
 		
 		if(pid_steering != null)
-			pid_steering.text = string.Format("PID: {0} {1}", steeringReq, car.GetActivity());
+			pid_steering.text = string.Format("PID: {0}", steeringReq);
 
 		//accumulate total error
 		totalError += err;
