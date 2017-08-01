@@ -103,11 +103,11 @@ python predict_server.py mymodel
 [keras-1.2.1](https://github.com/fchollet/keras)   
 [h5py](http://www.h5py.org/)  
 [pillow](https://python-pillow.org/)  
-[socketio](https://pypi.python.org/pypi/python-socketio)
-[flask](https://pypi.python.org/pypi/Flask)
-[eventlet](https://pypi.python.org/pypi/eventlet)
-[pyzmq](https://pypi.python.org/pypi/pyzmq)
-[pygame](https://pypi.python.org/pypi/Pygame)**
+[socketio](https://pypi.python.org/pypi/python-socketio) 
+[flask](https://pypi.python.org/pypi/Flask) 
+[eventlet](https://pypi.python.org/pypi/eventlet) 
+[pyzmq](https://pypi.python.org/pypi/pyzmq) 
+[pygame](https://pypi.python.org/pypi/Pygame)** 
 [Unity 5.5+](https://unity3d.com/get-unity/download)  
 
 *Note: also works with Python 3.5+. But you will need to train your own models. The stock models will not load.
@@ -119,16 +119,16 @@ you can install requirements with pip
 pip install -r requirements
 ```
 
-Only tensorflow should be done manually. try 
+Only tensorflow should be done manually. try:
 ```bash
 pip install tensorflow 
 ```
-or 
+or if you have the gpu card and libraries installed:
 ```bash
 pip install tensorflow-gpu
 ```
 
-if you have the gpu card and libraries installed.
+
 
 ## Credits
 
