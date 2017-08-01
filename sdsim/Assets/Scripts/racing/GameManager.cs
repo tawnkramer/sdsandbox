@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour {
 	int fontSize = 40;
 	float fElevation = 1.0f;
 	float zoom = 10.0f;
-	bool completed = false;
+	//bool completed = false;
 	public bool gameStarted = false; 
 	int level = 1;
 	int pointsThisLevel = 0;
@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour {
 		{
 			GUI.skin.label.fontSize = 40;
 
-			int iStart = level - 1;
+			//int iStart = level - 1;
             //RocketStart rs = rocketStarts[iStart];
             string levelName = "test";
 

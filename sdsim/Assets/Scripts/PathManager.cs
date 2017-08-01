@@ -35,7 +35,10 @@ public class PathManager : MonoBehaviour {
 
 	public bool doShowPath = false;
 
+    public string pathToLoad = "none";
+
 	public RoadBuilder roadBuilder;
+	public RoadBuilder semanticSegRoadBuilder;
 
 	public LaneChangeTrainer laneChTrainer;
 
@@ -68,6 +71,9 @@ public class PathManager : MonoBehaviour {
 		//Should we build a road mesh along the path?
 		if(doBuildRoad && roadBuilder != null)
 			roadBuilder.InitRoad(path);
+
+		if(doBuildRoad && semanticSegRoadBuilder != null)
+			semanticSegRoadBuilder.InitRoad(path);
 
 		if(laneChTrainer != null && doChangeLanes)
 		{
@@ -145,7 +151,7 @@ public class PathManager : MonoBehaviour {
 	{
 		TrackScript script = new TrackScript();
 
-		if(script.Read("racePi2"))
+		if(script.Read(pathToLoad))
 		{
 			path = new CarPath();
 			TrackParams tparams = new TrackParams();

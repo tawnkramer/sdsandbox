@@ -68,11 +68,13 @@ public class Car : MonoBehaviour, ICar {
 	{
 		requestTorque = val;
 		requestBrake = 0f;
+		//Debug.Log("request throttle: " + val);
 	}
 
 	public void RequestSteering(float val)
 	{
 		requestSteering = val;
+		//Debug.Log("request steering: " + val);
 	}
 
 	public void Set(Vector3 pos, Quaternion rot)
@@ -172,35 +174,13 @@ public class Car : MonoBehaviour, ICar {
 
 	void FixedUpdate()
 	{
-		float accel = Input.GetAxis ("Vertical") * maxTorque;
-		float steer = Input.GetAxis("Horizontal") * humanSteeringMax;
 		float brake = 0.0f;
 	
-		lastSteer = steer;
-		lastAccel = accel;
+		lastSteer = requestSteering;
+		lastAccel = requestTorque;
 
-		float throttle = accel;
-
-		if(accel == 0.0f)
-		{
-			throttle = requestTorque * maxTorque;
-			requestTorque = 0.0f;
-		}
-		else
-		{
-			requestTorque = accel; //so we can log it.
-		}
-
-		if(steer == 0.0f)
-		{
-			steer = requestSteering;
-		}
-		else
-		{
-			requestSteering = steer; //so that we can log it.
-		}
-
-		float steerAngle = steer;
+		float throttle = requestTorque * maxTorque;
+		float steerAngle = requestSteering;
 
 		if(brake == 0.0f)
 		{
