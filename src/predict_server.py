@@ -70,8 +70,9 @@ def telemetry(sid, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
-        #lin_arr = np.fromstring(base64.b64decode(imgString), dtype=np.uint8)              
-        #image_array = lin_arr.reshape(256, 256, 3)    
+
+        #print('got', len(image_array), "image bytes and speed:", speed, "throttle:", throttle)
+           
         if config.is_model_image_input_transposed(model):
               image_array = image_array.transpose()
     
@@ -110,7 +111,7 @@ def send_control(steering_angle, throttle):
         },
         skip_sid=True)
 
-def go(model_json, address):
+def go(model_json, address, usc = False):
     global model
     global app
 
@@ -120,6 +121,11 @@ def go(model_json, address):
 
     #In this mode, looks like we have to compile it
     model.compile("sgd", "mse")
+
+    #unity standard car uses higher vel setting.
+    if usc:
+        throttle_man.idealSpeed = 10
+        throttle_man.turnSlowFactor = 1.0
 
     #load the weights file
     weights_file = model_json.replace('json', 'keras')
@@ -140,7 +146,8 @@ def go(model_json, address):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='prediction server')
     parser.add_argument('model', type=str, help='model name. no json or keras.')
-    parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir') 
+    parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir')
+    parser.add_argument('--usc', action="store_true", help='are we driving the Unity standard car? some vel setting may change by default') 
     parser.add_argument(
           'image_folder',
           type=str,
@@ -162,5 +169,5 @@ if __name__ == "__main__":
 
     model_json = os.path.join(args.path, args.model +'.json')
     address = ('0.0.0.0', 9090)
-    go(model_json, address)
+    go(model_json, address, args.usc)
 

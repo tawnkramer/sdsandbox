@@ -1,3 +1,4 @@
+from __future__ import print_function
 import math
 
 def mag_vec3(v):
@@ -40,10 +41,12 @@ class ThrottleManager(object):
 
         idealSpeedAdjusted = self.idealSpeed - (self.turnSlowFactor * math.fabs(car_steering))
 
+        #print('idealSpeedAdjusted', idealSpeedAdjusted, "car_steering", car_steering)
+
         if(speedFactor > self.brakeThresh):
             return 0.0, 1.0
         elif(car_vel_mag < idealSpeedAdjusted):
             return self.constThrottleReq, 0.0
         else:
-            return 0.0, 0.0
+            return 0.01, 0.0
     

@@ -49,7 +49,10 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	//query state.
 	public Transform GetTransform() { return this.transform; }
 
-	public Vector3 GetVelocity() { return vel; }
+	public Vector3 GetVelocity()
+	{
+		return rb.velocity;
+	}
 
 	public Vector3 GetAccel() { return accel; }
 

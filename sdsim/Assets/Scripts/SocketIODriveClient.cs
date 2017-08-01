@@ -88,12 +88,15 @@ public class SocketIODriveClient : MonoBehaviour {
         JSONObject jsonObject = obj.data;
 
         float steering = float.Parse(jsonObject.GetField("steering_angle").str);
+		float throttle = float.Parse(jsonObject.GetField("throttle").str);
 
-        car.RequestSteering(steering );
-        car.RequestThrottle(float.Parse(jsonObject.GetField("throttle").str));
+        car.RequestSteering(steering);
+		car.RequestThrottle(throttle);
+		car.RequestFootBrake(0.0f);
+		car.RequestHandBrake(0.0f);
 
         if(ai_steering != null)
-            ai_steering.text = string.Format("NN: {0}", steering /* avg_req_time */);
+			ai_steering.text = string.Format("NN: {0} {1}", steering, throttle);
 
         EmitTelemetry(obj);
     }
