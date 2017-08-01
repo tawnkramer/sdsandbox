@@ -30,14 +30,35 @@ from PIL import Image
 from flask import Flask
 from io import BytesIO
 from datetime import datetime
+import time
 
 sio = socketio.Server()
 app = Flask(__name__)
 throttle_man = throttle_manager.ThrottleManager()
 model = None
 
+class FPSTimer(object):
+    def __init__(self):
+        self.t = time.time()
+        self.iter = 0
+
+    def reset(self):
+        self.t = time.time()
+        self.iter = 0
+
+    def on_frame(self):
+        self.iter += 1
+        if self.iter == 100:
+            e = time.time()
+            print('fps', 100.0 / (e - self.t))
+            self.t = time.time()
+            self.iter = 0
+
+timer = FPSTimer()
+
 @sio.on('telemetry')
 def telemetry(sid, data):
+    global timer
     if data:
         # The current steering angle of the car
         steering_angle = float(data["steering_angle"])
@@ -71,9 +92,13 @@ def telemetry(sid, data):
         # NOTE: DON'T EDIT THIS.
         sio.emit('manual', data={}, skip_sid=True)
 
+    #timer.on_frame()
+
 @sio.on('connect')
 def connect(sid, environ):
     print("connect ", sid)
+    global timer
+    timer.reset()
     send_control(0, 0)
 
 def send_control(steering_angle, throttle):

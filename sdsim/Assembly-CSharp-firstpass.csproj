@@ -68,9 +68,12 @@
      <Compile Include="Assets\Standard Assets\Vehicles\Car\Scripts\Suspension.cs" />
      <Compile Include="Assets\Standard Assets\Vehicles\Car\Scripts\WheelEffects.cs" />
      <None Include="Assets\Resources\thunder_path (copy).txt" />
+     <None Include="Assets\Resources\warehouse.txt" />
+     <None Include="Assets\Scripts\SocketIO\Readme.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\DiffuseReflectiveShader.shader" />
      <None Include="Assets\Resources\racePi2.txt" />
      <None Include="Assets\Resources\racePi.txt" />
+     <None Include="Assets\Scripts\SocketIO\JSONObject\readme.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
