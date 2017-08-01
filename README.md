@@ -30,7 +30,7 @@ You need to have [Unity](https://unity3d.com/get-unity/download) installed, and 
 
 
 
-## For the impatient ( I just want to see this work )
+## Demo
 
 1) Start the prediction server with the pre-trained model. 
 
