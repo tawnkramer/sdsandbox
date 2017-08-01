@@ -98,33 +98,22 @@ python predict_server.py mymodel
 
 
 ## Requirements
-[python 2.7 64 bit](https://www.python.org/)*
-
-[tensorflow-0.12.1](https://github.com/tensorflow/tensorflow)  
-
-[keras-1.2.1](https://github.com/fchollet/keras)   
-
-[h5py](http://www.h5py.org/)  
-
-[pillow](https://python-pillow.org/)  
-
-[socketio](https://pypi.python.org/pypi/python-socketio)  
-
-[flask](https://pypi.python.org/pypi/Flask)  
-
-[eventlet](https://pypi.python.org/pypi/eventlet)  
-
-[pyzmq](https://pypi.python.org/pypi/pyzmq)  
-
-[pygame](https://pypi.python.org/pypi/Pygame)**  
-
-[Unity 5.5+](https://unity3d.com/get-unity/download)  
+* [python 2.7 64 bit](https://www.python.org/)*
+* [tensorflow-0.12.1](https://github.com/tensorflow/tensorflow)  
+* [keras-1.2.1](https://github.com/fchollet/keras)   
+* [h5py](http://www.h5py.org/)  
+* [pillow](https://python-pillow.org/)  
+* [socketio](https://pypi.python.org/pypi/python-socketio)  
+* [flask](https://pypi.python.org/pypi/Flask)  
+* [eventlet](https://pypi.python.org/pypi/eventlet)  
+* [pyzmq](https://pypi.python.org/pypi/pyzmq)  
+* [pygame](https://pypi.python.org/pypi/Pygame)**  
+* [Unity 5.5+](https://unity3d.com/get-unity/download)  
 
 *Note: also works with Python 3.5+. But you will need to train your own models. The stock models will not load.
-
 **Note: pygame only needed if using mon_and_predict_server.py which gives a live camera feed during inferencing.
 
-you can install requirements with pip
+You can install requirements with pip
 ```bash
 pip install -r requirements
 ```
