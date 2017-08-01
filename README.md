@@ -129,16 +129,16 @@ you can install requirements with pip
 pip install -r requirements
 ```
 
-Only tensorflow should be done manually. try 
+Only tensorflow should be done manually. try:
 ```bash
 pip install tensorflow 
 ```
-or 
+or if you have the gpu card and libraries installed:
 ```bash
 pip install tensorflow-gpu
 ```
 
-if you have the gpu card and libraries installed.
+
 
 ## Credits
 
