@@ -36,10 +36,10 @@ You need to have [Unity](https://unity3d.com/get-unity/download) installed, and 
 
 ```bash
 cd sdsandbox/src
-python predict_server.py usc
+python predict_server.py highway
 ```
 
-2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/UnityStandardCar to open that scene.  
+2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/main to open that scene.  
 
 3) Hit the start button to launch. Then the "Use NN Steering".  
 
@@ -99,11 +99,13 @@ python predict_server.py mymodel
 
 ## Requirements
 [python 2.7 64 bit](https://www.python.org/)  
-[tensorflow-0.9](https://github.com/tensorflow/tensorflow)  
-[keras-1.0.6](https://github.com/fchollet/keras)   
+[tensorflow-0.12.1](https://github.com/tensorflow/tensorflow)  
+[keras-1.2.1](https://github.com/fchollet/keras)   
 [h5](http://www.h5py.org/)  
 [pillow](https://python-pillow.org/)  
 [Unity 5.5+](https://unity3d.com/get-unity/download)  
+
+*Note also works with Python 3.5+. But you will need to train your own models. The stock models will not load.
 
 ## Credits
 
