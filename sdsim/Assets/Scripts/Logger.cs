@@ -21,8 +21,15 @@ public class Logger : MonoBehaviour {
 	//should we log when we are enabled
 	public bool bDoLog = true;
 
+    public int limitFPS = 30;
+
+    float timeSinceLastCapture = 0.0f;
+
 	//We can output our logs in the style that matched the output from the udacity simulator
 	public bool UdacityStyle = false;
+
+    //We can output our logs in the style that matched the output from the donkey robot car platform - donkeycar.com
+    public bool DonkeyStyle = false;
 
 	string outputFilename = "/../log/log_car_controls.txt";
 	private StreamWriter writer;
@@ -70,8 +77,15 @@ public class Logger : MonoBehaviour {
 	{
 		if(!bDoLog)
 			return;
-		
-		string activity = car.GetActivity();
+
+        timeSinceLastCapture += Time.deltaTime;
+
+        if (timeSinceLastCapture < 1.0f / limitFPS)
+            return;
+
+        timeSinceLastCapture = 0.0f;
+
+        string activity = car.GetActivity();
 
 		if(writer != null)
 		{
@@ -81,6 +95,10 @@ public class Logger : MonoBehaviour {
 				float steering = car.GetSteering() / 25.0f;
 				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", image_filename, "none", "none", steering.ToString(), car.GetThrottle().ToString(), "0", "0"));
 			}
+            else if(DonkeyStyle)
+            {
+
+            }
 			else
 			{
 				writer.WriteLine(string.Format("{0},{1},{2},{3}", frameCounter.ToString(), activity, car.GetSteering().ToString(), car.GetThrottle().ToString()));
@@ -125,6 +143,14 @@ public class Logger : MonoBehaviour {
 		return Application.dataPath + string.Format("/../log/IMG/center_{0,8:D8}.jpg", frameCounter);
 	}
 
+    string GetDonkeyStyleImageFilename()
+    {
+        float steering = car.GetSteering() / 25.0f;
+        float throttle = car.GetThrottle();
+        return Application.dataPath + string.Format("/../log/frame_{0,6:D6}_ttl_{1}_agl_{2}_mil_0.0.jpg", 
+            frameCounter, throttle, steering);
+    }
+
     //Save the camera sensor to an image. Use the suffix to distinguish between cameras.
     void SaveCamSensor(CameraSensor cs, string prefix, string suffix)
     {
@@ -140,7 +166,13 @@ public class Logger : MonoBehaviour {
 
 				ij.bytes = image.EncodeToJPG();
 			}
-			else
+            else if (DonkeyStyle)
+            {
+                ij.filename = GetDonkeyStyleImageFilename();
+
+                ij.bytes = image.EncodeToJPG();
+            }
+            else
 			{
             	ij.filename = Application.dataPath + string.Format("/../log/{0}_{1,8:D8}{2}.png", prefix, frameCounter, suffix);
 
@@ -168,8 +200,10 @@ public class Logger : MonoBehaviour {
 			if(count > 0)
 			{
 				ImageSaveJob ij = imagesToSave[0];
-		
-				File.WriteAllBytes(ij.filename, ij.bytes);
+
+                Debug.Log("saving: " + ij.filename);
+
+                File.WriteAllBytes(ij.filename, ij.bytes);
 
 				lock(this)
 				{

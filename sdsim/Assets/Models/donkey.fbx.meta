@@ -1,0 +1,234 @@
+fileFormatVersion: 2
+guid: 462e305afad39604983c1651ee150681
+timeCreated: 1503444139
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Body1
+    100002: Body6
+    100004: //RootNode
+    100006: Magnet 3d printed plate v22
+    100008: pCube1
+    100010: pCube10
+    100012: pCube11
+    100014: pCube12
+    100016: pCube2
+    100018: pCube3
+    100020: pCube4
+    100022: pCube5
+    100024: pCube6
+    100026: pCube7
+    100028: pCube8
+    100030: pCube9
+    100032: pCylinder1
+    100034: pCylinder2
+    100036: pCylinder3
+    100038: pCylinder4
+    100040: piston
+    100042: piston1
+    100044: piston2
+    100046: piston3
+    100048: piston4
+    100050: piston5
+    100052: piston6
+    100054: piston7
+    100056: piston8
+    100058: transform1
+    100060: transform2
+    100062: transform3
+    100064: Wheel_2
+    100066: Wheel_4
+    100068: Wheel_5
+    100070: Wheel_6
+    400000: Body1
+    400002: Body6
+    400004: //RootNode
+    400006: Magnet 3d printed plate v22
+    400008: pCube1
+    400010: pCube10
+    400012: pCube11
+    400014: pCube12
+    400016: pCube2
+    400018: pCube3
+    400020: pCube4
+    400022: pCube5
+    400024: pCube6
+    400026: pCube7
+    400028: pCube8
+    400030: pCube9
+    400032: pCylinder1
+    400034: pCylinder2
+    400036: pCylinder3
+    400038: pCylinder4
+    400040: piston
+    400042: piston1
+    400044: piston2
+    400046: piston3
+    400048: piston4
+    400050: piston5
+    400052: piston6
+    400054: piston7
+    400056: piston8
+    400058: transform1
+    400060: transform2
+    400062: transform3
+    400064: Wheel_2
+    400066: Wheel_4
+    400068: Wheel_5
+    400070: Wheel_6
+    2300000: Body1
+    2300002: Body6
+    2300004: pCube1
+    2300006: pCube10
+    2300008: pCube12
+    2300010: pCube2
+    2300012: pCube3
+    2300014: pCube4
+    2300016: pCube5
+    2300018: pCube6
+    2300020: pCube7
+    2300022: pCube8
+    2300024: pCube9
+    2300026: pCylinder1
+    2300028: pCylinder2
+    2300030: piston
+    2300032: piston1
+    2300034: piston2
+    2300036: piston3
+    2300038: piston4
+    2300040: piston5
+    2300042: piston6
+    2300044: piston7
+    2300046: piston8
+    2300048: Wheel_2
+    2300050: Wheel_4
+    2300052: Wheel_5
+    2300054: Wheel_6
+    3300000: Body1
+    3300002: Body6
+    3300004: pCube1
+    3300006: pCube10
+    3300008: pCube12
+    3300010: pCube2
+    3300012: pCube3
+    3300014: pCube4
+    3300016: pCube5
+    3300018: pCube6
+    3300020: pCube7
+    3300022: pCube8
+    3300024: pCube9
+    3300026: pCylinder1
+    3300028: pCylinder2
+    3300030: piston
+    3300032: piston1
+    3300034: piston2
+    3300036: piston3
+    3300038: piston4
+    3300040: piston5
+    3300042: piston6
+    3300044: piston7
+    3300046: piston8
+    3300048: Wheel_2
+    3300050: Wheel_4
+    3300052: Wheel_5
+    3300054: Wheel_6
+    4300000: Body1
+    4300002: Body6
+    4300004: Wheel_2
+    4300006: pCube1
+    4300008: Wheel_4
+    4300010: Wheel_5
+    4300012: Wheel_6
+    4300014: piston
+    4300016: piston1
+    4300018: piston2
+    4300020: piston3
+    4300022: piston4
+    4300024: pCylinder1
+    4300026: pCube2
+    4300028: pCube3
+    4300030: pCube4
+    4300032: pCube5
+    4300034: pCylinder2
+    4300036: pCube6
+    4300038: pCube7
+    4300040: pCube8
+    4300042: piston5
+    4300044: piston6
+    4300046: piston7
+    4300048: piston8
+    4300050: pCube9
+    4300052: pCube10
+    4300054: pCube12
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
