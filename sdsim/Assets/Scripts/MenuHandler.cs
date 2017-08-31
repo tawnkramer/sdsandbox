@@ -9,7 +9,15 @@ public class MenuHandler : MonoBehaviour {
 	public GameObject Logger;
 	public GameObject NetworkSteering;
 	public GameObject menuPanel;
-	public GameObject carJSControl;
+	public GameObject stopPanel;
+    public GameObject carJSControl;
+
+    public void Awake()
+    {
+        //keep it processing even when not in focus.
+        Application.runInBackground = true;
+        stopPanel.SetActive(false);
+    }
 
 	public void OnPidGenerateTrainingData()
 	{
@@ -21,7 +29,8 @@ public class MenuHandler : MonoBehaviour {
 	
 		Logger.SetActive(true);
 		menuPanel.SetActive(false);
-	}
+        stopPanel.SetActive(true);
+    }
 
 	public void OnManualGenerateTrainingData()
 	{
@@ -33,7 +42,8 @@ public class MenuHandler : MonoBehaviour {
 	
 		Logger.SetActive(true);
 		menuPanel.SetActive(false);
-	}
+        stopPanel.SetActive(true);
+    }
 
 	public void OnUseNNNetworkSteering()
 	{
@@ -42,7 +52,8 @@ public class MenuHandler : MonoBehaviour {
 		
 		NetworkSteering.SetActive(true);
 		menuPanel.SetActive(false);
-	}
+        stopPanel.SetActive(true);
+    }
 
 	public void OnPidDrive()
 	{
@@ -53,7 +64,8 @@ public class MenuHandler : MonoBehaviour {
 			carJSControl.SetActive(false);
 
 		menuPanel.SetActive(false);
-	}
+        stopPanel.SetActive(true);
+    }
 
 	public void OnManualDrive()
 	{
@@ -64,6 +76,23 @@ public class MenuHandler : MonoBehaviour {
 			carJSControl.SetActive(true);
 
 		menuPanel.SetActive(false);
-	}
+        stopPanel.SetActive(true);
+    }
+
+    public void OnStop()
+    {
+        if (PIDContoller != null)
+            PIDContoller.SetActive(false);
+
+        if (carJSControl != null)
+            carJSControl.SetActive(false);
+
+        Logger.SetActive(false);
+        NetworkSteering.SetActive(false);
+
+
+        menuPanel.SetActive(true);
+        stopPanel.SetActive(false);
+    }
 
 }

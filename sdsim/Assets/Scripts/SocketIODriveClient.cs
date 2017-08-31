@@ -16,6 +16,7 @@ public class SocketIODriveClient : MonoBehaviour {
 
     public Text ai_steering;
 
+    bool runThread = false;
     Thread thread;
     Dictionary<string, string> data;
 
@@ -29,16 +30,28 @@ public class SocketIODriveClient : MonoBehaviour {
         _socket.On("manual", onManual);
 
         car = carObj.GetComponent<ICar>();
+    }
 
+    private void OnEnable()
+    {
+        runThread = true;
         thread = new Thread(SendThread);
         thread.Start();
+    }
+
+    private void OnDisable()
+    {
+        car.RequestFootBrake(1.0f);
+
+        runThread = false;
+        thread.Abort();
     }
 
     //sending from the main thread was really slowing things down. Not sure why.
     //Sending from this thread changed the framerate from 5fps to 60
     public void SendThread()
     {
-        while (true)
+        while (runThread)
         {
             lock (this)
             {

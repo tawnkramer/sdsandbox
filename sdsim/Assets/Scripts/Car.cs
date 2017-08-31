@@ -174,19 +174,13 @@ public class Car : MonoBehaviour, ICar {
 
 	void FixedUpdate()
 	{
-		float brake = 0.0f;
-	
 		lastSteer = requestSteering;
 		lastAccel = requestTorque;
 
 		float throttle = requestTorque * maxTorque;
 		float steerAngle = requestSteering;
+        float brake = requestBrake;
 
-		if(brake == 0.0f)
-		{
-			brake = requestBrake;
-			requestBrake = 0.0f;
-		}
 
 		//front two tires.
 		wheelColliders[2].steerAngle = steerAngle;

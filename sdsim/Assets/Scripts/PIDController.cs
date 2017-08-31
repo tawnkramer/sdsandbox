@@ -53,11 +53,16 @@ public class PIDController : MonoBehaviour {
 		car = carObj.GetComponent<ICar>();
 	}
 
-	void Start()
-	{
-		if(startOnWake)
-			StartDriving();
-	}
+    private void OnEnable()
+    {
+        if (startOnWake)
+            StartDriving();
+    }
+
+    private void OnDisable()
+    {
+        StopDriving();
+    }
 
 	public void StartDriving()
 	{
@@ -76,8 +81,10 @@ public class PIDController : MonoBehaviour {
 		isDriving = true;
 		waitForStill = false;//true;
 
-		if(!waitForStill && doDrive)
-			car.RequestThrottle(throttleVal);
+        if (!waitForStill && doDrive)
+        {
+            car.RequestThrottle(throttleVal);
+        }
 
 		car.RestorePosRot();
 	}

@@ -9,17 +9,12 @@ from __future__ import print_function
 import os
 import argparse
 import sys
-import json
 import time
 from datetime import datetime
-import asyncore
-import json
 import shutil
 import base64
 
 import numpy as np
-import h5py
-from PIL import Image
 import socketio
 import eventlet
 import eventlet.wsgi
@@ -31,11 +26,6 @@ import keras
 import conf
 import throttle_manager
 
-
-sio = socketio.Server()
-app = Flask(__name__)
-throttle_man = throttle_manager.ThrottleManager()
-model = None
 
 class FPSTimer(object):
     def __init__(self):
@@ -54,104 +44,122 @@ class FPSTimer(object):
             self.t = time.time()
             self.iter = 0
 
-timer = FPSTimer()
+class SteeringServer(object):
+    def __init__(self, _sio, image_folder = None, image_cb = None):
+        self.model = None
+        self.timer = FPSTimer()
+        self.sio = _sio
+        self.app = Flask(__name__)
+        self.throttle_man = throttle_manager.ThrottleManager()
+        self.image_cb = image_cb
+        self.image_folder = image_folder
 
-@sio.on('telemetry')
-def telemetry(sid, data):
-    global timer
-    if data:
-        # The current steering angle of the car
-        steering_angle = float(data["steering_angle"])
-        # The current throttle of the car
-        throttle = float(data["throttle"])
-        # The current speed of the car
-        speed = float(data["speed"])
-        # The current image from the center camera of the car
-        imgString = data["image"]
-        image = Image.open(BytesIO(base64.b64decode(imgString)))
-        image_array = np.asarray(image)
+    def telemetry(self, sid, data):
+        if data:
+            # The current steering angle of the car
+            steering_angle = float(data["steering_angle"])
+            # The current throttle of the car
+            throttle = float(data["throttle"])
+            # The current speed of the car
+            speed = float(data["speed"])
+            # The current image from the center camera of the car
+            imgString = data["image"]
+            image = Image.open(BytesIO(base64.b64decode(imgString)))
 
-        outputs = model.predict(image_array[None, :, :, :])
+            image_array = np.asarray(image)
 
-        steering_angle = outputs[0][0]
+            if self.image_cb is not None:
+                self.image_cb(image_array, steering_angle)
 
-        #set throttle value here
-        throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
+            outputs = self.model.predict(image_array[None, :, :, :])
 
-        #throttle = outputs[0][1] * 0.25
+            #steering
+            steering_angle = outputs[0][0]
 
-        #print(steering_angle, throttle)
-        send_control(steering_angle, throttle)
+            #do we get throttle from our network?
+            if conf.num_outputs == 2 and len(outputs[0]) == 2:
+                throttle = outputs[0][1]
+            else:
+                #set throttle value here
+                throttle, brake = self.throttle_man.get_throttle_brake(speed, steering_angle)
 
-        # save frame
-        if args.image_folder != '':
-            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
-            image_filename = os.path.join(args.image_folder, timestamp)
-            #image.save('{}.jpg'.format(image_filename))
-    else:
-        # NOTE: DON'T EDIT THIS.
-        sio.emit('manual', data={}, skip_sid=True)
+            #print(steering_angle, throttle)
+            self.send_control(steering_angle, throttle)
 
-    #timer.on_frame()
+            # save frame
+            if self.image_folder is not None:
+                timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
+                image_filename = os.path.join(self.image_folder, timestamp)
+                image.save('{}.jpg'.format(image_filename))
+        else:
+            # NOTE: DON'T EDIT THIS.
+            self.sio.emit('manual', data={}, skip_sid=True)
 
-@sio.on('connect')
-def connect(sid, environ):
-    print("connect ", sid)
-    global timer
-    timer.reset()
-    send_control(0, 0)
+        self.timer.on_frame()
 
-def send_control(steering_angle, throttle):
-    sio.emit(
-        "steer",
-        data={
-            'steering_angle': steering_angle.__str__(),
-            'throttle': throttle.__str__()
-        },
-        skip_sid=True)
+    def connect(self, sid, environ):
+        print("connect ", sid)
+        self.timer.reset()
+        self.send_control(0, 0)
 
-def go(model_fnm, address, usc = False):
-    global model
-    global app
+    def send_control(self, steering_angle, throttle):
+        self.sio.emit(
+            "steer",
+            data={
+                'steering_angle': steering_angle.__str__(),
+                'throttle': throttle.__str__()
+            },
+            skip_sid=True)
 
-    model = keras.models.load_model(model_fnm)
+    def go(self, model_fnm, address):
+        
+        self.model = keras.models.load_model(model_fnm)
 
-    #In this mode, looks like we have to compile it
-    model.compile("sgd", "mse")
+        #In this mode, looks like we have to compile it
+        self.model.compile("sgd", "mse")
 
-    #unity standard car uses higher vel setting.
-    if usc:
-        throttle_man.idealSpeed = 10
-        throttle_man.turnSlowFactor = 1.0
+        # wrap Flask application with engineio's middleware
+        self.app = socketio.Middleware(self.sio, self.app)
 
-    # wrap Flask application with engineio's middleware
-    app = socketio.Middleware(sio, app)
+        # deploy as an eventlet WSGI server
+        try:
+            eventlet.wsgi.server(eventlet.listen(address), self.app)
+        except KeyboardInterrupt:
+            #unless some hits Ctrl+C and then we get this interrupt
+            print('stopping')
 
-    # deploy as an eventlet WSGI server
-    try:
-        eventlet.wsgi.server(eventlet.listen(address), app)
-    except KeyboardInterrupt:
-        #unless some hits Ctrl+C and then we get this interrupt
-        print('stopping')
 
+def run_steering_server(address, model_fnm, image_folder=None, image_cb=None):
+
+    sio = socketio.Server()
+
+    ss = SteeringServer(sio, image_cb=image_cb, image_folder=image_folder)
+
+    @sio.on('telemetry')
+    def telemetry(sid, data):
+        ss.telemetry(sid, data)
+
+    @sio.on('connect')
+    def connect(sid, environ):
+        ss.connect(sid, environ)
+
+    ss.go(model_fnm, address)
 
 # ***** main loop *****
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='prediction server')
     parser.add_argument('model', type=str, help='model name')
-    parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir')
-    parser.add_argument('--usc', action="store_true", help='are we driving the Unity standard car? some vel setting may change by default') 
     parser.add_argument(
           'image_folder',
           type=str,
           nargs='?',
-          default='',
+          default=None,
           help='Path to image folder. This is where the images from the run will be saved.'
       )
 
     args = parser.parse_args()
 
-    if args.image_folder != '':
+    if args.image_folder is not None:
         print("Creating image folder at {}".format(args.image_folder))
         if not os.path.exists(args.image_folder):
             os.makedirs(args.image_folder)
@@ -160,7 +168,7 @@ if __name__ == "__main__":
             os.makedirs(args.image_folder)
         print("RECORDING THIS RUN ...")
 
-    model_fnm = os.path.join(args.path, args.model)
+    model_fnm = args.model
     address = ('0.0.0.0', 9090)
-    go(model_fnm, address, args.usc)
-
+    run_steering_server(address, model_fnm, image_folder=args.image_folder)
+    

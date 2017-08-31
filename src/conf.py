@@ -1,10 +1,6 @@
 import math
 
-js_axis_scale = math.pow(2, 16) // 2 
-
-STEERING_NN_SCALE = 25.0
-
-training_patience = 20
+training_patience = 6
 
 training_batch_size = 128
 
@@ -22,4 +18,8 @@ row = image_height
 col = image_width
 ch = image_depth
 
+#when we wish to try training for steering and throttle:
+#num_outputs = 2
 
+#when steering alone:
+num_outputs = 1

@@ -48,19 +48,17 @@ def shuffle(samples):
     return ret_arr
 
 def parse_img_filepath(filepath):
-    f = filepath.split('/')[-1]
-    f = f.split('.')[0]
+    basename = os.path.basename(filepath)
+
+    #less .jpg
+    f = basename[:-4]
     f = f.split('_')
 
-    '''
-    The neural network seems to train well on values that are not too large or small.
-    We recorded the raw axis values. So we normalize them and then apply a STEERING_NN_SCALE
-    that puts them roughly in units of degrees +- 30 or so.
-    '''
-    steering = float(f[3]) / float(conf.js_axis_scale) * conf.STEERING_NN_SCALE
-    throttle = float(f[5]) / float(conf.js_axis_scale) * conf.STEERING_NN_SCALE
+    steering = float(f[3])
+    throttle = float(f[5])
     
     data = {'steering':steering, 'throttle':throttle }
+
     return data
 
 def generator(samples, batch_size=32, perc_to_augment=0.5):
@@ -77,9 +75,7 @@ def generator(samples, batch_size=32, perc_to_augment=0.5):
     negated.
     '''
     num_samples = len(samples)
-    do_augment = False
-    if do_augment:
-        shadows = augment.load_shadow_images('./shadows/*.png')    
+    shadows = augment.load_shadow_images('./shadows/*.png')    
     
     while 1: # Loop forever so the generator never terminates
         samples = shuffle(samples)
@@ -108,14 +104,21 @@ def generator(samples, batch_size=32, perc_to_augment=0.5):
                     #PIL Image as a numpy array
                     image = np.array(image)
 
-                    if do_augment and random.uniform(0.0, 1.0) < perc_to_augment:
+                    if len(shadows) > 0 and random.uniform(0.0, 1.0) < perc_to_augment:
                         image = augment.augment_image(image, shadows)
 
                     center_angle = steering
                     images.append(image)
-                    controls.append([center_angle, throttle])
+                    
+                    if conf.num_outputs == 2:
+                        controls.append([center_angle, throttle])
+                    elif conf.num_outputs == 1:
+                        controls.append([center_angle])
+                    else:
+                        print("expected 1 or 2 ouputs")
 
                 except:
+                    print("we threw an exception on:", fullpath)
                     yield [], []
 
 
@@ -186,7 +189,12 @@ def go(model_name, epochs=50, inputs='./log/*.jpg', limit=None, aug_mult=1, aug_
     '''
     modify config.json to select the model to train.
     '''
-    model = models.get_nvidia_model()
+    model = models.get_nvidia_model(conf.num_outputs)
+
+    '''
+    display layer summary and weights info
+    '''
+    models.show_model_summary(model)
 
     callbacks = [
         keras.callbacks.EarlyStopping(monitor='val_loss', patience=conf.training_patience, verbose=0),
@@ -203,8 +211,10 @@ def go(model_name, epochs=50, inputs='./log/*.jpg', limit=None, aug_mult=1, aug_
         print('no training data found')
         return
 
-    steps_per_epoch = n_train / batch_size
-    validation_steps = n_val / batch_size
+    steps_per_epoch = n_train // batch_size
+    validation_steps = n_val // batch_size
+
+    print("steps_per_epoch", steps_per_epoch, "validation_steps", validation_steps)
 
     history = model.fit_generator(train_generator, 
         steps_per_epoch = steps_per_epoch,
