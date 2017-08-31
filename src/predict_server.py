@@ -9,28 +9,28 @@ from __future__ import print_function
 import os
 import argparse
 import sys
-import numpy as np
-import h5py
 import json
-from keras.models import model_from_json
 import time
+from datetime import datetime
 import asyncore
 import json
-import socket
-from PIL import Image
-import config
-import throttle_manager
 import shutil
 import base64
 
+import numpy as np
+import h5py
+from PIL import Image
 import socketio
 import eventlet
 import eventlet.wsgi
 from PIL import Image
 from flask import Flask
 from io import BytesIO
-from datetime import datetime
-import time
+import keras
+
+import conf
+import throttle_manager
+
 
 sio = socketio.Server()
 app = Flask(__name__)
@@ -71,15 +71,14 @@ def telemetry(sid, data):
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
 
-        #print('got', len(image_array), "image bytes and speed:", speed, "throttle:", throttle)
-           
-        if config.is_model_image_input_transposed(model):
-              image_array = image_array.transpose()
-    
-        steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
-        
+        outputs = model.predict(image_array[None, :, :, :])
+
+        steering_angle = outputs[0][0]
+
         #set throttle value here
         throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
+
+        #throttle = outputs[0][1] * 0.25
 
         #print(steering_angle, throttle)
         send_control(steering_angle, throttle)
@@ -111,13 +110,11 @@ def send_control(steering_angle, throttle):
         },
         skip_sid=True)
 
-def go(model_json, address, usc = False):
+def go(model_fnm, address, usc = False):
     global model
     global app
 
-    #load keras model from the json file
-    with open(model_json, 'r') as jfile:
-        model = model_from_json(json.load(jfile))
+    model = keras.models.load_model(model_fnm)
 
     #In this mode, looks like we have to compile it
     model.compile("sgd", "mse")
@@ -126,10 +123,6 @@ def go(model_json, address, usc = False):
     if usc:
         throttle_man.idealSpeed = 10
         throttle_man.turnSlowFactor = 1.0
-
-    #load the weights file
-    weights_file = model_json.replace('json', 'keras')
-    model.load_weights(weights_file)
 
     # wrap Flask application with engineio's middleware
     app = socketio.Middleware(sio, app)
@@ -145,7 +138,7 @@ def go(model_json, address, usc = False):
 # ***** main loop *****
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='prediction server')
-    parser.add_argument('model', type=str, help='model name. no json or keras.')
+    parser.add_argument('model', type=str, help='model name')
     parser.add_argument('--model-path', dest='path', default='../outputs/steering_model', help='model dir')
     parser.add_argument('--usc', action="store_true", help='are we driving the Unity standard car? some vel setting may change by default') 
     parser.add_argument(
@@ -167,7 +160,7 @@ if __name__ == "__main__":
             os.makedirs(args.image_folder)
         print("RECORDING THIS RUN ...")
 
-    model_json = os.path.join(args.path, args.model +'.json')
+    model_fnm = os.path.join(args.path, args.model)
     address = ('0.0.0.0', 9090)
-    go(model_json, address, args.usc)
+    go(model_fnm, address, args.usc)
 

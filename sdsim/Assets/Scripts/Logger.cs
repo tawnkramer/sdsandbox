@@ -25,6 +25,9 @@ public class Logger : MonoBehaviour {
 
     float timeSinceLastCapture = 0.0f;
 
+    //We can output our logs in the style that matched the output from the shark robot car platform - github/tawnkramer/shark
+    public bool SharkStyle = true;
+
 	//We can output our logs in the style that matched the output from the udacity simulator
 	public bool UdacityStyle = false;
 
@@ -83,7 +86,7 @@ public class Logger : MonoBehaviour {
         if (timeSinceLastCapture < 1.0f / limitFPS)
             return;
 
-        timeSinceLastCapture = 0.0f;
+        timeSinceLastCapture -= (1.0f / limitFPS);
 
         string activity = car.GetActivity();
 
@@ -95,7 +98,7 @@ public class Logger : MonoBehaviour {
 				float steering = car.GetSteering() / 25.0f;
 				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", image_filename, "none", "none", steering.ToString(), car.GetThrottle().ToString(), "0", "0"));
 			}
-            else if(DonkeyStyle)
+            else if(DonkeyStyle || SharkStyle)
             {
 
             }
@@ -151,6 +154,14 @@ public class Logger : MonoBehaviour {
             frameCounter, throttle, steering);
     }
 
+	string GetSharkStyleImageFilename()
+    {
+        int steering = (int)(car.GetSteering() / 25.0f * 32768.0f);
+        int throttle = (int)(car.GetThrottle() * 32768.0f);
+        return Application.dataPath + string.Format("/../log/frame_{0,6:D6}_st_{1}_th_{2}.jpg", 
+            frameCounter, steering, throttle);
+    }
+
     //Save the camera sensor to an image. Use the suffix to distinguish between cameras.
     void SaveCamSensor(CameraSensor cs, string prefix, string suffix)
     {
@@ -172,7 +183,13 @@ public class Logger : MonoBehaviour {
 
                 ij.bytes = image.EncodeToJPG();
             }
-            else
+			else if(SharkStyle)
+            {
+                ij.filename = GetSharkStyleImageFilename();
+
+                ij.bytes = image.EncodeToJPG();
+            }
+			else
 			{
             	ij.filename = Application.dataPath + string.Format("/../log/{0}_{1,8:D8}{2}.png", prefix, frameCounter, suffix);
 
@@ -201,7 +218,7 @@ public class Logger : MonoBehaviour {
 			{
 				ImageSaveJob ij = imagesToSave[0];
 
-                Debug.Log("saving: " + ij.filename);
+                //Debug.Log("saving: " + ij.filename);
 
                 File.WriteAllBytes(ij.filename, ij.bytes);
 
