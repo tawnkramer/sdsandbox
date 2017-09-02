@@ -46,7 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\BarrierPiece.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\CameraHelper.cs" />
      <Compile Include="Assets\Scripts\CameraSensor.cs" />
@@ -55,8 +54,6 @@
      <Compile Include="Assets\Scripts\CarPath.cs" />
      <Compile Include="Assets\Scripts\CarPusher.cs" />
      <Compile Include="Assets\Scripts\CollisionSensor.cs" />
-     <Compile Include="Assets\Scripts\CommandServer.cs" />
-     <Compile Include="Assets\Scripts\DistanceSensor.cs" />
      <Compile Include="Assets\Scripts\GenPathFromDriving.cs" />
      <Compile Include="Assets\Scripts\ICar.cs" />
      <Compile Include="Assets\Scripts\JoystickCarControl.cs" />
@@ -67,14 +64,9 @@
      <Compile Include="Assets\Scripts\Logger.cs" />
      <Compile Include="Assets\Scripts\MapManager.cs" />
      <Compile Include="Assets\Scripts\Marker.cs" />
-     <Compile Include="Assets\Scripts\MathLib.cs" />
-     <Compile Include="Assets\Scripts\MazeManager.cs" />
      <Compile Include="Assets\Scripts\MenuHandler.cs" />
-     <Compile Include="Assets\Scripts\NetworkClient.cs" />
-     <Compile Include="Assets\Scripts\NetworkSteering.cs" />
      <Compile Include="Assets\Scripts\PIDController.cs" />
      <Compile Include="Assets\Scripts\PathManager.cs" />
-     <Compile Include="Assets\Scripts\PathPlanner.cs" />
      <Compile Include="Assets\Scripts\RoadBuilder.cs" />
      <Compile Include="Assets\Scripts\ScreenSaver.cs" />
      <Compile Include="Assets\Scripts\SocketIO\JSONObject\JSONObject.cs" />
@@ -164,11 +156,6 @@
      <Compile Include="Assets\Scripts\Twiddle.cs" />
      <Compile Include="Assets\Scripts\TwiddlePID.cs" />
      <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
-     <Compile Include="Assets\Scripts\UnityThreading\UnityMainThreadDispatcher.cs" />
-     <Compile Include="Assets\Scripts\racing\GameManager.cs" />
-     <Compile Include="Assets\Scripts\racing\HiScorePoster.cs" />
-     <Compile Include="Assets\Scripts\racing\IOManager.cs" />
-     <Compile Include="Assets\Scripts\racing\SimpleJSON.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
      <None Include="Assets\Resources\warehouse.txt" />
      <None Include="Assets\Scripts\SocketIO\Readme.txt" />
