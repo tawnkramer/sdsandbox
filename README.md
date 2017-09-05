@@ -36,7 +36,7 @@ virtualenv -p python3 env
 source env/bin/activate
 ```
 
-And then you can install the dependancies
+And then you can install the dependancies. This installs a specific version of keras only because it will allow you to load the pre-trained model with fewer problems. If not an issue for you, you can install the latest keras.
 ```bash
 pip install -r requirements.txt
 ```
