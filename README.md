@@ -9,7 +9,7 @@ Self Driving Car Sandbox
 ## Summary
 
 Use Unity 3d game engine to simulate car physics in a 3d world. 
-Generate image steering pairs to train a neural network. Uses comma ai training code with NVidia NN topology.
+Generate image steering pairs to train a neural network. Uses NVidia PilotNet NN topology.
 Then validate the steering control by sending images to your neural network and feed steering back into the simulator to drive.
 
 ## Some videos to help you get started
@@ -28,6 +28,28 @@ Then validate the steering control by sending images to your neural network and 
 
 You need to have [Unity](https://unity3d.com/get-unity/download) installed, and all python modules listed in the Requirements section below.
 
+Linix Unity install [here](https://forum.unity3d.com/threads/unity-on-linux-release-notes-and-known-issues.350256/). Check last post in this thread.
+
+You need python 3.4 or higher, 64 bit. You can create a virtual env if you like:
+```bash
+virtualenv -p python3 env
+source env/bin/activate
+```
+
+And then you can install the dependancies
+```bash
+pip install -r requirements.txt
+```
+
+If you have an cuda supported GPU - probably NVidia
+```bash
+pip install tensorflow-gpu
+```
+
+Or without a supported gpu
+```bash
+pip install tensorflow
+```
 
 
 ## Demo
@@ -36,7 +58,7 @@ You need to have [Unity](https://unity3d.com/get-unity/download) installed, and 
 
 ```bash
 cd sdsandbox/src
-python predict_server.py highway
+python predict_server.py ../outputs/highway.h5
 ```
 
 2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/main to open that scene.  
@@ -62,24 +84,20 @@ python predict_server.py highway
 
 ```bash
 cd sdsandbox/src
-python prepare_data.py --clean
+python prepare_data.py
 ```
 
-7) Repeat 4, 5, 6 until you have lots of training data. 30gb+ is good. On your last run, prepare a validation set:  
-
-```bash
-python prepare_data.py --validation --clean
-```
+7) Repeat 4, 5, 6 until you have lots of training data.
 
 
 
 ## Train Neural network
 
 ```bash
-python train.py mymodel
+python train.py ../outputs/mymodel.h5
 ```
 
-Let this run. It may take 12+ hours if running on CPU.  
+Let this run. It may take a few hours if running on CPU. Usually far less on a GPU.
 
 
 
@@ -88,7 +106,7 @@ Let this run. It may take 12+ hours if running on CPU.
 1) Start the prediction server. This listens for images and returns a steering result.  
 
 ```bash
-python predict_server.py mymodel
+python predict_server.py ../outputs/mymodel.h5
 ```
 
 2) Start Unity project sdsim  
@@ -98,9 +116,9 @@ python predict_server.py mymodel
 
 
 ## Requirements
-* [python 2.7 64 bit](https://www.python.org/)*
-* [tensorflow-0.12.1](https://github.com/tensorflow/tensorflow)  
-* [keras-1.2.1](https://github.com/fchollet/keras)   
+* [python 3.4+ 64 bit](https://www.python.org/)*
+* [tensorflow-1+](https://github.com/tensorflow/tensorflow)  
+* [keras-2+](https://github.com/fchollet/keras)   
 * [h5py](http://www.h5py.org/)  
 * [pillow](https://python-pillow.org/)  
 * [socketio](https://pypi.python.org/pypi/python-socketio)  
@@ -110,26 +128,14 @@ python predict_server.py mymodel
 * [pygame](https://pypi.python.org/pypi/Pygame)**  
 * [Unity 5.5+](https://unity3d.com/get-unity/download)  
 
-*Note: also works with Python 3.5+. But you will need to train your own models. The stock models will not load.
+*Note: May work with Python 2.7+. But you will need to train your own models. The stock models will not load.
+
+
 **Note: pygame only needed if using mon_and_predict_server.py which gives a live camera feed during inferencing.
-
-You can install requirements with pip
-```bash
-pip install -r requirements
-```
-
-Only tensorflow should be done manually. try:
-```bash
-pip install tensorflow 
-```
-or if you have the gpu card and libraries installed:
-```bash
-pip install tensorflow-gpu
-```
 
 
 
 ## Credits
 
-Tawn Kramer, Riccardo Biasini, George Hotz, Sam Khalandovsky, Eder Santana, and Niel van der Westhuizen  
+Tawn Kramer  
 

@@ -1,9 +1,9 @@
 python-socketio
 flask
 eventlet
-keras==1.2.1
+keras>=2
 pygame
 numpy
 pillow
 h5py
-zmq
+
