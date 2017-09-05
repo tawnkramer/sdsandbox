@@ -27,9 +27,10 @@ def get_nvidia_model(num_outputs):
     row, col, ch = conf.row, conf.col, conf.ch
     
     model = Sequential()
-    model.add(Lambda(lambda x: x/127.5 - 1.,
-            input_shape=(row, col, ch),
-            output_shape=(row, col, ch)))
+
+    model.add(Cropping2D(cropping=((60,0), (0,0)), input_shape=(row, col, ch)))
+
+    model.add(Lambda(lambda x: x/127.5 - 1.))
     model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="same"))
     model.add(ELU())
     model.add(Conv2D(32, (5, 5), strides=(2, 2), padding="same"))

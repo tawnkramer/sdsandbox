@@ -76,17 +76,19 @@ public class PIDController : MonoBehaviour {
 		totalOscilation = 0f;
 		absTotalError = 0f;
 
-
 		pm.path.ResetActiveSpan();
 		isDriving = true;
 		waitForStill = false;//true;
 
-        if (!waitForStill && doDrive)
+        if(car != null)
         {
-            car.RequestThrottle(throttleVal);
-        }
+            if (!waitForStill && doDrive)
+            {
+                car.RequestThrottle(throttleVal);
+            }
 
-		car.RestorePosRot();
+            car.RestorePosRot();
+        }
 	}
 
 	public void StopDriving()

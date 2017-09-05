@@ -103,6 +103,21 @@ public class PathManager : MonoBehaviour {
 			roadBuilder.DestroyRoad();
 	}
 
+    public Vector3 GetPathStart()
+    {
+        return startPos.position;
+    }
+
+    public Vector3 GetPathEnd()
+    {
+        int iN = path.nodes.Count - 1;
+
+        if(iN < 0)
+            return GetPathStart();
+
+        return path.nodes[iN].pos;
+    }
+
 	void SmoothPath()
 	{
 		while(smoothPathIter > 0)

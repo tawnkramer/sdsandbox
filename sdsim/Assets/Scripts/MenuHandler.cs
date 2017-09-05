@@ -12,10 +12,16 @@ public class MenuHandler : MonoBehaviour {
 	public GameObject stopPanel;
     public GameObject carJSControl;
 
+    public TrainingManager trainingManager;
+
     public void Awake()
     {
         //keep it processing even when not in focus.
         Application.runInBackground = true;
+
+        //Set desired frame rate as high as possible.
+        Application.targetFrameRate = 60;
+
         stopPanel.SetActive(false);
     }
 
@@ -77,6 +83,18 @@ public class MenuHandler : MonoBehaviour {
 
 		menuPanel.SetActive(false);
         stopPanel.SetActive(true);
+    }
+
+    public void OnNextTrack()
+	{
+		if(trainingManager != null)
+			trainingManager.OnMenuNextTrack();
+    }
+
+    public void OnRegenTrack()
+	{
+		if(trainingManager != null)
+			trainingManager.OnMenuRegenTrack();
     }
 
     public void OnStop()

@@ -10,6 +10,10 @@ public class TrainingManager : MonoBehaviour {
 	public Logger logger;
 	public RoadBuilder roadBuilder;
 
+    public Camera overheadCamera;
+
+    public PathManager pathManager;
+
 	public int numTrainingRuns = 1;
 	int iRun = 0;
 
@@ -22,6 +26,8 @@ public class TrainingManager : MonoBehaviour {
 	void Start () 
 	{
 		controller.endOfPathCB += new PIDController.OnEndOfPathCB(OnPathDone);
+
+        RepositionOverheadCamera();
 	}
 
 	void SwapRoadToNewTextureVariation()
@@ -39,7 +45,21 @@ public class TrainingManager : MonoBehaviour {
 		SwapRoadToNewTextureVariation();
 		controller.pm.InitNewRoad();
 		controller.StartDriving();
+        RepositionOverheadCamera();
 	}
+
+    public void RepositionOverheadCamera()
+    {
+        if(overheadCamera == null)
+            return;
+
+        Vector3 pathStart = pathManager.GetPathStart();
+        Vector3 pathEnd = pathManager.GetPathEnd();
+        Vector3 avg = (pathStart + pathEnd) / 2.0f;
+        avg.y = overheadCamera.transform.position.y;
+        overheadCamera.transform.position = avg;
+    }
+
 
 	void OnLastRunCompleted()
 	{
@@ -47,6 +67,23 @@ public class TrainingManager : MonoBehaviour {
 		controller.StopDriving();
 		logger.Shutdown();
 	}
+
+    public void OnMenuNextTrack()
+    {
+        iRun += 1;
+
+		if(iRun >= numTrainingRuns)
+            iRun = 0;
+
+        StartNewRun();
+        car.RequestFootBrake(1);
+    }
+
+    public void OnMenuRegenTrack()
+    {
+        StartNewRun();
+        car.RequestFootBrake(1);
+    }
 
 	void OnPathDone()
 	{
