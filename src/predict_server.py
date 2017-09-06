@@ -50,7 +50,7 @@ class SteeringServer(object):
         self.timer = FPSTimer()
         self.sio = _sio
         self.app = Flask(__name__)
-        self.throttle_man = throttle_manager.ThrottleManager()
+        self.throttle_man = throttle_manager.ThrottleManager(idealSpeed = 10.)
         self.image_cb = image_cb
         self.image_folder = image_folder
 

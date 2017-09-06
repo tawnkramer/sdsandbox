@@ -50,11 +50,20 @@ public class Logger : MonoBehaviour {
         thread.Start();
     }
 
-    private void OnDisable()
+    void KillThread()
     {
         runThread = false;
-        thread.Abort();
-        thread = null;
+
+        if (thread != null)
+        {
+            thread.Abort();
+            thread = null;
+        }
+    }
+
+    private void OnDisable()
+    {
+        KillThread();
     }
 
     // Update is called once per frame
@@ -162,13 +171,9 @@ public class Logger : MonoBehaviour {
 
 	public void Shutdown()
 	{
-		if(thread != null)
-		{
-			thread.Abort();
-			thread = null;
-		}
+        KillThread();
 
-		bDoLog = false;
+        bDoLog = false;
 	}
 
 	void OnDestroy()
