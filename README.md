@@ -60,7 +60,8 @@ pip install tensorflow
 cd sdsandbox/src
 python predict_server.py ../outputs/highway.h5
 ```
-
+ If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions. 
+ 
 2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/main to open that scene.  
 
 3) Hit the start button to launch. Then the "Use NN Steering".  
