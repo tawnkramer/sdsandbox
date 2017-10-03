@@ -3,8 +3,8 @@
 sdsim/Library
 sdsim/log/*
 sdsim/obj
-sdsim/*.sln
-sdsim/*.userprefs
+*.sln
+*.userprefs
 sdsim/Temp
-sdsdim/*.csproj
+*.csproj
 

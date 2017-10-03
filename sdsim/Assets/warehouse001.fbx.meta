@@ -1,0 +1,2170 @@
+fileFormatVersion: 2
+guid: b89f109a409fe5c46a39fb648dbd9b57
+timeCreated: 1502248530
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: bigHorizBeam001
+    100002: bigHorizBeam002
+    100004: Concrete, Cast-in-Place gray10
+    100006: Concrete, Cast-in-Place gray2
+    100008: Concrete, Cast-in-Place gray4
+    100010: Concrete, Cast-in-Place gray5
+    100012: Concrete, Cast-in-Place gray6
+    100014: Concrete, Cast-in-Place gray7
+    100016: Concrete, Cast-in-Place gray8
+    100018: Concrete, Cast-in-Place gray9
+    100020: ConcreteBaseLong001
+    100022: Default Floor2
+    100024: Default Roof2
+    100026: horizBeam001
+    100028: horizBeam002
+    100030: horizBeam003
+    100032: horizBeam004
+    100034: horizBeam005
+    100036: horizBeam006
+    100038: horizBeam007
+    100040: ibeam0010
+    100042: ibeam0010 1
+    100044: ibeam002
+    100046: ibeam002 1
+    100048: ibeam003
+    100050: ibeam003 1
+    100052: ibeam004
+    100054: ibeam004 1
+    100056: ibeam005
+    100058: ibeam005 1
+    100060: ibeam006
+    100062: ibeam006 1
+    100064: ibeam007
+    100066: ibeam007 1
+    100068: ibeam008
+    100070: ibeam008 1
+    100072: ibeam009
+    100074: ibeam009 1
+    100076: pillarBig002
+    100078: pillarBig003
+    100080: pillarBig004
+    100082: pillarBig005
+    100084: pillarSmall001
+    100086: pillarSmall0013
+    100088: pillarSmall002
+    100090: pillarSmall003
+    100092: pillarSmall004
+    100094: pillarSmall006
+    100096: pillarSmall007
+    100098: pillarSmall008
+    100100: pipeParallel003
+    100102: pipeParallel004
+    100104: rafter002
+    100106: rafter003
+    100108: rafter004
+    100110: raftersParallel001
+    100112: raftersParallel002
+    100114: Solid1
+    100116: Solid10
+    100118: Solid11
+    100120: Solid12
+    100122: Solid2
+    100124: Solid5
+    100126: Solid6
+    100128: Solid7
+    100130: Solid8
+    100132: wall01
+    100134: WallCorrugated001
+    100136: WallCorrugated002
+    100138: WallCorrugated003
+    100140: WallCorrugated004
+    100142: wallDarkness001
+    100144: //RootNode
+    100146: bigHorizBeam003
+    100148: bigHorizBeam004
+    100150: Concrete, Cast-in-Place gray11
+    100152: Concrete, Cast-in-Place gray12
+    100154: Concrete, Cast-in-Place gray13
+    100156: Concrete, Cast-in-Place gray14
+    100158: Concrete, Cast-in-Place gray15
+    100160: Concrete, Cast-in-Place gray16
+    100162: Concrete, Cast-in-Place gray17
+    100164: Concrete, Cast-in-Place gray18
+    100166: Concrete, Cast-in-Place gray19
+    100168: Concrete, Cast-in-Place gray3
+    100170: concreteBases001
+    100172: Conduits_Conduit with Fittings1
+    100174: CraneAndBalcony001
+    100176: CrossBeam001
+    100178: CrossBeam002
+    100180: ElectricalBox
+    100182: Floor003
+    100184: horizBeam0010
+    100186: horizBeam0011
+    100188: horizBeam0012
+    100190: horizBeam0013
+    100192: horizBeam0014
+    100194: horizBeam008
+    100196: horizBeam009
+    100198: LadderComplete
+    100200: LightingFixtures001
+    100202: pillarBig001
+    100204: pillarBig006
+    100206: pillarBig007
+    100208: pillarBig008
+    100210: pillarBig009
+    100212: PillarsBack001
+    100214: pillarSmall0010
+    100216: pillarSmall0011
+    100218: pillarSmall0012
+    100220: pillarSmall0014
+    100222: pillarSmall0015
+    100224: pillarSmall0016
+    100226: pillarSmall0017
+    100228: pillarSmall005
+    100230: pillarSmall009
+    100232: pipeBack001
+    100234: pipeParallel001
+    100236: pipeParallel002
+    100238: rafter001
+    100240: rafter005
+    100242: rafter006
+    100244: rafter007
+    100246: rafter008
+    100248: Railroad Ties
+    100250: RoofOrig01
+    100252: Solid13
+    100254: Solid14
+    100256: Solid15
+    100258: Solid16
+    100260: Solid17
+    100262: Solid18
+    100264: Solid19
+    100266: Solid20
+    100268: Solid21
+    100270: Solid22
+    100272: StructureFrameBack001
+    100274: WallCorrugated0010
+    100276: WallCorrugated0011
+    100278: WallCorrugated0012
+    100280: WallCorrugated0013
+    100282: WallCorrugated0015
+    100284: WallCorrugated0016
+    100286: WallCorrugated0017
+    100288: WallCorrugated0018
+    100290: WallCorrugated005
+    100292: WallCorrugated006
+    100294: WallCorrugated008
+    100296: warehouseSegment01
+    100298: warehouseSegmentEnd001
+    100300: horizBeam0015
+    100302: horizBeam0016
+    100304: horizBeam0017
+    100306: horizBeam0018
+    100308: horizBeam0019
+    100310: horizBeam0020
+    100312: horizBeam0021
+    100314: horizBeam0022
+    100316: horizBeam0023
+    100318: horizBeam0024
+    100320: horizBeam0025
+    100322: horizBeam0026
+    100324: horizBeam0027
+    100326: horizBeam0028
+    100328: horizBeam0029
+    100330: horizBeam0030
+    100332: horizBeam0031
+    100334: horizBeam0032
+    100336: horizBeam0033
+    100338: horizBeam0034
+    100340: horizBeam0035
+    100342: ibeam0010 2
+    100344: ibeam0010 3
+    100346: ibeam002 2
+    100348: ibeam002 3
+    100350: ibeam003 2
+    100352: ibeam003 3
+    100354: ibeam004 2
+    100356: ibeam004 3
+    100358: ibeam005 2
+    100360: ibeam005 3
+    100362: ibeam006 2
+    100364: ibeam006 3
+    100366: ibeam007 2
+    100368: ibeam007 3
+    100370: ibeam008 2
+    100372: ibeam008 3
+    100374: ibeam009 2
+    100376: ibeam009 3
+    100378: pipeLarge01
+    100380: polySurface1
+    100382: polySurface2
+    100384: polySurface3
+    100386: polySurface4
+    100388: raftersParallel003
+    100390: raftersParallel004
+    100392: transform1
+    100394: darkWall001
+    100396: FloorSlab001
+    100398: raftersParallelA001
+    100400: raftersParallelA002
+    100402: raftersParallelB001
+    100404: raftersParallelB002
+    100406: RoofCorrugatedA001
+    100408: RoofCorrugatedA001 1
+    100410: RoofCorrugatedA002
+    100412: RoofCorrugatedA002 1
+    100414: RoofCorrugatedA003
+    100416: RoofCorrugatedA003 1
+    100418: RoofCorrugatedA004
+    100420: RoofCorrugatedA004 1
+    100422: RoofCorrugatedB001
+    100424: RoofCorrugatedB001 1
+    100426: RoofCorrugatedB002
+    100428: RoofCorrugatedB002 1
+    100430: RoofCorrugatedB003
+    100432: RoofCorrugatedB003 1
+    100434: RoofCorrugatedB004
+    100436: RoofCorrugatedB004 1
+    100438: RoofCorrugatedGroup001
+    100440: RoofCorrugatedGroup002
+    100442: wallDarkness002
+    100444: bigHorizBeam001 1
+    100446: bigHorizBeam001 2
+    100448: bigHorizBeam001 3
+    100450: bigHorizBeam002 1
+    100452: bigHorizBeam002 2
+    100454: bigHorizBeam002 3
+    100456: Concrete, Cast-in-Place gray10 1
+    100458: Concrete, Cast-in-Place gray10 2
+    100460: Concrete, Cast-in-Place gray10 3
+    100462: Concrete, Cast-in-Place gray2 1
+    100464: Concrete, Cast-in-Place gray2 2
+    100466: Concrete, Cast-in-Place gray2 3
+    100468: Concrete, Cast-in-Place gray4 1
+    100470: Concrete, Cast-in-Place gray4 2
+    100472: Concrete, Cast-in-Place gray4 3
+    100474: Concrete, Cast-in-Place gray5 1
+    100476: Concrete, Cast-in-Place gray5 2
+    100478: Concrete, Cast-in-Place gray5 3
+    100480: Concrete, Cast-in-Place gray6 1
+    100482: Concrete, Cast-in-Place gray6 2
+    100484: Concrete, Cast-in-Place gray6 3
+    100486: Concrete, Cast-in-Place gray7 1
+    100488: Concrete, Cast-in-Place gray7 2
+    100490: Concrete, Cast-in-Place gray7 3
+    100492: Concrete, Cast-in-Place gray8 1
+    100494: Concrete, Cast-in-Place gray8 2
+    100496: Concrete, Cast-in-Place gray8 3
+    100498: Concrete, Cast-in-Place gray9 1
+    100500: Concrete, Cast-in-Place gray9 2
+    100502: Concrete, Cast-in-Place gray9 3
+    100504: ConcreteBaseLong001 1
+    100506: ConcreteBaseLong001 2
+    100508: ConcreteBaseLong001 3
+    100510: ConcreteBaseLong002
+    100512: CraneYellow001
+    100514: FloorSlab001 1
+    100516: FloorSlab001 2
+    100518: FloorSlab001 3
+    100520: horizBeam001 1
+    100522: horizBeam001 2
+    100524: horizBeam001 3
+    100526: horizBeam001 4
+    100528: horizBeam002 1
+    100530: horizBeam002 2
+    100532: horizBeam002 3
+    100534: horizBeam002 4
+    100536: horizBeam003 1
+    100538: horizBeam003 2
+    100540: horizBeam003 3
+    100542: horizBeam003 4
+    100544: horizBeam004 1
+    100546: horizBeam004 2
+    100548: horizBeam004 3
+    100550: horizBeam004 4
+    100552: horizBeam005 1
+    100554: horizBeam005 2
+    100556: horizBeam005 3
+    100558: horizBeam005 4
+    100560: horizBeam006 1
+    100562: horizBeam006 2
+    100564: horizBeam006 3
+    100566: horizBeam006 4
+    100568: horizBeam007 1
+    100570: horizBeam007 2
+    100572: horizBeam007 3
+    100574: horizBeam007 4
+    100576: pillarBig002 1
+    100578: pillarBig002 2
+    100580: pillarBig002 3
+    100582: pillarBig003 1
+    100584: pillarBig003 2
+    100586: pillarBig003 3
+    100588: pillarBig004 1
+    100590: pillarBig004 2
+    100592: pillarBig004 3
+    100594: pillarBig005 1
+    100596: pillarBig005 2
+    100598: pillarBig005 3
+    100600: pillarSmall001 1
+    100602: pillarSmall001 2
+    100604: pillarSmall001 3
+    100606: pillarSmall0013 1
+    100608: pillarSmall0013 2
+    100610: pillarSmall0013 3
+    100612: pillarSmall0018
+    100614: pillarSmall0019
+    100616: pillarSmall002 1
+    100618: pillarSmall002 2
+    100620: pillarSmall002 3
+    100622: pillarSmall0020
+    100624: pillarSmall003 1
+    100626: pillarSmall003 2
+    100628: pillarSmall003 3
+    100630: pillarSmall004 1
+    100632: pillarSmall004 2
+    100634: pillarSmall004 3
+    100636: pillarSmall006 1
+    100638: pillarSmall006 2
+    100640: pillarSmall006 3
+    100642: pillarSmall007 1
+    100644: pillarSmall007 2
+    100646: pillarSmall007 3
+    100648: pillarSmall008 1
+    100650: pillarSmall008 2
+    100652: pillarSmall008 3
+    100654: pipeParallel003 1
+    100656: pipeParallel003 2
+    100658: pipeParallel003 3
+    100660: pipeParallel004 1
+    100662: pipeParallel004 2
+    100664: pipeParallel004 3
+    100666: platform001
+    100668: rafter002 1
+    100670: rafter002 2
+    100672: rafter002 3
+    100674: rafter003 1
+    100676: rafter003 2
+    100678: rafter003 3
+    100680: rafter004 1
+    100682: rafter004 2
+    100684: rafter004 3
+    100686: raftersParallelA001 1
+    100688: raftersParallelA001 2
+    100690: raftersParallelA001 3
+    100692: raftersParallelB001 1
+    100694: raftersParallelB001 2
+    100696: raftersParallelB001 3
+    100698: RoofCorrugatedA001 2
+    100700: RoofCorrugatedA001 3
+    100702: RoofCorrugatedA001 4
+    100704: RoofCorrugatedA002 2
+    100706: RoofCorrugatedA002 3
+    100708: RoofCorrugatedA002 4
+    100710: RoofCorrugatedA003 2
+    100712: RoofCorrugatedA003 3
+    100714: RoofCorrugatedA003 4
+    100716: RoofCorrugatedA004 2
+    100718: RoofCorrugatedA004 3
+    100720: RoofCorrugatedA004 4
+    100722: RoofCorrugatedB001 2
+    100724: RoofCorrugatedB001 3
+    100726: RoofCorrugatedB001 4
+    100728: RoofCorrugatedB002 2
+    100730: RoofCorrugatedB002 3
+    100732: RoofCorrugatedB002 4
+    100734: RoofCorrugatedB003 2
+    100736: RoofCorrugatedB003 3
+    100738: RoofCorrugatedB003 4
+    100740: RoofCorrugatedB004 2
+    100742: RoofCorrugatedB004 3
+    100744: RoofCorrugatedB004 4
+    100746: RoofCorrugatedGroup001 1
+    100748: RoofCorrugatedGroup001 2
+    100750: RoofCorrugatedGroup001 3
+    100752: Solid1 1
+    100754: Solid1 2
+    100756: Solid1 3
+    100758: Solid10 1
+    100760: Solid10 2
+    100762: Solid10 3
+    100764: Solid11 1
+    100766: Solid11 2
+    100768: Solid11 3
+    100770: Solid12 1
+    100772: Solid12 2
+    100774: Solid12 3
+    100776: Solid2 1
+    100778: Solid2 2
+    100780: Solid2 3
+    100782: Solid5 1
+    100784: Solid5 2
+    100786: Solid5 3
+    100788: Solid6 1
+    100790: Solid6 2
+    100792: Solid6 3
+    100794: Solid7 1
+    100796: Solid7 2
+    100798: Solid7 3
+    100800: Solid8 1
+    100802: Solid8 2
+    100804: Solid8 3
+    100806: wall01 1
+    100808: wall01 2
+    100810: wall01 3
+    100812: wall02
+    100814: WallCorrugated001 1
+    100816: WallCorrugated001 2
+    100818: WallCorrugated001 3
+    100820: WallCorrugated0019
+    100822: WallCorrugated002 1
+    100824: WallCorrugated002 2
+    100826: WallCorrugated002 3
+    100828: WallCorrugated0020
+    100830: WallCorrugated0021
+    100832: WallCorrugated0022
+    100834: WallCorrugated0023
+    100836: WallCorrugated0024
+    100838: WallCorrugated003 1
+    100840: WallCorrugated003 2
+    100842: WallCorrugated003 3
+    100844: WallCorrugated004 1
+    100846: WallCorrugated004 2
+    100848: WallCorrugated004 3
+    100850: wallDarkness003
+    100852: wallDarkness004
+    100854: warehouseSegment02
+    100856: warehouseSegment03
+    100858: warehouseSegmentEntrance001
+    400000: bigHorizBeam001
+    400002: bigHorizBeam002
+    400004: Concrete, Cast-in-Place gray10
+    400006: Concrete, Cast-in-Place gray2
+    400008: Concrete, Cast-in-Place gray4
+    400010: Concrete, Cast-in-Place gray5
+    400012: Concrete, Cast-in-Place gray6
+    400014: Concrete, Cast-in-Place gray7
+    400016: Concrete, Cast-in-Place gray8
+    400018: Concrete, Cast-in-Place gray9
+    400020: ConcreteBaseLong001
+    400022: Default Floor2
+    400024: Default Roof2
+    400026: horizBeam001
+    400028: horizBeam002
+    400030: horizBeam003
+    400032: horizBeam004
+    400034: horizBeam005
+    400036: horizBeam006
+    400038: horizBeam007
+    400040: ibeam0010
+    400042: ibeam0010 1
+    400044: ibeam002
+    400046: ibeam002 1
+    400048: ibeam003
+    400050: ibeam003 1
+    400052: ibeam004
+    400054: ibeam004 1
+    400056: ibeam005
+    400058: ibeam005 1
+    400060: ibeam006
+    400062: ibeam006 1
+    400064: ibeam007
+    400066: ibeam007 1
+    400068: ibeam008
+    400070: ibeam008 1
+    400072: ibeam009
+    400074: ibeam009 1
+    400076: pillarBig002
+    400078: pillarBig003
+    400080: pillarBig004
+    400082: pillarBig005
+    400084: pillarSmall001
+    400086: pillarSmall0013
+    400088: pillarSmall002
+    400090: pillarSmall003
+    400092: pillarSmall004
+    400094: pillarSmall006
+    400096: pillarSmall007
+    400098: pillarSmall008
+    400100: pipeParallel003
+    400102: pipeParallel004
+    400104: rafter002
+    400106: rafter003
+    400108: rafter004
+    400110: raftersParallel001
+    400112: raftersParallel002
+    400114: Solid1
+    400116: Solid10
+    400118: Solid11
+    400120: Solid12
+    400122: Solid2
+    400124: Solid5
+    400126: Solid6
+    400128: Solid7
+    400130: Solid8
+    400132: wall01
+    400134: WallCorrugated001
+    400136: WallCorrugated002
+    400138: WallCorrugated003
+    400140: WallCorrugated004
+    400142: wallDarkness001
+    400144: //RootNode
+    400146: bigHorizBeam003
+    400148: bigHorizBeam004
+    400150: Concrete, Cast-in-Place gray11
+    400152: Concrete, Cast-in-Place gray12
+    400154: Concrete, Cast-in-Place gray13
+    400156: Concrete, Cast-in-Place gray14
+    400158: Concrete, Cast-in-Place gray15
+    400160: Concrete, Cast-in-Place gray16
+    400162: Concrete, Cast-in-Place gray17
+    400164: Concrete, Cast-in-Place gray18
+    400166: Concrete, Cast-in-Place gray19
+    400168: Concrete, Cast-in-Place gray3
+    400170: concreteBases001
+    400172: Conduits_Conduit with Fittings1
+    400174: CraneAndBalcony001
+    400176: CrossBeam001
+    400178: CrossBeam002
+    400180: ElectricalBox
+    400182: Floor003
+    400184: horizBeam0010
+    400186: horizBeam0011
+    400188: horizBeam0012
+    400190: horizBeam0013
+    400192: horizBeam0014
+    400194: horizBeam008
+    400196: horizBeam009
+    400198: LadderComplete
+    400200: LightingFixtures001
+    400202: pillarBig001
+    400204: pillarBig006
+    400206: pillarBig007
+    400208: pillarBig008
+    400210: pillarBig009
+    400212: PillarsBack001
+    400214: pillarSmall0010
+    400216: pillarSmall0011
+    400218: pillarSmall0012
+    400220: pillarSmall0014
+    400222: pillarSmall0015
+    400224: pillarSmall0016
+    400226: pillarSmall0017
+    400228: pillarSmall005
+    400230: pillarSmall009
+    400232: pipeBack001
+    400234: pipeParallel001
+    400236: pipeParallel002
+    400238: rafter001
+    400240: rafter005
+    400242: rafter006
+    400244: rafter007
+    400246: rafter008
+    400248: Railroad Ties
+    400250: RoofOrig01
+    400252: Solid13
+    400254: Solid14
+    400256: Solid15
+    400258: Solid16
+    400260: Solid17
+    400262: Solid18
+    400264: Solid19
+    400266: Solid20
+    400268: Solid21
+    400270: Solid22
+    400272: StructureFrameBack001
+    400274: WallCorrugated0010
+    400276: WallCorrugated0011
+    400278: WallCorrugated0012
+    400280: WallCorrugated0013
+    400282: WallCorrugated0015
+    400284: WallCorrugated0016
+    400286: WallCorrugated0017
+    400288: WallCorrugated0018
+    400290: WallCorrugated005
+    400292: WallCorrugated006
+    400294: WallCorrugated008
+    400296: warehouseSegment01
+    400298: warehouseSegmentEnd001
+    400300: horizBeam0015
+    400302: horizBeam0016
+    400304: horizBeam0017
+    400306: horizBeam0018
+    400308: horizBeam0019
+    400310: horizBeam0020
+    400312: horizBeam0021
+    400314: horizBeam0022
+    400316: horizBeam0023
+    400318: horizBeam0024
+    400320: horizBeam0025
+    400322: horizBeam0026
+    400324: horizBeam0027
+    400326: horizBeam0028
+    400328: horizBeam0029
+    400330: horizBeam0030
+    400332: horizBeam0031
+    400334: horizBeam0032
+    400336: horizBeam0033
+    400338: horizBeam0034
+    400340: horizBeam0035
+    400342: ibeam0010 2
+    400344: ibeam0010 3
+    400346: ibeam002 2
+    400348: ibeam002 3
+    400350: ibeam003 2
+    400352: ibeam003 3
+    400354: ibeam004 2
+    400356: ibeam004 3
+    400358: ibeam005 2
+    400360: ibeam005 3
+    400362: ibeam006 2
+    400364: ibeam006 3
+    400366: ibeam007 2
+    400368: ibeam007 3
+    400370: ibeam008 2
+    400372: ibeam008 3
+    400374: ibeam009 2
+    400376: ibeam009 3
+    400378: pipeLarge01
+    400380: polySurface1
+    400382: polySurface2
+    400384: polySurface3
+    400386: polySurface4
+    400388: raftersParallel003
+    400390: raftersParallel004
+    400392: transform1
+    400394: darkWall001
+    400396: FloorSlab001
+    400398: raftersParallelA001
+    400400: raftersParallelA002
+    400402: raftersParallelB001
+    400404: raftersParallelB002
+    400406: RoofCorrugatedA001
+    400408: RoofCorrugatedA001 1
+    400410: RoofCorrugatedA002
+    400412: RoofCorrugatedA002 1
+    400414: RoofCorrugatedA003
+    400416: RoofCorrugatedA003 1
+    400418: RoofCorrugatedA004
+    400420: RoofCorrugatedA004 1
+    400422: RoofCorrugatedB001
+    400424: RoofCorrugatedB001 1
+    400426: RoofCorrugatedB002
+    400428: RoofCorrugatedB002 1
+    400430: RoofCorrugatedB003
+    400432: RoofCorrugatedB003 1
+    400434: RoofCorrugatedB004
+    400436: RoofCorrugatedB004 1
+    400438: RoofCorrugatedGroup001
+    400440: RoofCorrugatedGroup002
+    400442: wallDarkness002
+    400444: bigHorizBeam001 1
+    400446: bigHorizBeam001 2
+    400448: bigHorizBeam001 3
+    400450: bigHorizBeam002 1
+    400452: bigHorizBeam002 2
+    400454: bigHorizBeam002 3
+    400456: Concrete, Cast-in-Place gray10 1
+    400458: Concrete, Cast-in-Place gray10 2
+    400460: Concrete, Cast-in-Place gray10 3
+    400462: Concrete, Cast-in-Place gray2 1
+    400464: Concrete, Cast-in-Place gray2 2
+    400466: Concrete, Cast-in-Place gray2 3
+    400468: Concrete, Cast-in-Place gray4 1
+    400470: Concrete, Cast-in-Place gray4 2
+    400472: Concrete, Cast-in-Place gray4 3
+    400474: Concrete, Cast-in-Place gray5 1
+    400476: Concrete, Cast-in-Place gray5 2
+    400478: Concrete, Cast-in-Place gray5 3
+    400480: Concrete, Cast-in-Place gray6 1
+    400482: Concrete, Cast-in-Place gray6 2
+    400484: Concrete, Cast-in-Place gray6 3
+    400486: Concrete, Cast-in-Place gray7 1
+    400488: Concrete, Cast-in-Place gray7 2
+    400490: Concrete, Cast-in-Place gray7 3
+    400492: Concrete, Cast-in-Place gray8 1
+    400494: Concrete, Cast-in-Place gray8 2
+    400496: Concrete, Cast-in-Place gray8 3
+    400498: Concrete, Cast-in-Place gray9 1
+    400500: Concrete, Cast-in-Place gray9 2
+    400502: Concrete, Cast-in-Place gray9 3
+    400504: ConcreteBaseLong001 1
+    400506: ConcreteBaseLong001 2
+    400508: ConcreteBaseLong001 3
+    400510: ConcreteBaseLong002
+    400512: CraneYellow001
+    400514: FloorSlab001 1
+    400516: FloorSlab001 2
+    400518: FloorSlab001 3
+    400520: horizBeam001 1
+    400522: horizBeam001 2
+    400524: horizBeam001 3
+    400526: horizBeam001 4
+    400528: horizBeam002 1
+    400530: horizBeam002 2
+    400532: horizBeam002 3
+    400534: horizBeam002 4
+    400536: horizBeam003 1
+    400538: horizBeam003 2
+    400540: horizBeam003 3
+    400542: horizBeam003 4
+    400544: horizBeam004 1
+    400546: horizBeam004 2
+    400548: horizBeam004 3
+    400550: horizBeam004 4
+    400552: horizBeam005 1
+    400554: horizBeam005 2
+    400556: horizBeam005 3
+    400558: horizBeam005 4
+    400560: horizBeam006 1
+    400562: horizBeam006 2
+    400564: horizBeam006 3
+    400566: horizBeam006 4
+    400568: horizBeam007 1
+    400570: horizBeam007 2
+    400572: horizBeam007 3
+    400574: horizBeam007 4
+    400576: pillarBig002 1
+    400578: pillarBig002 2
+    400580: pillarBig002 3
+    400582: pillarBig003 1
+    400584: pillarBig003 2
+    400586: pillarBig003 3
+    400588: pillarBig004 1
+    400590: pillarBig004 2
+    400592: pillarBig004 3
+    400594: pillarBig005 1
+    400596: pillarBig005 2
+    400598: pillarBig005 3
+    400600: pillarSmall001 1
+    400602: pillarSmall001 2
+    400604: pillarSmall001 3
+    400606: pillarSmall0013 1
+    400608: pillarSmall0013 2
+    400610: pillarSmall0013 3
+    400612: pillarSmall0018
+    400614: pillarSmall0019
+    400616: pillarSmall002 1
+    400618: pillarSmall002 2
+    400620: pillarSmall002 3
+    400622: pillarSmall0020
+    400624: pillarSmall003 1
+    400626: pillarSmall003 2
+    400628: pillarSmall003 3
+    400630: pillarSmall004 1
+    400632: pillarSmall004 2
+    400634: pillarSmall004 3
+    400636: pillarSmall006 1
+    400638: pillarSmall006 2
+    400640: pillarSmall006 3
+    400642: pillarSmall007 1
+    400644: pillarSmall007 2
+    400646: pillarSmall007 3
+    400648: pillarSmall008 1
+    400650: pillarSmall008 2
+    400652: pillarSmall008 3
+    400654: pipeParallel003 1
+    400656: pipeParallel003 2
+    400658: pipeParallel003 3
+    400660: pipeParallel004 1
+    400662: pipeParallel004 2
+    400664: pipeParallel004 3
+    400666: platform001
+    400668: rafter002 1
+    400670: rafter002 2
+    400672: rafter002 3
+    400674: rafter003 1
+    400676: rafter003 2
+    400678: rafter003 3
+    400680: rafter004 1
+    400682: rafter004 2
+    400684: rafter004 3
+    400686: raftersParallelA001 1
+    400688: raftersParallelA001 2
+    400690: raftersParallelA001 3
+    400692: raftersParallelB001 1
+    400694: raftersParallelB001 2
+    400696: raftersParallelB001 3
+    400698: RoofCorrugatedA001 2
+    400700: RoofCorrugatedA001 3
+    400702: RoofCorrugatedA001 4
+    400704: RoofCorrugatedA002 2
+    400706: RoofCorrugatedA002 3
+    400708: RoofCorrugatedA002 4
+    400710: RoofCorrugatedA003 2
+    400712: RoofCorrugatedA003 3
+    400714: RoofCorrugatedA003 4
+    400716: RoofCorrugatedA004 2
+    400718: RoofCorrugatedA004 3
+    400720: RoofCorrugatedA004 4
+    400722: RoofCorrugatedB001 2
+    400724: RoofCorrugatedB001 3
+    400726: RoofCorrugatedB001 4
+    400728: RoofCorrugatedB002 2
+    400730: RoofCorrugatedB002 3
+    400732: RoofCorrugatedB002 4
+    400734: RoofCorrugatedB003 2
+    400736: RoofCorrugatedB003 3
+    400738: RoofCorrugatedB003 4
+    400740: RoofCorrugatedB004 2
+    400742: RoofCorrugatedB004 3
+    400744: RoofCorrugatedB004 4
+    400746: RoofCorrugatedGroup001 1
+    400748: RoofCorrugatedGroup001 2
+    400750: RoofCorrugatedGroup001 3
+    400752: Solid1 1
+    400754: Solid1 2
+    400756: Solid1 3
+    400758: Solid10 1
+    400760: Solid10 2
+    400762: Solid10 3
+    400764: Solid11 1
+    400766: Solid11 2
+    400768: Solid11 3
+    400770: Solid12 1
+    400772: Solid12 2
+    400774: Solid12 3
+    400776: Solid2 1
+    400778: Solid2 2
+    400780: Solid2 3
+    400782: Solid5 1
+    400784: Solid5 2
+    400786: Solid5 3
+    400788: Solid6 1
+    400790: Solid6 2
+    400792: Solid6 3
+    400794: Solid7 1
+    400796: Solid7 2
+    400798: Solid7 3
+    400800: Solid8 1
+    400802: Solid8 2
+    400804: Solid8 3
+    400806: wall01 1
+    400808: wall01 2
+    400810: wall01 3
+    400812: wall02
+    400814: WallCorrugated001 1
+    400816: WallCorrugated001 2
+    400818: WallCorrugated001 3
+    400820: WallCorrugated0019
+    400822: WallCorrugated002 1
+    400824: WallCorrugated002 2
+    400826: WallCorrugated002 3
+    400828: WallCorrugated0020
+    400830: WallCorrugated0021
+    400832: WallCorrugated0022
+    400834: WallCorrugated0023
+    400836: WallCorrugated0024
+    400838: WallCorrugated003 1
+    400840: WallCorrugated003 2
+    400842: WallCorrugated003 3
+    400844: WallCorrugated004 1
+    400846: WallCorrugated004 2
+    400848: WallCorrugated004 3
+    400850: wallDarkness003
+    400852: wallDarkness004
+    400854: warehouseSegment02
+    400856: warehouseSegment03
+    400858: warehouseSegmentEntrance001
+    2300000: bigHorizBeam001
+    2300002: bigHorizBeam002
+    2300004: Concrete, Cast-in-Place gray10
+    2300006: Concrete, Cast-in-Place gray2
+    2300008: Concrete, Cast-in-Place gray4
+    2300010: Concrete, Cast-in-Place gray5
+    2300012: Concrete, Cast-in-Place gray6
+    2300014: Concrete, Cast-in-Place gray7
+    2300016: Concrete, Cast-in-Place gray8
+    2300018: Concrete, Cast-in-Place gray9
+    2300020: ConcreteBaseLong001
+    2300022: Default Floor2
+    2300024: Default Roof2
+    2300026: horizBeam001
+    2300028: horizBeam002
+    2300030: horizBeam003
+    2300032: horizBeam004
+    2300034: horizBeam005
+    2300036: horizBeam006
+    2300038: horizBeam007
+    2300040: ibeam0010
+    2300042: ibeam0010 1
+    2300044: ibeam002
+    2300046: ibeam002 1
+    2300048: ibeam003
+    2300050: ibeam003 1
+    2300052: ibeam004
+    2300054: ibeam004 1
+    2300056: ibeam005
+    2300058: ibeam005 1
+    2300060: ibeam006
+    2300062: ibeam006 1
+    2300064: ibeam007
+    2300066: ibeam007 1
+    2300068: ibeam008
+    2300070: ibeam008 1
+    2300072: ibeam009
+    2300074: ibeam009 1
+    2300076: pillarBig002
+    2300078: pillarBig003
+    2300080: pillarBig004
+    2300082: pillarBig005
+    2300084: pillarSmall001
+    2300086: pillarSmall0013
+    2300088: pillarSmall002
+    2300090: pillarSmall003
+    2300092: pillarSmall004
+    2300094: pillarSmall006
+    2300096: pillarSmall007
+    2300098: pillarSmall008
+    2300100: pipeParallel003
+    2300102: pipeParallel004
+    2300104: rafter002
+    2300106: rafter003
+    2300108: rafter004
+    2300110: Solid1
+    2300112: Solid10
+    2300114: Solid11
+    2300116: Solid12
+    2300118: Solid2
+    2300120: Solid5
+    2300122: Solid6
+    2300124: Solid7
+    2300126: Solid8
+    2300128: WallCorrugated001
+    2300130: WallCorrugated002
+    2300132: WallCorrugated003
+    2300134: WallCorrugated004
+    2300136: wallDarkness001
+    2300138: bigHorizBeam003
+    2300140: bigHorizBeam004
+    2300142: Concrete, Cast-in-Place gray11
+    2300144: Concrete, Cast-in-Place gray12
+    2300146: Concrete, Cast-in-Place gray13
+    2300148: Concrete, Cast-in-Place gray14
+    2300150: Concrete, Cast-in-Place gray15
+    2300152: Concrete, Cast-in-Place gray16
+    2300154: Concrete, Cast-in-Place gray17
+    2300156: Concrete, Cast-in-Place gray18
+    2300158: Concrete, Cast-in-Place gray19
+    2300160: Concrete, Cast-in-Place gray3
+    2300162: concreteBases001
+    2300164: Conduits_Conduit with Fittings1
+    2300166: CraneAndBalcony001
+    2300168: CrossBeam001
+    2300170: CrossBeam002
+    2300172: ElectricalBox
+    2300174: Floor003
+    2300176: horizBeam0010
+    2300178: horizBeam0011
+    2300180: horizBeam0012
+    2300182: horizBeam0013
+    2300184: horizBeam0014
+    2300186: horizBeam008
+    2300188: horizBeam009
+    2300190: LadderComplete
+    2300192: LightingFixtures001
+    2300194: pillarBig001
+    2300196: pillarBig006
+    2300198: pillarBig007
+    2300200: pillarBig008
+    2300202: pillarBig009
+    2300204: PillarsBack001
+    2300206: pillarSmall0010
+    2300208: pillarSmall0011
+    2300210: pillarSmall0012
+    2300212: pillarSmall0014
+    2300214: pillarSmall0015
+    2300216: pillarSmall0016
+    2300218: pillarSmall0017
+    2300220: pillarSmall005
+    2300222: pillarSmall009
+    2300224: pipeBack001
+    2300226: pipeParallel001
+    2300228: pipeParallel002
+    2300230: rafter001
+    2300232: rafter005
+    2300234: rafter006
+    2300236: rafter007
+    2300238: rafter008
+    2300240: Railroad Ties
+    2300242: RoofOrig01
+    2300244: Solid13
+    2300246: Solid14
+    2300248: Solid15
+    2300250: Solid16
+    2300252: Solid17
+    2300254: Solid18
+    2300256: Solid19
+    2300258: Solid20
+    2300260: Solid21
+    2300262: Solid22
+    2300264: StructureFrameBack001
+    2300266: WallCorrugated0010
+    2300268: WallCorrugated0011
+    2300270: WallCorrugated0012
+    2300272: WallCorrugated0013
+    2300274: WallCorrugated0015
+    2300276: WallCorrugated0016
+    2300278: WallCorrugated0017
+    2300280: WallCorrugated0018
+    2300282: WallCorrugated005
+    2300284: WallCorrugated006
+    2300286: WallCorrugated008
+    2300288: horizBeam0015
+    2300290: horizBeam0016
+    2300292: horizBeam0017
+    2300294: horizBeam0018
+    2300296: horizBeam0019
+    2300298: horizBeam0020
+    2300300: horizBeam0021
+    2300302: horizBeam0022
+    2300304: horizBeam0023
+    2300306: horizBeam0024
+    2300308: horizBeam0025
+    2300310: horizBeam0026
+    2300312: horizBeam0027
+    2300314: horizBeam0028
+    2300316: horizBeam0029
+    2300318: horizBeam0030
+    2300320: horizBeam0031
+    2300322: horizBeam0032
+    2300324: horizBeam0033
+    2300326: horizBeam0034
+    2300328: horizBeam0035
+    2300330: ibeam0010 2
+    2300332: ibeam0010 3
+    2300334: ibeam002 2
+    2300336: ibeam002 3
+    2300338: ibeam003 2
+    2300340: ibeam003 3
+    2300342: ibeam004 2
+    2300344: ibeam004 3
+    2300346: ibeam005 2
+    2300348: ibeam005 3
+    2300350: ibeam006 2
+    2300352: ibeam006 3
+    2300354: ibeam007 2
+    2300356: ibeam007 3
+    2300358: ibeam008 2
+    2300360: ibeam008 3
+    2300362: ibeam009 2
+    2300364: ibeam009 3
+    2300366: pipeLarge01
+    2300368: polySurface1
+    2300370: polySurface2
+    2300372: polySurface3
+    2300374: polySurface4
+    2300376: darkWall001
+    2300378: FloorSlab001
+    2300380: raftersParallelA001
+    2300382: raftersParallelA002
+    2300384: raftersParallelB001
+    2300386: raftersParallelB002
+    2300388: RoofCorrugatedA001
+    2300390: RoofCorrugatedA001 1
+    2300392: RoofCorrugatedA002
+    2300394: RoofCorrugatedA002 1
+    2300396: RoofCorrugatedA003
+    2300398: RoofCorrugatedA003 1
+    2300400: RoofCorrugatedA004
+    2300402: RoofCorrugatedA004 1
+    2300404: RoofCorrugatedB001
+    2300406: RoofCorrugatedB001 1
+    2300408: RoofCorrugatedB002
+    2300410: RoofCorrugatedB002 1
+    2300412: RoofCorrugatedB003
+    2300414: RoofCorrugatedB003 1
+    2300416: RoofCorrugatedB004
+    2300418: RoofCorrugatedB004 1
+    2300420: wallDarkness002
+    2300422: bigHorizBeam001 1
+    2300424: bigHorizBeam001 2
+    2300426: bigHorizBeam001 3
+    2300428: bigHorizBeam002 1
+    2300430: bigHorizBeam002 2
+    2300432: bigHorizBeam002 3
+    2300434: Concrete, Cast-in-Place gray10 1
+    2300436: Concrete, Cast-in-Place gray10 2
+    2300438: Concrete, Cast-in-Place gray10 3
+    2300440: Concrete, Cast-in-Place gray2 1
+    2300442: Concrete, Cast-in-Place gray2 2
+    2300444: Concrete, Cast-in-Place gray2 3
+    2300446: Concrete, Cast-in-Place gray4 1
+    2300448: Concrete, Cast-in-Place gray4 2
+    2300450: Concrete, Cast-in-Place gray4 3
+    2300452: Concrete, Cast-in-Place gray5 1
+    2300454: Concrete, Cast-in-Place gray5 2
+    2300456: Concrete, Cast-in-Place gray5 3
+    2300458: Concrete, Cast-in-Place gray6 1
+    2300460: Concrete, Cast-in-Place gray6 2
+    2300462: Concrete, Cast-in-Place gray6 3
+    2300464: Concrete, Cast-in-Place gray7 1
+    2300466: Concrete, Cast-in-Place gray7 2
+    2300468: Concrete, Cast-in-Place gray7 3
+    2300470: Concrete, Cast-in-Place gray8 1
+    2300472: Concrete, Cast-in-Place gray8 2
+    2300474: Concrete, Cast-in-Place gray8 3
+    2300476: Concrete, Cast-in-Place gray9 1
+    2300478: Concrete, Cast-in-Place gray9 2
+    2300480: Concrete, Cast-in-Place gray9 3
+    2300482: ConcreteBaseLong001 1
+    2300484: ConcreteBaseLong001 2
+    2300486: ConcreteBaseLong001 3
+    2300488: ConcreteBaseLong002
+    2300490: CraneYellow001
+    2300492: FloorSlab001 1
+    2300494: FloorSlab001 2
+    2300496: FloorSlab001 3
+    2300498: horizBeam001 1
+    2300500: horizBeam001 2
+    2300502: horizBeam001 3
+    2300504: horizBeam001 4
+    2300506: horizBeam002 1
+    2300508: horizBeam002 2
+    2300510: horizBeam002 3
+    2300512: horizBeam002 4
+    2300514: horizBeam003 1
+    2300516: horizBeam003 2
+    2300518: horizBeam003 3
+    2300520: horizBeam003 4
+    2300522: horizBeam004 1
+    2300524: horizBeam004 2
+    2300526: horizBeam004 3
+    2300528: horizBeam004 4
+    2300530: horizBeam005 1
+    2300532: horizBeam005 2
+    2300534: horizBeam005 3
+    2300536: horizBeam005 4
+    2300538: horizBeam006 1
+    2300540: horizBeam006 2
+    2300542: horizBeam006 3
+    2300544: horizBeam006 4
+    2300546: horizBeam007 1
+    2300548: horizBeam007 2
+    2300550: horizBeam007 3
+    2300552: horizBeam007 4
+    2300554: pillarBig002 1
+    2300556: pillarBig002 2
+    2300558: pillarBig002 3
+    2300560: pillarBig003 1
+    2300562: pillarBig003 2
+    2300564: pillarBig003 3
+    2300566: pillarBig004 1
+    2300568: pillarBig004 2
+    2300570: pillarBig004 3
+    2300572: pillarBig005 1
+    2300574: pillarBig005 2
+    2300576: pillarBig005 3
+    2300578: pillarSmall001 1
+    2300580: pillarSmall001 2
+    2300582: pillarSmall001 3
+    2300584: pillarSmall0013 1
+    2300586: pillarSmall0013 2
+    2300588: pillarSmall0013 3
+    2300590: pillarSmall0018
+    2300592: pillarSmall0019
+    2300594: pillarSmall002 1
+    2300596: pillarSmall002 2
+    2300598: pillarSmall002 3
+    2300600: pillarSmall0020
+    2300602: pillarSmall003 1
+    2300604: pillarSmall003 2
+    2300606: pillarSmall003 3
+    2300608: pillarSmall004 1
+    2300610: pillarSmall004 2
+    2300612: pillarSmall004 3
+    2300614: pillarSmall006 1
+    2300616: pillarSmall006 2
+    2300618: pillarSmall006 3
+    2300620: pillarSmall007 1
+    2300622: pillarSmall007 2
+    2300624: pillarSmall007 3
+    2300626: pillarSmall008 1
+    2300628: pillarSmall008 2
+    2300630: pillarSmall008 3
+    2300632: pipeParallel003 1
+    2300634: pipeParallel003 2
+    2300636: pipeParallel003 3
+    2300638: pipeParallel004 1
+    2300640: pipeParallel004 2
+    2300642: pipeParallel004 3
+    2300644: platform001
+    2300646: rafter002 1
+    2300648: rafter002 2
+    2300650: rafter002 3
+    2300652: rafter003 1
+    2300654: rafter003 2
+    2300656: rafter003 3
+    2300658: rafter004 1
+    2300660: rafter004 2
+    2300662: rafter004 3
+    2300664: raftersParallelA001 1
+    2300666: raftersParallelA001 2
+    2300668: raftersParallelA001 3
+    2300670: raftersParallelB001 1
+    2300672: raftersParallelB001 2
+    2300674: raftersParallelB001 3
+    2300676: RoofCorrugatedA001 2
+    2300678: RoofCorrugatedA001 3
+    2300680: RoofCorrugatedA001 4
+    2300682: RoofCorrugatedA002 2
+    2300684: RoofCorrugatedA002 3
+    2300686: RoofCorrugatedA002 4
+    2300688: RoofCorrugatedA003 2
+    2300690: RoofCorrugatedA003 3
+    2300692: RoofCorrugatedA003 4
+    2300694: RoofCorrugatedA004 2
+    2300696: RoofCorrugatedA004 3
+    2300698: RoofCorrugatedA004 4
+    2300700: RoofCorrugatedB001 2
+    2300702: RoofCorrugatedB001 3
+    2300704: RoofCorrugatedB001 4
+    2300706: RoofCorrugatedB002 2
+    2300708: RoofCorrugatedB002 3
+    2300710: RoofCorrugatedB002 4
+    2300712: RoofCorrugatedB003 2
+    2300714: RoofCorrugatedB003 3
+    2300716: RoofCorrugatedB003 4
+    2300718: RoofCorrugatedB004 2
+    2300720: RoofCorrugatedB004 3
+    2300722: RoofCorrugatedB004 4
+    2300724: Solid1 1
+    2300726: Solid1 2
+    2300728: Solid1 3
+    2300730: Solid10 1
+    2300732: Solid10 2
+    2300734: Solid10 3
+    2300736: Solid11 1
+    2300738: Solid11 2
+    2300740: Solid11 3
+    2300742: Solid12 1
+    2300744: Solid12 2
+    2300746: Solid12 3
+    2300748: Solid2 1
+    2300750: Solid2 2
+    2300752: Solid2 3
+    2300754: Solid5 1
+    2300756: Solid5 2
+    2300758: Solid5 3
+    2300760: Solid6 1
+    2300762: Solid6 2
+    2300764: Solid6 3
+    2300766: Solid7 1
+    2300768: Solid7 2
+    2300770: Solid7 3
+    2300772: Solid8 1
+    2300774: Solid8 2
+    2300776: Solid8 3
+    2300778: WallCorrugated001 1
+    2300780: WallCorrugated001 2
+    2300782: WallCorrugated001 3
+    2300784: WallCorrugated0019
+    2300786: WallCorrugated002 1
+    2300788: WallCorrugated002 2
+    2300790: WallCorrugated002 3
+    2300792: WallCorrugated0020
+    2300794: WallCorrugated0021
+    2300796: WallCorrugated0022
+    2300798: WallCorrugated0023
+    2300800: WallCorrugated0024
+    2300802: WallCorrugated003 1
+    2300804: WallCorrugated003 2
+    2300806: WallCorrugated003 3
+    2300808: WallCorrugated004 1
+    2300810: WallCorrugated004 2
+    2300812: WallCorrugated004 3
+    2300814: wallDarkness003
+    2300816: wallDarkness004
+    3300000: bigHorizBeam001
+    3300002: bigHorizBeam002
+    3300004: Concrete, Cast-in-Place gray10
+    3300006: Concrete, Cast-in-Place gray2
+    3300008: Concrete, Cast-in-Place gray4
+    3300010: Concrete, Cast-in-Place gray5
+    3300012: Concrete, Cast-in-Place gray6
+    3300014: Concrete, Cast-in-Place gray7
+    3300016: Concrete, Cast-in-Place gray8
+    3300018: Concrete, Cast-in-Place gray9
+    3300020: ConcreteBaseLong001
+    3300022: Default Floor2
+    3300024: Default Roof2
+    3300026: horizBeam001
+    3300028: horizBeam002
+    3300030: horizBeam003
+    3300032: horizBeam004
+    3300034: horizBeam005
+    3300036: horizBeam006
+    3300038: horizBeam007
+    3300040: ibeam0010
+    3300042: ibeam0010 1
+    3300044: ibeam002
+    3300046: ibeam002 1
+    3300048: ibeam003
+    3300050: ibeam003 1
+    3300052: ibeam004
+    3300054: ibeam004 1
+    3300056: ibeam005
+    3300058: ibeam005 1
+    3300060: ibeam006
+    3300062: ibeam006 1
+    3300064: ibeam007
+    3300066: ibeam007 1
+    3300068: ibeam008
+    3300070: ibeam008 1
+    3300072: ibeam009
+    3300074: ibeam009 1
+    3300076: pillarBig002
+    3300078: pillarBig003
+    3300080: pillarBig004
+    3300082: pillarBig005
+    3300084: pillarSmall001
+    3300086: pillarSmall0013
+    3300088: pillarSmall002
+    3300090: pillarSmall003
+    3300092: pillarSmall004
+    3300094: pillarSmall006
+    3300096: pillarSmall007
+    3300098: pillarSmall008
+    3300100: pipeParallel003
+    3300102: pipeParallel004
+    3300104: rafter002
+    3300106: rafter003
+    3300108: rafter004
+    3300110: Solid1
+    3300112: Solid10
+    3300114: Solid11
+    3300116: Solid12
+    3300118: Solid2
+    3300120: Solid5
+    3300122: Solid6
+    3300124: Solid7
+    3300126: Solid8
+    3300128: WallCorrugated001
+    3300130: WallCorrugated002
+    3300132: WallCorrugated003
+    3300134: WallCorrugated004
+    3300136: wallDarkness001
+    3300138: bigHorizBeam003
+    3300140: bigHorizBeam004
+    3300142: Concrete, Cast-in-Place gray11
+    3300144: Concrete, Cast-in-Place gray12
+    3300146: Concrete, Cast-in-Place gray13
+    3300148: Concrete, Cast-in-Place gray14
+    3300150: Concrete, Cast-in-Place gray15
+    3300152: Concrete, Cast-in-Place gray16
+    3300154: Concrete, Cast-in-Place gray17
+    3300156: Concrete, Cast-in-Place gray18
+    3300158: Concrete, Cast-in-Place gray19
+    3300160: Concrete, Cast-in-Place gray3
+    3300162: concreteBases001
+    3300164: Conduits_Conduit with Fittings1
+    3300166: CraneAndBalcony001
+    3300168: CrossBeam001
+    3300170: CrossBeam002
+    3300172: ElectricalBox
+    3300174: Floor003
+    3300176: horizBeam0010
+    3300178: horizBeam0011
+    3300180: horizBeam0012
+    3300182: horizBeam0013
+    3300184: horizBeam0014
+    3300186: horizBeam008
+    3300188: horizBeam009
+    3300190: LadderComplete
+    3300192: LightingFixtures001
+    3300194: pillarBig001
+    3300196: pillarBig006
+    3300198: pillarBig007
+    3300200: pillarBig008
+    3300202: pillarBig009
+    3300204: PillarsBack001
+    3300206: pillarSmall0010
+    3300208: pillarSmall0011
+    3300210: pillarSmall0012
+    3300212: pillarSmall0014
+    3300214: pillarSmall0015
+    3300216: pillarSmall0016
+    3300218: pillarSmall0017
+    3300220: pillarSmall005
+    3300222: pillarSmall009
+    3300224: pipeBack001
+    3300226: pipeParallel001
+    3300228: pipeParallel002
+    3300230: rafter001
+    3300232: rafter005
+    3300234: rafter006
+    3300236: rafter007
+    3300238: rafter008
+    3300240: Railroad Ties
+    3300242: RoofOrig01
+    3300244: Solid13
+    3300246: Solid14
+    3300248: Solid15
+    3300250: Solid16
+    3300252: Solid17
+    3300254: Solid18
+    3300256: Solid19
+    3300258: Solid20
+    3300260: Solid21
+    3300262: Solid22
+    3300264: StructureFrameBack001
+    3300266: WallCorrugated0010
+    3300268: WallCorrugated0011
+    3300270: WallCorrugated0012
+    3300272: WallCorrugated0013
+    3300274: WallCorrugated0015
+    3300276: WallCorrugated0016
+    3300278: WallCorrugated0017
+    3300280: WallCorrugated0018
+    3300282: WallCorrugated005
+    3300284: WallCorrugated006
+    3300286: WallCorrugated008
+    3300288: horizBeam0015
+    3300290: horizBeam0016
+    3300292: horizBeam0017
+    3300294: horizBeam0018
+    3300296: horizBeam0019
+    3300298: horizBeam0020
+    3300300: horizBeam0021
+    3300302: horizBeam0022
+    3300304: horizBeam0023
+    3300306: horizBeam0024
+    3300308: horizBeam0025
+    3300310: horizBeam0026
+    3300312: horizBeam0027
+    3300314: horizBeam0028
+    3300316: horizBeam0029
+    3300318: horizBeam0030
+    3300320: horizBeam0031
+    3300322: horizBeam0032
+    3300324: horizBeam0033
+    3300326: horizBeam0034
+    3300328: horizBeam0035
+    3300330: ibeam0010 2
+    3300332: ibeam0010 3
+    3300334: ibeam002 2
+    3300336: ibeam002 3
+    3300338: ibeam003 2
+    3300340: ibeam003 3
+    3300342: ibeam004 2
+    3300344: ibeam004 3
+    3300346: ibeam005 2
+    3300348: ibeam005 3
+    3300350: ibeam006 2
+    3300352: ibeam006 3
+    3300354: ibeam007 2
+    3300356: ibeam007 3
+    3300358: ibeam008 2
+    3300360: ibeam008 3
+    3300362: ibeam009 2
+    3300364: ibeam009 3
+    3300366: pipeLarge01
+    3300368: polySurface1
+    3300370: polySurface2
+    3300372: polySurface3
+    3300374: polySurface4
+    3300376: darkWall001
+    3300378: FloorSlab001
+    3300380: raftersParallelA001
+    3300382: raftersParallelA002
+    3300384: raftersParallelB001
+    3300386: raftersParallelB002
+    3300388: RoofCorrugatedA001
+    3300390: RoofCorrugatedA001 1
+    3300392: RoofCorrugatedA002
+    3300394: RoofCorrugatedA002 1
+    3300396: RoofCorrugatedA003
+    3300398: RoofCorrugatedA003 1
+    3300400: RoofCorrugatedA004
+    3300402: RoofCorrugatedA004 1
+    3300404: RoofCorrugatedB001
+    3300406: RoofCorrugatedB001 1
+    3300408: RoofCorrugatedB002
+    3300410: RoofCorrugatedB002 1
+    3300412: RoofCorrugatedB003
+    3300414: RoofCorrugatedB003 1
+    3300416: RoofCorrugatedB004
+    3300418: RoofCorrugatedB004 1
+    3300420: wallDarkness002
+    3300422: bigHorizBeam001 1
+    3300424: bigHorizBeam001 2
+    3300426: bigHorizBeam001 3
+    3300428: bigHorizBeam002 1
+    3300430: bigHorizBeam002 2
+    3300432: bigHorizBeam002 3
+    3300434: Concrete, Cast-in-Place gray10 1
+    3300436: Concrete, Cast-in-Place gray10 2
+    3300438: Concrete, Cast-in-Place gray10 3
+    3300440: Concrete, Cast-in-Place gray2 1
+    3300442: Concrete, Cast-in-Place gray2 2
+    3300444: Concrete, Cast-in-Place gray2 3
+    3300446: Concrete, Cast-in-Place gray4 1
+    3300448: Concrete, Cast-in-Place gray4 2
+    3300450: Concrete, Cast-in-Place gray4 3
+    3300452: Concrete, Cast-in-Place gray5 1
+    3300454: Concrete, Cast-in-Place gray5 2
+    3300456: Concrete, Cast-in-Place gray5 3
+    3300458: Concrete, Cast-in-Place gray6 1
+    3300460: Concrete, Cast-in-Place gray6 2
+    3300462: Concrete, Cast-in-Place gray6 3
+    3300464: Concrete, Cast-in-Place gray7 1
+    3300466: Concrete, Cast-in-Place gray7 2
+    3300468: Concrete, Cast-in-Place gray7 3
+    3300470: Concrete, Cast-in-Place gray8 1
+    3300472: Concrete, Cast-in-Place gray8 2
+    3300474: Concrete, Cast-in-Place gray8 3
+    3300476: Concrete, Cast-in-Place gray9 1
+    3300478: Concrete, Cast-in-Place gray9 2
+    3300480: Concrete, Cast-in-Place gray9 3
+    3300482: ConcreteBaseLong001 1
+    3300484: ConcreteBaseLong001 2
+    3300486: ConcreteBaseLong001 3
+    3300488: ConcreteBaseLong002
+    3300490: CraneYellow001
+    3300492: FloorSlab001 1
+    3300494: FloorSlab001 2
+    3300496: FloorSlab001 3
+    3300498: horizBeam001 1
+    3300500: horizBeam001 2
+    3300502: horizBeam001 3
+    3300504: horizBeam001 4
+    3300506: horizBeam002 1
+    3300508: horizBeam002 2
+    3300510: horizBeam002 3
+    3300512: horizBeam002 4
+    3300514: horizBeam003 1
+    3300516: horizBeam003 2
+    3300518: horizBeam003 3
+    3300520: horizBeam003 4
+    3300522: horizBeam004 1
+    3300524: horizBeam004 2
+    3300526: horizBeam004 3
+    3300528: horizBeam004 4
+    3300530: horizBeam005 1
+    3300532: horizBeam005 2
+    3300534: horizBeam005 3
+    3300536: horizBeam005 4
+    3300538: horizBeam006 1
+    3300540: horizBeam006 2
+    3300542: horizBeam006 3
+    3300544: horizBeam006 4
+    3300546: horizBeam007 1
+    3300548: horizBeam007 2
+    3300550: horizBeam007 3
+    3300552: horizBeam007 4
+    3300554: pillarBig002 1
+    3300556: pillarBig002 2
+    3300558: pillarBig002 3
+    3300560: pillarBig003 1
+    3300562: pillarBig003 2
+    3300564: pillarBig003 3
+    3300566: pillarBig004 1
+    3300568: pillarBig004 2
+    3300570: pillarBig004 3
+    3300572: pillarBig005 1
+    3300574: pillarBig005 2
+    3300576: pillarBig005 3
+    3300578: pillarSmall001 1
+    3300580: pillarSmall001 2
+    3300582: pillarSmall001 3
+    3300584: pillarSmall0013 1
+    3300586: pillarSmall0013 2
+    3300588: pillarSmall0013 3
+    3300590: pillarSmall0018
+    3300592: pillarSmall0019
+    3300594: pillarSmall002 1
+    3300596: pillarSmall002 2
+    3300598: pillarSmall002 3
+    3300600: pillarSmall0020
+    3300602: pillarSmall003 1
+    3300604: pillarSmall003 2
+    3300606: pillarSmall003 3
+    3300608: pillarSmall004 1
+    3300610: pillarSmall004 2
+    3300612: pillarSmall004 3
+    3300614: pillarSmall006 1
+    3300616: pillarSmall006 2
+    3300618: pillarSmall006 3
+    3300620: pillarSmall007 1
+    3300622: pillarSmall007 2
+    3300624: pillarSmall007 3
+    3300626: pillarSmall008 1
+    3300628: pillarSmall008 2
+    3300630: pillarSmall008 3
+    3300632: pipeParallel003 1
+    3300634: pipeParallel003 2
+    3300636: pipeParallel003 3
+    3300638: pipeParallel004 1
+    3300640: pipeParallel004 2
+    3300642: pipeParallel004 3
+    3300644: platform001
+    3300646: rafter002 1
+    3300648: rafter002 2
+    3300650: rafter002 3
+    3300652: rafter003 1
+    3300654: rafter003 2
+    3300656: rafter003 3
+    3300658: rafter004 1
+    3300660: rafter004 2
+    3300662: rafter004 3
+    3300664: raftersParallelA001 1
+    3300666: raftersParallelA001 2
+    3300668: raftersParallelA001 3
+    3300670: raftersParallelB001 1
+    3300672: raftersParallelB001 2
+    3300674: raftersParallelB001 3
+    3300676: RoofCorrugatedA001 2
+    3300678: RoofCorrugatedA001 3
+    3300680: RoofCorrugatedA001 4
+    3300682: RoofCorrugatedA002 2
+    3300684: RoofCorrugatedA002 3
+    3300686: RoofCorrugatedA002 4
+    3300688: RoofCorrugatedA003 2
+    3300690: RoofCorrugatedA003 3
+    3300692: RoofCorrugatedA003 4
+    3300694: RoofCorrugatedA004 2
+    3300696: RoofCorrugatedA004 3
+    3300698: RoofCorrugatedA004 4
+    3300700: RoofCorrugatedB001 2
+    3300702: RoofCorrugatedB001 3
+    3300704: RoofCorrugatedB001 4
+    3300706: RoofCorrugatedB002 2
+    3300708: RoofCorrugatedB002 3
+    3300710: RoofCorrugatedB002 4
+    3300712: RoofCorrugatedB003 2
+    3300714: RoofCorrugatedB003 3
+    3300716: RoofCorrugatedB003 4
+    3300718: RoofCorrugatedB004 2
+    3300720: RoofCorrugatedB004 3
+    3300722: RoofCorrugatedB004 4
+    3300724: Solid1 1
+    3300726: Solid1 2
+    3300728: Solid1 3
+    3300730: Solid10 1
+    3300732: Solid10 2
+    3300734: Solid10 3
+    3300736: Solid11 1
+    3300738: Solid11 2
+    3300740: Solid11 3
+    3300742: Solid12 1
+    3300744: Solid12 2
+    3300746: Solid12 3
+    3300748: Solid2 1
+    3300750: Solid2 2
+    3300752: Solid2 3
+    3300754: Solid5 1
+    3300756: Solid5 2
+    3300758: Solid5 3
+    3300760: Solid6 1
+    3300762: Solid6 2
+    3300764: Solid6 3
+    3300766: Solid7 1
+    3300768: Solid7 2
+    3300770: Solid7 3
+    3300772: Solid8 1
+    3300774: Solid8 2
+    3300776: Solid8 3
+    3300778: WallCorrugated001 1
+    3300780: WallCorrugated001 2
+    3300782: WallCorrugated001 3
+    3300784: WallCorrugated0019
+    3300786: WallCorrugated002 1
+    3300788: WallCorrugated002 2
+    3300790: WallCorrugated002 3
+    3300792: WallCorrugated0020
+    3300794: WallCorrugated0021
+    3300796: WallCorrugated0022
+    3300798: WallCorrugated0023
+    3300800: WallCorrugated0024
+    3300802: WallCorrugated003 1
+    3300804: WallCorrugated003 2
+    3300806: WallCorrugated003 3
+    3300808: WallCorrugated004 1
+    3300810: WallCorrugated004 2
+    3300812: WallCorrugated004 3
+    3300814: wallDarkness003
+    3300816: wallDarkness004
+    4300000: bigHorizBeam002
+    4300002: rafter002
+    4300004: pillarBig002
+    4300006: pillarSmall006
+    4300008: Concrete, Cast-in-Place gray4
+    4300010: rafter003
+    4300012: pillarBig003
+    4300014: pillarSmall007
+    4300016: Concrete, Cast-in-Place gray5
+    4300018: rafter004
+    4300020: pillarBig004
+    4300022: pillarSmall008
+    4300024: Concrete, Cast-in-Place gray6
+    4300026: pillarBig005
+    4300028: Concrete, Cast-in-Place gray7
+    4300030: pillarSmall0013
+    4300032: pipeParallel003
+    4300034: pipeParallel004
+    4300036: Default Floor2
+    4300038: bigHorizBeam001
+    4300040: pillarSmall001
+    4300042: pillarSmall002
+    4300044: pillarSmall003
+    4300046: pillarSmall004
+    4300048: Solid5
+    4300050: Concrete, Cast-in-Place gray2
+    4300052: Solid2
+    4300054: Solid1
+    4300056: Solid6
+    4300058: Solid7
+    4300060: Solid8
+    4300062: Solid10
+    4300064: Concrete, Cast-in-Place gray8
+    4300066: Solid11
+    4300068: Concrete, Cast-in-Place gray9
+    4300070: Solid12
+    4300072: Concrete, Cast-in-Place gray10
+    4300074: horizBeam001
+    4300076: horizBeam002
+    4300078: horizBeam003
+    4300080: horizBeam004
+    4300082: horizBeam005
+    4300084: horizBeam006
+    4300086: horizBeam007
+    4300088: ibeam002
+    4300090: ibeam003
+    4300092: ibeam004
+    4300094: ibeam005
+    4300096: ibeam006
+    4300098: ibeam007
+    4300100: ibeam008
+    4300102: ibeam009
+    4300104: ibeam0010
+    4300106: ibeam002
+    4300108: ibeam003
+    4300110: ibeam004
+    4300112: ibeam005
+    4300114: ibeam006
+    4300116: ibeam007
+    4300118: ibeam008
+    4300120: ibeam009
+    4300122: ibeam0010
+    4300124: Default Roof2
+    4300126: WallCorrugated001
+    4300128: WallCorrugated002
+    4300130: WallCorrugated003
+    4300132: WallCorrugated004
+    4300134: ConcreteBaseLong001
+    4300136: wallDarkness001
+    4300138: horizBeam008
+    4300140: horizBeam009
+    4300142: horizBeam0010
+    4300144: horizBeam0011
+    4300146: horizBeam0012
+    4300148: horizBeam0014
+    4300150: horizBeam0013
+    4300152: pipeParallel001
+    4300154: pipeParallel002
+    4300156: bigHorizBeam003
+    4300158: pillarSmall009
+    4300160: pillarSmall0010
+    4300162: pillarSmall0011
+    4300164: pillarSmall0012
+    4300166: Concrete, Cast-in-Place gray3
+    4300168: pillarSmall005
+    4300170: pillarBig001
+    4300172: rafter001
+    4300174: Conduits_Conduit with Fittings1
+    4300176: ElectricalBox
+    4300178: LadderComplete
+    4300180: pipeBack001
+    4300182: CraneAndBalcony001
+    4300184: Floor003
+    4300186: Railroad Ties
+    4300188: PillarsBack001
+    4300190: StructureFrameBack001
+    4300192: concreteBases001
+    4300194: RoofOrig01
+    4300196: LightingFixtures001
+    4300198: bigHorizBeam004
+    4300200: Solid13
+    4300202: Solid14
+    4300204: Concrete, Cast-in-Place gray11
+    4300206: pillarSmall0014
+    4300208: Solid15
+    4300210: Solid16
+    4300212: Concrete, Cast-in-Place gray12
+    4300214: pillarSmall0015
+    4300216: Solid17
+    4300218: Solid18
+    4300220: Concrete, Cast-in-Place gray13
+    4300222: pillarSmall0016
+    4300224: Solid19
+    4300226: Solid20
+    4300228: Concrete, Cast-in-Place gray14
+    4300230: pillarSmall0017
+    4300232: Solid21
+    4300234: Solid22
+    4300236: Concrete, Cast-in-Place gray15
+    4300238: rafter005
+    4300240: pillarBig006
+    4300242: Concrete, Cast-in-Place gray16
+    4300244: rafter006
+    4300246: pillarBig007
+    4300248: Concrete, Cast-in-Place gray17
+    4300250: rafter007
+    4300252: pillarBig008
+    4300254: Concrete, Cast-in-Place gray18
+    4300256: rafter008
+    4300258: pillarBig009
+    4300260: Concrete, Cast-in-Place gray19
+    4300262: WallCorrugated005
+    4300264: WallCorrugated006
+    4300266: WallCorrugated008
+    4300268: CrossBeam001
+    4300270: CrossBeam002
+    4300272: WallCorrugated0012
+    4300274: WallCorrugated0013
+    4300276: WallCorrugated0015
+    4300278: WallCorrugated0016
+    4300280: WallCorrugated0017
+    4300282: WallCorrugated0010
+    4300284: WallCorrugated0011
+    4300286: WallCorrugated0018
+    4300288: polySurface1
+    4300290: polySurface2
+    4300292: polySurface3
+    4300294: polySurface4
+    4300296: horizBeam0015
+    4300298: horizBeam0016
+    4300300: horizBeam0017
+    4300302: horizBeam0018
+    4300304: horizBeam0019
+    4300306: horizBeam0020
+    4300308: horizBeam0021
+    4300310: horizBeam0022
+    4300312: horizBeam0023
+    4300314: horizBeam0024
+    4300316: horizBeam0025
+    4300318: horizBeam0026
+    4300320: horizBeam0027
+    4300322: horizBeam0028
+    4300324: horizBeam0029
+    4300326: horizBeam0030
+    4300328: horizBeam0031
+    4300330: horizBeam0032
+    4300332: horizBeam0033
+    4300334: horizBeam0034
+    4300336: horizBeam0035
+    4300338: ibeam002
+    4300340: ibeam003
+    4300342: ibeam004
+    4300344: ibeam005
+    4300346: ibeam006
+    4300348: ibeam007
+    4300350: ibeam008
+    4300352: ibeam009
+    4300354: ibeam0010
+    4300356: ibeam002
+    4300358: ibeam003
+    4300360: ibeam004
+    4300362: ibeam005
+    4300364: ibeam006
+    4300366: ibeam007
+    4300368: ibeam008
+    4300370: ibeam009
+    4300372: ibeam0010
+    4300374: pipeLarge01
+    4300376: raftersParallelA001
+    4300378: raftersParallelB001
+    4300380: FloorSlab001
+    4300382: RoofCorrugatedA001
+    4300384: RoofCorrugatedB001
+    4300386: RoofCorrugatedB002
+    4300388: RoofCorrugatedA002
+    4300390: RoofCorrugatedB003
+    4300392: RoofCorrugatedA003
+    4300394: RoofCorrugatedB004
+    4300396: RoofCorrugatedA004
+    4300398: raftersParallelA002
+    4300400: raftersParallelB002
+    4300402: RoofCorrugatedA001
+    4300404: RoofCorrugatedB001
+    4300406: RoofCorrugatedB002
+    4300408: RoofCorrugatedA002
+    4300410: RoofCorrugatedB003
+    4300412: RoofCorrugatedA003
+    4300414: RoofCorrugatedB004
+    4300416: RoofCorrugatedA004
+    4300418: darkWall001
+    4300420: wallDarkness002
+    4300422: bigHorizBeam002
+    4300424: rafter002
+    4300426: pillarBig002
+    4300428: pillarSmall006
+    4300430: Concrete, Cast-in-Place gray4
+    4300432: rafter003
+    4300434: pillarBig003
+    4300436: pillarSmall007
+    4300438: Concrete, Cast-in-Place gray5
+    4300440: rafter004
+    4300442: pillarBig004
+    4300444: pillarSmall008
+    4300446: Concrete, Cast-in-Place gray6
+    4300448: pillarBig005
+    4300450: Concrete, Cast-in-Place gray7
+    4300452: pillarSmall0013
+    4300454: pipeParallel003
+    4300456: pipeParallel004
+    4300458: bigHorizBeam001
+    4300460: pillarSmall001
+    4300462: pillarSmall002
+    4300464: pillarSmall003
+    4300466: pillarSmall004
+    4300468: Solid5
+    4300470: Concrete, Cast-in-Place gray2
+    4300472: Solid2
+    4300474: Solid1
+    4300476: Solid6
+    4300478: Solid7
+    4300480: Solid8
+    4300482: Solid10
+    4300484: Concrete, Cast-in-Place gray8
+    4300486: Solid11
+    4300488: Concrete, Cast-in-Place gray9
+    4300490: Solid12
+    4300492: Concrete, Cast-in-Place gray10
+    4300494: horizBeam001
+    4300496: horizBeam002
+    4300498: horizBeam003
+    4300500: horizBeam004
+    4300502: horizBeam005
+    4300504: horizBeam006
+    4300506: horizBeam007
+    4300508: raftersParallelA001
+    4300510: raftersParallelB001
+    4300512: ConcreteBaseLong001
+    4300514: WallCorrugated001
+    4300516: WallCorrugated002
+    4300518: WallCorrugated003
+    4300520: WallCorrugated004
+    4300522: FloorSlab001
+    4300524: RoofCorrugatedA001
+    4300526: RoofCorrugatedB001
+    4300528: RoofCorrugatedB002
+    4300530: RoofCorrugatedA002
+    4300532: RoofCorrugatedB003
+    4300534: RoofCorrugatedA003
+    4300536: RoofCorrugatedB004
+    4300538: RoofCorrugatedA004
+    4300540: WallCorrugated0019
+    4300542: WallCorrugated0020
+    4300544: WallCorrugated0021
+    4300546: WallCorrugated0022
+    4300548: horizBeam001
+    4300550: horizBeam002
+    4300552: horizBeam003
+    4300554: horizBeam004
+    4300556: horizBeam005
+    4300558: horizBeam006
+    4300560: horizBeam007
+    4300562: ConcreteBaseLong002
+    4300564: pillarSmall0018
+    4300566: pillarSmall0019
+    4300568: pillarSmall0020
+    4300570: WallCorrugated0023
+    4300572: WallCorrugated0024
+    4300574: platform001
+    4300576: CraneYellow001
+    4300578: wallDarkness003
+    4300580: wallDarkness004
+    4300582: bigHorizBeam002
+    4300584: rafter002
+    4300586: pillarBig002
+    4300588: pillarSmall006
+    4300590: Concrete, Cast-in-Place gray4
+    4300592: rafter003
+    4300594: pillarBig003
+    4300596: pillarSmall007
+    4300598: Concrete, Cast-in-Place gray5
+    4300600: rafter004
+    4300602: pillarBig004
+    4300604: pillarSmall008
+    4300606: Concrete, Cast-in-Place gray6
+    4300608: pillarBig005
+    4300610: Concrete, Cast-in-Place gray7
+    4300612: pillarSmall0013
+    4300614: pipeParallel003
+    4300616: pipeParallel004
+    4300618: bigHorizBeam001
+    4300620: pillarSmall001
+    4300622: pillarSmall002
+    4300624: pillarSmall003
+    4300626: pillarSmall004
+    4300628: Solid5
+    4300630: Concrete, Cast-in-Place gray2
+    4300632: Solid2
+    4300634: Solid1
+    4300636: Solid6
+    4300638: Solid7
+    4300640: Solid8
+    4300642: Solid10
+    4300644: Concrete, Cast-in-Place gray8
+    4300646: Solid11
+    4300648: Concrete, Cast-in-Place gray9
+    4300650: Solid12
+    4300652: Concrete, Cast-in-Place gray10
+    4300654: horizBeam001
+    4300656: horizBeam002
+    4300658: horizBeam003
+    4300660: horizBeam004
+    4300662: horizBeam005
+    4300664: horizBeam006
+    4300666: horizBeam007
+    4300668: raftersParallelA001
+    4300670: raftersParallelB001
+    4300672: ConcreteBaseLong001
+    4300674: WallCorrugated001
+    4300676: WallCorrugated002
+    4300678: WallCorrugated003
+    4300680: WallCorrugated004
+    4300682: FloorSlab001
+    4300684: RoofCorrugatedA001
+    4300686: RoofCorrugatedB001
+    4300688: RoofCorrugatedB002
+    4300690: RoofCorrugatedA002
+    4300692: RoofCorrugatedB003
+    4300694: RoofCorrugatedA003
+    4300696: RoofCorrugatedB004
+    4300698: RoofCorrugatedA004
+    4300700: bigHorizBeam002
+    4300702: rafter002
+    4300704: pillarBig002
+    4300706: pillarSmall006
+    4300708: Concrete, Cast-in-Place gray4
+    4300710: rafter003
+    4300712: pillarBig003
+    4300714: pillarSmall007
+    4300716: Concrete, Cast-in-Place gray5
+    4300718: rafter004
+    4300720: pillarBig004
+    4300722: pillarSmall008
+    4300724: Concrete, Cast-in-Place gray6
+    4300726: pillarBig005
+    4300728: Concrete, Cast-in-Place gray7
+    4300730: pillarSmall0013
+    4300732: pipeParallel003
+    4300734: pipeParallel004
+    4300736: bigHorizBeam001
+    4300738: pillarSmall001
+    4300740: pillarSmall002
+    4300742: pillarSmall003
+    4300744: pillarSmall004
+    4300746: Solid5
+    4300748: Concrete, Cast-in-Place gray2
+    4300750: Solid2
+    4300752: Solid1
+    4300754: Solid6
+    4300756: Solid7
+    4300758: Solid8
+    4300760: Solid10
+    4300762: Concrete, Cast-in-Place gray8
+    4300764: Solid11
+    4300766: Concrete, Cast-in-Place gray9
+    4300768: Solid12
+    4300770: Concrete, Cast-in-Place gray10
+    4300772: horizBeam001
+    4300774: horizBeam002
+    4300776: horizBeam003
+    4300778: horizBeam004
+    4300780: horizBeam005
+    4300782: horizBeam006
+    4300784: horizBeam007
+    4300786: raftersParallelA001
+    4300788: raftersParallelB001
+    4300790: ConcreteBaseLong001
+    4300792: WallCorrugated001
+    4300794: WallCorrugated002
+    4300796: WallCorrugated003
+    4300798: WallCorrugated004
+    4300800: FloorSlab001
+    4300802: RoofCorrugatedA001
+    4300804: RoofCorrugatedB001
+    4300806: RoofCorrugatedB002
+    4300808: RoofCorrugatedA002
+    4300810: RoofCorrugatedB003
+    4300812: RoofCorrugatedA003
+    4300814: RoofCorrugatedB004
+    4300816: RoofCorrugatedA004
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
