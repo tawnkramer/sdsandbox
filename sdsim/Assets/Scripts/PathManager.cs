@@ -80,7 +80,7 @@ public class PathManager : MonoBehaviour {
 			laneChTrainer.ModifyPath(ref path);
 		}
 
-		if(doShowPath)
+		if(doShowPath && path != null)
 		{
 			for(int iN = 0; iN < path.nodes.Count; iN++)
 			{
@@ -129,7 +129,7 @@ public class PathManager : MonoBehaviour {
 
 	void MakePointPath()
 	{
-		string filename = "thunder_path";
+		string filename = pathToLoad;
 
 		TextAsset bindata = Resources.Load(filename) as TextAsset;
 

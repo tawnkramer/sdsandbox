@@ -43,6 +43,8 @@ public class PIDController : MonoBehaviour {
 
 	public bool brakeOnEnd = true;
 
+    public bool looping = false;
+
 	public bool doDrive = true;
 	public float maxSpeed = 5.0f;
 
@@ -146,7 +148,11 @@ public class PIDController : MonoBehaviour {
 
 		if(!pm.path.GetCrossTrackErr(samplePos, ref err))
 		{
-			if(brakeOnEnd)
+            if(looping)
+            {
+                pm.path.ResetActiveSpan();
+            }
+			else if(brakeOnEnd)
 			{
 				car.RequestFootBrake(1.0f);
 
