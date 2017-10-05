@@ -16,6 +16,12 @@ public class JoystickCarControl : MonoBehaviour
 			car = carObj.GetComponent<ICar>();
 	}
 
+    private void OnDisable()
+    {
+        car.RequestThrottle(0.0f);
+		car.RequestHandBrake(1.0f);
+		car.RequestFootBrake(1.0f);
+    }
 	private void FixedUpdate()
 	{
 		// pass the input to the car!

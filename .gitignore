@@ -7,4 +7,5 @@ sdsim/obj
 *.userprefs
 sdsim/Temp
 *.csproj
-
+sdsim/.vs
+sdsim/Build
