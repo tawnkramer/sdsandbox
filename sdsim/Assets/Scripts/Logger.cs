@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Threading;
 using System;
+using UnityEngine.UI;
 
 [Serializable]
 public class MetaJson
@@ -79,6 +80,8 @@ public class Logger : MonoBehaviour {
 
     //Tub style as prefered by Donkey2
     public bool DonkeyStyle2 = false;
+
+    public Text logDisplay;
 
 	string outputFilename = "/../log/log_car_controls.txt";
 	private StreamWriter writer;
@@ -163,7 +166,7 @@ public class Logger : MonoBehaviour {
             else if(DonkeyStyle2)
             {
                 DonkeyRecord mjson = new DonkeyRecord();
-                float steering = car.GetSteering() / 25.0f;
+                float steering = car.GetSteering() / 6.0f;
                 float throttle = car.GetThrottle();
 
                 //training code like steering clamped between -1, 1
@@ -218,6 +221,9 @@ public class Logger : MonoBehaviour {
         }
 
         frameCounter = frameCounter + 1;
+
+        if (logDisplay != null)
+            logDisplay.text = "Log:" + frameCounter;
 	}
 
 	string GetUdacityStyleImageFilename()

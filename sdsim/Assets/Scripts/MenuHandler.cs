@@ -11,6 +11,7 @@ public class MenuHandler : MonoBehaviour {
 	public GameObject menuPanel;
 	public GameObject stopPanel;
     public GameObject carJSControl;
+	public GameObject PIDControls;
 
     public TrainingManager trainingManager;
 
@@ -32,6 +33,9 @@ public class MenuHandler : MonoBehaviour {
 
 		if(carJSControl != null)
 			carJSControl.SetActive(false);
+
+		if(PIDControls != null)
+			PIDControls.SetActive(true);
 	
 		Logger.SetActive(true);
 		menuPanel.SetActive(false);
@@ -45,6 +49,9 @@ public class MenuHandler : MonoBehaviour {
 
 		if(carJSControl != null)
 			carJSControl.SetActive(true);
+
+		if(PIDControls != null)
+			PIDControls.SetActive(false);
 	
 		Logger.SetActive(true);
 		menuPanel.SetActive(false);
@@ -55,6 +62,9 @@ public class MenuHandler : MonoBehaviour {
 	{
 		if(carJSControl != null)
 			carJSControl.SetActive(false);
+
+		if(PIDControls != null)
+			PIDControls.SetActive(false);
 		
 		NetworkSteering.SetActive(true);
 		menuPanel.SetActive(false);
@@ -69,6 +79,9 @@ public class MenuHandler : MonoBehaviour {
 		if(carJSControl != null)
 			carJSControl.SetActive(false);
 
+		if(PIDControls != null)
+			PIDControls.SetActive(true);
+
 		menuPanel.SetActive(false);
         stopPanel.SetActive(true);
     }
@@ -80,6 +93,9 @@ public class MenuHandler : MonoBehaviour {
 
 		if(carJSControl != null)
 			carJSControl.SetActive(true);
+
+		if(PIDControls != null)
+			PIDControls.SetActive(false);
 
 		menuPanel.SetActive(false);
         stopPanel.SetActive(true);
@@ -104,6 +120,9 @@ public class MenuHandler : MonoBehaviour {
 
         if (carJSControl != null)
             carJSControl.SetActive(false);
+
+		if(PIDControls != null)
+			PIDControls.SetActive(false);
 
         Logger.SetActive(false);
         NetworkSteering.SetActive(false);
