@@ -166,7 +166,7 @@ public class Logger : MonoBehaviour {
             else if(DonkeyStyle2)
             {
                 DonkeyRecord mjson = new DonkeyRecord();
-                float steering = car.GetSteering() / 6.0f;
+                float steering = car.GetSteering() / 7.0f;
                 float throttle = car.GetThrottle();
 
                 //training code like steering clamped between -1, 1

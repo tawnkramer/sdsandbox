@@ -47,6 +47,7 @@ public class PIDController : MonoBehaviour {
 
 	public bool doDrive = true;
 	public float maxSpeed = 5.0f;
+	public float maxSteering = 7.0f;
 
 	public Text pid_steering;
 
@@ -178,6 +179,8 @@ public class PIDController : MonoBehaviour {
 		diffErr = err - prevErr;
 
 		steeringReq = (-Kp * err) - (Kd * diffErr) - (Ki * totalError);
+
+		steeringReq = Mathf.Clamp(steeringReq, -maxSteering, maxSteering);
 
 		if(doDrive)
 			car.RequestSteering(steeringReq);
