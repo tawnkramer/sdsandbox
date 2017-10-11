@@ -47,7 +47,6 @@ public class PIDController : MonoBehaviour {
 
 	public bool doDrive = true;
 	public float maxSpeed = 5.0f;
-	public float maxSteering = 7.0f;
 
 	public Text pid_steering;
 
@@ -60,6 +59,23 @@ public class PIDController : MonoBehaviour {
     {
         if (startOnWake)
             StartDriving();
+
+        LoadPrefs();
+    }
+
+    public void LoadPrefs()
+    {
+        maxSpeed = PlayerPrefs.GetFloat("max_speed", maxSpeed);
+        Kp = PlayerPrefs.GetFloat("pid_prop", Kp);
+        Kd = PlayerPrefs.GetFloat("pid_diff", Kd);
+    }
+
+    public void SavePrefs()
+    {
+        PlayerPrefs.SetFloat("max_speed", maxSpeed);
+        PlayerPrefs.SetFloat("pid_prop", Kp);
+        PlayerPrefs.SetFloat("pid_diff", Kd);
+        PlayerPrefs.Save();
     }
 
     private void OnDisable()
@@ -180,7 +196,7 @@ public class PIDController : MonoBehaviour {
 
 		steeringReq = (-Kp * err) - (Kd * diffErr) - (Ki * totalError);
 
-		steeringReq = Mathf.Clamp(steeringReq, -maxSteering, maxSteering);
+		steeringReq = Mathf.Clamp(steeringReq, -car.GetMaxSteering(), car.GetMaxSteering());
 
 		if(doDrive)
 			car.RequestSteering(steeringReq);

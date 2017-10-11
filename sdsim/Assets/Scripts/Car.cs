@@ -30,12 +30,11 @@ public class Car : MonoBehaviour, ICar {
 	public float lastSteer = 0.0f;
 	public float lastAccel = 0.0f;
 
-	//max range human can turn the wheel with a joystick controller
-	public float humanSteeringMax = 15.0f;
-
 	//when the car is doing multiple things, we sometimes want to sort out parts of the training
 	//use this label to pull partial training samples from a run 
 	public string activity = "keep_lane";
+
+    public float maxSteer = 16.0f;
 
 	// Use this for initialization
 	void Awake () 
@@ -51,6 +50,16 @@ public class Car : MonoBehaviour, ICar {
 		requestSteering = 0f;
 
 		SavePosRot();
+
+        if(PlayerPrefs.HasKey("max_steer"))
+        {
+            maxSteer = PlayerPrefs.GetFloat("max_steer", maxSteer);
+            Debug.Log("Loading max steer:" + maxSteer);
+        }
+        else
+        {
+            Debug.Log("No max steer stored. :" + maxSteer);
+        }
 	}
 
 	public void SavePosRot()
@@ -71,9 +80,22 @@ public class Car : MonoBehaviour, ICar {
 		//Debug.Log("request throttle: " + val);
 	}
 
+    public void SetMaxSteering(float val)
+    {
+        maxSteer = val;
+
+        PlayerPrefs.SetFloat("max_steer", maxSteer);
+        PlayerPrefs.Save();
+    }
+
+    public float GetMaxSteering()
+    {
+        return maxSteer;
+    }
+
 	public void RequestSteering(float val)
 	{
-		requestSteering = val;
+		requestSteering = Mathf.Clamp(val, -maxSteer, maxSteer);
 		//Debug.Log("request steering: " + val);
 	}
 

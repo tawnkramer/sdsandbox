@@ -20,6 +20,8 @@ public class SocketIODriveClient : MonoBehaviour {
     Thread thread;
     Dictionary<string, string> data;
 
+    public bool scaleSteeringInput = false;
+
 
     // Use this for initialization
     void Start()
@@ -102,6 +104,9 @@ public class SocketIODriveClient : MonoBehaviour {
 
         float steering = float.Parse(jsonObject.GetField("steering_angle").str);
 		float throttle = float.Parse(jsonObject.GetField("throttle").str);
+
+        if(scaleSteeringInput)
+            steering = steering * car.GetMaxSteering();
 
         car.RequestSteering(steering);
 		car.RequestThrottle(throttle);

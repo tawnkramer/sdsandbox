@@ -45,4 +45,8 @@ public interface ICar
 	void SavePosRot();
 
 	void RestorePosRot();
+
+    void SetMaxSteering(float val);
+
+    float GetMaxSteering();
 }

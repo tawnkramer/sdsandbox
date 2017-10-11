@@ -156,7 +156,7 @@ public class Logger : MonoBehaviour {
 			if(UdacityStyle)
 			{
 				string image_filename = GetUdacityStyleImageFilename();
-				float steering = car.GetSteering() / 25.0f;
+				float steering = car.GetSteering() / car.GetMaxSteering();
 				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", image_filename, "none", "none", steering.ToString(), car.GetThrottle().ToString(), "0", "0"));
 			}
             else if(DonkeyStyle || SharkStyle)
@@ -166,14 +166,11 @@ public class Logger : MonoBehaviour {
             else if(DonkeyStyle2)
             {
                 DonkeyRecord mjson = new DonkeyRecord();
-                float steering = car.GetSteering() / 7.0f;
+                float steering = car.GetSteering() / car.GetMaxSteering();
                 float throttle = car.GetThrottle();
 
                 //training code like steering clamped between -1, 1
-                if (steering > 1.0f)
-                    steering = 1.0f;
-                else if (steering < -1.0f)
-                    steering = -1.0f;
+                steering = Mathf.Clamp(steering, -1.0f, 1.0f);
 
                 mjson.Init(string.Format("{0}_cam-image_array_.jpg", frameCounter),
                     throttle, steering, "user");

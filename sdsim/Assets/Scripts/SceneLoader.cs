@@ -20,4 +20,9 @@ public void LoadMenuScene()
     SceneManager.LoadSceneAsync(0);
 }
 
+public void QuitApplication()
+{
+    Application.Quit();
+}
+
 }

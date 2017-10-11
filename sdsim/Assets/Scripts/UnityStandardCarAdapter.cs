@@ -56,6 +56,15 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 
 	public Vector3 GetAccel() { return accel; }
 
+    public void SetMaxSteering(float val)
+    {
+        MaximumSteerAngle = val;
+    }
+
+    public float GetMaxSteering()
+    {
+        return MaximumSteerAngle;
+    }
 
 	//Save and restore State
 	public void SavePosRot() 
