@@ -51,15 +51,7 @@ public class Car : MonoBehaviour, ICar {
 
 		SavePosRot();
 
-        if(PlayerPrefs.HasKey("max_steer"))
-        {
-            maxSteer = PlayerPrefs.GetFloat("max_steer", maxSteer);
-            Debug.Log("Loading max steer:" + maxSteer);
-        }
-        else
-        {
-            Debug.Log("No max steer stored. :" + maxSteer);
-        }
+        maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
 	}
 
 	public void SavePosRot()
