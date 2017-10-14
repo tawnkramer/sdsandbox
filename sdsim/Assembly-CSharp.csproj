@@ -205,6 +205,7 @@
      <Compile Include="Assets\Scripts\TwiddlePID.cs" />
      <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
+     <Compile Include="Assets\Textures\avc\track_maker.cs" />
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.shader" />
      <None Include="Assets\Resources\warehouse.txt" />
      <None Include="Assets\Scripts\SocketIO\Readme.txt" />
