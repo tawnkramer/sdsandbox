@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 
 public class track_maker : MonoBehaviour {
 
@@ -30,14 +33,19 @@ public class track_maker : MonoBehaviour {
 		CreateTrack();
 	}
 
+    void RegUndoObj(GameObject go)
+    {
+        #if UNITY_EDITOR
+        Undo.RegisterCreatedObjectUndo(go, "track object");
+        #endif
+    }
+
 	// Use this for initialization
 	public void CreateTrack() 
 	{		
 		for(int i = 0; i < numStraightSeg; i++)
 		{
 			GameObject go = GameObject.Instantiate(hayPrefab) as GameObject;
-
-			Undo.RegisterCreatedObjectUndo(go, "track object");
 
 			go.transform.parent = root.transform;
 
@@ -55,7 +63,7 @@ public class track_maker : MonoBehaviour {
 		{
 			GameObject go = GameObject.Instantiate(hayPrefab) as GameObject;
 
-			Undo.RegisterCreatedObjectUndo(go, "track object");
+			RegUndoObj(go);
 
 			go.transform.parent = root.transform;
 
@@ -74,7 +82,7 @@ public class track_maker : MonoBehaviour {
 		{
 			GameObject go = GameObject.Instantiate(hayPrefab) as GameObject;
 
-			Undo.RegisterCreatedObjectUndo(go, "track object");
+			RegUndoObj(go);
 
 			go.transform.parent = root.transform;
 

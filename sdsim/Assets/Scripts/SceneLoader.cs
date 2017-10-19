@@ -15,6 +15,11 @@ public void LoadWarehouseScene()
     SceneManager.LoadSceneAsync(2);
 }
 
+public void LoadAVCScene()
+{
+    SceneManager.LoadSceneAsync(3);
+}
+
 public void LoadMenuScene()
 {
     SceneManager.LoadSceneAsync(0);
