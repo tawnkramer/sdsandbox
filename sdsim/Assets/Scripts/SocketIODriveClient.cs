@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof(SocketIOComponent))]
 public class SocketIODriveClient : MonoBehaviour {
@@ -18,24 +19,23 @@ public class SocketIODriveClient : MonoBehaviour {
 
     bool runThread = false;
     Thread thread;
-    Dictionary<string, string> data;
+   
+    List<SimMessage> messages;
 
     public bool scaleSteeringInput = false;
+    private bool connected = false;
 
 
     // Use this for initialization
     void Start()
     {
-        _socket = GetComponent<SocketIOComponent>();
-        _socket.On("open", OnOpen);
-        _socket.On("steer", OnSteer);
-        _socket.On("manual", onManual);
-
-        car = carObj.GetComponent<ICar>();
+        OnLoaded();
     }
 
     private void OnEnable()
     {
+        Init();
+
         runThread = true;
         thread = new Thread(SendThread);
         thread.Start();
@@ -49,6 +49,23 @@ public class SocketIODriveClient : MonoBehaviour {
         thread.Abort();
     }
 
+    private void Init()
+    {
+        if (messages != null)
+            return;
+
+        _socket = GetComponent<SocketIOComponent>();
+        _socket.On("open", OnOpen);
+        _socket.On("steer", OnSteer);
+        _socket.On("manual", onManual);
+        _socket.On("ExitScene", onExitScene);
+        _socket.On("QuitApp", onQuitApp);
+
+        messages = new List<SimMessage>();
+
+        car = carObj.GetComponent<ICar>();
+    }
+
     //sending from the main thread was really slowing things down. Not sure why.
     //Sending from this thread changed the framerate from 5fps to 60
     public void SendThread()
@@ -57,16 +74,26 @@ public class SocketIODriveClient : MonoBehaviour {
         {
             lock (this)
             {
-                if(data != null)
+                if(messages.Count != 0 && connected)
                 {
-                    _socket.Emit("telemetry", new JSONObject(data));
+                    foreach(SimMessage m in messages)
+                    {
+                        _socket.Emit(m.messageId, m.json);
+                    }
 
-                    data = null;
+                    messages.Clear();
                 }
             }
         }
     }
 
+    public void QueueMessage(SimMessage m)
+    {
+        lock (this)
+        {
+            messages.Add(m);
+        }
+    }
 
     private void Update()
     {
@@ -74,22 +101,33 @@ public class SocketIODriveClient : MonoBehaviour {
         {
             collectData = false;
 
-            // Collect Data from the Car
-            lock (this)
-            {
-                data = new Dictionary<string, string>();
+            SimMessage m = new SimMessage();
+            m.json = new JSONObject(JSONObject.Type.OBJECT);
+            m.messageId = "telemetry";
 
-                data["steering_angle"] = car.GetSteering().ToString("N4");
-                data["throttle"] = car.GetThrottle().ToString("N4");
-                data["speed"] = car.GetVelocity().magnitude.ToString("N4");
-                data["image"] = System.Convert.ToBase64String(CameraHelper.CaptureFrame(camSensor));
-            }
+            m.json.AddField("steering_angle", car.GetSteering());
+            m.json.AddField("throttle", car.GetThrottle());
+            m.json.AddField("speed", car.GetVelocity().magnitude);
+            m.json.AddField("image", System.Convert.ToBase64String(CameraHelper.CaptureFrame(camSensor)));
+            
+            QueueMessage(m);
         }
+    }
+
+    void OnLoaded()
+    {
+        SimMessage m = new SimMessage();
+        m.json = new JSONObject(JSONObject.Type.OBJECT);
+        m.messageId = "SceneLoaded";
+        m.json.AddField("none", "none");
+
+        QueueMessage(m);
     }
 
     void OnOpen(SocketIOEvent obj)
     {
         Debug.Log("Connection Open");
+        connected = true;
         EmitTelemetry(obj);
     }
 
@@ -122,5 +160,15 @@ public class SocketIODriveClient : MonoBehaviour {
     void EmitTelemetry(SocketIOEvent obj)
     {
         collectData = true;
+    }
+
+    void onExitScene(SocketIOEvent obj)
+    {
+        SceneManager.LoadSceneAsync(0);
+    }
+
+    void onQuitApp(SocketIOEvent obj)
+    {
+        Application.Quit();
     }
 }
