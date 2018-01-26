@@ -153,7 +153,7 @@ public class SocketIOMenuClient : MonoBehaviour {
     {
         SimMessage m = new SimMessage();
         m.json = new JSONObject(JSONObject.Type.OBJECT);
-        m.messageId = "FELoaded";
+        m.messageId = "SceneSelectionReady";
         m.json.AddField("loaded", "1");        
 
         QueueMessage(m);

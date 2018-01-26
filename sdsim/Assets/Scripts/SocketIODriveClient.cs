@@ -56,8 +56,8 @@ public class SocketIODriveClient : MonoBehaviour {
 
         _socket = GetComponent<SocketIOComponent>();
         _socket.On("open", OnOpen);
-        _socket.On("steer", OnSteer);
-        _socket.On("manual", onManual);
+        _socket.On("Steer", OnSteer);
+        _socket.On("RequestTelemetry", onRequestTelemetry);
         _socket.On("ExitScene", onExitScene);
         _socket.On("QuitApp", onQuitApp);
 
@@ -103,7 +103,7 @@ public class SocketIODriveClient : MonoBehaviour {
 
             SimMessage m = new SimMessage();
             m.json = new JSONObject(JSONObject.Type.OBJECT);
-            m.messageId = "telemetry";
+            m.messageId = "Telemetry";
 
             m.json.AddField("steering_angle", car.GetSteering());
             m.json.AddField("throttle", car.GetThrottle());
@@ -131,7 +131,7 @@ public class SocketIODriveClient : MonoBehaviour {
         EmitTelemetry(obj);
     }
 
-    void onManual(SocketIOEvent obj)
+    void onRequestTelemetry(SocketIOEvent obj)
     {
         EmitTelemetry(obj);
     }

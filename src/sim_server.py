@@ -57,7 +57,7 @@ class FPSTimer(object):
 
 timer = FPSTimer()
 
-@sio.on('telemetry')
+@sio.on('Telemetry')
 def telemetry(sid, data):
     global timer
     global num_frames_to_send
@@ -95,7 +95,7 @@ def telemetry(sid, data):
             #image.save('{}.jpg'.format(image_filename))
     else:
         # NOTE: DON'T EDIT THIS.
-        sio.emit('manual', data={}, skip_sid=True)
+        sio.emit('RequestTelemetry', data={}, skip_sid=True)
 
     timer.on_frame()
 
@@ -110,13 +110,13 @@ def connect(sid, environ):
 def on_proto_version(sid, environ):
     print("ProtocolVersion ", sid)
 
-@sio.on('FELoaded')
+@sio.on('SceneSelectionReady')
 def on_fe_loaded(sid, environ):
-    print("FELoaded ", sid)
+    print("SceneSelectionReady ", sid)
     send_get_scene_names()
 
 @sio.on('SceneLoaded')
-def on_fe_loaded(sid, data):
+def on_scene_loaded(sid, data):
     print("SceneLoaded ", sid)
 
 @sio.on('SceneNames')
@@ -137,7 +137,7 @@ def send_get_scene_names():
 
 def send_control(steering_angle, throttle):
     sio.emit(
-        "steer",
+        "Steer",
         data={
             'steering_angle': steering_angle.__str__(),
             'throttle': throttle.__str__()
