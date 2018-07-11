@@ -36,6 +36,9 @@ public class Car : MonoBehaviour, ICar {
 
     public float maxSteer = 16.0f;
 
+	//name of the last object we hit.
+	public string last_collision = "none";
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -240,5 +243,21 @@ public class Car : MonoBehaviour, ICar {
 			tm.position = pos;
 			tm.rotation = rot;
 		}
+	}
+
+	//get the name of the last object we collided with
+	public string GetLastCollision()
+	{
+		return last_collision;
+	}
+
+	public void ClearLastCollision()
+	{
+		last_collision = "none";
+	}
+
+	void OnCollisionEnter(Collision col)
+	{
+		last_collision = col.gameObject.name;
 	}
 }

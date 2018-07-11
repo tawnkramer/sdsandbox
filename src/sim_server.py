@@ -73,6 +73,23 @@ def telemetry(sid, data):
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
 
+        #name of object we just hit. "none" if nothing.
+        hit = data["hit"]
+
+        x = data["pos_x"]
+        y = data["pos_y"]
+        z = data["pos_z"]
+
+        #Cross track error not always present.
+        #Will be missing if path is not setup in the given scene.
+        #It should be setup in the 3 scenes available now.
+        try:
+            cte = data["cte"]
+        except:
+            pass
+
+        print("x", x, "y", y, "cte", cte, "hit", hit)
+
         outputs = model.predict(image_array[None, :, :, :])
 
         #steering
@@ -86,7 +103,12 @@ def telemetry(sid, data):
             throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
 
         #print(steering_angle, throttle)
-        send_control(steering_angle, throttle)
+
+        #reset car to start if we hit anything.
+        if hit != "none":
+            send_reset_car()
+        else:
+            send_control(steering_angle, throttle)
 
         # save frame
         if args.image_folder != '':
@@ -158,6 +180,13 @@ def send_exit_scene():
         "ExitScene",
         data={
             'none': 'none'
+        },
+        skip_sid=True)
+
+def send_reset_car():
+    sio.emit(
+        "ResetCar",
+        data={            
         },
         skip_sid=True)
 

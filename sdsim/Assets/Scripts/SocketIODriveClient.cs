@@ -11,6 +11,8 @@ public class SocketIODriveClient : MonoBehaviour {
 
     public GameObject carObj;
     public ICar car;
+
+    public PathManager pm;
     public Camera camSensor;
     private SocketIOComponent _socket;
     bool collectData = false;
@@ -60,6 +62,7 @@ public class SocketIODriveClient : MonoBehaviour {
         _socket.On("RequestTelemetry", onRequestTelemetry);
         _socket.On("ExitScene", onExitScene);
         _socket.On("QuitApp", onQuitApp);
+        _socket.On("ResetCar", onResetCar);
 
         messages = new List<SimMessage>();
 
@@ -110,6 +113,30 @@ public class SocketIODriveClient : MonoBehaviour {
             m.json.AddField("speed", car.GetVelocity().magnitude);
             m.json.AddField("image", System.Convert.ToBase64String(CameraHelper.CaptureFrame(camSensor)));
             
+            m.json.AddField("hit", car.GetLastCollision());
+            car.ClearLastCollision();
+
+            Transform tm = car.GetTransform();
+            m.json.AddField("pos_x", tm.position.x);
+            m.json.AddField("pos_y", tm.position.y);
+            m.json.AddField("pos_z", tm.position.z);
+
+            m.json.AddField("time", Time.timeSinceLevelLoad);
+
+            if(pm != null)
+            {
+                float cte = 0.0f;
+                if(pm.path.GetCrossTrackErr(tm.position, ref cte))
+                {
+                    m.json.AddField("cte", cte);
+                }
+                else
+                {
+                    pm.path.ResetActiveSpan();
+                    m.json.AddField("cte", 0.0f);
+                }
+            }
+            
             QueueMessage(m);
         }
     }
@@ -120,6 +147,8 @@ public class SocketIODriveClient : MonoBehaviour {
         m.json = new JSONObject(JSONObject.Type.OBJECT);
         m.messageId = "SceneLoaded";
         m.json.AddField("none", "none");
+
+        car.SavePosRot();
 
         QueueMessage(m);
     }
@@ -165,6 +194,11 @@ public class SocketIODriveClient : MonoBehaviour {
     void onExitScene(SocketIOEvent obj)
     {
         SceneManager.LoadSceneAsync(0);
+    }
+
+    void onResetCar(SocketIOEvent obj)
+    {
+        car.RestorePosRot();
     }
 
     void onQuitApp(SocketIOEvent obj)

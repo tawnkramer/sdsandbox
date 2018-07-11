@@ -120,4 +120,22 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	{
 		activity = act;
 	}
+
+		//get the name of the last object we collided with
+	public string GetLastCollision()
+	{
+		return last_collision;
+	}
+
+	public void ClearLastCollision()
+	{
+		last_collision = "none";
+	}
+
+	void OnCollisionEnter(Collision col)
+	{
+		last_collision = col.gameObject.name;
+	}
+
+	string last_collision = "none";
 }
