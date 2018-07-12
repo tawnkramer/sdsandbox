@@ -88,7 +88,7 @@ def telemetry(sid, data):
         except:
             pass
 
-        print("x", x, "y", y, "cte", cte, "hit", hit)
+        #print("x", x, "y", y, "cte", cte, "hit", hit)
 
         outputs = model.predict(image_array[None, :, :, :])
 
@@ -103,10 +103,10 @@ def telemetry(sid, data):
             throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
 
         #print(steering_angle, throttle)
-        
-        #reset car to start if we hit anything.
+
+        #reset scene to start if we hit anything.
         if hit != "none":
-            send_reset_car()
+            send_exit_scene()
         else:
             send_control(steering_angle, throttle)
 
