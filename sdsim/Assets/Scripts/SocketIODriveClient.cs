@@ -199,6 +199,7 @@ public class SocketIODriveClient : MonoBehaviour {
     void onResetCar(SocketIOEvent obj)
     {
         car.RestorePosRot();
+        EmitTelemetry(obj);
     }
 
     void onQuitApp(SocketIOEvent obj)

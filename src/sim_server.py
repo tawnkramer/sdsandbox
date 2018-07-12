@@ -103,7 +103,7 @@ def telemetry(sid, data):
             throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
 
         #print(steering_angle, throttle)
-
+        
         #reset car to start if we hit anything.
         if hit != "none":
             send_reset_car()
