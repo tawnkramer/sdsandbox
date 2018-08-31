@@ -27,6 +27,10 @@ public class SocketIODriveClient : MonoBehaviour {
     public bool scaleSteeringInput = false;
     private bool connected = false;
 
+    private bool asynchronous = true;
+
+    private float time_step = 0.1f;
+
 
     // Use this for initialization
     void Start()
@@ -63,6 +67,7 @@ public class SocketIODriveClient : MonoBehaviour {
         _socket.On("ExitScene", onExitScene);
         _socket.On("QuitApp", onQuitApp);
         _socket.On("ResetCar", onResetCar);
+        _socket.On("Settings", onSettings);
 
         messages = new List<SimMessage>();
 
@@ -157,12 +162,12 @@ public class SocketIODriveClient : MonoBehaviour {
     {
         Debug.Log("Connection Open");
         connected = true;
-        EmitTelemetry(obj);
+        EmitTelemetry();
     }
 
     void onRequestTelemetry(SocketIOEvent obj)
     {
-        EmitTelemetry(obj);
+        EmitTelemetry();
     }
 
     void OnSteer(SocketIOEvent obj)
@@ -183,10 +188,27 @@ public class SocketIODriveClient : MonoBehaviour {
         if(ai_steering != null)
 			ai_steering.text = string.Format("NN: {0} {1}", steering, throttle);
 
-        EmitTelemetry(obj);
+        if(asynchronous)
+        {
+            EmitTelemetry();
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+            //Debug.Log(Time.timeScale);
+            StartCoroutine(WaitCollectTelemThenPause());
+        }
     }
 
-    void EmitTelemetry(SocketIOEvent obj)
+    IEnumerator WaitCollectTelemThenPause()
+    {
+        yield return new WaitForSeconds(time_step);
+        EmitTelemetry();
+        Time.timeScale = 0.0f;
+        //Debug.Log(Time.timeScale);
+    }
+
+    void EmitTelemetry()
     {
         collectData = true;
     }
@@ -199,7 +221,31 @@ public class SocketIODriveClient : MonoBehaviour {
     void onResetCar(SocketIOEvent obj)
     {
         car.RestorePosRot();
-        EmitTelemetry(obj);
+        EmitTelemetry();
+    }
+
+    void onSettings(SocketIOEvent obj)
+    {
+        JSONObject jsonObject = obj.data;
+
+        string step_mode = jsonObject.GetField("step_mode").str;
+		float _time_step = float.Parse(jsonObject.GetField("time_step").str);
+
+        Debug.Log("got settings");
+
+        if(step_mode == "synchronous")
+        {
+            Debug.Log("setting mode to synchronous");
+            asynchronous = false;
+            this.time_step = _time_step;
+            Time.timeScale = 0.0f;
+            //Debug.Log(Time.timeScale);
+        }
+        else
+        {
+            Debug.Log("setting mode to asynchronous");
+            asynchronous = true;
+        }
     }
 
     void onQuitApp(SocketIOEvent obj)

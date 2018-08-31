@@ -16,6 +16,7 @@ import asyncore
 import json
 import shutil
 import base64
+import random
 
 import numpy as np
 import h5py
@@ -37,6 +38,8 @@ app = Flask(__name__)
 throttle_man = throttle_manager.ThrottleManager()
 model = None
 iSceneToLoad = 0
+time_step = 0.1
+step_mode = "synchronous"
 
 class FPSTimer(object):
     def __init__(self):
@@ -101,7 +104,7 @@ def telemetry(sid, data):
         else:
             #set throttle value here
             throttle, brake = throttle_man.get_throttle_brake(speed, steering_angle)
-
+        
         #print(steering_angle, throttle)
 
         #reset scene to start if we hit anything.
@@ -125,7 +128,13 @@ def telemetry(sid, data):
 def connect(sid, environ):
     print("connect ", sid)
     global timer
+    global time_step
+    global step_mode
     timer.reset()
+
+    send_settings({"step_mode" : step_mode.__str__(),\
+         "time_step" : time_step.__str__()})
+    
     send_control(0, 0)
 
 @sio.on('ProtocolVersion')
@@ -190,6 +199,12 @@ def send_reset_car():
         },
         skip_sid=True)
 
+def send_settings(prefs):
+    sio.emit(
+        "Settings",
+        data=prefs,
+        skip_sid=True)
+
 def go(model_fnm, address, iScene):
     global model
     global app
@@ -219,6 +234,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='sim_server')
     parser.add_argument('model', type=str, help='model name')
     parser.add_argument('--i_scene', default=0, help='which scene to load')
+    parser.add_argument('--step_mode', default="asynchronous", help='how to advance time in sim (asynchronous|synchronous)')
+    parser.add_argument('--time_step', type=float, default=0.1, help='how far to advance time in sim when synchronous')
     parser.add_argument(
           'image_folder',
           type=str,
@@ -238,6 +255,8 @@ if __name__ == "__main__":
             os.makedirs(args.image_folder)
         print("RECORDING THIS RUN ...")
 
+    time_step = args.time_step
+    step_mode = args.step_mode
     iScene = int(args.i_scene)
     model_fnm = args.model
     address = ('0.0.0.0', 9090)
