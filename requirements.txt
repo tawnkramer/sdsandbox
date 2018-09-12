@@ -6,4 +6,6 @@ pygame
 numpy
 pillow
 h5py
-
+scikit-image
+opencv-python
+gym

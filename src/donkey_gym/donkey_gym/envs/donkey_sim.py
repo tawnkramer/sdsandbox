@@ -1,9 +1,16 @@
+'''
+file: donkey_sim.py
+author: Tawn Kramer
+date: 2018-08-31
+'''
+
 import json
 import shutil
 import base64
 import random
 import time
 from io import BytesIO
+import math
 
 import numpy as np
 import socketio
@@ -14,7 +21,7 @@ from flask import Flask
 
 sio = socketio.Server()
 
-class DonkeyUnitySim(object):
+class DonkeyUnitySimContoller(object):
 
     #cross track error max
     CTE_MAX_ERR = 5.0
@@ -77,7 +84,7 @@ class DonkeyUnitySim(object):
         pass
 
     def is_game_over(self):
-        return self.hit != "none"
+        return self.hit != "none" or math.fabs(self.cte) > self.CTE_MAX_ERR
 
     ## ------ RL interface ----------- ##
 
