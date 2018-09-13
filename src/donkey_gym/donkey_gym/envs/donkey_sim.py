@@ -21,6 +21,10 @@ from flask import Flask
 
 sio = socketio.Server()
 
+# This is to monkey_patch python standard library "magically". Without it server cannot actively push messages to Unity client through emit()
+# Reference: https://github.com/miguelgrinberg/Flask-SocketIO/issues/357
+eventlet.monkey_patch()
+
 class DonkeyUnitySimContoller(object):
 
     #cross track error max
@@ -47,7 +51,7 @@ class DonkeyUnitySimContoller(object):
         self.y = 0.0
         self.z = 0.0
         self.loaded = False
-        self.wait_for_obs = False
+        self.wait_for_obs = True
         self.have_new_obs = False
         if not intial:
             #this exit scene command will cause us to re-load the scene.
@@ -101,6 +105,59 @@ class DonkeyUnitySimContoller(object):
     ## ------ Websocket interface ----------- ##
 
     def listen(self, address = ('0.0.0.0', 9090)):
+
+        @sio.on('Telemetry')
+        def telemetry(sid, data):
+            if data:
+                # The current image from the center camera of the car
+                imgString = data["image"]
+                image = Image.open(BytesIO(base64.b64decode(imgString)))
+                self.image_array = np.asarray(image)
+
+                #name of object we just hit. "none" if nothing.
+                self.hit = data["hit"]
+
+                self.x = data["pos_x"]
+                self.y = data["pos_y"]
+                self.z = data["pos_z"]
+
+                #Cross track error not always present.
+                #Will be missing if path is not setup in the given scene.
+                #It should be setup in the 3 scenes available now.
+                try:
+                    self.cte = data["cte"]
+                except:
+                    pass
+
+                self.have_new_obs = True
+            else:
+                sio.emit('RequestTelemetry', data={}, skip_sid=True)
+
+        @sio.on('connect')
+        def connect(sid, environ):
+            print("web socket connected")
+            step_mode = "synchronous"
+
+            self.send_settings({"step_mode" : step_mode.__str__(),\
+                "time_step" : self.time_step.__str__()})
+
+        @sio.on('ProtocolVersion')
+        def on_proto_version(sid, environ):
+            pass
+
+        @sio.on('SceneSelectionReady')
+        def on_fe_loaded(sid, environ):
+            self.send_get_scene_names()
+
+        @sio.on('SceneLoaded')
+        def on_scene_loaded(sid, data):
+            self.take_action((0, 0))
+
+        @sio.on('SceneNames')
+        def on_scene_names(sid, data):
+            names = data['scene_names']
+            self.send_load_scene(names[self.level])
+
         # wrap Flask application with engineio's middleware
         self.app = socketio.Middleware(sio, self.app)
 
@@ -111,58 +168,6 @@ class DonkeyUnitySimContoller(object):
             #unless some hits Ctrl+C and then we get this interrupt
             print('stopping')
 
-
-    @sio.on('Telemetry')
-    def telemetry(sid, data):
-        if data:
-            # The current image from the center camera of the car
-            imgString = data["image"]
-            image = Image.open(BytesIO(base64.b64decode(imgString)))
-            self.image_array = np.asarray(image)
-
-            #name of object we just hit. "none" if nothing.
-            self.hit = data["hit"]
-
-            self.x = data["pos_x"]
-            self.y = data["pos_y"]
-            self.z = data["pos_z"]
-
-            #Cross track error not always present.
-            #Will be missing if path is not setup in the given scene.
-            #It should be setup in the 3 scenes available now.
-            try:
-                self.cte = data["cte"]
-            except:
-                pass
-
-            self.have_new_obs = True
-        else:
-            sio.emit('RequestTelemetry', data={}, skip_sid=True)
-
-    @sio.on('connect')
-    def connect(self, sid, environ):
-        print("connect ", sid)
-        step_mode = "synchronous"
-
-        self.send_settings({"step_mode" : step_mode.__str__(),\
-            "time_step" : self.time_step.__str__()})
-
-    @sio.on('ProtocolVersion')
-    def on_proto_version(self, sid, environ):
-        print("ProtocolVersion ", sid)
-
-    @sio.on('SceneSelectionReady')
-    def on_fe_loaded(self, sid, environ):
-        self.send_get_scene_names()
-
-    @sio.on('SceneLoaded')
-    def on_scene_loaded(self, sid, data):
-        self.take_action((0, 0))
-
-    @sio.on('SceneNames')
-    def on_scene_names(self, sid, data):
-        names = data['scene_names']
-        self.send_load_scene(names[self.level])
 
 
     ## ------- Unity Event Messages --------------- ##

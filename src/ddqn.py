@@ -6,11 +6,12 @@ original: https://github.com/flyyufelix/donkey_rl/blob/master/donkey_rl/src/ddqn
 '''
 import os
 import sys
-import gym
 import random
+import argparse
+
 import numpy as np
+import gym
 import cv2
-import skimage as skimage
 import skimage as skimage
 from skimage import transform, color, exposure
 from skimage.transform import rotate
@@ -37,11 +38,11 @@ img_channels = 4 # We stack 4 frames
 
 class DQNAgent:
 
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, action_size, train=True, lane_detection=False):
         self.t = 0
         self.max_Q = 0
-        self.train = True
-        self.lane_detection = False # Set to True to train on images with segmented lane lines
+        self.train = train
+        self.lane_detection = lane_detection # Set to True to train on images with segmented lane lines
 
         # Get size of state and action
         self.state_size = state_size
@@ -232,27 +233,38 @@ def linear_unbin(arr):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description='ddqn')
+    parser.add_argument('--sim', type=str, help='path to unity simulator')
+    parser.add_argument('--model', type=str, help='path to model')
+    parser.add_argument('--test', action="store_true", help='agent uses learned model to navigate env')
+    parser.add_argument('--lane_detection', action="store_true", help='train on images with segmented lane lines')
+    parser.add_argument('--headless', type=int, default=0, help='enable to supress graphics')
+    
+
+    args = parser.parse_args()
+
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
     K.set_session(sess)
 
-    os.environ['DONKEY_SIM_PATH'] = "../sdsim/builds/donkey.x86_64"
+    os.environ['DONKEY_SIM_PATH'] = args.sim
+    os.environ['DONKEY_SIM_HEADLESS'] = str(args.headless)
     env = gym.make("donkey-generated-roads-v0")
 
     # Get size of state and action from environment
     state_size = (img_rows, img_cols, img_channels)
     action_size = env.action_space.n # Steering and Throttle
 
-    agent = DQNAgent(state_size, action_size)
+    agent = DQNAgent(state_size, action_size, train=not args.test, lane_detection=args.lane_detection)
 
     throttle = 0.3 # Set throttle as constant value
 
     episodes = []
 
-    if not agent.train:
-        print("Now we load the saved model")
-        agent.load_model("./save_model/save_model.h5")
+    if os.path.exists(args.model):
+        print("load the saved model")
+        agent.load_model(args.model)
 
     for e in range(EPISODES):
 
@@ -303,7 +315,7 @@ if __name__ == "__main__":
 
                 # Save model for each episode
                 if agent.train:
-                    agent.save_model("./save_model/save_model.h5")
+                    agent.save_model(args.model)
 
                 print("episode:", e, "  memory length:", len(agent.memory),
                       "  epsilon:", agent.epsilon, " episode length:", episode_len)

@@ -3,6 +3,7 @@ file: donkey_proc.py
 author: Felix Yu
 date: 2018-09-12
 '''
+import subprocess
 
 class DonkeyUnityProcess(object):
 
@@ -11,17 +12,15 @@ class DonkeyUnityProcess(object):
 
     ## ------ Launch Unity Env ----------- ##
 
-    def start(self, file_name, headless=False):
-
-        launch_string = filename
+    def start(self, sim_path, headless=False):
 
         # Launch Unity environment
         if headless:
             self.proc1 = subprocess.Popen(
-                [launch_string,'-nographics', '-batchmode'])
+                [sim_path,'-nographics', '-batchmode'])
         else:
             self.proc1 = subprocess.Popen(
-                [launch_string])
+                [sim_path])
 
     def quit(self):
         """

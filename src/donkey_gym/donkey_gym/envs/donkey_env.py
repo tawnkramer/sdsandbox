@@ -29,7 +29,7 @@ class DonkeyEnv(gym.Env):
         # start Unity simulation subprocess
         self.proc = DonkeyUnityProcess()
         exe_path = os.environ['DONKEY_SIM_PATH']
-        self.proc.start(exe_path, headless=False, platform="linux") #darwin for MacOS
+        self.proc.start(exe_path, headless=os.environ['DONKEY_SIM_HEADLESS']=='1')
 
         # start simulation com
         self.viewer = DonkeyUnitySimContoller(level, time_step)
@@ -41,7 +41,7 @@ class DonkeyEnv(gym.Env):
         self.observation_space = spaces.Box(0, 255, self.viewer.get_sensor_size())
 
         # simulation related variables.
-        self._seed()
+        self.seed()
 
         # Frame Skipping
         self.frame_skip = frame_skip
@@ -58,7 +58,7 @@ class DonkeyEnv(gym.Env):
 
     def step(self, action):
         for i in range(self.frame_skip):
-            self.self.viewer.take_action(action)
+            self.viewer.take_action(action)
             observation, reward, done, info = self.viewer.observe()
         return observation, reward, done, info
 
