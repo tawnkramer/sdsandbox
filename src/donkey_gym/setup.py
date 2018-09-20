@@ -9,5 +9,6 @@ setup(name="donkey_gym",
       package_data = {
           "donkey_gym.envs": ["samples/*.npy"]
       },
-      install_requires = ["gym", "numpy", 'flask', 'eventlet', 'socketio', 'pillow']
+      #install_requires = ["gym", "numpy", 'flask', 'eventlet', 'socketio', 'pillow']
+      install_requires = []
       )
