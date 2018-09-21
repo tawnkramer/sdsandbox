@@ -4,6 +4,7 @@ author: Tawn Kramer
 date: 2018-08-31
 '''
 import os
+from threading import Thread
 
 import numpy as np
 import gym
@@ -25,6 +26,7 @@ class DonkeyEnv(gym.Env):
 
     def __init__(self, level, time_step=0.05, frame_skip=2):
 
+        print("starting DonkeyGym env")
         # start Unity simulation subprocess
         self.proc = DonkeyUnityProcess()
         
@@ -64,7 +66,8 @@ class DonkeyEnv(gym.Env):
         # Frame Skipping
         self.frame_skip = frame_skip
 
-        self.reset()
+        self.reset()        
+
 
     def close(self):
         self.proc.quit()

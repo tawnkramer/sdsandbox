@@ -29,6 +29,8 @@ class DonkeyUnityProcess(object):
             self.proc1 = subprocess.Popen(
                 [sim_path] + port_args)
 
+        print("donkey subprocess started")
+
     def quit(self):
         """
         Shutdown unity environment

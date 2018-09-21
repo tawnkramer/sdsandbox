@@ -25,8 +25,8 @@ sio = socketio.Server()
 
 # This is to monkey_patch python standard library "magically". Without it server cannot actively push messages to Unity client through emit()
 # Reference: https://github.com/miguelgrinberg/Flask-SocketIO/issues/357
-#Not on a mac
-#eventlet.monkey_patch()
+#Not on a mac, Needed on Windoz, Linux
+eventlet.monkey_patch()
 
 class DonkeyUnitySimContoller(object):
 
@@ -37,7 +37,7 @@ class DonkeyUnitySimContoller(object):
         self.level = level
         self.time_step = time_step
         self.verbose = False
-        self.wait_time_for_obs = 0.01
+        self.wait_time_for_obs = 0.1
 
         # sensor size - height, width, depth
         self.camera_img_size=(120, 160, 3)
@@ -48,10 +48,10 @@ class DonkeyUnitySimContoller(object):
 
         self.reset(intial=True)
 
-        #start donkey sim listener
         self.thread = Thread(target=self.listen)
         self.thread.daemon = True
         self.thread.start()
+
 
     ## ------- Env interface ---------- ##
 
@@ -76,9 +76,6 @@ class DonkeyUnitySimContoller(object):
             #I think we have vehicle physics resetting properly now, and it's much faster.
             #So try that:
             self.send_reset_car()
-        if self.verbose:
-            print("RequestTelemetry")
-        sio.emit('RequestTelemetry', data={}, skip_sid=True)
     
     def show_obs_state(self):
         if self.verbose:
@@ -98,12 +95,7 @@ class DonkeyUnitySimContoller(object):
     def observe(self):
         assert(self.wait_for_obs)
         while not self.have_new_obs:
-            self.show_obs_state()
-            time.sleep(self.wait_time_for_obs)
-            if self.verbose:
-                print("waiting on new obs")
-                print("RequestTelemetry")
-            sio.emit('RequestTelemetry', data={}, skip_sid=True)
+            time.sleep(self.wait_time_for_obs)            
 
         observation = self.image_array
         done = self.is_game_over()
@@ -142,6 +134,8 @@ class DonkeyUnitySimContoller(object):
     ## ------ Websocket interface ----------- ##
 
     def listen(self):
+        if self.verbose:
+            print("start listening")
 
         @sio.on('Telemetry')
         def telemetry(sid, data):

@@ -78,11 +78,15 @@ class DQNAgent:
 
     def build_model(self):
         model = Sequential()
-        model.add(Conv2D(32, (8, 8), strides=(4, 4), padding='same',input_shape=(img_rows,img_cols,img_channels)))  #80*80*4
+        model.add(Conv2D(24, (5, 5), strides=(2, 2), padding="same",input_shape=(img_rows,img_cols,img_channels)))  #80*80*4
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same'))
+        model.add(Conv2D(32, (5, 5), strides=(2, 2), padding="same"))
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (3, 3), strides=(1, 1), padding='same'))
+        model.add(Conv2D(64, (5, 5), strides=(2, 2), padding="same"))
+        model.add(Activation('relu'))
+        model.add(Conv2D(64, (3, 3), strides=(2, 2), padding="same"))
+        model.add(Activation('relu'))
+        model.add(Conv2D(64, (3, 3), strides=(1, 1), padding="same"))
         model.add(Activation('relu'))
         model.add(Flatten())
         model.add(Dense(512))
