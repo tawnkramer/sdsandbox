@@ -11,6 +11,7 @@ import random
 import time
 from io import BytesIO
 import math
+from threading import Thread
 
 import numpy as np
 import socketio
@@ -21,9 +22,11 @@ from flask import Flask
 
 sio = socketio.Server()
 
+
 # This is to monkey_patch python standard library "magically". Without it server cannot actively push messages to Unity client through emit()
 # Reference: https://github.com/miguelgrinberg/Flask-SocketIO/issues/357
-eventlet.monkey_patch()
+#Not on a mac
+#eventlet.monkey_patch()
 
 class DonkeyUnitySimContoller(object):
 
@@ -33,6 +36,8 @@ class DonkeyUnitySimContoller(object):
     def __init__(self, level, time_step=0.05, port=9090):
         self.level = level
         self.time_step = time_step
+        self.verbose = False
+        self.wait_time_for_obs = 0.01
 
         # sensor size - height, width, depth
         self.camera_img_size=(120, 160, 3)
@@ -43,9 +48,16 @@ class DonkeyUnitySimContoller(object):
 
         self.reset(intial=True)
 
+        #start donkey sim listener
+        self.thread = Thread(target=self.listen)
+        self.thread.daemon = True
+        self.thread.start()
+
     ## ------- Env interface ---------- ##
 
     def reset(self, intial=False):
+        if self.verbose:
+            print("reseting")
         self.image_array = np.zeros(self.camera_img_size)
         self.hit = "none"
         self.cte = 0.0
@@ -55,6 +67,7 @@ class DonkeyUnitySimContoller(object):
         self.loaded = False
         self.wait_for_obs = True
         self.have_new_obs = False
+        self.show_obs_state()
         if not intial:
             #this exit scene command will cause us to re-load the scene.
             #on scene load we will have a fresh observation to return from observe
@@ -62,28 +75,46 @@ class DonkeyUnitySimContoller(object):
             #The exit scene will work, but it's slow to disconnect and re-connect.
             #I think we have vehicle physics resetting properly now, and it's much faster.
             #So try that:
-            self.send_reset_car() 
+            self.send_reset_car()
+        if self.verbose:
+            print("RequestTelemetry")
+        sio.emit('RequestTelemetry', data={}, skip_sid=True)
+    
+    def show_obs_state(self):
+        if self.verbose:
+            print("have_new_obs", self.have_new_obs)
 
     def get_sensor_size(self):
         return self.camera_img_size
 
     def take_action(self, action):
+        if self.verbose:
+            print("take_action")
         self.wait_for_obs = True
         self.have_new_obs = False
+        self.show_obs_state()
         self.send_control(action[0], action[1])        
 
     def observe(self):
         assert(self.wait_for_obs)
         while not self.have_new_obs:
-            time.sleep(0.0001)
+            self.show_obs_state()
+            time.sleep(self.wait_time_for_obs)
+            if self.verbose:
+                print("waiting on new obs")
+                print("RequestTelemetry")
+            sio.emit('RequestTelemetry', data={}, skip_sid=True)
 
         observation = self.image_array
         done = self.is_game_over()
         reward = self.calc_reward(done)
         info = {}
 
+        if self.verbose:
+            print("observe ready for new obs")
         self.wait_for_obs = False
         self.have_new_obs = False
+        self.show_obs_state()
 
         return observation, reward, done, info
 
@@ -114,6 +145,9 @@ class DonkeyUnitySimContoller(object):
 
         @sio.on('Telemetry')
         def telemetry(sid, data):
+            if self.verbose:
+                print("got telemetry", data is not None)
+
             if data:
                 # The current image from the center camera of the car
                 imgString = data["image"]
@@ -136,7 +170,11 @@ class DonkeyUnitySimContoller(object):
                     pass
 
                 self.have_new_obs = True
+                self.show_obs_state()
+
             else:
+                if self.verbose:
+                    print("RequestTelemetry")
                 sio.emit('RequestTelemetry', data={}, skip_sid=True)
 
         @sio.on('connect')
@@ -149,18 +187,27 @@ class DonkeyUnitySimContoller(object):
 
         @sio.on('ProtocolVersion')
         def on_proto_version(sid, environ):
-            pass
+            if self.verbose:
+                print("got ProtocolVersion", environ)
 
         @sio.on('SceneSelectionReady')
         def on_fe_loaded(sid, environ):
+            if self.verbose:
+                print("got SceneSelectionReady", environ)
             self.send_get_scene_names()
+            
 
         @sio.on('SceneLoaded')
         def on_scene_loaded(sid, data):
+            if self.verbose:
+                print("got SceneLoaded", data)
             self.take_action((0, 0))
+
 
         @sio.on('SceneNames')
         def on_scene_names(sid, data):
+            if self.verbose:
+                print("got SceneNames", data)
             names = data['scene_names']
             self.send_load_scene(names[self.level])
 
@@ -180,6 +227,8 @@ class DonkeyUnitySimContoller(object):
     ## ------- Unity Event Messages --------------- ##
 
     def send_get_scene_names(self):
+        if self.verbose:
+            print("send_get_scene_names")
         sio.emit(
             "GetSceneNames",
             data={            
@@ -187,6 +236,8 @@ class DonkeyUnitySimContoller(object):
             skip_sid=True)
 
     def send_control(self, steering_angle, throttle):
+        if self.verbose:
+            print("send_control")
         sio.emit(
             "Steer",
             data={
@@ -205,6 +256,8 @@ class DonkeyUnitySimContoller(object):
             skip_sid=True)
 
     def send_exit_scene(self):
+        if self.verbose:
+            print("send_exit_scene")
         sio.emit(
             "ExitScene",
             data={
@@ -213,6 +266,8 @@ class DonkeyUnitySimContoller(object):
             skip_sid=True)
 
     def send_reset_car(self):
+        if self.verbose:
+            print("send_reset_car")
         sio.emit(
             "ResetCar",
             data={            
@@ -220,6 +275,8 @@ class DonkeyUnitySimContoller(object):
             skip_sid=True)
 
     def send_settings(self, prefs):
+        if self.verbose:
+            print("send_settings")
         sio.emit(
             "Settings",
             data=prefs,

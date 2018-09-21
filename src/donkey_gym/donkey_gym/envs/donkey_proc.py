@@ -36,4 +36,5 @@ class DonkeyUnityProcess(object):
         if self.proc1 is not None:
             print("closing donkey sim subprocess")
             self.proc1.kill()
+            self.proc1 = None
     

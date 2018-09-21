@@ -252,7 +252,7 @@ def run_ddqn(args):
     #not working on windows...
     def signal_handler(signal, frame):
         print("catching ctrl+c")
-        env.shutdown()
+        env.unwrapped.close()
         sys.exit(0)
 
     signal.signal(signal.SIGINT, signal_handler)
@@ -330,7 +330,7 @@ def run_ddqn(args):
     except KeyboardInterrupt:
         print("stopping run...")
     finally:
-        env.shutdown()
+        env.unwrapped.close()
 
 
 if __name__ == "__main__":

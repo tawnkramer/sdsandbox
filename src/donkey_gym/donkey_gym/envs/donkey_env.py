@@ -4,7 +4,6 @@ author: Tawn Kramer
 date: 2018-08-31
 '''
 import os
-from threading import Thread
 
 import numpy as np
 import gym
@@ -65,13 +64,9 @@ class DonkeyEnv(gym.Env):
         # Frame Skipping
         self.frame_skip = frame_skip
 
-        #start donkey sim thread listener
-        self.thread = Thread(target=self.viewer.listen)
-        self.thread.start()
-
         self.reset()
 
-    def shutdown(self):
+    def close(self):
         self.proc.quit()
 
     def seed(self, seed=None):
