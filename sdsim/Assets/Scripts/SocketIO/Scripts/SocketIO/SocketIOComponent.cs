@@ -42,7 +42,11 @@ namespace SocketIO
 	{
 		#region Public Properties
 
-		public string url = "ws://127.0.0.1:4567/socket.io/?EIO=4&transport=websocket";
+		public string url = "ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket";
+
+		public string host = "127.0.0.1";
+		public string port = "9090";
+
 		public bool autoConnect = true;
 		public int reconnectDelay = 5;
 		public float ackExpirationTime = 1800f;
@@ -99,6 +103,8 @@ namespace SocketIO
 			sid = null;
 			packetId = 0;
 
+			CheckCommandLineConnectArgs();
+
 			ws = new WebSocket(url);
 			ws.OnOpen += OnOpen;
 			ws.OnMessage += OnMessage;
@@ -119,8 +125,30 @@ namespace SocketIO
 			#endif
 		}
 
-		public void Start()
+		public void CheckCommandLineConnectArgs()
 		{
+			string[] args = System.Environment.GetCommandLineArgs ();
+			for (int i = 0; i < args.Length; i++) {
+				if (args [i] == "--host") {
+					host = args [i + 1];
+					BuildUrl();
+				}
+				else if (args [i] == "--port") {
+					port = args [i + 1];
+					BuildUrl();
+				}
+			}
+		}
+
+		public void BuildUrl()
+		{
+			//Security.PrefetchSocketPolicy(host, port);
+			url = "ws://" + host + ":" + port + "/socket.io/?EIO=4&transport=websocket";
+			Debug.Log("new url:" + url);
+		}
+
+		public void Start()
+		{		
 			if (autoConnect) { Connect(); }
 		}
 
@@ -308,10 +336,12 @@ namespace SocketIO
 			try {
 				ws.Send(encoder.Encode(packet));
 			} catch(SocketIOException ex) {
-				#if SOCKET_IO_DEBUG
+#if SOCKET_IO_DEBUG
 				debugMethod.Invoke(ex.ToString());
-				#endif
-			}
+#else
+                Debug.LogError(ex.ToString());
+#endif
+            }
 		}
 
 		private void OnOpen(object sender, EventArgs e)

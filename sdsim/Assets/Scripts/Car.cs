@@ -36,6 +36,9 @@ public class Car : MonoBehaviour, ICar {
 
     public float maxSteer = 16.0f;
 
+	//name of the last object we hit.
+	public string last_collision = "none";
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -97,20 +100,25 @@ public class Car : MonoBehaviour, ICar {
 		rb.rotation = rot;
 
 		//just setting it once doesn't seem to work. Try setting it multiple times..
-		StartCoroutine(KeepSetting(pos, rot, 10));
+		StartCoroutine(KeepSetting(pos, rot, 1));
 	}
 
 	IEnumerator KeepSetting(Vector3 pos, Quaternion rot, int numIter)
 	{
 		while(numIter > 0)
 		{
+			rb.isKinematic = true;
+			
+			yield return new WaitForFixedUpdate();
+
 			rb.position = pos;
 			rb.rotation = rot;
 			transform.position = pos;
 			transform.rotation = rot;
 
 			numIter--;
-			yield return new WaitForFixedUpdate();
+
+			rb.isKinematic = false;
 		}
 	}
 
@@ -240,5 +248,21 @@ public class Car : MonoBehaviour, ICar {
 			tm.position = pos;
 			tm.rotation = rot;
 		}
+	}
+
+	//get the name of the last object we collided with
+	public string GetLastCollision()
+	{
+		return last_collision;
+	}
+
+	public void ClearLastCollision()
+	{
+		last_collision = "none";
+	}
+
+	void OnCollisionEnter(Collision col)
+	{
+		last_collision = col.gameObject.name;
 	}
 }

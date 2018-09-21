@@ -1,9 +1,11 @@
 python-socketio
 flask
 eventlet
-keras==2.0.8
+keras
 pygame
 numpy
 pillow
 h5py
-
+scikit-image
+opencv-python
+gym
