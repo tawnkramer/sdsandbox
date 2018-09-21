@@ -238,7 +238,8 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, help='path to model')
     parser.add_argument('--test', action="store_true", help='agent uses learned model to navigate env')
     parser.add_argument('--lane_detection', action="store_true", help='train on images with segmented lane lines')
-    parser.add_argument('--headless', type=int, default=0, help='enable to supress graphics')
+    parser.add_argument('--headless', type=int, default=0, help='1 to supress graphics')
+    parser.add_argument('--port', type=int, default=9090, help='port to use for websockets')
     
 
     args = parser.parse_args()
@@ -249,6 +250,7 @@ if __name__ == "__main__":
     K.set_session(sess)
 
     os.environ['DONKEY_SIM_PATH'] = args.sim
+    os.environ['DONKEY_SIM_PORT'] = str(args.port)
     os.environ['DONKEY_SIM_HEADLESS'] = str(args.headless)
     env = gym.make("donkey-generated-roads-v0")
 

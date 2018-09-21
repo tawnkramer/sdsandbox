@@ -28,11 +28,30 @@ class DonkeyEnv(gym.Env):
 
         # start Unity simulation subprocess
         self.proc = DonkeyUnityProcess()
-        exe_path = os.environ['DONKEY_SIM_PATH']
-        self.proc.start(exe_path, headless=os.environ['DONKEY_SIM_HEADLESS']=='1')
+        
+        try:
+            exe_path = os.environ['DONKEY_SIM_PATH']
+        except:
+            print("Missing DONKEY_SIM_PATH environment var. Using defaults")
+            #you must start the executable on your own
+            exe_path = "self_start"
+        
+        try:
+            port = int(os.environ['DONKEY_SIM_PORT'])
+        except:
+            print("Missing DONKEY_SIM_PORT environment var. Using defaults")
+            port = 9090
+            
+        try:
+            headless = os.environ['DONKEY_SIM_HEADLESS']=='1'
+        except:
+            print("Missing DONKEY_SIM_HEADLESS environment var. Using defaults")
+            headless = False
+
+        self.proc.start(exe_path, headless=headless)
 
         # start simulation com
-        self.viewer = DonkeyUnitySimContoller(level, time_step)
+        self.viewer = DonkeyUnitySimContoller(level=level, time_step=time_step, port=port)
 
         # steering and throttle
         self.action_space = spaces.Discrete(len(self.ACTION))

@@ -30,12 +30,14 @@ class DonkeyUnitySimContoller(object):
     #cross track error max
     CTE_MAX_ERR = 5.0
 
-    def __init__(self, level, time_step=0.05):
+    def __init__(self, level, time_step=0.05, port=9090):
         self.level = level
         self.time_step = time_step
 
         # sensor size - height, width, depth
         self.camera_img_size=(120, 160, 3)
+
+        self.address = ('0.0.0.0', port)
         
         self.app = Flask("DonkeyUnitySim")
 
@@ -108,7 +110,7 @@ class DonkeyUnitySimContoller(object):
 
     ## ------ Websocket interface ----------- ##
 
-    def listen(self, address = ('0.0.0.0', 9090)):
+    def listen(self):
 
         @sio.on('Telemetry')
         def telemetry(sid, data):
@@ -167,7 +169,7 @@ class DonkeyUnitySimContoller(object):
 
         # deploy as an eventlet WSGI server
         try:
-            eventlet.wsgi.server(eventlet.listen(address), self.app)
+            eventlet.wsgi.server(eventlet.listen(self.address), self.app)
         except KeyboardInterrupt:
             #unless some hits Ctrl+C and then we get this interrupt
             print('stopping')

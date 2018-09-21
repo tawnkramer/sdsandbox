@@ -4,6 +4,7 @@ author: Felix Yu
 date: 2018-09-12
 '''
 import subprocess
+import os
 
 class DonkeyUnityProcess(object):
 
@@ -13,6 +14,10 @@ class DonkeyUnityProcess(object):
     ## ------ Launch Unity Env ----------- ##
 
     def start(self, sim_path, headless=False):
+
+        if not os.path.exists(sim_path):
+            print(sim_path, "does not exist. not starting sim.")
+            return
 
         # Launch Unity environment
         if headless:
