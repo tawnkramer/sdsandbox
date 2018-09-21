@@ -56,7 +56,11 @@ class DonkeyUnitySimContoller(object):
         if not intial:
             #this exit scene command will cause us to re-load the scene.
             #on scene load we will have a fresh observation to return from observe
-            self.send_exit_scene()
+            #self.send_exit_scene()
+            #The exit scene will work, but it's slow to disconnect and re-connect.
+            #I think we have vehicle physics resetting properly now, and it's much faster.
+            #So try that:
+            self.send_reset_car() 
 
     def get_sensor_size(self):
         return self.camera_img_size

@@ -100,20 +100,25 @@ public class Car : MonoBehaviour, ICar {
 		rb.rotation = rot;
 
 		//just setting it once doesn't seem to work. Try setting it multiple times..
-		StartCoroutine(KeepSetting(pos, rot, 10));
+		StartCoroutine(KeepSetting(pos, rot, 1));
 	}
 
 	IEnumerator KeepSetting(Vector3 pos, Quaternion rot, int numIter)
 	{
 		while(numIter > 0)
 		{
+			rb.isKinematic = true;
+			
+			yield return new WaitForFixedUpdate();
+
 			rb.position = pos;
 			rb.rotation = rot;
 			transform.position = pos;
 			transform.rotation = rot;
 
 			numIter--;
-			yield return new WaitForFixedUpdate();
+
+			rb.isKinematic = false;
 		}
 	}
 
