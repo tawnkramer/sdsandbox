@@ -103,6 +103,8 @@ namespace SocketIO
 			sid = null;
 			packetId = 0;
 
+			CheckCommandLineConnectArgs();
+
 			ws = new WebSocket(url);
 			ws.OnOpen += OnOpen;
 			ws.OnMessage += OnMessage;
@@ -140,13 +142,13 @@ namespace SocketIO
 
 		public void BuildUrl()
 		{
+			//Security.PrefetchSocketPolicy(host, port);
 			url = "ws://" + host + ":" + port + "/socket.io/?EIO=4&transport=websocket";
+			Debug.Log("new url:" + url);
 		}
 
 		public void Start()
-		{
-			CheckCommandLineConnectArgs();
-
+		{		
 			if (autoConnect) { Connect(); }
 		}
 
@@ -334,10 +336,12 @@ namespace SocketIO
 			try {
 				ws.Send(encoder.Encode(packet));
 			} catch(SocketIOException ex) {
-				#if SOCKET_IO_DEBUG
+#if SOCKET_IO_DEBUG
 				debugMethod.Invoke(ex.ToString());
-				#endif
-			}
+#else
+                Debug.LogError(ex.ToString());
+#endif
+            }
 		}
 
 		private void OnOpen(object sender, EventArgs e)

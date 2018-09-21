@@ -37,7 +37,7 @@ class DonkeyUnitySimContoller(object):
         # sensor size - height, width, depth
         self.camera_img_size=(120, 160, 3)
 
-        self.address = ('0.0.0.0', port)
+        self.address = ('0.0.0.0', port)        
         
         self.app = Flask("DonkeyUnitySim")
 
@@ -169,6 +169,7 @@ class DonkeyUnitySimContoller(object):
 
         # deploy as an eventlet WSGI server
         try:
+            print("listening on", self.address)
             eventlet.wsgi.server(eventlet.listen(self.address), self.app)
         except KeyboardInterrupt:
             #unless some hits Ctrl+C and then we get this interrupt

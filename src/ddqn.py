@@ -8,14 +8,17 @@ import os
 import sys
 import random
 import argparse
+import signal
 
 import numpy as np
 import gym
 import cv2
+
 import skimage as skimage
 from skimage import transform, color, exposure
 from skimage.transform import rotate
 from skimage.viewer import ImageViewer
+
 from collections import deque
 from keras.layers import Dense
 from keras.optimizers import Adam
@@ -24,7 +27,7 @@ from keras.initializers import normal, identity
 from keras.models import model_from_json
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D
 import tensorflow as tf
 from keras import backend as K
 
@@ -74,13 +77,12 @@ class DQNAgent:
         self.update_target_model()
 
     def build_model(self):
-        print("Now we build the model")
         model = Sequential()
-        model.add(Convolution2D(32, 8, 8, subsample=(4, 4), border_mode='same',input_shape=(img_rows,img_cols,img_channels)))  #80*80*4
+        model.add(Conv2D(32, (8, 8), strides=(4, 4), padding='same',input_shape=(img_rows,img_cols,img_channels)))  #80*80*4
         model.add(Activation('relu'))
-        model.add(Convolution2D(64, 4, 4, subsample=(2, 2), border_mode='same'))
+        model.add(Conv2D(64, (4, 4), strides=(2, 2), padding='same'))
         model.add(Activation('relu'))
-        model.add(Convolution2D(64, 3, 3, subsample=(1, 1), border_mode='same'))
+        model.add(Conv2D(64, (3, 3), strides=(1, 1), padding='same'))
         model.add(Activation('relu'))
         model.add(Flatten())
         model.add(Dense(512))
@@ -91,15 +93,14 @@ class DQNAgent:
 
         adam = Adam(lr=self.learning_rate)
         model.compile(loss='mse',optimizer=adam)
-        print("We finished building the model")
-
+        
         return model
 
     def process_image(self, obs):
 
-        if not agent.lane_detection:
-            obs = skimage.color.rgb2gray(obs)
-            obs = skimage.transform.resize(obs, (img_rows, img_cols))
+        if not self.lane_detection:
+            obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY)
+            obs = cv2.resize(obs, (img_rows, img_cols))
             return obs
         else:
             obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY)
@@ -231,11 +232,112 @@ def linear_unbin(arr):
     return a
 
 
+def run_ddqn(args):
+    '''
+    run a DDQN training session, or test it's result, with the donkey simulator
+    '''
+
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
+    K.set_session(sess)
+
+    #we pass arguments to the donkey_gym init via these
+    os.environ['DONKEY_SIM_PATH'] = args.sim
+    os.environ['DONKEY_SIM_PORT'] = str(args.port)
+    os.environ['DONKEY_SIM_HEADLESS'] = str(args.headless)
+
+    env = gym.make("donkey-generated-roads-v0")
+
+    #not working on windows...
+    def signal_handler(signal, frame):
+        print("catching ctrl+c")
+        env.shutdown()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGABRT, signal_handler)
+
+    # Get size of state and action from environment
+    state_size = (img_rows, img_cols, img_channels)
+    action_size = env.action_space.n # Steering and Throttle
+
+    try:
+        agent = DQNAgent(state_size, action_size, train=not args.test, lane_detection=args.lane_detection)
+
+        throttle = 0.3 # Set throttle as constant value
+
+        episodes = []
+
+        if os.path.exists(args.model):
+            print("load the saved model")
+            agent.load_model(args.model)
+
+        for e in range(EPISODES):
+
+            print("Episode: ", e)
+
+            done = False
+            obs = env.reset()
+
+            episode_len = 0
+        
+            x_t = agent.process_image(obs)
+
+            s_t = np.stack((x_t,x_t,x_t,x_t),axis=2)
+            # In Keras, need to reshape
+            s_t = s_t.reshape(1, s_t.shape[0], s_t.shape[1], s_t.shape[2]) #1*80*80*4       
+            
+            while not done:
+
+                # Get action for the current state and go one step in environment
+                steering = agent.get_action(s_t)
+                action = [steering, throttle]
+                next_obs, reward, done, info = env.step(action)
+
+                x_t1 = agent.process_image(next_obs)
+
+                x_t1 = x_t1.reshape(1, x_t1.shape[0], x_t1.shape[1], 1) #1x80x80x1
+                s_t1 = np.append(x_t1, s_t[:, :, :, :3], axis=3) #1x80x80x4
+
+                # Save the sample <s, a, r, s'> to the replay memory
+                agent.replay_memory(s_t, np.argmax(linear_bin(steering)), reward, s_t1, done)
+
+                if agent.train:
+                    agent.train_replay()
+
+                s_t = s_t1
+                agent.t = agent.t + 1
+                episode_len = episode_len + 1
+                if agent.t % 30 == 0:
+                    print("EPISODE",  e, "TIMESTEP", agent.t,"/ ACTION", action, "/ REWARD", reward, "/ EPISODE LENGTH", episode_len, "/ Q_MAX " , agent.max_Q)
+
+                if done:
+
+                    # Every episode update the target model to be same with model
+                    agent.update_target_model()
+
+                    episodes.append(e)
+                    
+
+                    # Save model for each episode
+                    if agent.train:
+                        agent.save_model(args.model)
+
+                    print("episode:", e, "  memory length:", len(agent.memory),
+                        "  epsilon:", agent.epsilon, " episode length:", episode_len)
+    except KeyboardInterrupt:
+        print("stopping run...")
+    finally:
+        env.shutdown()
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='ddqn')
-    parser.add_argument('--sim', type=str, help='path to unity simulator')
-    parser.add_argument('--model', type=str, help='path to model')
+    parser.add_argument('--sim', type=str, default="manual", help='path to unity simulator. maybe be left at manual if you would like to start the sim on your own.')
+    parser.add_argument('--model', type=str, default="rl_driver.h5", help='path to model')
     parser.add_argument('--test', action="store_true", help='agent uses learned model to navigate env')
     parser.add_argument('--lane_detection', action="store_true", help='train on images with segmented lane lines')
     parser.add_argument('--headless', type=int, default=0, help='1 to supress graphics')
@@ -244,81 +346,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
-    sess = tf.Session(config=config)
-    K.set_session(sess)
+    run_ddqn(args)
+    
 
-    os.environ['DONKEY_SIM_PATH'] = args.sim
-    os.environ['DONKEY_SIM_PORT'] = str(args.port)
-    os.environ['DONKEY_SIM_HEADLESS'] = str(args.headless)
-    env = gym.make("donkey-generated-roads-v0")
-
-    # Get size of state and action from environment
-    state_size = (img_rows, img_cols, img_channels)
-    action_size = env.action_space.n # Steering and Throttle
-
-    agent = DQNAgent(state_size, action_size, train=not args.test, lane_detection=args.lane_detection)
-
-    throttle = 0.3 # Set throttle as constant value
-
-    episodes = []
-
-    if os.path.exists(args.model):
-        print("load the saved model")
-        agent.load_model(args.model)
-
-    for e in range(EPISODES):
-
-        print("Episode: ", e)
-
-        done = False
-        obs = env.reset()
-
-        episode_len = 0
-       
-        x_t = agent.process_image(obs)
-
-        s_t = np.stack((x_t,x_t,x_t,x_t),axis=2)
-        # In Keras, need to reshape
-        s_t = s_t.reshape(1, s_t.shape[0], s_t.shape[1], s_t.shape[2]) #1*80*80*4       
-        
-        while not done:
-
-            # Get action for the current state and go one step in environment
-            steering = agent.get_action(s_t)
-            action = [steering, throttle]
-            next_obs, reward, done, info = env.step(action)
-
-            x_t1 = agent.process_image(next_obs)
-
-            x_t1 = x_t1.reshape(1, x_t1.shape[0], x_t1.shape[1], 1) #1x80x80x1
-            s_t1 = np.append(x_t1, s_t[:, :, :, :3], axis=3) #1x80x80x4
-
-            # Save the sample <s, a, r, s'> to the replay memory
-            agent.replay_memory(s_t, np.argmax(linear_bin(steering)), reward, s_t1, done)
-
-            if agent.train:
-                agent.train_replay()
-
-            s_t = s_t1
-            agent.t = agent.t + 1
-            episode_len = episode_len + 1
-            if agent.t % 30 == 0:
-                print("EPISODE",  e, "TIMESTEP", agent.t,"/ ACTION", action, "/ REWARD", reward, "/ EPISODE LENGTH", episode_len, "/ Q_MAX " , agent.max_Q)
-
-            if done:
-
-                # Every episode update the target model to be same with model
-                agent.update_target_model()
-
-                episodes.append(e)
-                
-
-                # Save model for each episode
-                if agent.train:
-                    agent.save_model(args.model)
-
-                print("episode:", e, "  memory length:", len(agent.memory),
-                      "  epsilon:", agent.epsilon, " episode length:", episode_len)
 

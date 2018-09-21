@@ -48,7 +48,7 @@ class DonkeyEnv(gym.Env):
             print("Missing DONKEY_SIM_HEADLESS environment var. Using defaults")
             headless = False
 
-        self.proc.start(exe_path, headless=headless)
+        self.proc.start(exe_path, headless=headless, port=port)
 
         # start simulation com
         self.viewer = DonkeyUnitySimContoller(level=level, time_step=time_step, port=port)
@@ -70,6 +70,9 @@ class DonkeyEnv(gym.Env):
         self.thread.start()
 
         self.reset()
+
+    def shutdown(self):
+        self.proc.quit()
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
