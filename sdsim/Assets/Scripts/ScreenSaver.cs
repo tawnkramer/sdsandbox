@@ -30,6 +30,6 @@ public class ScreenSaver : MonoBehaviour
 	{
 		yield return new WaitForEndOfFrame();
 
-		Application.CaptureScreenshot(filename);
+		ScreenCapture.CaptureScreenshot(filename);
 	}
 }
