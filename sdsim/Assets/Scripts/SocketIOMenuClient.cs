@@ -168,6 +168,7 @@ public class SocketIOMenuClient : MonoBehaviour {
         scenes.Add("generated_road");
         scenes.Add("warehouse");
         scenes.Add("sparkfun_avc");
+        scenes.Add("generated_track");
 
         m.json = new JSONObject(JSONObject.Type.OBJECT);
         m.json.AddField("scene_names", scenes);
@@ -197,6 +198,10 @@ public class SocketIOMenuClient : MonoBehaviour {
         else if (scene_name == "sparkfun_avc")
         {
             loader.LoadAVCScene();
+        }
+        else if (scene_name == "generated_track")
+        {
+            loader.LoadGeneratedTrackScene();
         }
     }
 

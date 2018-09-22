@@ -25,6 +25,11 @@ public void LoadMenuScene()
     SceneManager.LoadSceneAsync(0);
 }
 
+public void LoadGeneratedTrackScene()
+{
+    SceneManager.LoadSceneAsync(4);
+}
+
 public void QuitApplication()
 {
     Application.Quit();

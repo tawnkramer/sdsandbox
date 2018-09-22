@@ -168,6 +168,11 @@ public class PIDController : MonoBehaviour {
             if(looping)
             {
                 pm.path.ResetActiveSpan();
+
+				//Let logger know we looped. Sorry an event would be cleaner.
+				var foundObjects = FindObjectsOfType<Logger>();
+				foreach(var logger in foundObjects)
+					logger.lapCounter++;
             }
 			else if(brakeOnEnd)
 			{

@@ -25,14 +25,16 @@ public class DonkeyRecord
     public string cam_image_array;
     public float user_throttle;
     public float user_angle;
-    public string user_mode;    
+    public string user_mode; 
+    public int track_lap; 
 
-    public void Init(string image_name, float throttle, float angle, string mode)
+    public void Init(string image_name, float throttle, float angle, string mode, int lap)
     {
         cam_image_array = image_name;
         user_throttle = throttle;
         user_angle = angle;
         user_mode = mode;
+        track_lap = lap;
     }
 
     public string AsString()
@@ -44,6 +46,7 @@ public class DonkeyRecord
         json = json.Replace("user_throttle", "user/throttle");
         json = json.Replace("user_angle", "user/angle");
         json = json.Replace("user_mode", "user/mode");
+        json = json.Replace("track_lap", "track/lap");
 
         return json;
     }
@@ -58,6 +61,9 @@ public class Logger : MonoBehaviour {
 
 	//what's the current frame index
     public int frameCounter = 0;
+
+    //which lap
+    public int lapCounter = 0;
 
 	//is there an upper bound on the number of frames to log
 	public int maxFramesToLog = 14000;
@@ -120,8 +126,8 @@ public class Logger : MonoBehaviour {
             if(DonkeyStyle2)
             {
                 MetaJson mjson = new MetaJson();
-                string[] inputs = {"cam/image_array", "user/angle", "user/throttle", "user/mode"};
-                string[] types = {"image_array", "float", "float", "str"};
+                string[] inputs = {"cam/image_array", "user/angle", "user/throttle", "user/mode", "track/lap"};
+                string[] types = {"image_array", "float", "float", "str", "int"};
                 mjson.Init(inputs, types);
                 string json = JsonUtility.ToJson(mjson);
 				var f = File.CreateText(Application.dataPath + "/../log/meta.json");
@@ -157,7 +163,9 @@ public class Logger : MonoBehaviour {
 			{
 				string image_filename = GetUdacityStyleImageFilename();
 				float steering = car.GetSteering() / car.GetMaxSteering();
-				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", image_filename, "none", "none", steering.ToString(), car.GetThrottle().ToString(), "0", "0"));
+				writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", image_filename, 
+                    "none", "none", steering.ToString(), 
+                    car.GetThrottle().ToString(), "0", "0", lapCounter));
 			}
             else if(DonkeyStyle || SharkStyle)
             {
@@ -173,7 +181,7 @@ public class Logger : MonoBehaviour {
                 steering = Mathf.Clamp(steering, -1.0f, 1.0f);
 
                 mjson.Init(string.Format("{0}_cam-image_array_.jpg", frameCounter),
-                    throttle, steering, "user");
+                    throttle, steering, "user", lapCounter);
 
                 string json = mjson.AsString();
                 string filename = string.Format("record_{0}.json", frameCounter);
