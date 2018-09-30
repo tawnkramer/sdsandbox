@@ -30,6 +30,8 @@ namespace tk
         public float num_requests = 0.0f;
         public float avg_req_time = 0.0f;
 
+        float steer_to_angle = 16.0f;
+
         public enum State
         {
             UnConnected,
@@ -76,7 +78,7 @@ namespace tk
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "telemetry");
 
-            json.AddField("steering_angle", car.GetSteering());
+            json.AddField("steering_angle", car.GetSteering() / steer_to_angle);
             json.AddField("throttle", car.GetThrottle());
             json.AddField("speed", car.GetVelocity().magnitude);
             json.AddField("image", System.Convert.ToBase64String(camSensor.GetImageBytes()));
@@ -112,7 +114,7 @@ namespace tk
         {
             try
             {
-                float steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat);
+                float steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * steer_to_angle;
                 float throttle = float.Parse(json["throttle"].str, CultureInfo.InvariantCulture.NumberFormat);
                 //Debug.Log(steering.ToString());
 
