@@ -26,15 +26,17 @@ public class DonkeyRecord
     public float user_throttle;
     public float user_angle;
     public string user_mode; 
-    public int track_lap; 
+    public int track_lap;
+    public int track_loc;
 
-    public void Init(string image_name, float throttle, float angle, string mode, int lap)
+    public void Init(string image_name, float throttle, float angle, string mode, int lap, int loc)
     {
         cam_image_array = image_name;
         user_throttle = throttle;
         user_angle = angle;
         user_mode = mode;
         track_lap = lap;
+        track_loc = loc;
     }
 
     public string AsString()
@@ -47,6 +49,8 @@ public class DonkeyRecord
         json = json.Replace("user_angle", "user/angle");
         json = json.Replace("user_mode", "user/mode");
         json = json.Replace("track_lap", "track/lap");
+        json = json.Replace("track_lap", "track/lap");
+        json = json.Replace("track_loc", "track/loc");
 
         return json;
     }
@@ -126,8 +130,8 @@ public class Logger : MonoBehaviour {
             if(DonkeyStyle2)
             {
                 MetaJson mjson = new MetaJson();
-                string[] inputs = {"cam/image_array", "user/angle", "user/throttle", "user/mode", "track/lap"};
-                string[] types = {"image_array", "float", "float", "str", "int"};
+                string[] inputs = {"cam/image_array", "user/angle", "user/throttle", "user/mode", "track/lap", "track/loc"};
+                string[] types = {"image_array", "float", "float", "str", "int", "int"};
                 mjson.Init(inputs, types);
                 string json = JsonUtility.ToJson(mjson);
 				var f = File.CreateText(Application.dataPath + "/../log/meta.json");
@@ -175,13 +179,14 @@ public class Logger : MonoBehaviour {
             {
                 DonkeyRecord mjson = new DonkeyRecord();
                 float steering = car.GetSteering() / car.GetMaxSteering();
-                float throttle = car.GetThrottle();
+                float throttle = car.GetThrottle() * 10.0f;
+                int loc = LocationMarker.GetNearestLocMarker(carObj.transform.position);
 
                 //training code like steering clamped between -1, 1
                 steering = Mathf.Clamp(steering, -1.0f, 1.0f);
 
                 mjson.Init(string.Format("{0}_cam-image_array_.jpg", frameCounter),
-                    throttle, steering, "user", lapCounter);
+                    throttle, steering, "user", lapCounter, loc);
 
                 string json = mjson.AsString();
                 string filename = string.Format("record_{0}.json", frameCounter);

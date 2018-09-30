@@ -19,3 +19,8 @@ register(
     timestep_limit=2000,
 )
 
+register(
+    id='donkey-generated-track-v0',
+    entry_point='donkey_gym.envs:GeneratedTrackEnv',
+    timestep_limit=2000,
+)

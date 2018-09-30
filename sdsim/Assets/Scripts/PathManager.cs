@@ -42,12 +42,16 @@ public class PathManager : MonoBehaviour {
 
 	public LaneChangeTrainer laneChTrainer;
 
+	public GameObject locationMarkerPrefab;
+
+	public int markerEveryN = 2;
+
 	void Awake () 
 	{
 		if(sameRandomPath)
 			Random.InitState(randSeed);
 
-		InitNewRoad();			
+		InitNewRoad();
 	}
 
 	public void InitNewRoad()
@@ -78,6 +82,19 @@ public class PathManager : MonoBehaviour {
 		if(laneChTrainer != null && doChangeLanes)
 		{
 			laneChTrainer.ModifyPath(ref path);
+		}
+
+		if(locationMarkerPrefab != null && path != null)
+		{
+			int iLocId = 0;
+			for(int iN = 0; iN < path.nodes.Count; iN += markerEveryN)
+			{
+				Vector3 np = path.nodes[iN].pos;
+				GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
+				go.transform.parent = this.transform;
+				go.GetComponent<LocationMarker>().id = iLocId;
+				iLocId++;
+			}
 		}
 
 		if(doShowPath && path != null)

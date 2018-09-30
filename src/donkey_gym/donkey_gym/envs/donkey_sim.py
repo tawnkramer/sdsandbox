@@ -4,6 +4,7 @@ author: Tawn Kramer
 date: 2018-08-31
 '''
 
+import os
 import json
 import shutil
 import base64
@@ -174,7 +175,11 @@ class DonkeyUnitySimContoller(object):
         @sio.on('connect')
         def connect(sid, environ):
             print("web socket connected")
-            step_mode = "synchronous"
+
+            try:
+                step_mode = os.environ['DONKEY_SIM_SYNC']
+            except:
+                step_mode = "synchronous"
 
             self.send_settings({"step_mode" : step_mode.__str__(),\
                 "time_step" : self.time_step.__str__()})

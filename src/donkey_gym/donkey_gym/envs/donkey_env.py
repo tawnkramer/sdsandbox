@@ -112,4 +112,9 @@ class WarehouseEnv(DonkeyEnv):
 class AvcSparkfunEnv(DonkeyEnv):
 
     def __init__(self):
-        super(AvcSparkfunEnv, self).__init__(level=1)
+        super(AvcSparkfunEnv, self).__init__(level=2)
+
+class GeneratedTrackEnv(DonkeyEnv):
+
+    def __init__(self):
+        super(GeneratedTrackEnv, self).__init__(level=3)
