@@ -19,6 +19,8 @@ class IMesgHandler(object):
     def on_close(self):
         pass
 
+    def on_disconnect(self):
+        pass
 
 
 class SimServer(asyncore.dispatcher):
@@ -44,10 +46,11 @@ class SimServer(asyncore.dispatcher):
         print('binding to', self.address)
         
         #let tcp stack know we plan to process one outstanding request to connect request each loop
-        self.listen(1)
+        self.listen(5)
 
         #keep a pointer to our IMesgHandler handler
         self.msg_handler = msg_handler
+        
 
     def handle_accept(self):
         # Called when a client connects to our socket
@@ -60,9 +63,12 @@ class SimServer(asyncore.dispatcher):
         
     
     def handle_close(self):
+        print("server shutdown")
         # Called then server is shutdown
         self.close()
-        self.msg_handler.on_close()
+    
+        if self.msg_handler:
+            self.msg_handler.on_close()
 
 
 class SimHandler(asyncore.dispatcher):
@@ -76,7 +82,9 @@ class SimHandler(asyncore.dispatcher):
         
         #msg_handler handles incoming messages
         self.msg_handler = msg_handler
-        msg_handler.on_connect(self)
+
+        if msg_handler:
+            msg_handler.on_connect(self)
 
         #chunk size is the max number of bytes to read per network packet
         self.chunk_size = chunk_size
@@ -167,7 +175,8 @@ class SimHandler(asyncore.dispatcher):
             return
 
         try:
-            self.msg_handler.on_recv_message(jsonObj)
+            if self.msg_handler:
+                self.msg_handler.on_recv_message(jsonObj)
         except Exception as e:
             print(e, '>>> failure during on_recv_message:', chunk)
 
@@ -175,5 +184,9 @@ class SimHandler(asyncore.dispatcher):
     
     def handle_close(self):
         #when client drops or closes connection
-        self.close()
-        print('connection dropped')
+        if self.msg_handler:
+            self.msg_handler.on_disconnect()
+            self.msg_handler = None
+            print('connection dropped')
+
+        self.close()        

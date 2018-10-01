@@ -58,13 +58,16 @@ class DonkeyEnv(gym.Env):
         self.action_space = spaces.Discrete(len(self.ACTION))
 
         # camera sensor data
-        self.observation_space = spaces.Box(0, 255, self.viewer.get_sensor_size())
+        self.observation_space = spaces.Box(0, 255, self.viewer.get_sensor_size(), dtype=np.uint8)
 
         # simulation related variables.
         self.seed()
 
         # Frame Skipping
         self.frame_skip = frame_skip
+
+        # wait until loaded
+        self.viewer.wait_until_loaded()
 
         self.reset()        
 

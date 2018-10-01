@@ -21,16 +21,10 @@ namespace tk
         public PathManager pm;
         public CameraSensor camSensor;
         private tk.JsonTcpClient client;
-        public float connectTimer = 3.0f;
+        float connectTimer = 1.0f;
         float timer = 0.0f;
         public Text ai_text;
-        public RawImage sensorPreview;
-
-        //profile the resonsiveness of the nn
-        public float time_asked = 0.0f;
-        public float total_req_time = 0.0f;
-        public float num_requests = 0.0f;
-        public float avg_req_time = 0.0f;
+        
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
 
@@ -42,6 +36,7 @@ namespace tk
 
         bool asynchronous = true;
         float time_step = 0.1f;
+        bool bResetCar = false;
 
         public enum State
         {
@@ -57,6 +52,11 @@ namespace tk
             car = carObj.GetComponent<ICar>();
             client = GetComponent<tk.JsonTcpClient>();
 		    pm = GameObject.FindObjectOfType<PathManager>();
+
+            Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+            GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
+            if (go != null)
+                ai_text = go.GetComponent<Text>();
         }
 
         void Start()
@@ -68,7 +68,7 @@ namespace tk
         {
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
-            client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
+            client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
             client.dispatcher.Register("settings", new tk.Delegates.OnMsgRecv(OnSettingsRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
         }
@@ -126,6 +126,13 @@ namespace tk
             client.SendMsg( json );
         }
 
+        void SendCarLoaded()
+        {
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "car_loaded");
+            client.SendMsg( json );
+        }
+
         void OnControlsRecv(JSONObject json)
         {
             try
@@ -151,7 +158,7 @@ namespace tk
 
         void OnResetCarRecv(JSONObject json)
         {
-            car.RestorePosRot();
+            bResetCar = true;            
         }
 
         void OnSettingsRecv(JSONObject json)
@@ -192,7 +199,10 @@ namespace tk
                     timer = 0.0f;
 
                     if(Connect())
+                    {
+                        SendCarLoaded();
                         state = State.SendTelemetry;
+                    }
                 }
             }
             else if(state == State.SendTelemetry)
@@ -208,6 +218,11 @@ namespace tk
                 if(ai_text != null)
                     ai_text.text = string.Format("NN: {0} {1}", ai_steering, ai_throttle);
 
+                if (bResetCar)
+                {
+                    car.RestorePosRot();
+                    bResetCar = false;
+                }
             }
         }
     }

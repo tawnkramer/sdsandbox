@@ -148,7 +148,12 @@ public class Logger : MonoBehaviour {
             }
 		}
 
-		imagesToSave = new List<ImageSaveJob>();
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "LogCount");
+        if (go != null)
+            logDisplay = go.GetComponent<Text>();
+
+        imagesToSave = new List<ImageSaveJob>();
 
 		thread = new Thread(SaverThread);
 		thread.Start();

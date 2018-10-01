@@ -10,11 +10,13 @@ public class GlobalStateWatcher : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
+        /*
         if (GlobalState.bAutoHideSceneMenu && menuObj != null)
             menuObj.SetActive(false);
 
         if (GlobalState.bAutoConnectToWebSocket && networkObj != null)
             networkObj.SetActive(true);
+            */
 
     }
 	

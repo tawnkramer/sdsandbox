@@ -45,6 +45,7 @@ public class CarSpawner : MonoBehaviour {
         CameraFollow cameraFollow = GameObject.FindObjectOfType<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
         PID_UI pid_ui = getChildGameObject(canvas.gameObject, "PIDPanel").GetComponent<PID_UI>();
         ///////////////////////////////////////////////
 
@@ -75,7 +76,12 @@ public class CarSpawner : MonoBehaviour {
 				menuHandler.NetworkSteering.SetActive(true);
 			}
 
-		}
+            if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
+            {
+                panelMenu.SetActive(false);
+            }
+
+        }
 		else
 		{
 			Debug.LogError("need menu handler");

@@ -58,6 +58,11 @@ public class PIDController : MonoBehaviour {
         if (pm == null)
             Debug.LogWarning("couldn't get PathManager reference");
 
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "PIDSteering");
+        if (go != null)
+            pid_steering = go.GetComponent<Text>();
+
     }
 
     private void OnEnable()

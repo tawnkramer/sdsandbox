@@ -32,8 +32,9 @@ class DonkeySimMsgHandler(IMesgHandler):
     STEERING = 0
     THROTTLE = 1
 
-    def __init__(self, model):
+    def __init__(self, model, constant_throttle):
         self.model = model
+        self.constant_throttle = constant_throttle
         self.sock = None
         self.timer = FPSTimer()
         self.image_folder = None
@@ -92,7 +93,10 @@ class DonkeySimMsgHandler(IMesgHandler):
     def on_parsed_outputs(self, outputs):
         self.outputs = outputs
         steering_angle = outputs[self.STEERING]
-        throttle = outputs[self.THROTTLE]
+        if self.constant_throttle != 0.0:
+            throttle = self.constant_throttle
+        else:
+            throttle = outputs[self.THROTTLE]
         self.send_control(steering_angle, throttle)
 
     def send_control(self, steer, throttle):
@@ -106,7 +110,7 @@ class DonkeySimMsgHandler(IMesgHandler):
 
 
 
-def go(filename, address):
+def go(filename, address, constant_throttle):
 
     model = load_model(filename)
 
@@ -114,7 +118,7 @@ def go(filename, address):
     model.compile("sgd", "mse")
   
     #setup the server
-    handler = DonkeySimMsgHandler(model)
+    handler = DonkeySimMsgHandler(model, constant_throttle)
     server = SimServer(address, handler)
 
     try:
@@ -128,7 +132,8 @@ def go(filename, address):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='prediction server')
     parser.add_argument('--model', type=str, help='model filename')
+    parser.add_argument('--constant_throttle', type=float, default=0.0, help='apply constant throttle')
     args = parser.parse_args()
 
     address = ('0.0.0.0', 9091)
-    go(args.model, address)
+    go(args.model, address, args.constant_throttle)
