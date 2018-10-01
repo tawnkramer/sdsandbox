@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System;
 using UnityEngine.UI;
 using System.Globalization;
+using UnityEngine.SceneManagement;
+
 
 namespace tk
 {
@@ -21,7 +23,7 @@ namespace tk
         private tk.JsonTcpClient client;
         public float connectTimer = 3.0f;
         float timer = 0.0f;
-        public Text ai_steering;
+        public Text ai_text;
         public RawImage sensorPreview;
 
         //profile the resonsiveness of the nn
@@ -29,8 +31,17 @@ namespace tk
         public float total_req_time = 0.0f;
         public float num_requests = 0.0f;
         public float avg_req_time = 0.0f;
+        public float limitFPS = 20.0f;
+        float timeSinceLastCapture = 0.0f;
 
         float steer_to_angle = 16.0f;
+
+        float ai_steering = 0.0f;
+        float ai_throttle = 0.0f;
+        float ai_brake = 0.0f;
+
+        bool asynchronous = true;
+        float time_step = 0.1f;
 
         public enum State
         {
@@ -55,6 +66,10 @@ namespace tk
         void Initcallbacks()
         {
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
+            client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
+            client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
+            client.dispatcher.Register("settings", new tk.Delegates.OnMsgRecv(OnSettingsRecv));
+            client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
         }
 
         bool Connect()
@@ -114,21 +129,54 @@ namespace tk
         {
             try
             {
-                float steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * steer_to_angle;
-                float throttle = float.Parse(json["throttle"].str, CultureInfo.InvariantCulture.NumberFormat);
-                //Debug.Log(steering.ToString());
+                ai_steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * steer_to_angle;
+                ai_throttle = float.Parse(json["throttle"].str, CultureInfo.InvariantCulture.NumberFormat);
+                ai_brake = float.Parse(json["brake"].str, CultureInfo.InvariantCulture.NumberFormat);
 
-                car.RequestSteering(steering);
-                car.RequestThrottle(throttle);
-                car.RequestFootBrake(json["brake"].f);            
-
-                if(ai_steering != null)
-                    ai_steering.text = string.Format("NN: {0}", steering /* avg_req_time */);
+                car.RequestSteering(ai_steering);
+                car.RequestThrottle(ai_throttle);
+                car.RequestFootBrake(ai_brake);
             }
             catch(Exception e)
             {
                 Debug.Log(e.ToString());
             }
+        }
+
+        void OnExitSceneRecv(JSONObject json)
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
+
+        void OnResetCarRecv(JSONObject json)
+        {
+            car.RestorePosRot();
+        }
+
+        void OnSettingsRecv(JSONObject json)
+        {
+            string step_mode = json.GetField("step_mode").str;
+            float _time_step = float.Parse(json.GetField("time_step").str);
+
+            Debug.Log("got settings");
+
+            if(step_mode == "synchronous")
+            {
+                Debug.Log("setting mode to synchronous");
+                asynchronous = false;
+                this.time_step = _time_step;
+                Time.timeScale = 0.0f;
+            }
+            else
+            {
+                Debug.Log("setting mode to asynchronous");
+                asynchronous = true;
+            }
+        }
+    
+        void OnQuitApp(JSONObject json)
+        {
+            Application.Quit();
         }
         
         // Update is called once per frame
@@ -148,7 +196,17 @@ namespace tk
             }
             else if(state == State.SendTelemetry)
             {
-                SendTelemetry();
+                timeSinceLastCapture += Time.deltaTime;
+
+                if (timeSinceLastCapture > 1.0f / limitFPS)
+                {
+                    timeSinceLastCapture -= (1.0f / limitFPS);
+                    SendTelemetry();
+                }
+                
+                if(ai_text != null)
+                    ai_text.text = string.Format("NN: {0} {1}", ai_steering, ai_throttle);
+
             }
         }
     }

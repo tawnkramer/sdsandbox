@@ -35,14 +35,38 @@ namespace tk
 
         public tk.Dispatcher dispatcher;
 
+        public bool dispatchInMainThread = false;
+
+        private List<string> recv_packets;
+
+        readonly object _locker = new object();
 
         void Awake()
         {
+            CheckCommandLineConnectArgs();
+
+            recv_packets = new List<string>();
             dispatcher = new tk.Dispatcher();
             dispatcher.Init();
             client = GetComponent<tk.TcpClient>();
+            
             Initcallbacks();
         }
+
+        public void CheckCommandLineConnectArgs()
+		{
+			string[] args = System.Environment.GetCommandLineArgs ();
+			for (int i = 0; i < args.Length; i++) {
+				if (args [i] == "--host") {
+					nnIPAddress = args [i + 1];
+				}
+				else if (args [i] == "--port") {
+					string port = args [i + 1];
+					nnPort = int.Parse(port);
+				}
+			}
+		}
+
 
         void Initcallbacks()
         {
@@ -77,21 +101,50 @@ namespace tk
         void OnDataRecv(byte[] bytes)
         {
             string str = System.Text.Encoding.UTF8.GetString(bytes);
-
-            try
+            
+            lock(_locker)
             {
-                JSONObject j = new JSONObject(str);
-
-                string msg_type = j["msg_type"].str;
-
-                dispatcher.Dipatch(msg_type, j);
-
+                recv_packets.Add(str);
             }
-            catch(Exception e)
+
+            if(!dispatchInMainThread)
             {
-                Debug.Log(e.ToString());
+                Dispatch();
             }
         }
 
+        void Dispatch()
+        {
+            lock(_locker)
+            {
+                foreach(string str in recv_packets)
+                {
+                    try
+                    {
+                        JSONObject j = new JSONObject(str);
+
+                        string msg_type = j["msg_type"].str;
+
+                        dispatcher.Dipatch(msg_type, j);
+
+                    }
+                    catch(Exception e)
+                    {
+                        Debug.Log(e.ToString());
+                    }
+                }
+
+                recv_packets.Clear();
+            }
+
+        }
+
+        void Update()
+        {
+            if (dispatchInMainThread)
+            {
+                Dispatch();
+            }
+        }
     }
 }

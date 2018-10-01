@@ -32,12 +32,15 @@ class DonkeySimMsgHandler(IMesgHandler):
     STEERING = 0
     THROTTLE = 1
 
-    def __init__(self, model):
+    def __init__(self, model, iSceneToLoad=3):
+        self.iSceneToLoad = iSceneToLoad
         self.model = model
         self.sock = None
         self.timer = FPSTimer()
         self.image_folder = None
-        self.fns = {'telemetry' : self.on_telemetry}
+        self.fns = {'telemetry' : self.on_telemetry,
+                    "scene_selection_ready" : self.on_scene_selection_ready,
+                    "scene_names": self.on_recv_scene_names }
 
     def on_connect(self, socketHandler):
         self.sock = socketHandler
@@ -59,7 +62,14 @@ class DonkeySimMsgHandler(IMesgHandler):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
-        self.predict(image_array)
+
+        #name of object we just hit. "none" if nothing.
+        hit = data["hit"]
+
+        if hit != "none":
+            self.send_reset_car()
+        else:
+            self.predict(image_array)
 
         # maybe save frame
         if self.image_folder is not None:
@@ -95,11 +105,32 @@ class DonkeySimMsgHandler(IMesgHandler):
         throttle = outputs[self.THROTTLE]
         self.send_control(steering_angle, throttle)
 
+    def on_scene_selection_ready(self, data):
+        print("SceneSelectionReady ")
+        self.send_get_scene_names()
+
+    def on_recv_scene_names(self, data):
+        if data:
+            names = data['scene_names']
+            print("SceneNames:", names)
+            self.send_load_scene(names[self.iSceneToLoad])
+
     def send_control(self, steer, throttle):
         msg = { 'msg_type' : 'control', 'steering': steer.__str__(), 'throttle':throttle.__str__(), 'brake': '0.0' }
-        #print(steer, throttle)
         self.sock.queue_message(msg)
         
+    def send_reset_car(self):
+        msg = { 'msg_type' : 'reset_car' }
+        self.sock.queue_message(msg)
+
+    def send_get_scene_names(self):
+        msg = { 'msg_type' : 'get_scene_names' }
+        self.sock.queue_message(msg)
+
+    def send_load_scene(self, scene_name):
+        msg = { 'msg_type' : 'load_scene', 'scene_name' : scene_name }
+        self.sock.queue_message(msg)
+
 
     def on_close(self):
         pass
@@ -130,5 +161,5 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, help='model filename')
     args = parser.parse_args()
 
-    address = ('0.0.0.0', 8888)
+    address = ('0.0.0.0', 9091)
     go(args.model, address)
