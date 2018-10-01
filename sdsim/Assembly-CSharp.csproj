@@ -105,6 +105,7 @@
      <Compile Include="Assets\Scripts\CarModel.cs" />
      <Compile Include="Assets\Scripts\CarPath.cs" />
      <Compile Include="Assets\Scripts\CarPusher.cs" />
+     <Compile Include="Assets\Scripts\CarSpawner.cs" />
      <Compile Include="Assets\Scripts\CollisionSensor.cs" />
      <Compile Include="Assets\Scripts\GenPathFromDriving.cs" />
      <Compile Include="Assets\Scripts\GlobalState.cs" />
@@ -116,6 +117,7 @@
      <Compile Include="Assets\Scripts\Lidar.cs" />
      <Compile Include="Assets\Scripts\Lines.cs" />
      <Compile Include="Assets\Scripts\Localizer.cs" />
+     <Compile Include="Assets\Scripts\LocationMarker.cs" />
      <Compile Include="Assets\Scripts\Logger.cs" />
      <Compile Include="Assets\Scripts\MapManager.cs" />
      <Compile Include="Assets\Scripts\Marker.cs" />
@@ -208,6 +210,12 @@
      <Compile Include="Assets\Scripts\SocketIO\WebsocketSharp\WebSocketStream.cs" />
      <Compile Include="Assets\Scripts\SocketIODriveClient.cs" />
      <Compile Include="Assets\Scripts\SocketIOMenuClient.cs" />
+     <Compile Include="Assets\Scripts\tcp\Delegates.cs" />
+     <Compile Include="Assets\Scripts\tcp\Dispatcher.cs" />
+     <Compile Include="Assets\Scripts\tcp\JsonTcpClient.cs" />
+     <Compile Include="Assets\Scripts\tcp\TcpCarHandler.cs" />
+     <Compile Include="Assets\Scripts\tcp\TcpClient.cs" />
+     <Compile Include="Assets\Scripts\tcp\TcpMenuHandler.cs" />
      <Compile Include="Assets\Scripts\ThrottleManager.cs" />
      <Compile Include="Assets\Scripts\TrackScript.cs" />
      <Compile Include="Assets\Scripts\TrainingManager.cs" />

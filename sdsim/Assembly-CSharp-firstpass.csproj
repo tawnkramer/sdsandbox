@@ -53,6 +53,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Android\FBPermissionCallbackAndroid.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowser.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserItem.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserMovement.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserQuickLink.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\IListViewAdapter.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\ListItem.cs" />
+     <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\RecycledListView.cs" />
      <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
      <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\CrossPlatformInputManager.cs" />
@@ -87,6 +95,7 @@
      <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorLight.shader" />
+     <None Include="Assets\Plugins\SimpleFileBrowser\README.txt" />
      <None Include="Assets\Standard Assets\Vehicles\Car\CarGuidelines.txt" />
      <None Include="Assets\Standard Assets\Effects\Projectors\Shaders\ProjectorMultiply.shader" />
  <Reference Include="UnityEditor.StandardEvents">

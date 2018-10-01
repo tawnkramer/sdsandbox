@@ -26,8 +26,12 @@ public class PID_UI : MonoBehaviour {
         OnMaxSpeedChanged(pid.maxSpeed);
 		OnPTermChanged(pid.Kp);
 		OnDTermChanged(pid.Kd);
-        steerMaxSlider.value = pid.car.GetMaxSteering();
-        OnSteerMaxChanged(steerMaxSlider.value);
+
+        if (pid.car != null)
+        {
+            steerMaxSlider.value = pid.car.GetMaxSteering();
+            OnSteerMaxChanged(steerMaxSlider.value);
+        }
     }
 
 	public void OnMaxSpeedChanged(float val)

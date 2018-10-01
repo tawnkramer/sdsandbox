@@ -54,7 +54,11 @@ public class PIDController : MonoBehaviour {
 	{
 		car = carObj.GetComponent<ICar>();
 		pm = GameObject.FindObjectOfType<PathManager>();
-	}
+
+        if (pm == null)
+            Debug.LogWarning("couldn't get PathManager reference");
+
+    }
 
     private void OnEnable()
     {
@@ -86,7 +90,7 @@ public class PIDController : MonoBehaviour {
 
 	public void StartDriving()
 	{
-		if(!pm.isActiveAndEnabled || pm.path == null)
+		if(pm == null || !pm.isActiveAndEnabled || pm.path == null)
 			return;
 
 		steeringReq = 0f;

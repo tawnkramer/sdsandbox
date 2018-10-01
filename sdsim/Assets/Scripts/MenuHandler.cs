@@ -5,15 +5,14 @@ using UnityStandardAssets.Vehicles.Car;
 
 public class MenuHandler : MonoBehaviour {
 
-	public GameObject PIDContoller;
-	public GameObject Logger;
-	public GameObject NetworkSteering;
-	public GameObject menuPanel;
-	public GameObject stopPanel;
-	public GameObject exitPanel;
+    public GameObject PIDContoller;
+    public GameObject Logger;
+    public GameObject NetworkSteering;
+    public GameObject menuPanel;
+    public GameObject stopPanel;
+    public GameObject exitPanel;
     public GameObject carJSControl;
-	public GameObject PIDControls;
-
+    public GameObject PIDControls;
     public TrainingManager trainingManager;
 
     public void Awake()
@@ -24,12 +23,28 @@ public class MenuHandler : MonoBehaviour {
         //Set desired frame rate as high as possible.
         Application.targetFrameRate = 60;
 
-		menuPanel.SetActive(true);
+        //auto link
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        menuPanel = getChildGameObject(canvas.gameObject, "Panel Menu");
+        stopPanel = getChildGameObject(canvas.gameObject, "StopPanel");
+        exitPanel = getChildGameObject(canvas.gameObject, "ExitPanel");
+        PIDControls = getChildGameObject(canvas.gameObject, "PIDPanel");
+
+        menuPanel.SetActive(true);
         stopPanel.SetActive(false);
         exitPanel.SetActive(true);
     }
+    static public GameObject getChildGameObject(GameObject fromGameObject, string withName)
+    {
+        //Author: Isaac Dart, June-13.
+        Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>(true);
+        foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
 
-	public void OnPidGenerateTrainingData()
+        Debug.LogError("Failed to find: " + withName);
+        return null;
+    }
+
+    public void OnPidGenerateTrainingData()
 	{
 		Logger.SetActive(true);
         
