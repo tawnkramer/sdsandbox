@@ -46,9 +46,6 @@ class DonkeyUnitySimContoller():
         self.handler = DonkeyUnitySimHandler(level, time_step=time_step)
         self.server = SimServer(self.address, self.handler)        
         
-        #self.reset(initial=True)
-
-        #self.thread = Thread(target=asyncore.loop, kwargs={'timeout':1})
         self.thread = Thread(target=asyncore.loop)
         self.thread.daemon = True
         self.thread.start()
@@ -58,14 +55,8 @@ class DonkeyUnitySimContoller():
             print("waiting to load..")
             time.sleep(3.0)
 
-    def reset(self, initial=False):
-        while self.handler.sock is None:
-            #print('waiting for connection...')
-            asyncore.poll()
-            time.sleep(1)
-
-        if self.handler.sock is not None:
-            self.handler.reset(initial)
+    def reset(self):
+        self.handler.reset()
 
     def get_sensor_size(self):
         return self.handler.get_sensor_size()
@@ -135,7 +126,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
 
     ## ------- Env interface ---------- ##
 
-    def reset(self, intial=False):
+    def reset(self):
         if self.verbose:
             print("reseting")
         self.image_array = np.zeros(self.camera_img_size)
@@ -144,15 +135,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
-        if not intial:
-            #this exit scene command will cause us to re-load the scene.
-            #on scene load we will have a fresh observation to return from observe
-            #self.send_exit_scene()
-            #The exit scene will work, but it's slow to disconnect and re-connect.
-            #I think we have vehicle physics resetting properly now, and it's much faster.
-            #So try that:
-            self.send_reset_car()
-        time.sleep(1.0)
+        self.send_reset_car()
     
     def get_sensor_size(self):
         return self.camera_img_size

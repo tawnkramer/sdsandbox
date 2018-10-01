@@ -16,7 +16,7 @@ namespace tk
         public SceneLoader loader;
 
         private tk.JsonTcpClient client;
-        public float connectTimer = 3.0f;
+        float connectTimer = 1.0f;
         float timer = 0.0f;
         
         public enum State

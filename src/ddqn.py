@@ -345,7 +345,7 @@ if __name__ == "__main__":
     parser.add_argument('--test', action="store_true", help='agent uses learned model to navigate env')
     parser.add_argument('--lane_detection', action="store_true", help='train on images with segmented lane lines')
     parser.add_argument('--headless', type=int, default=0, help='1 to supress graphics')
-    parser.add_argument('--port', type=int, default=9090, help='port to use for websockets')
+    parser.add_argument('--port', type=int, default=9091, help='port to use for websockets')
     
 
     args = parser.parse_args()

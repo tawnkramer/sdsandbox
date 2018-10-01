@@ -3,12 +3,13 @@ import argparse
 import gym
 import donkey_gym
 import time
+import random
 
 NUM_EPISODES = 3
 MAX_T = 1000
 
 def select_action():
-    return (0.1, 0.3)
+    return ( random.random() * 2.0 - 1.0, 0.3)
 
 def simulate(env):
 

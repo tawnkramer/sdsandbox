@@ -69,8 +69,6 @@ class DonkeyEnv(gym.Env):
         # wait until loaded
         self.viewer.wait_until_loaded()
 
-        self.reset()        
-
 
     def close(self):
         self.proc.quit()
