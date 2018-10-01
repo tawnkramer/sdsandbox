@@ -56,6 +56,7 @@ namespace tk
         {
             car = carObj.GetComponent<ICar>();
             client = GetComponent<tk.JsonTcpClient>();
+		    pm = GameObject.FindObjectOfType<PathManager>();
         }
 
         void Start()

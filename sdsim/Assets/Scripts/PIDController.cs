@@ -53,6 +53,7 @@ public class PIDController : MonoBehaviour {
 	void Awake()
 	{
 		car = carObj.GetComponent<ICar>();
+		pm = GameObject.FindObjectOfType<PathManager>();
 	}
 
     private void OnEnable()
