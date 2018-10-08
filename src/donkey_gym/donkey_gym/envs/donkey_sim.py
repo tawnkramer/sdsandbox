@@ -92,10 +92,12 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.sock = None
         self.loaded = False
         self.verbose = False
+        self.timer = FPSTimer()
 
         # sensor size - height, width, depth
         self.camera_img_size=(120, 160, 3)
         self.image_array = np.zeros(self.camera_img_size)
+        self.last_obs = None
         self.hit = "none"
         self.cte = 0.0
         self.x = 0.0
@@ -130,12 +132,15 @@ class DonkeyUnitySimHandler(IMesgHandler):
         if self.verbose:
             print("reseting")
         self.image_array = np.zeros(self.camera_img_size)
+        self.last_obs = None
         self.hit = "none"
         self.cte = 0.0
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
         self.send_reset_car()
+        time.sleep(1.0)
+        self.timer.reset()
     
     def get_sensor_size(self):
         return self.camera_img_size
@@ -147,12 +152,16 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.send_control(action[0], action[1])        
 
     def observe(self):
-        time.sleep(1.0 / 60.0)
+        while self.last_obs is self.image_array:
+            time.sleep(1.0 / 120.0)
 
+        self.last_obs = self.image_array
         observation = self.image_array
         done = self.is_game_over()
         reward = self.calc_reward(done)
         info = {}
+        
+        self.timer.on_frame()
        
         return observation, reward, done, info
 

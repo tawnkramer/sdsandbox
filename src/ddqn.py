@@ -100,10 +100,18 @@ class DQNAgent:
         
         return model
 
-    def process_image(self, obs):
+    def rgb2gray(self, rgb):
+        '''
+        take a numpy rgb image return a new single channel image converted to greyscale
+        '''
+        return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
+
+    def process_image(self, obs):
+        
         if not self.lane_detection:
-            obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY)
+            #obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY)
+            obs = self.rgb2gray(obs)
             obs = cv2.resize(obs, (img_rows, img_cols))
             return obs
         else:
