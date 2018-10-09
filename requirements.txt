@@ -1,7 +1,6 @@
 python-socketio
 flask
 eventlet
-keras
 pygame
 numpy
 pillow

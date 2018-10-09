@@ -27,7 +27,7 @@ import eventlet.wsgi
 from PIL import Image
 from flask import Flask
 from io import BytesIO
-import keras
+from tensorflow import keras
 
 import conf
 import throttle_manager

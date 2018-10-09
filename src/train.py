@@ -12,7 +12,7 @@ import fnmatch
 import argparse
 import numpy as np
 from PIL import Image
-import keras
+from tensorflow import keras
 import conf
 import random
 import augment
