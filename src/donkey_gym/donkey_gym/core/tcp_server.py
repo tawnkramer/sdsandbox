@@ -173,12 +173,15 @@ class SimHandler(asyncore.dispatcher):
             #something bad happened, usually malformed json packet. jump back to idle and hope things continue
             print(e, 'failed to read json ', chunk)
             return
-
+        '''
         try:
             if self.msg_handler:
                 self.msg_handler.on_recv_message(jsonObj)
         except Exception as e:
             print(e, '>>> failure during on_recv_message:', chunk)
+        '''
+        if self.msg_handler:
+            self.msg_handler.on_recv_message(jsonObj)
 
         
     

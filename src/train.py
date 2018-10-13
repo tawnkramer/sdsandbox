@@ -17,7 +17,7 @@ import conf
 import random
 import augment
 import models
-
+import json
 
 '''
 matplotlib can be a pain to setup. So handle the case where it is absent. When present,
@@ -61,6 +61,11 @@ def parse_img_filepath(filepath):
 
     return data
 
+def load_json(filename):
+    with open(filename, "rt") as fp:
+        data = json.load(fp)
+    return data
+
 def generator(samples, batch_size=32, perc_to_augment=0.5):
     '''
     Rather than keep all data in memory, we will make a function that keeps
@@ -87,10 +92,16 @@ def generator(samples, batch_size=32, perc_to_augment=0.5):
             controls = []
             for fullpath in batch_samples:
                 try:
-                    data = parse_img_filepath(fullpath)
-                
-                    steering = data["steering"]
-                    throttle = data["throttle"]
+                    if conf.data_format == 1:
+                        frame_number = os.path.basename(fullpath).split("_")[0]
+                        json_filename = os.path.join(os.path.dirname(fullpath), "record_" + frame_number + ".json")
+                        data = load_json(json_filename)
+                        steering = float(data["user/angle"])
+                        throttle = float(data["user/throttle"]) / 10.0
+                    else:    
+                        data = parse_img_filepath(fullpath)
+                        steering = float(data["steering"])
+                        throttle = float(data["throttle"])                          
 
                     try:
                         image = Image.open(fullpath)
@@ -117,7 +128,8 @@ def generator(samples, batch_size=32, perc_to_augment=0.5):
                     else:
                         print("expected 1 or 2 ouputs")
 
-                except:
+                except Exception as e:
+                    print(e)
                     print("we threw an exception on:", fullpath)
                     yield [], []
 

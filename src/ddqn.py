@@ -26,7 +26,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.initializers import normal, identity
 from tensorflow.keras.models import model_from_json
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers.core import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 import tensorflow as tf
 from tensorflow.keras import backend as K

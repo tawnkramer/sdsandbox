@@ -25,7 +25,7 @@ from donkey_gym.core.fps import FPSTimer
 from donkey_gym.core.tcp_server import IMesgHandler, SimServer
 from donkeycar.contrib.coordconv.coord import CoordinateChannel2D
 from donkeycar.utils import linear_unbin
-
+import conf
 
 class DonkeySimMsgHandler(IMesgHandler):
 
@@ -75,7 +75,7 @@ class DonkeySimMsgHandler(IMesgHandler):
     
     def parse_outputs(self, outputs):
         res = []
-        for iO, output in enumerate(outputs):
+        for iO, output in enumerate(outputs):            
             if len(output.shape) == 2:
                 if iO == self.STEERING:
                     steering_angle = linear_unbin(output)
@@ -86,17 +86,24 @@ class DonkeySimMsgHandler(IMesgHandler):
                 else:
                     res.append( np.argmax(output) )
             else:
-                res.append(output[0])
+                for i in range(output.shape[0]):
+                    res.append(output[i])
 
         self.on_parsed_outputs(res)
         
     def on_parsed_outputs(self, outputs):
         self.outputs = outputs
-        steering_angle = outputs[self.STEERING]
+        steering_angle = 0.0
+        throttle = 0.2
+
+        if len(outputs) > 0:        
+            steering_angle = outputs[self.STEERING]
+
         if self.constant_throttle != 0.0:
             throttle = self.constant_throttle
-        else:
+        elif len(outputs) > 1:
             throttle = outputs[self.THROTTLE]
+
         self.send_control(steering_angle, throttle)
 
     def send_control(self, steer, throttle):
