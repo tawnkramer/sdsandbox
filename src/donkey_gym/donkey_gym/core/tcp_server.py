@@ -124,7 +124,7 @@ class SimHandler(asyncore.dispatcher):
 
         #if we didn't send all the data..
         if sent < len(data):
-            #then slick off the portion that remains to be sent
+            #then slice off the portion that remains to be sent
             remaining = data[sent:]
 
             #since we've popped it off the list, add it back to the list to send next
@@ -139,7 +139,7 @@ class SimHandler(asyncore.dispatcher):
           processed.
         """
 
-        #receive a chunK of data with the max size chunk_size from our client.
+        #receive a chunk of data with the max size chunk_size from our client.
         data = self.recv(self.chunk_size)
         
         if len(data) == 0:

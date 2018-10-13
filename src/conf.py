@@ -26,4 +26,6 @@ num_outputs = 2
 
 steering_scale = 16.0
 
+throttle_out_scale = 1.0
+
 data_format = 1 #("donkey==1", "path_data=2")

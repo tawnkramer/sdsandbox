@@ -102,7 +102,7 @@ class DonkeySimMsgHandler(IMesgHandler):
         if self.constant_throttle != 0.0:
             throttle = self.constant_throttle
         elif len(outputs) > 1:
-            throttle = outputs[self.THROTTLE]
+            throttle = outputs[self.THROTTLE] * conf.throttle_out_scale
 
         self.send_control(steering_angle, throttle)
 
