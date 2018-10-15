@@ -144,7 +144,11 @@ def get_files(filemask):
     '''
     use a filemask and search a path recursively for matches
     '''
+    #matches = glob.glob(os.path.expanduser(filemask))
+    #return matches
+    filemask = os.path.expanduser(filemask)
     path, mask = os.path.split(filemask)
+    
     matches = []
     for root, dirnames, filenames in os.walk(path):
         for filename in fnmatch.filter(filenames, mask):
@@ -206,7 +210,7 @@ def go(model_name, epochs=50, inputs='./log/*.jpg', limit=None, aug_mult=1, aug_
     '''
     display layer summary and weights info
     '''
-    models.show_model_summary(model)
+    #models.show_model_summary(model)
 
     callbacks = [
         keras.callbacks.EarlyStopping(monitor='val_loss', patience=conf.training_patience, verbose=0),

@@ -207,6 +207,14 @@ namespace tk
             }
             else if(state == State.SendTelemetry)
             {
+                if (bResetCar)
+                {
+                    car.RestorePosRot();
+                    pm.path.ResetActiveSpan();
+                    bResetCar = false;
+                }
+
+
                 timeSinceLastCapture += Time.deltaTime;
 
                 if (timeSinceLastCapture > 1.0f / limitFPS)
@@ -216,13 +224,8 @@ namespace tk
                 }
                 
                 if(ai_text != null)
-                    ai_text.text = string.Format("NN: {0} {1}", ai_steering, ai_throttle);
-
-                if (bResetCar)
-                {
-                    car.RestorePosRot();
-                    bResetCar = false;
-                }
+                    ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
+                    
             }
         }
     }
