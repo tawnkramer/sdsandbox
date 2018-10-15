@@ -10,7 +10,7 @@ import argparse
 import gym
 import donkey_gym
 
-from stable_baselines.common.policies import MlpPolicy
+from stable_baselines.common.policies import MlpPolicy, CnnPolicy
 from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines.common import set_global_seeds
 from stable_baselines import PPO2
@@ -77,7 +77,7 @@ if __name__ == "__main__":
         # Create the vectorized environment
         env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
 
-        model = PPO2(MlpPolicy, env, verbose=1)
+        model = PPO2(CnnPolicy, env, verbose=1)
         model.learn(total_timesteps=10000)
 
         obs = env.reset()
@@ -85,6 +85,9 @@ if __name__ == "__main__":
             action, _states = model.predict(obs)
             obs, rewards, dones, info = env.step(action)
             env.render()
+            if i % 100 == 0:
+                print('saving...')
+                model.save("ppo_donkey")
 
         # Save the agent
         model.save("ppo_donkey")
