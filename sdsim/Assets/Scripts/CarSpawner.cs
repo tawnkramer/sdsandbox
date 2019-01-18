@@ -60,8 +60,14 @@ public class CarSpawner : MonoBehaviour {
 
 		cars.Add(go);
 
+		if(cars.Count > 2)
+		{
+			//just stack more cars after the second. Not pretty.
+			offset = offset + Vector3.forward * (-5f * (cars.Count - 2));
+		}
+
 		go.transform.rotation = startTm.rotation;
-		go.transform.position = startTm.position + offset;
+		go.transform.position = startTm.position + offset;		
         go.GetComponent<Car>().SavePosRot();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");

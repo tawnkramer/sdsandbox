@@ -136,7 +136,7 @@ class DonkeySimMsgHandler(IMesgHandler):
         address = ("0.0.0.0", port)
         
         #spawn a new message handler serving on the new port.
-        handler = DonkeySimMsgHandler(self.model, 0., port=address[1])
+        handler = DonkeySimMsgHandler(self.model, 0., num_cars=(self.target_num_cars - 1), port=address[1])
         server = SimServer(address, handler)
 
         msg = { 'msg_type' : 'new_car', 'host': '127.0.0.1', 'port' : port.__str__() }
