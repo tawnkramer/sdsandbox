@@ -8,7 +8,7 @@ Self Driving Car Sandbox
 
 ## Summary
 
-Use Unity 3d game engine to simulate car physics in a 3d world. 
+Use Unity 3d game engine to simulate car physics in a 3d world.
 Generate image steering pairs to train a neural network. Uses NVidia PilotNet NN topology.
 Then validate the steering control by sending images to your neural network and feed steering back into the simulator to drive.
 
@@ -41,6 +41,10 @@ And then you can install the dependancies. This installs a specific version of k
 pip install -r requirements.txt
 ```
 
+This will install [Donkey Gym](https://github.com/tawnkramer/donkey_gym) and [Donkey Car](https://github.com/tawnkramer/donkey) packages from source.
+
+Note: Tensorflow >= 1.10.1 is required
+
 If you have an cuda supported GPU - probably NVidia
 ```bash
 pip install tensorflow-gpu
@@ -54,14 +58,14 @@ pip install tensorflow
 
 ## Demo
 
-1) Start the prediction server with the pre-trained model. 
+1) Start the prediction server with the pre-trained model.
 
 ```bash
 cd sdsandbox/src
 python predict_server.py ../outputs/highway.h5
 ```
- If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions. 
- 
+ If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions.
+
 2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/main to open that scene.  
 
 3) Hit the start button to launch. Then the "Use NN Steering".  
@@ -139,4 +143,3 @@ python predict_server.py ../outputs/mymodel.h5
 ## Credits
 
 Tawn Kramer  
-
