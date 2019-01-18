@@ -43,8 +43,6 @@ namespace tk
 
         void Awake()
         {
-            CheckCommandLineConnectArgs();
-
             recv_packets = new List<string>();
             dispatcher = new tk.Dispatcher();
             dispatcher.Init();
@@ -52,21 +50,6 @@ namespace tk
             
             Initcallbacks();
         }
-
-        public void CheckCommandLineConnectArgs()
-		{
-			string[] args = System.Environment.GetCommandLineArgs ();
-			for (int i = 0; i < args.Length; i++) {
-				if (args [i] == "--host") {
-					nnIPAddress = args [i + 1];
-				}
-				else if (args [i] == "--port") {
-					string port = args [i + 1];
-					nnPort = int.Parse(port);
-				}
-			}
-		}
-
 
         void Initcallbacks()
         {

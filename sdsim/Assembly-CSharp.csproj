@@ -222,6 +222,7 @@
      <Compile Include="Assets\Scripts\Twiddle.cs" />
      <Compile Include="Assets\Scripts\TwiddlePID.cs" />
      <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
+     <Compile Include="Assets\Scripts\utility\UnityMainThreadDispatcher.cs" />
      <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
      <Compile Include="Assets\Textures\avc\track_maker.cs" />
      <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.shader" />

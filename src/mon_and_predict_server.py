@@ -9,16 +9,8 @@ from __future__ import print_function
 import os
 import argparse
 import sys
-import numpy as np
-import h5py
-import json
-from tensorflow.keras.models import load_model
 #import matplotlib.pyplot as plt
 import time
-import asyncore
-import json
-import socket
-from PIL import Image
 import pygame
 import conf
 import predict_server
@@ -55,7 +47,7 @@ if __name__ == "__main__":
   address = ('0.0.0.0', 9090)
   
   try:
-    predict_server.run_steering_server(address, args.model, image_folder=None, image_cb=display_img)   
+    predict_server.go(args.model, address, None, image_cb=display_img)   
   except KeyboardInterrupt:
     print('got ctrl+c break')
 

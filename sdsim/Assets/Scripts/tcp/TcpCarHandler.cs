@@ -69,6 +69,7 @@ namespace tk
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
+            client.dispatcher.Register("new_car", new tk.Delegates.OnMsgRecv(OnRequestNewCarRecv));
             client.dispatcher.Register("settings", new tk.Delegates.OnMsgRecv(OnSettingsRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
         }
@@ -159,6 +160,29 @@ namespace tk
         void OnResetCarRecv(JSONObject json)
         {
             bResetCar = true;            
+        }
+
+        void OnRequestNewCarRecv(JSONObject json)
+        {
+            string host = json.GetField("host").str;
+            string port = json.GetField("port").str;
+
+            //We get this callback in a worker thread, but need to make mainthread calls.
+            //so use this handy utility dispatcher from
+            // https://github.com/PimDeWitte/UnityMainThreadDispatcher
+            UnityMainThreadDispatcher.Instance().Enqueue(SpawnNewCar(host, port));
+        }
+
+        IEnumerator SpawnNewCar(string host, string port)
+        {
+            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+            if(spawner != null)
+            {
+                spawner.Spawn(Vector3.right * -4.0f, host, port);
+            }
+
+            yield return null;
         }
 
         void OnSettingsRecv(JSONObject json)
