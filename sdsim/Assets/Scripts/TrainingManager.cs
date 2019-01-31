@@ -51,6 +51,11 @@ public class TrainingManager : MonoBehaviour {
         RepositionOverheadCamera();
 	}
 
+	public void SetRoadStyle(int style)
+	{
+		iRun = style;
+	}
+
 	void SwapRoadToNewTextureVariation()
 	{
 		if(roadBuilder == null)

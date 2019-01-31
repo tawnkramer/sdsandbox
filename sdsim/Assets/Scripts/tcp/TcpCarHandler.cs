@@ -70,8 +70,10 @@ namespace tk
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
             client.dispatcher.Register("new_car", new tk.Delegates.OnMsgRecv(OnRequestNewCarRecv));
-            client.dispatcher.Register("settings", new tk.Delegates.OnMsgRecv(OnSettingsRecv));
+            client.dispatcher.Register("step_mode", new tk.Delegates.OnMsgRecv(OnStepModeRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
+            client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
+
         }
 
         bool Connect()
@@ -185,7 +187,43 @@ namespace tk
             yield return null;
         }
 
-        void OnSettingsRecv(JSONObject json)
+        void OnRegenRoad(JSONObject json)
+        {
+            //This causes the track to be regenerated with the given settings.
+            //This only works in scenes that have random track generation enabled.
+            //For now that is only in scene road_generator.
+            //An index into our track options. 5 in scene RoadGenerator.
+            int road_style = int.Parse(json.GetField("road_style").str);
+            int rand_seed = int.Parse(json.GetField("rand_seed").str);
+            float turn_increment = float.Parse(json.GetField("turn_increment").str);
+
+            //We get this callback in a worker thread, but need to make mainthread calls.
+            //so use this handy utility dispatcher from
+            // https://github.com/PimDeWitte/UnityMainThreadDispatcher
+            UnityMainThreadDispatcher.Instance().Enqueue(RegenRoad(road_style, rand_seed, turn_increment));
+        }
+
+        IEnumerator RegenRoad(int road_style, int rand_seed, float turn_increment)
+        {
+            TrainingManager train_mgr = GameObject.FindObjectOfType<TrainingManager>();
+            PathManager path_mgr = GameObject.FindObjectOfType<PathManager>();
+
+            if(train_mgr != null)
+            {
+                if (turn_increment != 0.0 && path_mgr != null)
+                {
+                    path_mgr.turnInc = turn_increment;
+                }
+
+                UnityEngine.Random.InitState(rand_seed);
+                train_mgr.SetRoadStyle(road_style);
+                train_mgr.OnMenuRegenTrack();
+            }
+
+            yield return null;
+        }
+
+        void OnStepModeRecv(JSONObject json)
         {
             string step_mode = json.GetField("step_mode").str;
             float _time_step = float.Parse(json.GetField("time_step").str);

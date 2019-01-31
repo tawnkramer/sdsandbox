@@ -257,7 +257,7 @@ public class PathManager : MonoBehaviour {
 			p.pos = np;
 			path.nodes.Add(p);
 
-			float t = Random.Range(-1.0f * turnInc, turnInc);
+			float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 
 			turn += t;
 

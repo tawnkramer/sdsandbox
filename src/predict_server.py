@@ -32,7 +32,7 @@ class DonkeySimMsgHandler(IMesgHandler):
     STEERING = 0
     THROTTLE = 1
 
-    def __init__(self, model, constant_throttle, port=0, num_cars=1, image_cb=None):
+    def __init__(self, model, constant_throttle, port=0, num_cars=1, image_cb=None, rand_seed=0):
         self.model = model
         self.constant_throttle = constant_throttle
         self.sock = None
@@ -44,6 +44,7 @@ class DonkeySimMsgHandler(IMesgHandler):
         self.num_cars = 0
         self.port = port
         self.target_num_cars = num_cars
+        self.rand_seed = rand_seed
         self.fns = {'telemetry' : self.on_telemetry,\
                     'car_loaded' : self.on_car_created,\
                     'on_disconnect' : self.on_disconnect}
@@ -68,6 +69,9 @@ class DonkeySimMsgHandler(IMesgHandler):
             print('unknown message type', msg_type)
 
     def on_car_created(self, data):
+        if self.rand_seed != 0:
+            self.send_regen_road(0, self.rand_seed, 1.0)
+
         self.num_cars += 1
         if self.num_cars < self.target_num_cars:
             print("requesting another car..")
@@ -131,6 +135,22 @@ class DonkeySimMsgHandler(IMesgHandler):
         #print(steer, throttle)
         self.sock.queue_message(msg)
 
+    def send_regen_road(self, road_style=0, rand_seed=0, turn_increment=0.0):
+        '''
+        Regenerate the road, where available. For now only in level 0.
+        In level 0 there are currently 5 road styles. This changes the texture on the road
+        and also the road width.
+        The rand_seed can be used to get some determinism in road generation.
+        The turn_increment defaults to 1.0 internally. Provide a non zero positive float
+        to affect the curviness of the road. Smaller numbers will provide more shallow curves.
+        '''
+        msg = { 'msg_type' : 'regen_road',
+            'road_style': road_style.__str__(),
+            'rand_seed': rand_seed.__str__(),
+            'turn_increment': turn_increment.__str__() }
+        
+        self.sock.queue_message(msg)
+
     def request_another_car(self):
         port = self.port + self.num_cars
         address = ("0.0.0.0", port)
@@ -147,7 +167,7 @@ class DonkeySimMsgHandler(IMesgHandler):
 
 
 
-def go(filename, address, constant_throttle=0, num_cars=1, image_cb=None):
+def go(filename, address, constant_throttle=0, num_cars=1, image_cb=None, rand_seed=None):
 
     model = load_model(filename)
 
@@ -155,7 +175,7 @@ def go(filename, address, constant_throttle=0, num_cars=1, image_cb=None):
     model.compile("sgd", "mse")
   
     #setup the server
-    handler = DonkeySimMsgHandler(model, constant_throttle, port=address[1], num_cars=num_cars, image_cb=image_cb)
+    handler = DonkeySimMsgHandler(model, constant_throttle, port=address[1], num_cars=num_cars, image_cb=image_cb, rand_seed=rand_seed)
     server = SimServer(address, handler)
 
     try:
@@ -173,7 +193,8 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=int, default=9091, help='bind to port')
     parser.add_argument('--num_cars', type=int, default=1, help='how many cars to spawn')
     parser.add_argument('--constant_throttle', type=float, default=0.0, help='apply constant throttle')
+    parser.add_argument('--rand_seed', type=int, default=0, help='set road generation random seed')
     args = parser.parse_args()
 
     address = (args.host, args.port)
-    go(args.model, address, args.constant_throttle, num_cars=args.num_cars)
+    go(args.model, address, args.constant_throttle, num_cars=args.num_cars, rand_seed=args.rand_seed)
