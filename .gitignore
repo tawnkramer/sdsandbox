@@ -6,5 +6,9 @@ sdsim/obj
 sdsim/*.sln
 sdsim/*.userprefs
 sdsim/Temp
-sdsdim/*.csproj
-
+sdsim/Build
+sdsim/Log
+sdsim/Packages
+sdsim/.vs
+*.csproj
+env
