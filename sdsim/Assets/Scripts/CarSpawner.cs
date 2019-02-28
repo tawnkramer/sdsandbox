@@ -48,8 +48,7 @@ public class CarSpawner : MonoBehaviour {
          Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>(true);
          foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
 
-        Debug.LogError("couldn't find: " + withName);
-         return null;
+        return null;
      }
 
 	public void Spawn (Vector3 offset, string host="", string port="") 

@@ -43,7 +43,6 @@ namespace tk
         }        
 
         public State state = State.UnConnected;
-        State prev_state = State.UnConnected;
 
         void Awake()
         {

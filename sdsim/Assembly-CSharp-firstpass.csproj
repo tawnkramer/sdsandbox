@@ -60,6 +60,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Android\FBPermissionCallbackAndroid.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowser.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserItem.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserMovement.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\FileBrowserQuickLink.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\IListViewAdapter.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\ListItem.cs" />
+    <Compile Include="Assets\Plugins\SimpleFileBrowser\Scripts\SimpleRecycledListView\RecycledListView.cs" />
     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\ButtonHandler.cs" />
     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\CrossPlatformInputManager.cs" />
@@ -85,6 +93,7 @@
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpecTransp.shader" />
     <None Include="Assets\Standard Assets\Vehicles\Car\Shaders\ReflectiveDiffuseSpec.shader" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
+    <None Include="Assets\Plugins\SimpleFileBrowser\README.txt" />
     <None Include="Assets\Standard Assets\Vehicles\Car\CarGuidelines.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/cygwin/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
@@ -302,9 +311,6 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>C:/cygwin/home/tkramer/projects/sdsandbox/sdsim/Library/PackageCache/com.unity.ads@2.0.8/UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Analytics.Editor">
       <HintPath>C:/cygwin/home/tkramer/projects/sdsandbox/sdsim/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
@@ -313,9 +319,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/cygwin/home/tkramer/projects/sdsandbox/sdsim/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>C:/cygwin/home/tkramer/projects/sdsandbox/sdsim/Library/PackageCache/com.unity.purchasing@2.0.3/UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
