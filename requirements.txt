@@ -1,9 +1,3 @@
-python-socketio
-flask
-eventlet
-keras==2.0.8
-pygame
-numpy
+tensorflow>=1.12
 pillow
-h5py
-
+matplotlib

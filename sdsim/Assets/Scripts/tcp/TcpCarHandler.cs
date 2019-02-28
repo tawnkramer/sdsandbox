@@ -28,8 +28,6 @@ namespace tk
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
 
-        float steer_to_angle = 16.0f;
-
         float ai_steering = 0.0f;
         float ai_throttle = 0.0f;
         float ai_brake = 0.0f;
@@ -97,7 +95,7 @@ namespace tk
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "telemetry");
 
-            json.AddField("steering_angle", car.GetSteering() / steer_to_angle);
+            json.AddField("steering_angle", car.GetSteering() / car.GetMaxSteering());
             json.AddField("throttle", car.GetThrottle());
             json.AddField("speed", car.GetVelocity().magnitude);
             json.AddField("image", System.Convert.ToBase64String(camSensor.GetImageBytes()));
@@ -140,7 +138,7 @@ namespace tk
         {
             try
             {
-                ai_steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * steer_to_angle;
+                ai_steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * car.GetMaxSteering();
                 ai_throttle = float.Parse(json["throttle"].str, CultureInfo.InvariantCulture.NumberFormat);
                 ai_brake = float.Parse(json["brake"].str, CultureInfo.InvariantCulture.NumberFormat);
 

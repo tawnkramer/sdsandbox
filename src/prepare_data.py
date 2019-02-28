@@ -45,9 +45,9 @@ if __name__ == "__main__":
 
     # Parameters
     parser = argparse.ArgumentParser(description='Prepare training data from logs and images')
-    parser.add_argument('--log-src', dest='log_src', default='../sdsim/log/*.*', help='path to log data')
-    parser.add_argument('--out-path', dest='out_path', default='../dataset/', help='path for output.')
+    parser.add_argument('--src', dest='src', default='sdsim/log/*.*', help='path to log data')
+    parser.add_argument('--dest', dest='dest', default='dataset', help='path for output.')
     
     args, more = parser.parse_known_args()
 
-    prepare(args.log_src, args.out_path)
+    prepare(args.src, args.dest)

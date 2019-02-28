@@ -36,7 +36,7 @@ virtualenv -p python3 env
 source env/bin/activate
 ```
 
-And then you can install the dependancies. This installs a specific version of keras only because it will allow you to load the pre-trained model with fewer problems. If not an issue for you, you can install the latest keras.
+And then you can install the requirements. 
 ```bash
 pip install -r requirements.txt
 ```
@@ -57,8 +57,8 @@ pip install tensorflow
 1) Start the prediction server with the pre-trained model. 
 
 ```bash
-cd sdsandbox/src
-python predict_server.py ../outputs/highway.h5
+cd sdsandbox
+python src/predict_server.py outputs/highway.h5
 ```
  If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions. 
  
@@ -84,21 +84,21 @@ python predict_server.py ../outputs/highway.h5
 6) Run this python script to prepare raw data for training:  
 
 ```bash
-cd sdsandbox/src
-python prepare_data.py
+cd sdsandbox
+python src/prepare_data.py --src=sdsim/log/*.* --dest=dataset
 ```
 
-7) Repeat 4, 5, 6 until you have lots of training data.
+7) Repeat 4, 5, 6 until you have lots of training data. Over 50K images for best results.
 
 
 
 ## Train Neural network
 
 ```bash
-python train.py ../outputs/mymodel.h5
+python src/train.py outputs/mymodel.h5
 ```
 
-Let this run. It may take a few hours if running on CPU. Usually far less on a GPU.
+Let this run. It may take many minutes if running on CPU. A GPU is faster, but requires you setup tensorflow-gpu.
 
 
 
@@ -107,7 +107,7 @@ Let this run. It may take a few hours if running on CPU. Usually far less on a G
 1) Start the prediction server. This listens for images and returns a steering result.  
 
 ```bash
-python predict_server.py ../outputs/mymodel.h5
+python src/predict_server.py --model=outputs/mymodel.h5
 ```
 
 2) Start Unity project sdsim  
@@ -117,22 +117,10 @@ python predict_server.py ../outputs/mymodel.h5
 
 
 ## Requirements
-* [python 3.4+ 64 bit](https://www.python.org/)*
-* [tensorflow-1+](https://github.com/tensorflow/tensorflow)  
-* [keras-2+](https://github.com/fchollet/keras)   
-* [h5py](http://www.h5py.org/)  
+* [python 3.6+ 64 bit](https://www.python.org/)*
+* [tensorflow-1.12+](https://github.com/tensorflow/tensorflow)  
 * [pillow](https://python-pillow.org/)  
-* [socketio](https://pypi.python.org/pypi/python-socketio)  
-* [flask](https://pypi.python.org/pypi/Flask)  
-* [eventlet](https://pypi.python.org/pypi/eventlet)  
-* [pyzmq](https://pypi.python.org/pypi/pyzmq)  
-* [pygame](https://pypi.python.org/pypi/Pygame)**  
-* [Unity 5.5+](https://unity3d.com/get-unity/download)  
-
-*Note: May work with Python 2.7+. But you will need to train your own models. The stock models will not load.
-
-
-**Note: pygame only needed if using mon_and_predict_server.py which gives a live camera feed during inferencing.
+* [Unity](https://unity3d.com/get-unity/download)  
 
 
 
