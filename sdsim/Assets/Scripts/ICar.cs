@@ -45,4 +45,12 @@ public interface ICar
 	void SavePosRot();
 
 	void RestorePosRot();
+
+    void SetMaxSteering(float val);
+
+    float GetMaxSteering();
+
+	//get the name of the last object we collided with
+	string GetLastCollision();
+	void ClearLastCollision();
 }

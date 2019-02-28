@@ -33,4 +33,9 @@ public class CameraSensor : MonoBehaviour {
 	{
 		return RTImage(sensorCam);
 	}
+
+	public byte[] GetImageBytes()
+	{
+		return GetImage().EncodeToJPG();
+	}
 }

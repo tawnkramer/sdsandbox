@@ -19,15 +19,41 @@ public class TrainingManager : MonoBehaviour {
 
 	void Awake()
 	{
-		car = carObj.GetComponent<ICar>();
-	}
+		
+    }
+
+    void LinkObj()
+    {
+        car = carObj.GetComponent<ICar>();
+        if(car == null)
+            Debug.LogError("TrainingManager needs car object");
+
+        roadBuilder = GameObject.FindObjectOfType<RoadBuilder>();
+        pathManager = GameObject.FindObjectOfType<PathManager>();
+
+        Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
+        foreach (Camera cam in cameras)
+        {
+            if (cam.name == "OverHeadCamera")
+            {
+                overheadCamera = cam;
+            }
+        }
+    }
 
 	// Use this for initialization
 	void Start () 
 	{
-		controller.endOfPathCB += new PIDController.OnEndOfPathCB(OnPathDone);
+        LinkObj();
+
+        controller.endOfPathCB += new PIDController.OnEndOfPathCB(OnPathDone);
 
         RepositionOverheadCamera();
+	}
+
+	public void SetRoadStyle(int style)
+	{
+		iRun = style;
 	}
 
 	void SwapRoadToNewTextureVariation()
@@ -41,9 +67,9 @@ public class TrainingManager : MonoBehaviour {
 	void StartNewRun()
 	{
 		car.RestorePosRot();
-		controller.pm.DestroyRoad();
+		pathManager.DestroyRoad();
 		SwapRoadToNewTextureVariation();
-		controller.pm.InitNewRoad();
+		pathManager.InitNewRoad();
 		controller.StartDriving();
         RepositionOverheadCamera();
 	}
@@ -101,6 +127,9 @@ public class TrainingManager : MonoBehaviour {
 
 	void Update()
 	{
+        if (car == null)
+            return;
+
 		//watch the car and if we fall off the road, reset things.
 		if(car.GetTransform().position.y < -1.0f)
 		{
