@@ -62,7 +62,7 @@ pip install tensorflow
 
 ```bash
 cd sdsandbox/src
-python predict_server.py ../outputs/highway.h5
+python predict_server.py --model ../outputs/highway.h5
 ```
  If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions.
 
@@ -111,7 +111,7 @@ Let this run. It may take a few hours if running on CPU. Usually far less on a G
 1) Start the prediction server. This listens for images and returns a steering result.  
 
 ```bash
-python predict_server.py ../outputs/mymodel.h5
+python predict_server.py --model ../outputs/mymodel.h5
 ```
 
 2) Start Unity project sdsim  
