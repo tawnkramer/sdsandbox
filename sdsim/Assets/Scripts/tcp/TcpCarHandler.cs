@@ -215,7 +215,9 @@ namespace tk
                     path_mgr.turnInc = turn_increment;
                 }
 
-                UnityEngine.Random.InitState(rand_seed);
+                if (rand_seed != 0) {
+                    UnityEngine.Random.InitState(rand_seed);
+                }
                 train_mgr.SetRoadStyle(road_style);
                 train_mgr.OnMenuRegenTrack();
             }
