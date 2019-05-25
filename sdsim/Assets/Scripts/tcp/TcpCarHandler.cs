@@ -73,6 +73,7 @@ namespace tk
             client.dispatcher.Register("step_mode", new tk.Delegates.OnMsgRecv(OnStepModeRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
+            client.dispatcher.Register("next_track", new tk.Delegates.OnMsgRecv(OnNextTrack));
 
         }
 
@@ -220,6 +221,25 @@ namespace tk
                 }
                 train_mgr.SetRoadStyle(road_style);
                 train_mgr.OnMenuRegenTrack();
+            }
+
+            yield return null;
+        }
+
+        
+        void OnNextTrack(JSONObject json)
+        {
+            // Cycle through next track
+            UnityMainThreadDispatcher.Instance().Enqueue(NextTrack());
+        }
+
+        IEnumerator NextTrack()
+        {
+            TrainingManager train_mgr = GameObject.FindObjectOfType<TrainingManager>();
+
+            if(train_mgr != null)
+            {
+                train_mgr.OnMenuNextTrack();
             }
 
             yield return null;
