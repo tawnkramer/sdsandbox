@@ -24,7 +24,7 @@ namespace tk
         float connectTimer = 1.0f;
         float timer = 0.0f;
         public Text ai_text;
-        
+
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
 
@@ -42,7 +42,7 @@ namespace tk
         {
             UnConnected,
             SendTelemetry
-        }        
+        }
 
         public State state = State.UnConnected;
         State prev_state = State.UnConnected;
@@ -101,7 +101,7 @@ namespace tk
             json.AddField("throttle", car.GetThrottle());
             json.AddField("speed", car.GetVelocity().magnitude);
             json.AddField("image", System.Convert.ToBase64String(camSensor.GetImageBytes()));
-            
+
             json.AddField("hit", car.GetLastCollision());
             car.ClearLastCollision();
 
@@ -161,7 +161,7 @@ namespace tk
 
         void OnResetCarRecv(JSONObject json)
         {
-            bResetCar = true;            
+            bResetCar = true;
         }
 
         void OnRequestNewCarRecv(JSONObject json)
@@ -195,7 +195,7 @@ namespace tk
             //An index into our track options. 5 in scene RoadGenerator.
             int road_style = int.Parse(json.GetField("road_style").str);
             int rand_seed = int.Parse(json.GetField("rand_seed").str);
-            float turn_increment = float.Parse(json.GetField("turn_increment").str);
+            float turn_increment = float.Parse(json.GetField("turn_increment").str, CultureInfo.InvariantCulture);
 
             //We get this callback in a worker thread, but need to make mainthread calls.
             //so use this handy utility dispatcher from
@@ -243,15 +243,15 @@ namespace tk
                 asynchronous = true;
             }
         }
-    
+
         void OnQuitApp(JSONObject json)
         {
             Application.Quit();
         }
-        
+
         // Update is called once per frame
-        void Update () 
-        {    
+        void Update ()
+        {
             if(state == State.UnConnected)
             {
                 timer += Time.deltaTime;
@@ -284,10 +284,10 @@ namespace tk
                     timeSinceLastCapture -= (1.0f / limitFPS);
                     SendTelemetry();
                 }
-                
+
                 if(ai_text != null)
                     ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
-                    
+
             }
         }
     }
