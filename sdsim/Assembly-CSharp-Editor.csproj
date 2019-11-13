@@ -104,18 +104,6 @@
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
@@ -125,11 +113,17 @@
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro.Editor">
+      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.CollabProxy.Editor">
+      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="com.unity.multiplayer-weaver.Editor">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/com.unity.multiplayer-weaver.Editor.dll</HintPath>
@@ -151,6 +145,12 @@
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.DataPrivacy">
+      <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
       <HintPath>C:/cygwin64/home/tkramer/projects/sdsandbox/sdsim/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>

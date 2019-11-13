@@ -5,44 +5,136 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
+using System.Collections.Generic;
 
 namespace tk
-{
-
-    // State object for reading client data asynchronously  
-    public class StateObject
-    {
-        // Client  socket.  
-        public Socket workSocket = null;
-        // Size of receive buffer.  
-        public const int BufferSize = 1024;
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
-    }
-
+{   
     public class TcpServer : MonoBehaviour
     {
+        // register for OnClientConnected to handle the game specific creation of TcpClients with a MonoBehavior
+        public delegate TcpClient OnClientConnected();
+        public OnClientConnected onClientConntedCB;
+
+        // register for OnClientDisconnected to have an opportunity to handle dropped clients
+        public delegate void OnClientDisconnected(TcpClient client);
+        public OnClientDisconnected onClientDisconntedCB;
+
+        // Server listener socket
         Socket listener = null;
+
+        // Accept thread
         Thread thread = null;
 
         // Thread signal.  
-        public static ManualResetEvent allDone = new ManualResetEvent(false);
+        public ManualResetEvent allDone = new ManualResetEvent(false);
 
+        // All connected clients
+        List<TcpClient> clients = new List<TcpClient>();
+
+        // All new clients that need a onClientConntedCB callback
+        List<Socket> new_clients = new List<Socket>();
+
+        // Lock object to protect access to new_clients
+        readonly object _locker = new object();
+
+        // Call the Run method to start the server. The ip address is typically 127.0.0.1 to accept only local connections.
+        // Or 0.0.0.0 to bind to all incoming connections for this NIC.
         public void Run(string ip, int port)
         {
             Bind(ip, port);
 
-            thread = new Thread(ListenLoop);            
+            // Poll for new connections in the ListenLoop
+            thread = new Thread(ListenLoop);
+            thread.Start();
         }
 
+        // Stop the server. Will disconnect all clients and shutdown networking.
         public void Stop()
         {
-            thread.Abort();
+            foreach( TcpClient client in clients)
+            {
+                client.ReleaseServer();
+                client.Disconnect();
+            }
+
+            clients.Clear();
+
+            if (thread != null)
+            {
+                thread.Abort();
+                thread = null;
+            }
+
+            if(listener != null)
+            {
+                listener.Close();
+                listener = null;
+                Debug.Log("Server stopped.");
+            }
         }
 
-        void Bind(string ip, int port)
+        // When GameObject is deleted..
+        void OnDestroy()
+        {
+            Stop();
+        }
+
+        // SendData will broadcast send to all peers
+        public void SendData(byte[] data, TcpClient skip = null)
+        {
+            foreach (TcpClient client in clients)
+            {
+                if (client == skip)
+                    continue;
+
+                client.SendData(data);
+            }
+        }
+
+        // Remove reference to TcpClient
+        public void RemoveClient(TcpClient client)
+        {
+            clients.Remove(client);
+        }
+
+        public void Update()
+        {
+            lock (_locker)
+            {
+                // Because we might be creating GameObjects we need this callback to happen in the main
+                // thread context. So we queue new sockets and then create their TcpClients from here.
+                if (new_clients.Count > 0)
+                {
+                    if (onClientConntedCB != null)
+                    {
+                        foreach (Socket handler in new_clients)
+                        {
+                            TcpClient client = onClientConntedCB.Invoke();
+
+                            if (client != null)
+                            {
+                                client.OnServerAccept(handler, this);
+                                clients.Add(client);
+                            }
+                        }
+                    }
+
+                    new_clients.Clear();
+                }
+            }
+
+            //Poll for dropped connection.
+            foreach(TcpClient client in clients)
+            {
+                if(!client.IsConnected())
+                {
+                    onClientDisconntedCB.Invoke(client);
+                }
+            }
+        }
+
+        // Start listening for connections
+        private void Bind(string ip, int port)
         {
             IPAddress ipAddress = IPAddress.Parse(ip);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
@@ -54,9 +146,12 @@ namespace tk
             //Bind to address
             listener.Bind(localEndPoint);
             listener.Listen(100);
+
+            Debug.Log("Server Listening on: " + ip + ":" + port.ToString());
         }
 
-        void ListenLoop()
+        // Thread loop to wait for new connections
+        private void ListenLoop()
         {
             while(true)
             {
@@ -64,7 +159,7 @@ namespace tk
                 allDone.Reset();
 
                 // Start an asynchronous socket to listen for connections.  
-                Console.WriteLine("Waiting for a connection...");
+                Debug.Log("Waiting for a connection...");
                 listener.BeginAccept(
                     new AsyncCallback(AcceptCallback),
                     listener);
@@ -74,7 +169,8 @@ namespace tk
             }
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
+        // Callback to handle new connections
+        private void AcceptCallback(IAsyncResult ar)
         {
             // Signal the main thread to continue.  
             allDone.Set();
@@ -83,80 +179,13 @@ namespace tk
             Socket listener = (Socket)ar.AsyncState;
             Socket handler = listener.EndAccept(ar);
 
-            // Create the state object.  
-            StateObject state = new StateObject();
-            state.workSocket = handler;
-            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                new AsyncCallback(ReadCallback), state);
-        }
+            Debug.Log("client connected.");
 
-        public static void ReadCallback(IAsyncResult ar)
-        {
-            String content = String.Empty;
-
-            // Retrieve the state object and the handler socket  
-            // from the asynchronous state object.  
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
-
-            // Read data from the client socket.   
-            int bytesRead = handler.EndReceive(ar);
-
-            if (bytesRead > 0)
+            lock (_locker)
             {
-                // There  might be more data, so store the data received so far.  
-                state.sb.Append(Encoding.ASCII.GetString(
-                    state.buffer, 0, bytesRead));
-
-                // Check for end-of-file tag. If it is not there, read   
-                // more data.  
-                content = state.sb.ToString();
-                if (content.IndexOf("<EOF>") > -1)
-                {
-                    // All the data has been read from the   
-                    // client. Display it on the console.  
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                        content.Length, content);
-                    // Echo the data back to the client.  
-                    Send(handler, content);
-                }
-                else
-                {
-                    // Not all data received. Get more.  
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
-                }
-            }
-        }
-
-        private static void Send(Socket handler, String data)
-        {
-            // Convert the string data to byte data using ASCII encoding.  
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
-
-            // Begin sending the data to the remote device.  
-            handler.BeginSend(byteData, 0, byteData.Length, 0,
-                new AsyncCallback(SendCallback), handler);
-        }
-
-        private static void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                // Retrieve the socket from the state object.  
-                Socket handler = (Socket)ar.AsyncState;
-
-                // Complete sending the data to the remote device.  
-                int bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
-
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+                // Add clients to this new_clients list.
+                // They will get a onClientConntedCB later on in the Update method.
+                new_clients.Add(handler);
             }
         }
     }
