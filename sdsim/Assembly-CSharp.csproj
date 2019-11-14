@@ -137,6 +137,7 @@
     <Compile Include="Assets\Scripts\RoadBuilder.cs" />
     <Compile Include="Assets\Scripts\SandboxClient.cs" />
     <Compile Include="Assets\Scripts\SandboxServer.cs" />
+    <Compile Include="Assets\Scripts\SceneLoaded.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\ScreenSaver.cs" />
     <Compile Include="Assets\Scripts\SocketIO\JSONObject\JSONObject.cs" />
@@ -234,6 +235,8 @@
     <Compile Include="Assets\Scripts\Twiddle.cs" />
     <Compile Include="Assets\Scripts\TwiddlePID.cs" />
     <Compile Include="Assets\Scripts\UnityStandardCarAdapter.cs" />
+    <Compile Include="Assets\Scripts\utility\DontDestroy.cs" />
+    <Compile Include="Assets\Scripts\utility\JustOne.cs" />
     <Compile Include="Assets\Scripts\utility\UnityMainThreadDispatcher.cs" />
     <Compile Include="Assets\TerrainToolkit\TerrainToolkit.cs" />
     <Compile Include="Assets\Textures\avc\track_maker.cs" />

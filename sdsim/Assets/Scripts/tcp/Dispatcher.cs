@@ -21,6 +21,11 @@ namespace tk
             }
         }
 
+        public void Reset()
+        {
+            eventDictionary.Clear();
+        }
+
         public void Register(string msgType, Delegates.OnMsgRecv regCallback)
         {
             Delegates Delegates = null;
@@ -46,6 +51,10 @@ namespace tk
             if (eventDictionary.TryGetValue (msgType, out delegates))
             {
                 delegates.onMsgCb.Invoke(msgPayload);
+            }
+            else
+            {
+                Debug.Log("No delegates for msg type: " + msgType);
             }
         }
     }

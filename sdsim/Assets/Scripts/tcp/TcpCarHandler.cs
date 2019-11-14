@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Net;
-using System.Net.Sockets;
 using System;
 using UnityEngine.UI;
 using System.Globalization;
@@ -11,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 namespace tk
 {
-    [RequireComponent(typeof(tk.JsonTcpClient))]
 
     public class TcpCarHandler : MonoBehaviour {
 
@@ -50,8 +46,7 @@ namespace tk
         void Awake()
         {
             car = carObj.GetComponent<ICar>();
-            client = GetComponent<tk.JsonTcpClient>();
-		    pm = GameObject.FindObjectOfType<PathManager>();
+            pm = GameObject.FindObjectOfType<PathManager>();
 
             Canvas canvas = GameObject.FindObjectOfType<Canvas>();
             GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
@@ -59,13 +54,10 @@ namespace tk
                 ai_text = go.GetComponent<Text>();
         }
 
-        void Start()
+        public void Init(tk.JsonTcpClient _client)
         {
-            Initcallbacks();
-        }
-
-        void Initcallbacks()
-        {
+            _client.dispatchInMainThread = false; //too slow to wait.
+            client = _client;
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
@@ -74,22 +66,23 @@ namespace tk
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
 
+            SendCarLoaded();
+            state = State.SendTelemetry;
+        }
+        public tk.JsonTcpClient GetClient()
+        {
+            return client;
         }
 
-        bool Connect()
+        public void OnDestroy()
         {
-            return client.Connect();
+            if(client)
+                client.dispatcher.Reset();
         }
 
         void Disconnect()
         {
             client.Disconnect();
-        }
-
-        void Reconnect()
-        {
-            Disconnect();
-            Connect();
         }
 
         void SendTelemetry()
@@ -166,22 +159,21 @@ namespace tk
 
         void OnRequestNewCarRecv(JSONObject json)
         {
-            string host = json.GetField("host").str;
-            string port = json.GetField("port").str;
+            tk.JsonTcpClient client = null; //TODO where to get client?
 
             //We get this callback in a worker thread, but need to make mainthread calls.
             //so use this handy utility dispatcher from
             // https://github.com/PimDeWitte/UnityMainThreadDispatcher
-            UnityMainThreadDispatcher.Instance().Enqueue(SpawnNewCar(host, port));
+            UnityMainThreadDispatcher.Instance().Enqueue(SpawnNewCar(client));
         }
 
-        IEnumerator SpawnNewCar(string host, string port)
+        IEnumerator SpawnNewCar(tk.JsonTcpClient client)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
             if(spawner != null)
             {
-                spawner.Spawn(Vector3.right * -4.0f, host, port);
+                spawner.Spawn(Vector3.right * -4.0f, client);
             }
 
             yield return null;
@@ -252,22 +244,7 @@ namespace tk
         // Update is called once per frame
         void Update ()
         {
-            if(state == State.UnConnected)
-            {
-                timer += Time.deltaTime;
-
-                if(timer > connectTimer)
-                {
-                    timer = 0.0f;
-
-                    if(Connect())
-                    {
-                        SendCarLoaded();
-                        state = State.SendTelemetry;
-                    }
-                }
-            }
-            else if(state == State.SendTelemetry)
+            if(state == State.SendTelemetry)
             {
                 if (bResetCar)
                 {

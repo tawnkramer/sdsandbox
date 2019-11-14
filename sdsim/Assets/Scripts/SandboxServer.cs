@@ -9,13 +9,30 @@ using System;
 [RequireComponent(typeof(tk.TcpServer))]
 public class SandboxServer : MonoBehaviour
 {
-    public string ip = "0.0.0.0";
+    public string host = "0.0.0.0";
     public int port = 9090;
 
     tk.TcpServer _server = null;
 
     public GameObject clientTemplateObj = null;
     public Transform spawn_pt;
+    public bool spawnCarswClients = true;
+
+    public void CheckCommandLineConnectArgs()
+    {
+        string[] args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "--host")
+            {
+                host = args[i + 1];
+            }
+            else if (args[i] == "--port")
+            {
+                port = int.Parse(args[i + 1]);
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -25,11 +42,13 @@ public class SandboxServer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        CheckCommandLineConnectArgs();
+
         Debug.Log("SDSandbox Server starting.");
         _server.onClientConntedCB += new tk.TcpServer.OnClientConnected(OnClientConnected);
         _server.onClientDisconntedCB += new tk.TcpServer.OnClientDisconnected(OnClientDisconnected);
 
-        _server.Run(ip, port);
+        _server.Run(host, port);
     }
 
     // It's our responsibility to create a GameObject with a TcpClient
@@ -51,11 +70,56 @@ public class SandboxServer : MonoBehaviour
 
         tk.TcpClient client = go.GetComponent<tk.TcpClient>();
 
+        InitClient(client);
+
         return client;
+    }
+
+    private void InitClient(tk.TcpClient client)
+    {
+        if (spawnCarswClients)
+        {
+            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+            if (spawner)
+            {
+                spawner.Spawn(client.transform.position, client.gameObject.GetComponent<tk.JsonTcpClient>());
+            }
+        }
+        else
+        {
+            //we are in the front end.
+            tk.TcpMenuHandler handler = GameObject.FindObjectOfType<TcpMenuHandler>();
+
+            if (handler)
+            {
+                handler.Init(client.gameObject.GetComponent<tk.JsonTcpClient>());
+            }
+        }
+    }
+
+
+    public void OnSceneLoaded(bool bFrontEnd)
+    {
+        spawnCarswClients = !bFrontEnd;
+
+        List<tk.TcpClient> clients = _server.GetClients();
+
+        foreach (tk.TcpClient client in clients)
+        {
+            InitClient(client);
+        }
     }
 
     public void OnClientDisconnected(tk.TcpClient client)
     {
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        if (spawner)
+        {
+            spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
+        }
+
         GameObject.Destroy(client.gameObject);
     }
 }

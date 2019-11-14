@@ -120,7 +120,17 @@ namespace tk
         private void ReceiveCallback(IAsyncResult AR)
         {
             //Check how much bytes are recieved and call EndRecieve to finalize handshake
-            int recieved = _clientSocket.EndReceive(AR);
+            int recieved = 0;
+
+            try
+            {
+                recieved = _clientSocket.EndReceive(AR);
+            }
+            catch(SocketException e)
+            {
+                recieved = 0;
+            }
+            
 
             if (recieved <= 0)
                 return;

@@ -97,6 +97,11 @@ namespace tk
             clients.Remove(client);
         }
 
+        public List<TcpClient> GetClients()
+        {
+            return clients;
+        }
+
         public void Update()
         {
             lock (_locker)
@@ -177,16 +182,25 @@ namespace tk
 
             // Get the socket that handles the client request.  
             Socket listener = (Socket)ar.AsyncState;
-            Socket handler = listener.EndAccept(ar);
 
-            Debug.Log("client connected.");
-
-            lock (_locker)
+            try
             {
-                // Add clients to this new_clients list.
-                // They will get a onClientConntedCB later on in the Update method.
-                new_clients.Add(handler);
+                Socket handler = listener.EndAccept(ar);
+
+                Debug.Log("client connected.");
+
+                lock (_locker)
+                {
+                    // Add clients to this new_clients list.
+                    // They will get a onClientConntedCB later on in the Update method.
+                    new_clients.Add(handler);
+                }
             }
+            catch(SocketException e)
+            {
+                Debug.LogError(e.ToString());
+            }
+            
         }
     }
 

@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Net;
-using System.Net.Sockets;
 using System;
-using tk;
 
 namespace tk
 {
@@ -23,14 +19,12 @@ namespace tk
     }
 
     
-    //Wrap a tcpclient and dispatcher to handle network events over a tcp connection.
+    //Wrap a tk.TcpClient and dispatcher to handle network events over a tcp connection.
     //We create a NetPacket header to wrap all sends and recv. Should be pretty portable
     //over languages.
     [RequireComponent(typeof(tk.TcpClient))]
     public class JsonTcpClient : MonoBehaviour {
 
-        public string nnIPAddress = "127.0.0.1";
-        public int nnPort = 9090;
         private tk.TcpClient client;
 
         public tk.Dispatcher dispatcher;
@@ -56,20 +50,9 @@ namespace tk
             client.onDataRecvCB += new TcpClient.OnDataRecv(OnDataRecv);
         }
 
-        public bool Connect()
-        {
-            return client.Connect(nnIPAddress, nnPort);
-        }
-
         public void Disconnect()
         {
             client.Disconnect();
-        }
-
-        public void Reconnect()
-        {
-            Disconnect();
-            Connect();
         }
 
         public void SendMsg(JSONObject msg)
