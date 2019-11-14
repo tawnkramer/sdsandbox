@@ -141,8 +141,7 @@ namespace tk
 
             if (debug)
             {
-                var str = System.Text.Encoding.Default.GetString(recData);
-                Debug.Log(str);
+                Debug.Log("recv:" + System.Text.Encoding.Default.GetString(recData));
             }
 
             //Process data here the way you want , all your bytes will be stored in recData
@@ -162,6 +161,12 @@ namespace tk
             SocketAsyncEventArgs socketAsyncData = new SocketAsyncEventArgs();
             socketAsyncData.SetBuffer(data, 0, data.Length);
             _clientSocket.SendAsync(socketAsyncData);
+
+            if (debug)
+            {
+                Debug.Log("sent:" + System.Text.Encoding.Default.GetString(data));
+            }
+
             return true;
         }
 
@@ -173,6 +178,12 @@ namespace tk
             _server.SendData(data, this);
             return true;
         }
+
+        public void SetDebug(bool _debug)
+        {
+            debug = _debug;
+        }
+
     }
 
 } //end namepace tk

@@ -61,6 +61,9 @@ public class SandboxServer : MonoBehaviour
             return null;
         }
 
+        if (_server.debug)
+            Debug.Log("creating client obj");
+
         GameObject go = GameObject.Instantiate(clientTemplateObj) as GameObject;
 
         go.transform.parent = this.transform;
@@ -83,6 +86,9 @@ public class SandboxServer : MonoBehaviour
 
             if (spawner)
             {
+                if (_server.debug)
+                    Debug.Log("spawning car.");
+
                 spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>());
             }
         }
@@ -93,6 +99,9 @@ public class SandboxServer : MonoBehaviour
 
             if (handler)
             {
+                if (_server.debug)
+                    Debug.Log("init menu handler.");
+
                 handler.Init(client.gameObject.GetComponent<tk.JsonTcpClient>());
             }
         }
@@ -107,6 +116,9 @@ public class SandboxServer : MonoBehaviour
 
         foreach (tk.TcpClient client in clients)
         {
+            if (_server.debug)
+                Debug.Log("init network client.");
+
             InitClient(client);
         }
 
@@ -116,6 +128,9 @@ public class SandboxServer : MonoBehaviour
 
             if (spawner)
             {
+                if (_server.debug)
+                    Debug.Log("spawning car.");
+
                 spawner.Spawn(null);
             }
         }

@@ -37,6 +37,9 @@ namespace tk
         // Lock object to protect access to new_clients
         readonly object _locker = new object();
 
+        // Verbose messages
+        public bool debug = false;
+
         // Call the Run method to start the server. The ip address is typically 127.0.0.1 to accept only local connections.
         // Or 0.0.0.0 to bind to all incoming connections for this NIC.
         public void Run(string ip, int port)
@@ -88,6 +91,11 @@ namespace tk
                     continue;
 
                 client.SendData(data);
+
+                if(debug)
+                {
+                    Debug.Log("sent: " + System.Text.Encoding.Default.GetString(data));
+                }
             }
         }
 
@@ -120,6 +128,7 @@ namespace tk
                             {
                                 client.OnServerAccept(handler, this);
                                 clients.Add(client);
+                                client.SetDebug(debug);
                             }
                         }
                     }
