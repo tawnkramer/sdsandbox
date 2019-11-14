@@ -13,12 +13,11 @@ public class JustOne : MonoBehaviour
 
         foreach (JustOne obj in objs)
         {
-            if (obj.label == label)
+            if (obj.label == label && this == obj && objs.Length > 1)
             {
-                if(oneFound)
-                    Destroy(obj.gameObject);
-                else
-                    oneFound = true;
+                Debug.Log("JustOne removing instance." + label);
+                GameObject.DestroyImmediate(obj.gameObject);
+                return;
             }
         }
 

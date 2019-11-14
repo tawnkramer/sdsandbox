@@ -83,7 +83,7 @@ public class SandboxServer : MonoBehaviour
 
             if (spawner)
             {
-                spawner.Spawn(client.transform.position, client.gameObject.GetComponent<tk.JsonTcpClient>());
+                spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>());
             }
         }
         else
@@ -108,6 +108,16 @@ public class SandboxServer : MonoBehaviour
         foreach (tk.TcpClient client in clients)
         {
             InitClient(client);
+        }
+
+        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
+        {
+            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+            if (spawner)
+            {
+                spawner.Spawn(null);
+            }
         }
     }
 

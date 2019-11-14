@@ -24,8 +24,12 @@ namespace tk
             client.dispatcher.Register("get_protocol_version", new tk.Delegates.OnMsgRecv(OnProtocolVersion));
             client.dispatcher.Register("get_scene_names", new tk.Delegates.OnMsgRecv(OnGetSceneNames));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
+        }
 
-            OnConnected();
+        public void Start()
+        {
+            if(client != null)
+                OnConnected();
         }
 
         public void OnDestroy()
@@ -85,9 +89,11 @@ namespace tk
 
         void OnLoadScene(JSONObject jsonObject)
         {
-            //Set these flags to trigger an auto reconnect when we load the new scene.
-            GlobalState.bAutoConnectToWebSocket = true;
             GlobalState.bAutoHideSceneMenu = true;
+
+            // since we know this is called only from a network client,
+            // we can also infer that we don't want to auto create 
+            GlobalState.bCreateCarWithoutNetworkClient = false;
 
             string scene_name = jsonObject.GetField("scene_name").str;
 

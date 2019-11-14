@@ -110,7 +110,7 @@ public class CarSpawner : MonoBehaviour {
             splitScreenPanel.SetActive(false);
     }
 
-    public GameObject Spawn (Vector3 offset, tk.JsonTcpClient client) 
+    public GameObject Spawn (tk.JsonTcpClient client) 
 	{
         if(carPrefab == null)
         {
@@ -129,11 +129,17 @@ public class CarSpawner : MonoBehaviour {
         }
 
         cars.Add(go);
+        Vector3 offset = Vector3.zero;
 
-		if(cars.Count > 2)
+		if(cars.Count == 2)
 		{
 			//just stack more cars after the second. Not pretty.
-			offset = offset + Vector3.forward * (-5f * (cars.Count - 2));
+			offset = Vector3.left * 4.5f;
+		}
+        else if(cars.Count > 2)
+		{
+			//just stack more cars after the second. Not pretty.
+			offset = Vector3.forward * (-5f * (cars.Count - 1));
 		}
 
 		go.transform.rotation = startTm.rotation;
@@ -205,10 +211,6 @@ public class CarSpawner : MonoBehaviour {
             }
 
         }
-		else
-		{
-			Debug.LogError("need menu handler");
-		}
 
         //Set the PID ui hooks
 		if (pid_ui != null)

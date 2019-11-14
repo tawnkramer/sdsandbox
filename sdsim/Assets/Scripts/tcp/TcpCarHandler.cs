@@ -17,8 +17,6 @@ namespace tk
         public PathManager pm;
         public CameraSensor camSensor;
         private tk.JsonTcpClient client;
-        float connectTimer = 1.0f;
-        float timer = 0.0f;
         public Text ai_text;
 
         public float limitFPS = 20.0f;
@@ -33,6 +31,7 @@ namespace tk
         bool asynchronous = true;
         float time_step = 0.1f;
         bool bResetCar = false;
+        bool bExitScene = false;
 
         public enum State
         {
@@ -56,8 +55,12 @@ namespace tk
 
         public void Init(tk.JsonTcpClient _client)
         {
-            _client.dispatchInMainThread = false; //too slow to wait.
             client = _client;
+
+            if(client == null)
+                return;
+
+            client.dispatchInMainThread = false; //too slow to wait.
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
@@ -65,10 +68,14 @@ namespace tk
             client.dispatcher.Register("step_mode", new tk.Delegates.OnMsgRecv(OnStepModeRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
+        }
 
+        public void Start()
+        {
             SendCarLoaded();
             state = State.SendTelemetry;
         }
+
         public tk.JsonTcpClient GetClient()
         {
             return client;
@@ -124,6 +131,9 @@ namespace tk
 
         void SendCarLoaded()
         {
+            if(client == null)
+                return;
+
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "car_loaded");
             client.SendMsg( json );
@@ -149,6 +159,11 @@ namespace tk
 
         void OnExitSceneRecv(JSONObject json)
         {
+            bExitScene = true;
+        }
+
+        void ExitScene()
+        {
             SceneManager.LoadSceneAsync(0);
         }
 
@@ -173,7 +188,7 @@ namespace tk
 
             if(spawner != null)
             {
-                spawner.Spawn(Vector3.right * -4.0f, client);
+                spawner.Spawn(client);
             }
 
             yield return null;
@@ -244,6 +259,12 @@ namespace tk
         // Update is called once per frame
         void Update ()
         {
+            if(bExitScene)
+            {
+                bExitScene = false;
+                ExitScene();
+            }
+                
             if(state == State.SendTelemetry)
             {
                 if (bResetCar)
