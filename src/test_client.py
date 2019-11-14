@@ -70,17 +70,20 @@ class SDClient:
         And we will read any messages when it's in a readable state and then
         call self.on_msg_recv with the json object message.
         '''
-        #sock.setblocking(0)
+        sock.setblocking(0)
         inputs = [ sock ]
         outputs = [ sock ]
         partial = []
 
         while self.do_process_msgs:
+            # without this sleep, I was getting very consistent socket errors
+            # on Windows. Perhaps we don't need this sleep on other platforms.
             time.sleep(0.05)
-            data = "none"
-            m = "none"
+
             try:
+                # test our socket for readable, writable states.
                 readable, writable, exceptional = select.select(inputs, outputs, inputs)
+
                 for s in readable:
                     # print("waiting to recv")
                     data = s.recv(1024 * 64)
@@ -120,15 +123,16 @@ class SDClient:
                         self.msg = None
                 if len(exceptional) > 0:
                     print("problems w sockets!")
+
             except WindowsError as e:
                 print("Exception:", e)
                 if e.winerror == 10053:
                     # for some reason windows drops our connection.
                     self.aborted = True
                 break
+
             except Exception as e:
                 print("Exception:", e)
-                print("Data:", m)
                 self.aborted = True
                 break
 
