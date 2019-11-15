@@ -18,6 +18,11 @@ namespace tk
 
         public OnDataRecv onDataRecvCB;
 
+        // Flag to let us know a connection has dropped.
+        private bool dropped = false;
+        public float time_check_dropped = 0.0f;
+        public float time_check_dropped_freq = 3.0f;
+
         /// <summary>
         /// Connect will establish a new TCP socket connection to a remote ip, port. This method is the first method
         /// called to start using this object.
@@ -41,6 +46,7 @@ namespace tk
                 return false;
             }
 
+            dropped = false;
             _clientSocket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
 
             return true;
@@ -61,6 +67,7 @@ namespace tk
 
             _clientSocket = clientSock;
             _server = server;
+            dropped = false;
 
             _clientSocket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
 
@@ -80,9 +87,8 @@ namespace tk
                 {
                     _clientSocket.Shutdown(SocketShutdown.Both);
 
-                    if (IsConnected())
+                    if (!IsDropped())
                     {
-                        //when .Connected diagrees with IsConnected() then we have a dropped connection.
                         _clientSocket.Disconnect(true);
                     }
                 }
@@ -105,15 +111,39 @@ namespace tk
             Disconnect();
         }
 
-        public bool IsConnected()
+        public bool IsDropped()
         {
-            try
+            return dropped;
+        }
+
+        public void Update()
+        {
+            // Update our drop detection...
+            if(_clientSocket != null && !IsDropped())
             {
-                return !(_clientSocket.Poll(1, SelectMode.SelectRead) && _clientSocket.Available == 0);
-            }
-            catch (SocketException)
-            {
-                return false;
+                time_check_dropped += Time.deltaTime;
+
+                if(!_clientSocket.Connected)
+                {
+                    dropped = true;
+                }
+                else if(time_check_dropped > time_check_dropped_freq)
+                {
+                    time_check_dropped = 0.0f;
+
+                    try
+                    {
+                        // this is the minimal form of message for a JsonTCPClient
+                        string msg = "{}\n";
+                        System.Text.Encoding encoding = System.Text.Encoding.Default;
+                        _clientSocket.Send(encoding.GetBytes(msg));
+                    }
+                    catch(SocketException e)
+                    {
+                        Debug.LogWarning("connection dropped.");
+                        dropped = true;
+                    }
+                }
             }
         }
 
@@ -129,6 +159,8 @@ namespace tk
             catch(SocketException e)
             {
                 recieved = 0;
+                dropped = true;
+                Debug.LogWarning("Exception on recv. Connection dropped.");
             }
             
 
@@ -148,6 +180,8 @@ namespace tk
             if (onDataRecvCB != null)
                 onDataRecvCB.Invoke(recData);
 
+            // Reset our drop connection test timer, since we just got data.
+            time_check_dropped = 0.0f;
 
             //Start receiving again
             _clientSocket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);

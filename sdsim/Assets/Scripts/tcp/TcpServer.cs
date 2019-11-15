@@ -140,7 +140,7 @@ namespace tk
             //Poll for dropped connection.
             foreach(TcpClient client in clients)
             {
-                if(!client.IsConnected())
+                if(client.IsDropped())
                 {
                     onClientDisconntedCB.Invoke(client);
                 }

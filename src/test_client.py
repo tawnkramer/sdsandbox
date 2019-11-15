@@ -144,7 +144,7 @@ def test_clients():
     # test params
     host_ip = "127.0.0.1"
     port = 9090
-    num_clients = 1
+    num_clients = 4
     clients = []
     pause_on_create = 1.0
     time_to_drive = 20.0
