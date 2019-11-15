@@ -45,18 +45,9 @@ class SDClient:
         pass
 
 
-    def reconnect(self):
-        try:
-            print("attempt reconnect")
-            self.stop()
-            self.connect()
-        except Exception as e:
-            print(e)
-            return False
-        return True
-
-
     def stop(self):
+        # signal proc_msg loop to stop, then wait for thread to finish
+        # close socket
         self.do_process_msgs = False
         self.th.join()
         self.s.close()
@@ -124,13 +115,6 @@ class SDClient:
                 if len(exceptional) > 0:
                     print("problems w sockets!")
 
-            except WindowsError as e:
-                print("Exception:", e)
-                if e.winerror == 10053:
-                    # for some reason windows drops our connection.
-                    self.aborted = True
-                break
-
             except Exception as e:
                 print("Exception:", e)
                 self.aborted = True
@@ -176,10 +160,7 @@ def test_clients():
             msg = json.dumps(p)
             c.send(msg)
             if c.aborted:
-                # reconnect will 'work' but loses all vehicle state.
-                # we could have something to repair this connection..
-                # c.reconnect():
-                print("Client problem, stopping driving.")
+                print("Client socket problem, stopping driving.")
                 do_drive = False
 
     time.sleep(1.0)
