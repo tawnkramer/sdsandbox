@@ -131,6 +131,7 @@ public class CarSpawner : MonoBehaviour {
         cars.Add(go);
         Vector3 offset = Vector3.zero;
 
+
 		if(cars.Count == 2)
 		{
 			//just stack more cars after the second. Not pretty.
@@ -141,6 +142,14 @@ public class CarSpawner : MonoBehaviour {
 			//just stack more cars after the second. Not pretty.
 			offset = Vector3.forward * (-5f * (cars.Count - 1));
 		}
+
+        if(cars.Count > 1)
+        {
+            foreach(var car in cars)
+            {
+                getChildGameObject(go, "OverheadViewSphere").SetActive(false);
+            }
+        }
 
 		go.transform.rotation = startTm.rotation;
 		go.transform.position = startTm.position + offset;		
@@ -202,7 +211,8 @@ public class CarSpawner : MonoBehaviour {
             {
                 menuHandler.trainingManager.gameObject.SetActive(true);
 
-                getChildGameObject(go, "OverheadViewSphere").SetActive(true);
+                if(cars.Count == 1)
+                    getChildGameObject(go, "OverheadViewSphere").SetActive(true);
             }
 
             if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
