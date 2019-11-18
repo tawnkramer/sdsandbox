@@ -4,36 +4,30 @@ using System;
 
 namespace tk
 {
-
-    [Serializable]
-    public class NetPacket
-    {
-        public NetPacket(string m, string data)
-        {
-            msg = m;
-            payload = data;
-        }
-
-        public string msg;
-        public string payload;
-    }
-
-    
-    //Wrap a tk.TcpClient and dispatcher to handle network events over a tcp connection.
-    //We create a NetPacket header to wrap all sends and recv. Should be pretty portable
-    //over languages.
+    // Wrap a tk.TcpClient and dispatcher to handle network events over a tcp connection.
+    // Use Json for message contents. Assumes no newline characters in the json string contents,
+    // and end each packet with a newline for separation.
     [RequireComponent(typeof(tk.TcpClient))]
     public class JsonTcpClient : MonoBehaviour {
 
+        // Our reference to the required 'base' component
         private tk.TcpClient client;
 
+        // This allows other objects to register for incoming json messages
         public tk.Dispatcher dispatcher;
 
+        // Some messages need to be handled in the main thread. Unity object creation, etc..
         public bool dispatchInMainThread = false;
 
+        // A list of raw json strings received from network and waiting to dispatched locally.
         private List<string> recv_packets;
 
+        // Make sure to protect our recv_packets from race conditions
         readonly object _locker = new object();
+
+        //required for stream parsing where client may recv multiple messages at once.
+        const string packetTerminationChar = "\n";
+
 
         void Awake()
         {
@@ -45,25 +39,31 @@ namespace tk
             Initcallbacks();
         }
 
+        // Interact with our base TcpClient to handle incoming data
         void Initcallbacks()
         {
             client.onDataRecvCB += new TcpClient.OnDataRecv(OnDataRecv);
         }
 
+        // Close our socket connection
         public void Disconnect()
         {
             client.Disconnect();
         }
 
+
+        // Send a json packet over our TCP socket asynchronously.
         public void SendMsg(JSONObject msg)
         {
-            string packet = msg.ToString() + "\n";
+            string packet = msg.ToString() + packetTerminationChar;
 
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(packet);
 
             client.SendData( bytes );
         }
 
+
+        // Our callback from the TCPClient to get data.
         void OnDataRecv(byte[] bytes)
         {
             string str = System.Text.Encoding.UTF8.GetString(bytes);
@@ -79,12 +79,17 @@ namespace tk
             }
         }
 
+
+        // Send each queued json packet to the recipient which registered
+        // with our dispatcher.
         void Dispatch()
         {
             lock(_locker)
             {
                 foreach(string str in recv_packets)
                 {
+                    // We have not had problems yet with message separation, but
+                    // it could be added. Here we errors in case it becomes an issue.
                     try
                     {
                         JSONObject j = new JSONObject(str);
@@ -96,15 +101,16 @@ namespace tk
                     }
                     catch(Exception e)
                     {
-                        Debug.Log(e.ToString());
+                        Debug.LogError(e.ToString());
                     }
                 }
 
                 recv_packets.Clear();
             }
-
         }
 
+
+        // Optionally poll our dispatch queue in the main thread context
         void Update()
         {
             if (dispatchInMainThread)
