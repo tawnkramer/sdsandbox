@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 '''
 Predict Server
 Create a server to accept image inputs and run them against a trained neural network.
@@ -7,59 +6,74 @@ Author: Tawn Kramer
 '''
 from __future__ import print_function
 import os
-import argparse
 import sys
-import numpy as np
-import json
-from tensorflow.keras.models import load_model
+import argparse
 import time
-import asyncore
 import json
-import socket
-from PIL import Image
-from io import BytesIO
 import base64
 import datetime
 
-from donkey_gym.core.fps import FPSTimer
-from donkey_gym.core.tcp_server import IMesgHandler, SimServer
-from donkeycar.contrib.coordconv.coord import CoordinateChannel2D
+import tensorflow as tf
+from tensorflow.python import keras
+from tensorflow.python.keras.models import load_model
+from PIL import Image
+from io import BytesIO
+import numpy as np
+
+from gym_donkeycar.core.fps import FPSTimer
+from gym_donkeycar.core.message import IMesgHandler
+from gym_donkeycar.core.sim_client import SimClient
 from donkeycar.utils import linear_unbin
 import conf
+import models
+
+if tf.__version__ == '1.13.1':
+    from tensorflow import ConfigProto, Session
+
+    print("patching session!")
+
+    # Override keras session to work around a bug in TF 1.13.1
+    # Remove after we upgrade to TF 1.14 / TF 2.x.
+    config = ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = Session(config=config)
+    keras.backend.set_session(session)
 
 class DonkeySimMsgHandler(IMesgHandler):
 
     STEERING = 0
     THROTTLE = 1
 
-    def __init__(self, model, constant_throttle, port=0, num_cars=1, image_cb=None, rand_seed=0):
+    def __init__(self, model, constant_throttle, image_cb=None, rand_seed=0):
         self.model = model
         self.constant_throttle = constant_throttle
-        self.sock = None
+        self.client = None
         self.timer = FPSTimer()
-        self.image_folder = None
+        self.img_arr = None
         self.image_cb = image_cb
         self.steering_angle = 0.
         self.throttle = 0.
-        self.num_cars = 0
-        self.port = port
-        self.target_num_cars = num_cars
         self.rand_seed = rand_seed
         self.fns = {'telemetry' : self.on_telemetry,\
                     'car_loaded' : self.on_car_created,\
-                    'on_disconnect' : self.on_disconnect}
+                    'on_disconnect' : self.on_disconnect,
+                    'aborted' : self.on_aborted}
 
-    def on_connect(self, socketHandler):
-        self.sock = socketHandler
+    def on_connect(self, client):
+        self.client = client
         self.timer.reset()
 
+    def on_aborted(self, msg):
+        self.stop()
+
     def on_disconnect(self):
-        self.num_cars = 0
+        pass
 
     def on_recv_message(self, message):
         self.timer.on_frame()
         if not 'msg_type' in message:
             print('expected msg_type field')
+            print("message:", message)
             return
 
         msg_type = message['msg_type']
@@ -72,31 +86,25 @@ class DonkeySimMsgHandler(IMesgHandler):
         if self.rand_seed != 0:
             self.send_regen_road(0, self.rand_seed, 1.0)
 
-        self.num_cars += 1
-        if self.num_cars < self.target_num_cars:
-            print("requesting another car..")
-            self.request_another_car()
-
     def on_telemetry(self, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
-        image_array = np.asarray(image)
-        self.predict(image_array)
+        img_arr = np.asarray(image)
+        self.img_arr = img_arr.reshape((1,) + img_arr.shape)
 
         if self.image_cb is not None:
-            self.image_cb(image_array, self.steering_angle )
+            self.image_cb(img_arr, self.steering_angle )
 
-        # maybe save frame
-        if self.image_folder is not None:
-            timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
-            image_filename = os.path.join(self.image_folder, timestamp)
-            image.save('{}.jpg'.format(image_filename))
-
+    def update(self):
+        if self.img_arr is not None:
+            self.predict(self.img_arr)
+            self.img_arr = None
 
     def predict(self, image_array):
-        outputs = self.model.predict(image_array[None, :, :, :])
+        outputs = self.model.predict(image_array)
         self.parse_outputs(outputs)
-    
+
+
     def parse_outputs(self, outputs):
         res = []
         for iO, output in enumerate(outputs):            
@@ -131,9 +139,9 @@ class DonkeySimMsgHandler(IMesgHandler):
         self.send_control(self.steering_angle, self.throttle)
 
     def send_control(self, steer, throttle):
+        print("send control", steer, throttle)
         msg = { 'msg_type' : 'control', 'steering': steer.__str__(), 'throttle':throttle.__str__(), 'brake': '0.0' }
-        #print(steer, throttle)
-        self.sock.queue_message(msg)
+        self.client.queue_message(msg)
 
     def send_regen_road(self, road_style=0, rand_seed=0, turn_increment=0.0):
         '''
@@ -149,47 +157,54 @@ class DonkeySimMsgHandler(IMesgHandler):
             'rand_seed': rand_seed.__str__(),
             'turn_increment': turn_increment.__str__() }
         
-        self.sock.queue_message(msg)
+        self.client.queue_message(msg)
 
-    def request_another_car(self):
-        port = self.port + self.num_cars
-        address = ("0.0.0.0", port)
-        
-        #spawn a new message handler serving on the new port.
-        handler = DonkeySimMsgHandler(self.model, 0., num_cars=(self.target_num_cars - 1), port=address[1])
-        server = SimServer(address, handler)
+    def stop(self):
+        self.client.stop()
 
-        msg = { 'msg_type' : 'new_car', 'host': '127.0.0.1', 'port' : port.__str__() }
-        self.sock.queue_message(msg)   
+    def __del__(self):
+        self.stop()
 
-    def on_close(self):
-        pass
 
+
+def clients_connected(arr):
+    for client in arr:
+        if not client.is_connected():
+            return False
+    return True
 
 
 def go(filename, address, constant_throttle=0, num_cars=1, image_cb=None, rand_seed=None):
 
+    print("loading model", filename)
     model = load_model(filename)
 
-    #In this mode, looks like we have to compile it
+    # In this mode, looks like we have to compile it
     model.compile("sgd", "mse")
-  
-    #setup the server
-    handler = DonkeySimMsgHandler(model, constant_throttle, port=address[1], num_cars=num_cars, image_cb=image_cb, rand_seed=rand_seed)
-    server = SimServer(address, handler)
 
-    try:
-        #asyncore.loop() will keep looping as long as any asyncore dispatchers are alive
-        asyncore.loop()
-    except KeyboardInterrupt:
-        #unless some hits Ctrl+C and then we get this interrupt
-        print('stopping')
+    clients = []
 
-# ***** main loop *****
+    for _ in range(0, num_cars):
+        # setup the clients
+        handler = DonkeySimMsgHandler(model, constant_throttle, image_cb=image_cb, rand_seed=rand_seed)
+        client = SimClient(address, handler)
+        clients.append(client)
+
+    while clients_connected(clients):
+        try:
+            time.sleep(0.02)
+            for client in clients:
+                client.msg_handler.update()
+        except KeyboardInterrupt:
+            # unless some hits Ctrl+C and then we get this interrupt
+            print('stopping')
+            break
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='prediction server')
     parser.add_argument('--model', type=str, help='model filename')
-    parser.add_argument('--host', type=str, default='0.0.0.0', help='bind to ip')
+    parser.add_argument('--host', type=str, default='127.0.0.1', help='server sim host')
     parser.add_argument('--port', type=int, default=9091, help='bind to port')
     parser.add_argument('--num_cars', type=int, default=1, help='how many cars to spawn')
     parser.add_argument('--constant_throttle', type=float, default=0.0, help='apply constant throttle')

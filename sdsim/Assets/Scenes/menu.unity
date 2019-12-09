@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: f5f7451eddc74e33194ce3d673c9bdca,
     type: 2}
   m_UseShadowmask: 1
@@ -1642,8 +1643,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1206481695}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -2175,7 +2177,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1988525274}
   - component: {fileID: 1988525273}
-  - component: {fileID: 1988525272}
   - component: {fileID: 1988525271}
   - component: {fileID: 1988525270}
   m_Layer: 0
@@ -2194,14 +2195,6 @@ AudioListener:
   m_GameObject: {fileID: 1988525269}
   m_Enabled: 1
 --- !u!124 &1988525271
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988525269}
-  m_Enabled: 1
---- !u!92 &1988525272
 Behaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2484,10 +2477,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7112187656446632235, guid: bfb658913a64f12448291543a1771726,
+    - target: {fileID: 7112187656446632232, guid: bfb658913a64f12448291543a1771726,
         type: 3}
-      propertyPath: m_Name
-      value: SceneLoaded
+      propertyPath: inFrontEnd
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7112187656446632233, guid: bfb658913a64f12448291543a1771726,
         type: 3}
@@ -2544,10 +2537,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7112187656446632232, guid: bfb658913a64f12448291543a1771726,
+    - target: {fileID: 7112187656446632235, guid: bfb658913a64f12448291543a1771726,
         type: 3}
-      propertyPath: inFrontEnd
-      value: 1
+      propertyPath: m_Name
+      value: SceneLoaded
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfb658913a64f12448291543a1771726, type: 3}
@@ -2562,6 +2555,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Server
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851192297964007754, guid: a6036eca3f96b4a27906f9aef28d0c6c,
+        type: 3}
+      propertyPath: host
+      value: 0.0.0.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851192297964007754, guid: a6036eca3f96b4a27906f9aef28d0c6c,
+        type: 3}
+      propertyPath: port
+      value: 9091
       objectReference: {fileID: 0}
     - target: {fileID: 8851192297964007755, guid: a6036eca3f96b4a27906f9aef28d0c6c,
         type: 3}

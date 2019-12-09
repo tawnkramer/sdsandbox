@@ -43,6 +43,12 @@ namespace tk
         void Initcallbacks()
         {
             client.onDataRecvCB += new TcpClient.OnDataRecv(OnDataRecv);
+            client.onConnectedCB += new TcpClient.OnConnected(OnConnected);
+        }
+
+        public void OnConnected()
+        {
+            recv_packets.Add("{\"msg_type\" : \"connected\"}");
         }
 
         // Close our socket connection

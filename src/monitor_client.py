@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 '''
-Predict Server
-Create a server to accept image inputs and run them against a trained neural network.
-This then sends the steering output back to the client.
+Predict Client
+Create a client to accept image inputs and run them against a trained neural network.
+This then sends the steering output back to the server.
 Author: Tawn Kramer
 '''
 from __future__ import print_function
@@ -13,7 +13,7 @@ import sys
 import time
 import pygame
 import conf
-import predict_server
+import predict_client
 
 pygame.init()
 ch, row, col = conf.ch, conf.row, conf.col
@@ -47,7 +47,7 @@ if __name__ == "__main__":
   address = ('0.0.0.0', 9090)
   
   try:
-    predict_server.go(args.model, address, None, image_cb=display_img)   
+    predict_client.go(args.model, address, None, image_cb=display_img)   
   except KeyboardInterrupt:
     print('got ctrl+c break')
 

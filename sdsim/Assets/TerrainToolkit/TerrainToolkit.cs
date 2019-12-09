@@ -3,7 +3,7 @@
 --
 -- Unity Summer of Code 2009
 -- Terrain Toolkit for Unity (Version 1.0.2)
--- All code by Sándor Moldán, except where noted.
+-- All code by Sï¿½ndor Moldï¿½n, except where noted.
 -- 
 -- Contains an implementation of Perlin noise by Daniel Greenheck.
 -- Contains an implementation of the Diamond-Square algorithm by Jim George.
@@ -567,8 +567,8 @@ public class TerrainToolkit : MonoBehaviour {
 		int Py = 0;
 		try {
 			TerrainData terData = ter.terrainData;
-			int Tw = terData.heightmapWidth;
-			int Th = terData.heightmapHeight;
+			int Tw = terData.heightmapResolution;
+			int Th = terData.heightmapResolution;
 			Vector3 Ts = terData.size;
 			int Sx = (int) Mathf.Floor((Tw / Ts.x) * brushSize);
 			int Sy = (int) Mathf.Floor((Th / Ts.z) * brushSize);
@@ -632,8 +632,8 @@ public class TerrainToolkit : MonoBehaviour {
 		}
 		try {
 			TerrainData terData = ter.terrainData;
-			int Tw = terData.heightmapWidth;
-			int Th = terData.heightmapHeight;
+			int Tw = terData.heightmapResolution;
+			int Th = terData.heightmapResolution;
 			float[,] heightMap = terData.GetHeights(0, 0, Tw, Th);
 			// Set the number of iterations and pass the height array to the appropriate erosion script...
 			int iterations;
@@ -1692,8 +1692,8 @@ public class TerrainToolkit : MonoBehaviour {
 			return;
 		}
 		textureProgressDelegate("Procedural Terrain Texture", "Generating height and slope maps. Please wait.", 0.1f);
-		int Tw = terData.heightmapWidth - 1;
-		int Th = terData.heightmapHeight - 1;
+		int Tw = terData.heightmapResolution - 1;
+		int Th = terData.heightmapResolution - 1;
 		float[,] heightMapData = new float[Tw, Th];
 		float[,] slopeMapData = new float[Tw, Th];
 		float[,,] splatMapData;
@@ -1925,8 +1925,8 @@ public class TerrainToolkit : MonoBehaviour {
 			return;
 		}
 		TerrainData terData = ter.terrainData;
-		int Tw = terData.heightmapWidth;
-		int Th = terData.heightmapHeight;
+		int Tw = terData.heightmapResolution;
+		int Th = terData.heightmapResolution;
 		float[,] heightMap = terData.GetHeights(0, 0, Tw, Th);
 		float[,] generatedHeightMap = (float[,]) heightMap.Clone();
 		// Set the number of iterations and pass the height array to the appropriate generator script...
@@ -2565,8 +2565,8 @@ public class TerrainToolkit : MonoBehaviour {
 		}
 
 		TerrainData terData = ter.terrainData;
-		int Tw = terData.heightmapWidth;
-		int Th = terData.heightmapHeight;
+		int Tw = terData.heightmapResolution;
+		int Th = terData.heightmapResolution;
 		float[,] heightMap = terData.GetHeights(0, 0, Tw, Th);
 
 		// Apply it to the terrain object...
@@ -2599,8 +2599,8 @@ public class TerrainToolkit : MonoBehaviour {
 
 		TerrainData terData = terr.terrainData;
 
-		int hmWidth = terr.terrainData.heightmapWidth;
-		int hmHeight = terr.terrainData.heightmapHeight;
+		int hmWidth = terr.terrainData.heightmapResolution;
+		int hmHeight = terr.terrainData.heightmapResolution;
 
 		// get the normalized position of this game object relative to the terrain
 		Vector3 tempCoord = (centerPoint - terr.gameObject.transform.position);
