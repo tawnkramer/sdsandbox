@@ -94,6 +94,9 @@ namespace tk
 
         void SendTelemetry()
         {
+            if (client == null)
+                return;
+
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "telemetry");
 

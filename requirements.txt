@@ -1,12 +1,5 @@
-python-socketio
-flask
-eventlet
-pygame
 numpy
 pillow
 h5py
-scikit-image
-opencv-python
 gym
--e git+https://github.com/tawnkramer/donkey.git@faa4a32b2aff452c6b46474029ea9e4b3168843d#egg=donkeycar
--e git+https://github.com/tawnkramer/donkey_gym.git@f54c6d6b63577e3fc6ee46b46ae66f7e053c73d0#egg=donkey_gym
+-e git+https://github.com/tawnkramer/gym-donkeycar.git#egg=gym_donkeycar

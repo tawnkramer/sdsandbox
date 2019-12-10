@@ -22,7 +22,7 @@ def get_nvidia_model(num_outputs):
     '''
     this model is inspired by the NVIDIA paper
     https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf
-    Activation is ELU
+    Activation is RELU
     '''
     row, col, ch = conf.row, conf.col, conf.ch
     

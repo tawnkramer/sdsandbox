@@ -18,6 +18,10 @@ namespace tk
 
         public OnDataRecv onDataRecvCB;
 
+        public delegate void OnConnected();
+
+        public OnConnected onConnectedCB;
+
         // Flag to let us know a connection has dropped.
         private bool dropped = false;
         public float time_check_dropped = 0.0f;
@@ -72,6 +76,12 @@ namespace tk
             _clientSocket.BeginReceive(_recieveBuffer, 0, _recieveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
 
             return true;
+        }
+
+        public void ClientFinishedConnect()
+        {
+            if(onConnectedCB != null)
+                onConnectedCB.Invoke();
         }
 
         public void ReleaseServer()

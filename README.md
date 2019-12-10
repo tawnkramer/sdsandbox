@@ -62,7 +62,7 @@ pip install tensorflow
 
 ```bash
 cd sdsandbox/src
-python predict_server.py --model ../outputs/highway.h5
+python predict_client.py --model ../outputs/highway.h5
 ```
  If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions.
 
@@ -108,36 +108,30 @@ Let this run. It may take a few hours if running on CPU. Usually far less on a G
 
 ## Run car with NN
 
-1) Start the prediction server. This listens for images and returns a steering result.  
+1) Start Unity project sdsim  
+
+
+2) Push button "Use NN Steering"
+
+
+3) Start the prediction client. This listens for images and returns a steering result.  
 
 ```bash
-python predict_server.py --model ../outputs/mymodel.h5
+python predict_client.py --model ../outputs/mymodel.h5
 ```
-
-2) Start Unity project sdsim  
-
-3) Push button "Use NN Steering"  
 
 
 
 ## Requirements
-* [python 3.4+ 64 bit](https://www.python.org/)*
-* [tensorflow-1+](https://github.com/tensorflow/tensorflow)  
-* [keras-2+](https://github.com/fchollet/keras)   
+* [python 3.5+ 64 bit](https://www.python.org/)*
+* [tensorflow-1.10+](https://github.com/tensorflow/tensorflow)
 * [h5py](http://www.h5py.org/)  
 * [pillow](https://python-pillow.org/)  
-* [socketio](https://pypi.python.org/pypi/python-socketio)  
-* [flask](https://pypi.python.org/pypi/Flask)  
-* [eventlet](https://pypi.python.org/pypi/eventlet)  
-* [pyzmq](https://pypi.python.org/pypi/pyzmq)  
 * [pygame](https://pypi.python.org/pypi/Pygame)**  
-* [Unity 5.5+](https://unity3d.com/get-unity/download)  
-
-*Note: May work with Python 2.7+. But you will need to train your own models. The stock models will not load.
+* [Unity 2018.+](https://unity3d.com/get-unity/download)  
 
 
 **Note: pygame only needed if using mon_and_predict_server.py which gives a live camera feed during inferencing.
-
 
 
 ## Credits

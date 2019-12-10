@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 '''
-Predict Server
-Create a server to accept image inputs and run them against a trained neural network.
-This then sends the steering output back to the client.
+Predict Client
+Create a client to accept image inputs and run them against a trained neural network.
+This then sends the steering output back to the server.
 Author: Tawn Kramer
 '''
 from __future__ import print_function
 import os
 import argparse
 import sys
-#import matplotlib.pyplot as plt
 import time
 import pygame
 import conf
-import predict_server
+import predict_client
 
 pygame.init()
 ch, row, col = conf.ch, conf.row, conf.col
@@ -34,11 +33,11 @@ def display_img(img, steering):
     pygame.surfarray.blit_array(camera_surface, img)
     camera_surface_2x = pygame.transform.scale2x(camera_surface)
     screen.blit(camera_surface_2x, (0,0))
-    #steering value
+    # steering value
     screen_print(10, 10, 'NN    :' + str(steering), screen)
     pygame.display.flip()
 
-# ***** main loop *****
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='prediction server with monitor')
   parser.add_argument('model', type=str, help='model name. no json or keras.')
@@ -47,7 +46,7 @@ if __name__ == "__main__":
   address = ('0.0.0.0', 9090)
   
   try:
-    predict_server.go(args.model, address, None, image_cb=display_img)   
+    predict_client.go(args.model, address, None, image_cb=display_img)   
   except KeyboardInterrupt:
     print('got ctrl+c break')
 

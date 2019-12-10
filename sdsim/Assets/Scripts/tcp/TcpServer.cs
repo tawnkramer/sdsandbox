@@ -126,9 +126,12 @@ namespace tk
 
                             if (client != null)
                             {
-                                client.OnServerAccept(handler, this);
-                                clients.Add(client);
-                                client.SetDebug(debug);
+                                if(client.OnServerAccept(handler, this))
+                                {
+                                    clients.Add(client);
+                                    client.SetDebug(debug);
+                                    client.ClientFinishedConnect();
+                                }
                             }
                         }
                     }
