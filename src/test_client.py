@@ -3,7 +3,7 @@ import random
 import json
 import time
 
-from client import SDClient
+from gym_donkeycar.core.sim_client import SDClient
 
 ###########################################
 

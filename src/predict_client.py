@@ -12,12 +12,12 @@ import time
 import json
 import base64
 import datetime
+from io import BytesIO
 
 import tensorflow as tf
 from tensorflow.python import keras
 from tensorflow.python.keras.models import load_model
 from PIL import Image
-from io import BytesIO
 import numpy as np
 
 from gym_donkeycar.core.fps import FPSTimer
@@ -27,10 +27,10 @@ from donkeycar.utils import linear_unbin
 import conf
 import models
 
+
+
 if tf.__version__ == '1.13.1':
     from tensorflow import ConfigProto, Session
-
-    print("patching session!")
 
     # Override keras session to work around a bug in TF 1.13.1
     # Remove after we upgrade to TF 1.14 / TF 2.x.
@@ -38,6 +38,8 @@ if tf.__version__ == '1.13.1':
     config.gpu_options.allow_growth = True
     session = Session(config=config)
     keras.backend.set_session(session)
+
+
 
 class DonkeySimMsgHandler(IMesgHandler):
 
@@ -89,7 +91,7 @@ class DonkeySimMsgHandler(IMesgHandler):
     def on_telemetry(self, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
-        img_arr = np.asarray(image)
+        img_arr = np.asarray(image, dtype=np.float32)
         self.img_arr = img_arr.reshape((1,) + img_arr.shape)
 
         if self.image_cb is not None:
@@ -107,19 +109,10 @@ class DonkeySimMsgHandler(IMesgHandler):
 
     def parse_outputs(self, outputs):
         res = []
-        for iO, output in enumerate(outputs):            
-            if len(output.shape) == 2:
-                if iO == self.STEERING:
-                    self.steering_angle = linear_unbin(output)
-                    res.append(self.steering_angle)
-                elif iO == self.THROTTLE:
-                    self.throttle = linear_unbin(output, N=output.shape[1], offset=0.0, R=0.5)
-                    res.append(self.throttle)
-                else:
-                    res.append( np.argmax(output) )
-            else:
-                for i in range(output.shape[0]):
-                    res.append(output[i])
+
+        # Expects the model with final Dense(2) with steering and throttle
+        for i in range(outputs.shape[1]):
+            res.append(outputs[0][i])
 
         self.on_parsed_outputs(res)
         

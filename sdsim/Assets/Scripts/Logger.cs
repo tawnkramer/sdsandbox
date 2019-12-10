@@ -80,7 +80,7 @@ public class Logger : MonoBehaviour {
     float timeSinceLastCapture = 0.0f;
 
     //We can output our logs in the style that matched the output from the shark robot car platform - github/tawnkramer/shark
-    public bool SharkStyle = true;
+    public bool SharkStyle = false;
 
 	//We can output our logs in the style that matched the output from the udacity simulator
 	public bool UdacityStyle = false;
@@ -89,7 +89,7 @@ public class Logger : MonoBehaviour {
     public bool DonkeyStyle = false;
 
     //Tub style as prefered by Donkey2
-    public bool DonkeyStyle2 = false;
+    public bool DonkeyStyle2 = true;
 
     public Text logDisplay;
 
@@ -192,7 +192,7 @@ public class Logger : MonoBehaviour {
             {
                 DonkeyRecord mjson = new DonkeyRecord();
                 float steering = car.GetSteering() / car.GetMaxSteering();
-                float throttle = car.GetThrottle() * 10.0f;
+                float throttle = car.GetThrottle();
                 int loc = LocationMarker.GetNearestLocMarker(carObj.transform.position);
 
                 //training code like steering clamped between -1, 1

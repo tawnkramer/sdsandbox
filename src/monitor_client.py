@@ -9,7 +9,6 @@ from __future__ import print_function
 import os
 import argparse
 import sys
-#import matplotlib.pyplot as plt
 import time
 import pygame
 import conf
@@ -34,11 +33,11 @@ def display_img(img, steering):
     pygame.surfarray.blit_array(camera_surface, img)
     camera_surface_2x = pygame.transform.scale2x(camera_surface)
     screen.blit(camera_surface_2x, (0,0))
-    #steering value
+    # steering value
     screen_print(10, 10, 'NN    :' + str(steering), screen)
     pygame.display.flip()
 
-# ***** main loop *****
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='prediction server with monitor')
   parser.add_argument('model', type=str, help='model name. no json or keras.')
