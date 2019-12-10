@@ -10,7 +10,7 @@ from gym_donkeycar.core.sim_client import SDClient
 def test_clients():
     # test params
     host_ip = "127.0.0.1"
-    port = 9090
+    port = 9091
     num_clients = 4
     clients = []
     pause_on_create = 1.0

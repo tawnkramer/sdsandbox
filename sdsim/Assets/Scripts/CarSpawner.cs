@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using tk;
+using System;
 
 public class CarSpawner : MonoBehaviour {
 
@@ -69,7 +70,8 @@ public class CarSpawner : MonoBehaviour {
         {
             GameObject.Destroy(car);
         }
-        
+
+        cars.Clear();
         DeactivateSplitScreen();
         RemoveUiReferences();
     }
@@ -237,6 +239,12 @@ public class CarSpawner : MonoBehaviour {
 		}
 
         return go;
+    }
+
+    internal void EnsureOneCar()
+    {
+        if (cars.Count == 0)
+            Spawn(null);
     }
 
     public void RemoveUiReferences()

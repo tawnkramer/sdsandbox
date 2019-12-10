@@ -167,6 +167,11 @@ public class MenuHandler : MonoBehaviour {
         menuPanel.SetActive(true);
         stopPanel.SetActive(false);
         exitPanel.SetActive(true);
+
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        if (spawner)
+            spawner.EnsureOneCar();
     }
 
 }
