@@ -19,11 +19,10 @@ from tensorflow.python import keras
 from tensorflow.python.keras.models import load_model
 from PIL import Image
 import numpy as np
-
 from gym_donkeycar.core.fps import FPSTimer
 from gym_donkeycar.core.message import IMesgHandler
 from gym_donkeycar.core.sim_client import SimClient
-from donkeycar.utils import linear_unbin
+
 import conf
 import models
 
