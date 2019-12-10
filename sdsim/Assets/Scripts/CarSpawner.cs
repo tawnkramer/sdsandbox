@@ -63,6 +63,19 @@ public class CarSpawner : MonoBehaviour {
         return false;
     }
 
+    public void RemoveAllCars()
+    {
+        foreach(GameObject car in cars)
+        {
+            GameObject.Destroy(car);
+        }
+        
+        DeactivateSplitScreen();
+        RemoveUiReferences();
+    }
+
+    
+
     public Camera ActivateSplitScreen()
     {
         Camera cam = Camera.main;
@@ -224,6 +237,46 @@ public class CarSpawner : MonoBehaviour {
 		}
 
         return go;
+    }
+
+    public void RemoveUiReferences()
+    {
+        Camera cam = Camera.main;
+
+        ///////////////////////////////////////////////
+        //Search scene to find these.
+        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
+        PID_UI pid_ui = null;
+        GameObject pidPanel = getChildGameObject(canvas.gameObject, "PIDPanel");
+        ///////////////////////////////////////////////
+
+        if (pidPanel)
+            pid_ui = pidPanel.GetComponent<PID_UI>();
+
+        //set camera target follow tm
+        if (cameraFollow != null)
+			cameraFollow.target = null;
+
+        //Set menu handler hooks
+		if(menuHandler != null)
+		{
+			menuHandler.PIDContoller = null;
+			menuHandler.Logger = null;
+			menuHandler.NetworkSteering = null;
+			menuHandler.carJSControl  = null;
+			menuHandler.trainingManager  = null;
+        }
+
+        //Set the PID ui hooks
+		if (pid_ui != null)
+		{
+			pid_ui.pid = null;
+			pid_ui.logger = null;
+		}
+
     }
 	
 }
