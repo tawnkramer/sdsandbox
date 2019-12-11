@@ -131,7 +131,7 @@ class DonkeySimMsgHandler(IMesgHandler):
         self.send_control(self.steering_angle, self.throttle)
 
     def send_control(self, steer, throttle):
-        print("send control", steer, throttle)
+        # print("send st:", steer, "th:", throttle)
         msg = { 'msg_type' : 'control', 'steering': steer.__str__(), 'throttle':throttle.__str__(), 'brake': '0.0' }
         self.client.queue_message(msg)
 

@@ -53,7 +53,7 @@ def load_json(filename):
         data = json.load(fp)
     return data
 
-def generator(samples, batch_size=32, perc_to_augment=0.5):
+def generator(samples, batch_size=64,):
     '''
     Rather than keep all data in memory, we will make a function that keeps
     it's state and returns just the latest batch required via the yield command.
@@ -146,7 +146,7 @@ def train_test_split(lines, test_perc):
 
     return train, test
 
-def make_generators(inputs, limit=None, batch_size=32):
+def make_generators(inputs, limit=None, batch_size=64):
     '''
     load the job spec from the csv and create some generator for training
     '''
@@ -230,7 +230,7 @@ def go(model_name, epochs=50, inputs='./log/*.jpg', limit=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='train script')
-    parser.add_argument('model', type=str, help='model name')
+    parser.add_argument('--model', type=str, help='model name')
     parser.add_argument('--epochs', type=int, default=conf.training_default_epochs, help='number of epochs')
     parser.add_argument('--inputs', default='../dataset/log/*.jpg', help='input mask to gather images')
     parser.add_argument('--limit', type=int, default=None, help='max number of images to train with')
