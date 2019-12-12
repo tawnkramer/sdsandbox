@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using tk;
+using System;
 
 public class CarSpawner : MonoBehaviour {
 
@@ -62,6 +63,20 @@ public class CarSpawner : MonoBehaviour {
 
         return false;
     }
+
+    public void RemoveAllCars()
+    {
+        foreach(GameObject car in cars)
+        {
+            GameObject.Destroy(car);
+        }
+
+        cars.Clear();
+        DeactivateSplitScreen();
+        RemoveUiReferences();
+    }
+
+    
 
     public Camera ActivateSplitScreen()
     {
@@ -131,7 +146,6 @@ public class CarSpawner : MonoBehaviour {
         cars.Add(go);
         Vector3 offset = Vector3.zero;
 
-
 		if(cars.Count == 2)
 		{
 			//just stack more cars after the second. Not pretty.
@@ -142,14 +156,6 @@ public class CarSpawner : MonoBehaviour {
 			//just stack more cars after the second. Not pretty.
 			offset = Vector3.forward * (-5f * (cars.Count - 1));
 		}
-
-        if(cars.Count > 1)
-        {
-            foreach(var car in cars)
-            {
-                getChildGameObject(go, "OverheadViewSphere").SetActive(false);
-            }
-        }
 
 		go.transform.rotation = startTm.rotation;
 		go.transform.position = startTm.position + offset;		
@@ -211,8 +217,7 @@ public class CarSpawner : MonoBehaviour {
             {
                 menuHandler.trainingManager.gameObject.SetActive(true);
 
-                if(cars.Count == 1)
-                    getChildGameObject(go, "OverheadViewSphere").SetActive(true);
+                getChildGameObject(go, "OverheadViewSphere").SetActive(true);
             }
 
             if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
@@ -234,6 +239,52 @@ public class CarSpawner : MonoBehaviour {
 		}
 
         return go;
+    }
+
+    internal void EnsureOneCar()
+    {
+        if (cars.Count == 0)
+            Spawn(null);
+    }
+
+    public void RemoveUiReferences()
+    {
+        Camera cam = Camera.main;
+
+        ///////////////////////////////////////////////
+        //Search scene to find these.
+        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
+        Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+        GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
+        PID_UI pid_ui = null;
+        GameObject pidPanel = getChildGameObject(canvas.gameObject, "PIDPanel");
+        ///////////////////////////////////////////////
+
+        if (pidPanel)
+            pid_ui = pidPanel.GetComponent<PID_UI>();
+
+        //set camera target follow tm
+        if (cameraFollow != null)
+			cameraFollow.target = null;
+
+        //Set menu handler hooks
+		if(menuHandler != null)
+		{
+			menuHandler.PIDContoller = null;
+			menuHandler.Logger = null;
+			menuHandler.NetworkSteering = null;
+			menuHandler.carJSControl  = null;
+			menuHandler.trainingManager  = null;
+        }
+
+        //Set the PID ui hooks
+		if (pid_ui != null)
+		{
+			pid_ui.pid = null;
+			pid_ui.logger = null;
+		}
+
     }
 	
 }

@@ -10,8 +10,8 @@ from gym_donkeycar.core.sim_client import SDClient
 def test_clients():
     # test params
     host_ip = "127.0.0.1"
-    port = 9090
-    num_clients = 2
+    port = 9091
+    num_clients = 4
     clients = []
     pause_on_create = 1.0
     time_to_drive = 20.0
@@ -25,7 +25,7 @@ def test_clients():
     time.sleep(pause_on_create)
 
     # Load Scene
-    msg = '{ "msg_type" : "load_scene", "scene_name" : "generated_track" }'
+    msg = '{ "msg_type" : "load_scene", "scene_name" : "generated_road" }'
     clients[0].send(msg)
     time.sleep(1.0)
 

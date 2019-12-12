@@ -58,17 +58,21 @@ pip install tensorflow
 
 ## Demo
 
-1) Start the prediction server with the pre-trained model.
+1) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/road_generator to open that scene.  
+
+2) Hit the start button to launch. Then the "Use NN Steering". When you hit this button, the car will disappear. This is normal. You will see one car per client that connects.
+
+3) Start the prediction server with the pre-trained model.
 
 ```bash
 cd sdsandbox/src
-python predict_client.py --model ../outputs/highway.h5
+python predict_client.py --model=../outputs/highway.h5
 ```
  If you get a crash loading this model, you will not be able to run the demo. But you can still generate your own model. This is a problem between tensorflow/keras versions.
 
-2) Load the Unity project sdsandbox/sdsim in Unity. Double click on Assets/Scenes/main to open that scene.  
+ Note* You can start multiple clients at the same time and you will see them spawn as they connect.
 
-3) Hit the start button to launch. Then the "Use NN Steering".  
+ 
 
 
 #To create your own data and train
@@ -99,7 +103,7 @@ python prepare_data.py
 ## Train Neural network
 
 ```bash
-python train.py ../outputs/mymodel.h5
+python train.py --model=../outputs/mymodel.h5
 ```
 
 Let this run. It may take a few hours if running on CPU. Usually far less on a GPU.
@@ -117,7 +121,7 @@ Let this run. It may take a few hours if running on CPU. Usually far less on a G
 3) Start the prediction client. This listens for images and returns a steering result.  
 
 ```bash
-python predict_client.py --model ../outputs/mymodel.h5
+python predict_client.py --model=../outputs/mymodel.h5
 ```
 
 

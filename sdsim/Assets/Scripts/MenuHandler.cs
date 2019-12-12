@@ -46,7 +46,8 @@ public class MenuHandler : MonoBehaviour {
 
     public void OnPidGenerateTrainingData()
 	{
-		Logger.SetActive(true);
+        if(Logger != null)
+		    Logger.SetActive(true);
         
 		if(PIDContoller != null)
 			PIDContoller.SetActive(true);
@@ -64,7 +65,8 @@ public class MenuHandler : MonoBehaviour {
 
 	public void OnManualGenerateTrainingData()
 	{
-		Logger.SetActive(true);
+		if(Logger != null)
+		    Logger.SetActive(true);
         
 		if(PIDContoller != null)
 			PIDContoller.SetActive(false);
@@ -88,10 +90,17 @@ public class MenuHandler : MonoBehaviour {
 		if(PIDControls != null)
 			PIDControls.SetActive(false);
 		
-		NetworkSteering.SetActive(true);
+		if(NetworkSteering != null)    
+            NetworkSteering.SetActive(true);
+
 		menuPanel.SetActive(false);
         stopPanel.SetActive(true);
         exitPanel.SetActive(false);
+
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        if (spawner)
+            spawner.RemoveAllCars();
     }
 
 	public void OnPidDrive()
@@ -149,13 +158,20 @@ public class MenuHandler : MonoBehaviour {
 		if(PIDControls != null)
 			PIDControls.SetActive(false);
 
-        Logger.SetActive(false);
-        NetworkSteering.SetActive(false);
+        if(Logger != null)
+		    Logger.SetActive(false);
 
+        if(NetworkSteering != null)    
+            NetworkSteering.SetActive(false);
 
         menuPanel.SetActive(true);
         stopPanel.SetActive(false);
         exitPanel.SetActive(true);
+
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        if (spawner)
+            spawner.EnsureOneCar();
     }
 
 }

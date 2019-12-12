@@ -40,13 +40,13 @@ def display_img(img, steering):
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='prediction server with monitor')
-  parser.add_argument('model', type=str, help='model name. no json or keras.')
+  parser.add_argument('--model', type=str, help='model name. no json or keras.')
   args = parser.parse_args()
  
-  address = ('0.0.0.0', 9090)
+  address = ('127.0.0.1', 9091)
   
   try:
-    predict_client.go(args.model, address, None, image_cb=display_img)   
+    predict_client.go(args.model, address, constant_throttle=0.3, image_cb=display_img)   
   except KeyboardInterrupt:
     print('got ctrl+c break')
 
