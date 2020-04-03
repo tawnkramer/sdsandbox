@@ -68,6 +68,7 @@ namespace tk
             client.dispatcher.Register("step_mode", new tk.Delegates.OnMsgRecv(OnStepModeRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
+            client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
         }
 
         public void Start()
@@ -140,6 +141,7 @@ namespace tk
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "car_loaded");
             client.SendMsg( json );
+            Debug.Log("car loaded.");
         }
 
         void OnControlsRecv(JSONObject json)
@@ -228,6 +230,36 @@ namespace tk
                 UnityEngine.Random.InitState(rand_seed);
                 train_mgr.SetRoadStyle(road_style);
                 train_mgr.OnMenuRegenTrack();
+            }
+
+            yield return null;
+        }
+
+        void OnCarConfig(JSONObject json)
+        {
+            Debug.Log("Got car config message");
+
+            string body_style = json.GetField("body_style").str;
+            int body_r = int.Parse(json.GetField("body_r").str);
+            int body_g = int.Parse(json.GetField("body_g").str);
+            int body_b = int.Parse(json.GetField("body_b").str);
+            string car_name = json.GetField("car_name").str;
+            int font_size = 100;
+
+            if(json.GetField("font_size") != null)
+                font_size = int.Parse(json.GetField("font_size").str);
+
+            if(carObj != null)
+                UnityMainThreadDispatcher.Instance().Enqueue(SetCarConfig(body_style, body_r, body_g, body_b, car_name, font_size));
+        }
+
+        IEnumerator SetCarConfig(string body_style, int body_r, int body_g, int body_b, string car_name, int font_size)
+        {
+            CarConfig conf = carObj.GetComponent<CarConfig>();
+            
+            if(conf)
+            {
+                conf.SetStyle(body_style, body_r, body_g, body_b, car_name, font_size);
             }
 
             yield return null;

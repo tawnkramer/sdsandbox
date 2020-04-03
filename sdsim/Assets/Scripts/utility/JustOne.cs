@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class JustOne : MonoBehaviour
 {
@@ -7,13 +9,21 @@ public class JustOne : MonoBehaviour
 
     void Awake()
     {
-        JustOne[] objs = GameObject.FindObjectsOfType<JustOne>();
+        JustOne[] all_objs = GameObject.FindObjectsOfType<JustOne>();
 
-        bool oneFound = false;
+        List<JustOne> objs = new List<JustOne>();
+        
+        foreach (JustOne obj in all_objs)
+        {
+            if (obj.label == label)
+            {
+                objs.Add(obj);
+            }
+        }
 
         foreach (JustOne obj in objs)
         {
-            if (obj.label == label && this == obj && objs.Length > 1)
+            if (obj.label == label && this == obj && objs.Count > 1)
             {
                 Debug.Log("JustOne removing instance." + label);
                 GameObject.DestroyImmediate(obj.gameObject);

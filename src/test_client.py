@@ -9,12 +9,11 @@ from gym_donkeycar.core.sim_client import SDClient
 
 def test_clients():
     # test params
-    host_ip = "127.0.0.1"
+    host_ip = "127.0.0.1" # "trainmydonkey.com" for virtual racing server
     port = 9091
     num_clients = 2
     clients = []
-    pause_on_create = 1.0
-    time_to_drive = 20.0
+    time_to_drive = 40.0
 
 
     # Start Clients
@@ -22,7 +21,7 @@ def test_clients():
         c = SDClient(host_ip, port)
         clients.append(c)
 
-    time.sleep(pause_on_create)
+    time.sleep(1)
 
     # Load Scene message. Only one client needs to send the load scene.
     msg = '{ "msg_type" : "load_scene", "scene_name" : "generated_track" }'
@@ -30,6 +29,17 @@ def test_clients():
 
     # Wait briefly for the scene to load.
     time.sleep(1.0)
+
+    # Car config
+    msg = '{ "msg_type" : "car_config", "body_style" : "donkey", "body_r" : "255", "body_g" : "0", "body_b" : "255", "car_name" : "Tawn", "font_size" : "100" }'
+    clients[0].send(msg)
+    time.sleep(1)
+
+    msg = '{ "msg_type" : "car_config", "body_style" : "car01", "body_r" : "0", "body_g" : "0", "body_b" : "255", "car_name" : "Doug" }'
+    if num_clients > 1:
+        clients[1].send(msg)
+    time.sleep(1)
+
 
     # Send random driving controls
     start = time.time()

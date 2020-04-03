@@ -125,6 +125,22 @@ public class CarSpawner : MonoBehaviour {
             splitScreenPanel.SetActive(false);
     }
 
+    public void CarTextFacecamera(GameObject car, Transform target)
+    {
+        GameObject carNameObj = getChildGameObject(car, "CarName");
+
+        if(!carNameObj)
+            return;
+
+        FaceTarget ft = carNameObj.GetComponent<FaceTarget>();
+
+        if(!ft)
+            return;
+
+        ft.target = target;
+    
+    }
+
     public GameObject Spawn (tk.JsonTcpClient client) 
 	{
         if(carPrefab == null)
@@ -170,6 +186,8 @@ public class CarSpawner : MonoBehaviour {
 		{
             cam = ActivateSplitScreen();
 		}
+
+       // CarTextFacecamera(go, cam.transform);
 
 		if(TcpClientObj != null)
 		{
