@@ -4,7 +4,7 @@ using System;
 using UnityEngine.UI;
 using System.Globalization;
 using UnityEngine.SceneManagement;
-
+using UnityStandardAssets.ImageEffects;
 
 namespace tk
 {
@@ -69,6 +69,7 @@ namespace tk
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
             client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
+            client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
         }
 
         public void Start()
@@ -260,6 +261,46 @@ namespace tk
             if(conf)
             {
                 conf.SetStyle(body_style, body_r, body_g, body_b, car_name, font_size);
+            }
+
+            yield return null;
+        }
+
+        void OnCamConfig(JSONObject json)
+        {
+            float fov       = float.Parse(json.GetField("fov").str);
+            float offset_x  = float.Parse(json.GetField("offset_x").str);
+            float offset_y  = float.Parse(json.GetField("offset_y").str);
+            float offset_z  = float.Parse(json.GetField("offset_z").str);
+            float rot_x     = float.Parse(json.GetField("rot_x").str);
+            float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str);
+            float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str);
+            int img_w       = int.Parse(json.GetField("img_w").str);
+            int img_h       = int.Parse(json.GetField("img_h").str);
+            int img_d       = int.Parse(json.GetField("img_d").str);
+            string img_enc  = json.GetField("img_enc").str;
+            
+            if(carObj != null)
+                UnityMainThreadDispatcher.Instance().Enqueue(SetCamConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc, fish_eye_x, fish_eye_y));
+        }
+
+        IEnumerator SetCamConfig(float fov, float offset_x, float offset_y, float offset_z, float rot_x, 
+            int img_w, int img_h, int img_d, string img_enc, float fish_eye_x, float fish_eye_y)
+        {
+            CameraSensor camSensor = carObj.transform.GetComponentInChildren<CameraSensor>();
+            
+            if(camSensor)
+            {
+                camSensor.SetConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc);
+
+                Fisheye fe = camSensor.gameObject.GetComponent<Fisheye>();
+
+                if(fe != null && ( fish_eye_x != 0.0f || fish_eye_y != 0.0f) )
+                {
+                    fe.enabled = true;
+                    fe.strengthX = fish_eye_x;
+                    fe.strengthY = fish_eye_y;
+                }
             }
 
             yield return null;
