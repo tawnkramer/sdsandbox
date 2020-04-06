@@ -3834,8 +3834,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2068664631}
   - component: {fileID: 2068664635}
-  - component: {fileID: 2068664634}
-  - component: {fileID: 2068664632}
   m_Layer: 0
   m_Name: OverHeadCamera
   m_TagString: Untagged
@@ -3857,22 +3855,6 @@ Transform:
   m_Father: {fileID: 1494528134}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!81 &2068664632
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2068664630}
-  m_Enabled: 0
---- !u!124 &2068664634
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2068664630}
-  m_Enabled: 0
 --- !u!20 &2068664635
 Camera:
   m_ObjectHideFlags: 0
