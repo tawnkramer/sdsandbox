@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Globalization;
 
 public class PathManager : MonoBehaviour {
 
@@ -169,9 +170,9 @@ public class PathManager : MonoBehaviour {
 
 			if (tokens.Length != 3)
 				continue;
-			np.x = float.Parse(tokens[0]);
-			np.y = float.Parse(tokens[1]) + offsetY;
-			np.z = float.Parse(tokens[2]);
+			np.x = float.Parse(tokens[0], CultureInfo.InvariantCulture.NumberFormat);
+			np.y = float.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat) + offsetY;
+			np.z = float.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat);
 			PathNode p = new PathNode();
 			p.pos = np;
 			path.nodes.Add(p);

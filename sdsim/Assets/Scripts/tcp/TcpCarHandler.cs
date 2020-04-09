@@ -268,13 +268,13 @@ namespace tk
 
         void OnCamConfig(JSONObject json)
         {
-            float fov       = float.Parse(json.GetField("fov").str);
-            float offset_x  = float.Parse(json.GetField("offset_x").str);
-            float offset_y  = float.Parse(json.GetField("offset_y").str);
-            float offset_z  = float.Parse(json.GetField("offset_z").str);
-            float rot_x     = float.Parse(json.GetField("rot_x").str);
-            float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str);
-            float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str);
+            float fov       = float.Parse(json.GetField("fov").str, CultureInfo.InvariantCulture.NumberFormat);
+            float offset_x  = float.Parse(json.GetField("offset_x").str, CultureInfo.InvariantCulture.NumberFormat);
+            float offset_y  = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
+            float offset_z  = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
+            float rot_x     = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
+            float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str, CultureInfo.InvariantCulture.NumberFormat);
+            float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str, CultureInfo.InvariantCulture.NumberFormat);
             int img_w       = int.Parse(json.GetField("img_w").str);
             int img_h       = int.Parse(json.GetField("img_h").str);
             int img_d       = int.Parse(json.GetField("img_d").str);

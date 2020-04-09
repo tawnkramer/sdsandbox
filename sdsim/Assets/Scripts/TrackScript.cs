@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using System.Text;
 
@@ -151,55 +152,55 @@ public class TrackScript
             else if (command == "SPEED_LIMIT")
             {
                 tse.state = TrackParams.State.SpeedLimit;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "DX")
             {
                 tse.state = TrackParams.State.AngleDX;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "DY")
             {
                 tse.state = TrackParams.State.AngleDY;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "DZ")
             {
                 tse.state = TrackParams.State.AngleDZ;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "FORK_A")
             {
                 tse.state = TrackParams.State.ForkA;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "FORK_B")
             {
                 tse.state = TrackParams.State.ForkB;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "MERGE_A")
             {
                 tse.state = TrackParams.State.MergeA;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "MERGE_B")
             {
                 tse.state = TrackParams.State.MergeB;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else if (command == "END")
             {
                 tse.state = TrackParams.State.End;
-                tse.value = float.Parse(args);
+                tse.value = float.Parse(args, CultureInfo.InvariantCulture.NumberFormat);
                 tse.numToSet = 0;
             }
             else

@@ -65,7 +65,7 @@ def test_clients():
     port = 9091
     num_clients = 1
     clients = []
-    time_to_drive = 1.0
+    time_to_drive = 100.0
 
 
     # Start Clients
