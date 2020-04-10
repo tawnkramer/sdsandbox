@@ -39,6 +39,9 @@ public class Car : MonoBehaviour, ICar {
 	//name of the last object we hit.
 	public string last_collision = "none";
 
+	// used by race manager to keep cars at the starting line.
+	public bool blockControls = false;
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -196,6 +199,12 @@ public class Car : MonoBehaviour, ICar {
 
 	void FixedUpdate()
 	{
+		if(blockControls)
+		{
+			requestSteering = 0.0f;
+			requestTorque = 0.0f;
+		}
+
 		lastSteer = requestSteering;
 		lastAccel = requestTorque;
 

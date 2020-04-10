@@ -162,16 +162,12 @@ public class CarSpawner : MonoBehaviour {
         cars.Add(go);
         Vector3 offset = Vector3.zero;
 
-		if(cars.Count == 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.left * 4.5f;
-		}
-        else if(cars.Count > 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.forward * (-5f * (cars.Count - 1));
-		}
+        //just stack more cars after the second. Not pretty.
+        int iRow = (cars.Count - 1) / 2;
+        offset = Vector3.forward * (-5f * iRow);
+
+        if (cars.Count % 2 == 0)
+            offset += Vector3.left * 4.5f;
 
 		go.transform.rotation = startTm.rotation;
 		go.transform.position = startTm.position + offset;		
