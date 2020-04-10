@@ -213,9 +213,6 @@ public class PIDController : MonoBehaviour {
 
 		steeringReq = Mathf.Clamp(steeringReq, -car.GetMaxSteering(), car.GetMaxSteering());
 
-		//HACLK!!!
-		steeringReq = 15.0f;
-
 		if(doDrive)
 			car.RequestSteering(steeringReq);
 
