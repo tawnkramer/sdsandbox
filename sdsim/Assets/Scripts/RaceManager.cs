@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class RaceManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    List<GameObject> cars = new List<GameObject>();
+
+    public void ResetRace()
     {
-        
+        //gather up all the cars.
+        cars = new List<GameObject>();
+        Car[] icars = GameObject.FindObjectsOfType<Car>();
+        foreach(Car iC in icars)
+        {
+            cars.Add(iC.gameObject);
+        }
     }
 
     // Update is called once per frame
