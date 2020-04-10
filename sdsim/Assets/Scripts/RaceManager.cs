@@ -9,10 +9,44 @@ public class RaceManager : MonoBehaviour
     public GameObject raceBanner;
     public TMP_Text raceBannerText;
     public GameObject[] objToDisable;
+    public CameraSwitcher[] camSwitchers;
 
     public void OnRaceStarted()
     {
         OnResetRace();
+    }
+
+    public void ResetRaceCams()
+    {
+        if(camSwitchers.Length < 2)
+            return;
+
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        if(spawner != null)
+            spawner.DeactivateSplitScreen();
+
+        if(Camera.main)
+            Camera.main.gameObject.SetActive(false);
+
+        CameraSwitcher prev = camSwitchers[camSwitchers.Length - 1];
+
+        for (int iCam = 0; iCam < camSwitchers.Length; iCam++)
+        {
+            CameraSwitcher sw = camSwitchers[iCam];
+            sw.next = camSwitchers[(iCam + 1) % camSwitchers.Length];
+            sw.previous = prev;
+            prev = sw;
+
+            if(iCam == 1)
+            {
+                sw.gameObject.SetActive(true);
+            }
+            else
+                sw.gameObject.SetActive(false);
+        }
+
+        camSwitchers[0].SwitchToThisCam();
     }
 
     public void OnResetRace()
@@ -41,6 +75,8 @@ public class RaceManager : MonoBehaviour
         }
 
         raceBanner.SetActive(true);
+
+        ResetRaceCams();
         
         StartCoroutine(DoRaceBanner());
     }
