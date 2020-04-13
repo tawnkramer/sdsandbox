@@ -57,6 +57,15 @@ namespace tk
             client.Disconnect();
         }
 
+        public void Drop()
+        {
+            client.Drop();
+        }
+
+        public string GetIPAddress()
+        {
+            return client.GetIPAddress();
+        }
 
         // Send a json packet over our TCP socket asynchronously.
         public void SendMsg(JSONObject msg)
@@ -101,8 +110,6 @@ namespace tk
                         JSONObject j = new JSONObject(str);
 
                         string msg_type = j["msg_type"].str;
-
-                        Debug.Log("Got: " + msg_type);
 
                         dispatcher.Dipatch(msg_type, j);
 

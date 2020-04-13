@@ -51,23 +51,39 @@ public class CarSpawner : MonoBehaviour {
 
         if(toRemove != null)
         {
+            RemoveLapTimer(toRemove);
             cars.Remove(toRemove);
             GameObject.Destroy(toRemove);
 
             if (cars.Count < 2)
-                DeactivateSplitScreen();
+                DeactivateSplitScreen();            
 
             return true;
         }
 
 
+        Debug.LogError("failed to remove car");
         return false;
+    }
+
+    void RemoveLapTimer(GameObject go)
+    {
+        //Remove race status, if possible.
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+        if(raceMan != null)
+        {
+            GameObject to = getChildGameObject(go, "LapTimer");
+            
+            if(to != null)
+                raceMan.RemoveLapTimer(to.GetComponent<LapTimer>());
+        }
     }
 
     public void RemoveAllCars()
     {
         foreach(GameObject car in cars)
         {
+            RemoveLapTimer(car);
             GameObject.Destroy(car);
         }
 
@@ -123,6 +139,18 @@ public class CarSpawner : MonoBehaviour {
 
         if (splitScreenPanel)
             splitScreenPanel.SetActive(false);
+
+        if(cars.Count == 1)
+        {
+            Transform camFollow = getChildGameObject(cars[0], "CameraFollowTm").transform;
+
+            if(Camera.main != null)
+            {
+                CameraFollow mainCamFollow = Camera.main.transform.GetComponent<CameraFollow>();
+
+                mainCamFollow.target = camFollow;
+            }
+        }
     }
 
     public void CarTextFacecamera(GameObject car, Transform target)
@@ -139,6 +167,19 @@ public class CarSpawner : MonoBehaviour {
 
         ft.target = target;
     
+    }
+
+    public bool IsOccupied(Vector3 pos)
+    {
+        int carCount = cars.Count - 1;
+
+        for(int iCar = 0; iCar < carCount; iCar++)
+        {
+            if(Vector3.Distance(cars[iCar].transform.position, pos) < 2.0f)
+                return true;
+        }
+
+        return false;
     }
 
     public GameObject Spawn (tk.JsonTcpClient client) 
@@ -169,16 +210,31 @@ public class CarSpawner : MonoBehaviour {
         if (cars.Count % 2 == 0)
             offset += Vector3.left * 4.5f;
 
+        Vector3 startPos = startTm.position + offset;
+
+        while(IsOccupied(startPos))
+        {
+            startPos += Vector3.forward * (-5f * iRow++);
+        }
+        
+
 		go.transform.rotation = startTm.rotation;
-		go.transform.position = startTm.position + offset;		
+		go.transform.position = startPos;
         go.GetComponent<Car>().SavePosRot();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
         Camera cam = Camera.main;
 
+        bool bRaceActive = false;
+
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+
+        if(raceMan)
+            bRaceActive = raceMan.bRaceActive;
+
 		//Detect that we have the second car. Doesn't really handle more than 2 right now.
-		if(cars.Count > 1)
+		if(cars.Count > 1 && !bRaceActive)
 		{
             cam = ActivateSplitScreen();
 		}
@@ -202,7 +258,9 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         //Search scene to find these.
-        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        CameraFollow cameraFollow = null;
+        if(cam != null)
+            cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
@@ -238,7 +296,6 @@ public class CarSpawner : MonoBehaviour {
             {
                 panelMenu.SetActive(false);
             }
-
         }
 
         //Set the PID ui hooks
@@ -251,6 +308,15 @@ public class CarSpawner : MonoBehaviour {
 		{
 			Debug.LogError("failed to find PID_UI");
 		}
+
+        //Add race status, if possible.
+        if(raceMan != null)
+        {
+            GameObject to = getChildGameObject(go, "LapTimer");
+
+            if(to != null)
+                raceMan.AddLapTimer(to.GetComponent<LapTimer>(), client);
+        }
 
         return go;
     }
@@ -267,7 +333,9 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         //Search scene to find these.
-        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        CameraFollow cameraFollow = null;
+        if(cam != null)
+            cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");

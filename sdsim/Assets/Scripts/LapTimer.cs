@@ -10,6 +10,7 @@ public class LapTimer : MonoBehaviour
     public TextMesh currentTimeDisp;
     public TextMesh bestTimeDisp;
     public TextMesh dqDisp;
+    public string racerName;
 
     void Awake()
     {
@@ -53,6 +54,9 @@ public class LapTimer : MonoBehaviour
 
     public void OnCollideFinishLine()
     {
+        if( IsDisqualified())
+            return;
+            
         if(currentStart == 0.0f)
         {
             currentStart = GetCurrentMS();
@@ -78,7 +82,7 @@ public class LapTimer : MonoBehaviour
 
     void Update()
     {
-        if(currentTimeDisp.gameObject.activeSelf)
+        if(currentTimeDisp.gameObject.activeSelf && !IsDisqualified())
         {
             float lapTime = GetCurrentLapTime();
             currentTimeDisp.text = (lapTime / 1000.0f).ToString("00.00");

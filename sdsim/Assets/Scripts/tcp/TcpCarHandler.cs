@@ -250,7 +250,7 @@ namespace tk
             if(json.GetField("font_size") != null)
                 font_size = int.Parse(json.GetField("font_size").str);
 
-            if(carObj != null)
+            if(carObj != null && car_name != "Racer Name")
                 UnityMainThreadDispatcher.Instance().Enqueue(SetCarConfig(body_style, body_r, body_g, body_b, car_name, font_size));
         }
 

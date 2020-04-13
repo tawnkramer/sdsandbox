@@ -126,6 +126,17 @@ namespace tk
             return dropped;
         }
 
+        public void Drop()
+        {
+            dropped = true;
+        }
+
+        public string GetIPAddress()
+        {
+            string ip = ((IPEndPoint)(_clientSocket.RemoteEndPoint)).Address.ToString();
+            return ip;
+        }
+
         public void Update()
         {
             // Update our drop detection...

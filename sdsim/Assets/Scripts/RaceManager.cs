@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class RaceManager : MonoBehaviour
@@ -10,10 +11,22 @@ public class RaceManager : MonoBehaviour
     public TMP_Text raceBannerText;
     public GameObject[] objToDisable;
     public CameraSwitcher[] camSwitchers;
+    public GameObject raceStatusPrefab;
+    public RectTransform raceStatusPanel;
+
+    public bool bRaceActive = false;
+
+    int raceStatusHeight = 100;
 
     public void OnRaceStarted()
     {
         OnResetRace();
+    }
+
+    public void ResetRaceStatus()
+    {
+        
+
     }
 
     public void ResetRaceCams()
@@ -27,7 +40,7 @@ public class RaceManager : MonoBehaviour
             spawner.DeactivateSplitScreen();
 
         if(Camera.main)
-            Camera.main.gameObject.SetActive(false);
+            Camera.main.gameObject.SetActive(false);        
 
         CameraSwitcher prev = camSwitchers[camSwitchers.Length - 1];
 
@@ -51,6 +64,8 @@ public class RaceManager : MonoBehaviour
 
     public void OnResetRace()
     {
+        bRaceActive = true;
+
         // disable these things that distract from the race.
         foreach(GameObject obj in objToDisable)
         {
@@ -68,6 +83,9 @@ public class RaceManager : MonoBehaviour
             car.blockControls = true;
         }
 
+        //Reset race status panels
+        raceStatusPanel.gameObject.SetActive(false);
+
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
         foreach(LapTimer t in timers)
         {
@@ -79,6 +97,41 @@ public class RaceManager : MonoBehaviour
         ResetRaceCams();
         
         StartCoroutine(DoRaceBanner());
+    }
+
+    public void AddLapTimer(LapTimer t, tk.JsonTcpClient client)
+    {
+        Debug.Log("Adding lap timer.");
+        GameObject go = Instantiate(raceStatusPrefab) as GameObject;
+        RaceStatus rs = go.GetComponent<RaceStatus>();
+        rs.Init(t, client);
+        go.transform.SetParent(raceStatusPanel.transform);
+        
+        float height = raceStatusPanel.transform.childCount * raceStatusHeight;
+        raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,  height);
+        raceStatusPanel.anchoredPosition = new Vector3(8.0f, -1 * height, 0.0f);
+        
+    }
+
+    public void RemoveLapTimer(LapTimer t)
+    {
+        int count = raceStatusPanel.transform.childCount;
+        for(int i = 0; i < count; i++)
+        {
+            Transform child = raceStatusPanel.transform.GetChild(i);
+            RaceStatus rs = child.GetComponent<RaceStatus>();
+            if(rs.timer == t)
+            {
+                Destroy(child.gameObject);
+                float height = (count - 1) * raceStatusHeight;
+                raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,  height);
+                raceStatusPanel.anchoredPosition = new Vector3(8.0f, -1 * height, 0.0f);
+                Debug.Log("removed lap timer");
+                return;
+            }
+        }
+
+        Debug.LogError("failed to remove lap timer");
     }
 
     IEnumerator DoRaceBanner()
@@ -103,6 +156,7 @@ public class RaceManager : MonoBehaviour
 		yield return new WaitForSeconds(2);
 
 		raceBanner.SetActive(false);
+        raceStatusPanel.gameObject.SetActive(true);
 	}
 
     public void OnCarOutOfBounds(GameObject car)

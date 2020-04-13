@@ -1629,6 +1629,7 @@ MonoBehaviour:
   activity: keep_lane
   maxSteer: 7
   last_collision: none
+  blockControls: 0
 --- !u!114 &114314152752413966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1665,6 +1666,7 @@ MonoBehaviour:
   - {fileID: 8482831864494664505}
   car_name_base: {fileID: 3223816344825461382}
   car_name_text: {fileID: 575839611955786492}
+  timer: {fileID: 6290770554178593267}
 --- !u!1 &1400266298984620
 GameObject:
   m_ObjectHideFlags: 0
@@ -5117,6 +5119,7 @@ MonoBehaviour:
   currentTimeDisp: {fileID: 2952315563541295976}
   bestTimeDisp: {fileID: 6887246554731453261}
   dqDisp: {fileID: 1343198762973231984}
+  racerName: 
 --- !u!1001 &8483989291752445735
 PrefabInstance:
   m_ObjectHideFlags: 0
