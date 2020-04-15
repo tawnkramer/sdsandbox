@@ -145,13 +145,29 @@ namespace tk
             Debug.Log("car loaded.");
         }
 
+        float clamp(float val, float low, float high)
+        {
+            float ret = val;
+            if(val > high)
+                ret = high;
+            else if (val < low)
+                ret = low;
+            return ret;
+        }
+
         void OnControlsRecv(JSONObject json)
         {
             try
             {
-                ai_steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat) * steer_to_angle;
+                ai_steering = float.Parse(json["steering"].str, CultureInfo.InvariantCulture.NumberFormat);
                 ai_throttle = float.Parse(json["throttle"].str, CultureInfo.InvariantCulture.NumberFormat);
                 ai_brake = float.Parse(json["brake"].str, CultureInfo.InvariantCulture.NumberFormat);
+
+                ai_steering = clamp(ai_steering, -1.0f, 1.0f);
+                ai_throttle = clamp(ai_throttle, -1.0f, 1.0f);
+                ai_brake = clamp(ai_brake, 0.0f, 1.0f);
+
+                ai_steering *= steer_to_angle;
 
                 car.RequestSteering(ai_steering);
                 car.RequestThrottle(ai_throttle);
