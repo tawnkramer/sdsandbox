@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LapTimer : MonoBehaviour
+public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 {
     public List<float> lapTimes = new List<float>();
     public float bestTime = 100000.0f;
@@ -28,6 +29,21 @@ public class LapTimer : MonoBehaviour
         bestTime = 100000.0f;
         currentStart = 0.0f;
         lapTimes = new List<float>();
+    }
+
+    // implement IComparable interface
+    public int CompareTo(LapTimer obj)
+    {
+        if (obj is LapTimer) {
+            return this.bestTime.CompareTo((obj as LapTimer).bestTime);  // compare user names
+        }
+
+        throw new ArgumentException("Object is not a LapTime");
+    }
+
+    public int GetNumLapsCompleted()
+    {
+        return lapTimes.Count;
     }
 
     float GetCurrentMS()
@@ -78,6 +94,31 @@ public class LapTimer : MonoBehaviour
 
             currentStart = timeNow;
         }
+    }
+
+    public float GetLapTime(int iLap)
+    {
+        if(iLap < lapTimes.Count)
+            return lapTimes[iLap];
+
+        return 0.0f;
+    }
+
+    public float GetTotalTime()
+    {
+        float total = 0.0f;
+
+        foreach(float t in lapTimes)
+        {
+            total += t;
+        }
+
+        return total;
+    }
+
+    public float GetBestLapTime()
+    {
+        return bestTime;
     }
 
     void Update()

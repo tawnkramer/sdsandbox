@@ -64,7 +64,6 @@ namespace tk
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
-            client.dispatcher.Register("new_car", new tk.Delegates.OnMsgRecv(OnRequestNewCarRecv));
             client.dispatcher.Register("step_mode", new tk.Delegates.OnMsgRecv(OnStepModeRecv));
             client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
             client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
@@ -192,28 +191,6 @@ namespace tk
         void OnResetCarRecv(JSONObject json)
         {
             bResetCar = true;
-        }
-
-        void OnRequestNewCarRecv(JSONObject json)
-        {
-            tk.JsonTcpClient client = null; //TODO where to get client?
-
-            //We get this callback in a worker thread, but need to make mainthread calls.
-            //so use this handy utility dispatcher from
-            // https://github.com/PimDeWitte/UnityMainThreadDispatcher
-            UnityMainThreadDispatcher.Instance().Enqueue(SpawnNewCar(client));
-        }
-
-        IEnumerator SpawnNewCar(tk.JsonTcpClient client)
-        {
-            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
-
-            if(spawner != null)
-            {
-                spawner.Spawn(client);
-            }
-
-            yield return null;
         }
 
         void OnRegenRoad(JSONObject json)
@@ -363,6 +340,17 @@ namespace tk
                 {
                     car.RestorePosRot();
                     pm.path.ResetActiveSpan();
+                    
+                    if(carObj != null)
+                    {
+                        LapTimer t = carObj.transform.GetComponentInChildren<LapTimer>();
+
+                        if(t != null)
+                        {
+                            t.ResetRace();
+                        }
+                    }
+                    
                     bResetCar = false;
                 }
 

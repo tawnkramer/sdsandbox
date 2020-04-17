@@ -155,7 +155,7 @@ namespace tk
                     try
                     {
                         // this is the minimal form of message for a JsonTCPClient
-                        string msg = "{}\n";
+                        string msg = "{\"msg_type\" : \"ping\"}\n";
                         System.Text.Encoding encoding = System.Text.Encoding.Default;
                         _clientSocket.Send(encoding.GetBytes(msg));
                     }

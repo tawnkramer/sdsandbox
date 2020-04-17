@@ -9,6 +9,7 @@ public class RaceStatus : MonoBehaviour
     public Text userName;
     public Text currentLapTime;
     public Text bestLapTime;
+    public Text iLap;
     public Text dqNot;
 
     tk.JsonTcpClient client;
@@ -22,15 +23,10 @@ public class RaceStatus : MonoBehaviour
 
     public void BootRacer()
     {
-        tk.TcpServer server = GameObject.FindObjectOfType<tk.TcpServer>();
-        if(client)
-        {
-            //Block client from coming back.
-            if(server)
-                server.Block(client.GetIPAddress());
+        KickPlayerUI kickUI = GameObject.FindObjectOfType<KickPlayerUI>();
 
-            client.Drop();
-        }
+        if(kickUI != null && timer != null)
+            kickUI.Init(client, timer.racerName);
     }
 
     void Update()
@@ -48,6 +44,8 @@ public class RaceStatus : MonoBehaviour
             {
                 bestLapTime.text = timer.bestTimeDisp.text;
             }
+
+            iLap.text = timer.GetNumLapsCompleted().ToString();
 
             if(timer.IsDisqualified())
             {

@@ -14,18 +14,30 @@ public class RaceManager : MonoBehaviour
     public GameObject raceStatusPrefab;
     public RectTransform raceStatusPanel;
 
+    public RaceSummary raceSummary;
+
     public bool bRaceActive = false;
 
     int raceStatusHeight = 100;
 
+    public int race_num_laps = 1;
+
     public void OnRaceStarted()
     {
-        OnResetRace();
+         OnResetRace();
+    }
+
+    public void OnStopRace()
+    {
+        if(bRaceActive)
+        {
+            bRaceActive = false;
+            DoRaceSummary();
+        }
     }
 
     public void ResetRaceStatus()
     {
-        
 
     }
 
@@ -66,41 +78,52 @@ public class RaceManager : MonoBehaviour
     {
         bRaceActive = true;
 
+        //Reset race status panels
+        raceStatusPanel.gameObject.SetActive(false);
+        raceSummary.gameObject.SetActive(false);
+
         // disable these things that distract from the race.
         foreach(GameObject obj in objToDisable)
         {
             obj.SetActive(false);
         }
 
-        //gather up all the cars.
-        //cars = new List<GameObject>();
-        Car[] icars = GameObject.FindObjectsOfType<Car>();
-        foreach(Car car in icars)
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+        Car[] cars = GameObject.FindObjectsOfType<Car>();
+        for(int iCar = 0; iCar < cars.Length; iCar++)
         {
+            Car car = cars[iCar];
+
+            // We may have had cars leave, so find a new position.
+            Vector3 startPos = spawner.GetCarStartPos(iCar, false);
+
+            car.startPos = startPos;
+
             car.RestorePosRot();
 
             //keep them at the start line.
             car.blockControls = true;
         }
 
-        //Reset race status panels
-        raceStatusPanel.gameObject.SetActive(false);
-
+        // reset lap timers
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
         foreach(LapTimer t in timers)
         {
             t.ResetRace();
         }
 
-        raceBanner.SetActive(true);
-
         ResetRaceCams();
-        
+
+        raceBanner.SetActive(true);
         StartCoroutine(DoRaceBanner());
     }
 
     public void AddLapTimer(LapTimer t, tk.JsonTcpClient client)
     {
+        if(raceStatusPrefab == null)
+            return;
+
         Debug.Log("Adding lap timer.");
         GameObject go = Instantiate(raceStatusPrefab) as GameObject;
         RaceStatus rs = go.GetComponent<RaceStatus>();
@@ -115,6 +138,9 @@ public class RaceManager : MonoBehaviour
 
     public void RemoveLapTimer(LapTimer t)
     {
+        if(raceStatusPanel == null)
+            return;
+
         int count = raceStatusPanel.transform.childCount;
         for(int i = 0; i < count; i++)
         {
@@ -140,10 +166,10 @@ public class RaceManager : MonoBehaviour
 		yield return new WaitForSeconds(3);
 
         raceBannerText.text = "Ready?";
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(1);
 
         raceBannerText.text = "Set?";
-		yield return new WaitForSeconds(2);
+		yield return new WaitForSeconds(1);
 
         raceBannerText.text = "Go!";
 
@@ -169,4 +195,60 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if(IsRaceOver())
+        {
+            bRaceActive = false;
+            DoRaceSummary();
+        }
+    }
+
+    bool IsRaceOver()
+    {
+        if(!bRaceActive)
+            return false;
+
+        LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
+
+        if(timers is null || timers.Length == 0)
+            return false;
+
+        foreach(LapTimer t in timers)
+        {
+            if(!t.IsDisqualified())
+            {
+                if(t.GetNumLapsCompleted() < race_num_laps)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    void DoRaceSummary()
+    {
+        if(raceStatusPanel)
+            raceStatusPanel.gameObject.SetActive(false);
+
+        if(raceSummary)
+        {
+            raceSummary.gameObject.SetActive(true);
+            raceSummary.Init();
+        }    
+
+        DropRacers();
+    }
+
+    public void DropRacers()
+    {
+        tk.JsonTcpClient[] clients = GameObject.FindObjectsOfType<tk.JsonTcpClient>();
+
+        foreach(tk.JsonTcpClient client in clients)
+        {
+            client.Drop();
+        }
+    }
 }

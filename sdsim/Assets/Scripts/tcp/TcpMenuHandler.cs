@@ -60,7 +60,7 @@ namespace tk
         {
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "scene_selection_ready");
-            json.AddField("loaded", "1");        
+            json.AddField("loaded", "1");
 
             client.SendMsg( json );
         }

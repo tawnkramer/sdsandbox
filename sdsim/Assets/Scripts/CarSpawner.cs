@@ -182,6 +182,27 @@ public class CarSpawner : MonoBehaviour {
         return false;
     }
 
+    public Vector3 GetCarStartPos(int iCar, bool bAvoid)
+    {
+        Vector3 offset = Vector3.zero;
+
+        //just stack more cars after the second. Not pretty.
+        int iRow = iCar / 2;
+        offset = Vector3.forward * (-5f * iRow);
+
+        if ((iCar + 1) % 2 == 0)
+            offset += Vector3.left * 4.5f;
+
+        Vector3 startPos = startTm.position + offset;
+
+        while(bAvoid && IsOccupied(startPos))
+        {
+            startPos += Vector3.forward * (-5f * iRow++);
+        }
+
+        return startPos;
+    }
+
     public GameObject Spawn (tk.JsonTcpClient client) 
 	{
         if(carPrefab == null)
@@ -201,23 +222,8 @@ public class CarSpawner : MonoBehaviour {
         }
 
         cars.Add(go);
-        Vector3 offset = Vector3.zero;
-
-        //just stack more cars after the second. Not pretty.
-        int iRow = (cars.Count - 1) / 2;
-        offset = Vector3.forward * (-5f * iRow);
-
-        if (cars.Count % 2 == 0)
-            offset += Vector3.left * 4.5f;
-
-        Vector3 startPos = startTm.position + offset;
-
-        while(IsOccupied(startPos))
-        {
-            startPos += Vector3.forward * (-5f * iRow++);
-        }
         
-
+        Vector3 startPos = GetCarStartPos(cars.Count - 1, true);
 		go.transform.rotation = startTm.rotation;
 		go.transform.position = startPos;
         go.GetComponent<Car>().SavePosRot();
