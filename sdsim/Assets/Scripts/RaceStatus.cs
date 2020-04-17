@@ -39,10 +39,18 @@ public class RaceStatus : MonoBehaviour
             {
                 currentLapTime.text = timer.currentTimeDisp.text;
             }
+            else
+            {
+                currentLapTime.text = "--:--";
+            }
 
             if(timer.bestTimeDisp.gameObject.activeSelf)
             {
                 bestLapTime.text = timer.bestTimeDisp.text;
+            }
+            else
+            {
+                bestLapTime.text = "--:--";
             }
 
             iLap.text = timer.GetNumLapsCompleted().ToString();

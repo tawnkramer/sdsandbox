@@ -16,6 +16,8 @@ public class RaceManager : MonoBehaviour
 
     public RaceSummary raceSummary;
 
+    public RaceCamSwitcher raceCamSwitcher;
+
     public bool bRaceActive = false;
 
     int raceStatusHeight = 100;
@@ -52,7 +54,7 @@ public class RaceManager : MonoBehaviour
             spawner.DeactivateSplitScreen();
 
         if(Camera.main)
-            Camera.main.gameObject.SetActive(false);        
+            Camera.main.gameObject.SetActive(false);
 
         CameraSwitcher prev = camSwitchers[camSwitchers.Length - 1];
 
@@ -71,6 +73,7 @@ public class RaceManager : MonoBehaviour
                 sw.gameObject.SetActive(false);
         }
 
+        raceCamSwitcher.OnDynamicCams();
         camSwitchers[0].SwitchToThisCam();
     }
 
@@ -81,6 +84,7 @@ public class RaceManager : MonoBehaviour
         //Reset race status panels
         raceStatusPanel.gameObject.SetActive(false);
         raceSummary.gameObject.SetActive(false);
+        
 
         // disable these things that distract from the race.
         foreach(GameObject obj in objToDisable)
@@ -113,6 +117,7 @@ public class RaceManager : MonoBehaviour
             t.ResetRace();
         }
 
+        raceCamSwitcher.gameObject.SetActive(true);
         ResetRaceCams();
 
         raceBanner.SetActive(true);
@@ -183,6 +188,7 @@ public class RaceManager : MonoBehaviour
 
 		raceBanner.SetActive(false);
         raceStatusPanel.gameObject.SetActive(true);
+        raceCamSwitcher.gameObject.SetActive(true);
 	}
 
     public void OnCarOutOfBounds(GameObject car)
@@ -232,6 +238,11 @@ public class RaceManager : MonoBehaviour
     {
         if(raceStatusPanel)
             raceStatusPanel.gameObject.SetActive(false);
+
+        if(raceCamSwitcher)
+        {
+            raceCamSwitcher.OnDynamicCams();
+        }
 
         if(raceSummary)
         {

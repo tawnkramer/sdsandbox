@@ -18,7 +18,7 @@ public class CarSpawner : MonoBehaviour {
 	public Camera splitScreenCamRight;
 	public GameObject splitScreenPanel;
 
-	private List<GameObject> cars = new List<GameObject>();
+	public List<GameObject> cars = new List<GameObject>();
 
 	static public GameObject getChildGameObject(GameObject fromGameObject, string withName) {
          //Author: Isaac Dart, June-13.

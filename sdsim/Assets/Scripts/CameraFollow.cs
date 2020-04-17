@@ -17,4 +17,13 @@ public class CameraFollow : MonoBehaviour {
             transform.rotation = Quaternion.Lerp(transform.rotation, target.rotation, approachRotRate);
         }
     }
+
+    public void Cut()
+    {
+        if(target != null)
+        {
+            transform.position = target.position;
+            transform.rotation = target.rotation;
+        }
+    }
 }

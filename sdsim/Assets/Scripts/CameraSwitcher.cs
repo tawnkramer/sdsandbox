@@ -14,7 +14,12 @@ public class CameraSwitcher : MonoBehaviour
         if(previous)
             previous.activeCam.gameObject.SetActive(false);
 
-        activeCam.gameObject.SetActive(true);
+        RaceCamSwitcher raceCamSw = GameObject.FindObjectOfType<RaceCamSwitcher>();
+
+        if(raceCamSw != null)
+            raceCamSw.OnActivateDynamicCam(activeCam);
+        else
+            activeCam.gameObject.SetActive(true);
 
         this.gameObject.SetActive(false);
 
