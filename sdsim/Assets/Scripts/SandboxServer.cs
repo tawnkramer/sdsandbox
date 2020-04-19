@@ -10,7 +10,7 @@ using System;
 public class SandboxServer : MonoBehaviour
 {
     public string host = "0.0.0.0";
-    public int port = 9090;
+    public int port = 9091;
 
     tk.TcpServer _server = null;
 

@@ -26,7 +26,7 @@ public class RacerSummary : MonoBehaviour
 
         if(timer.IsDisqualified())
         {
-            dqNot.gameObject.SetActive(false);
+            dqNot.gameObject.SetActive(true);
             lap_total.gameObject.SetActive(false);
         }
 

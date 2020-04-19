@@ -54,11 +54,7 @@ public class RaceStatus : MonoBehaviour
             }
 
             iLap.text = timer.GetNumLapsCompleted().ToString();
-
-            if(timer.IsDisqualified())
-            {
-                dqNot.gameObject.SetActive(true);
-            }
+            dqNot.gameObject.SetActive(timer.IsDisqualified());
         }
     }
 }
