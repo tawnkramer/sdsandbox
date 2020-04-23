@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.IO;
 public class RaceSummary : MonoBehaviour
 {
     public Transform racerLayoutGroup;
     public GameObject racerSummaryPrefab;
+
+    int race_heat = 1;
 
     public void Init()
     {
@@ -23,6 +25,9 @@ public class RaceSummary : MonoBehaviour
 
         // But first sort things according to place.
         Array.Sort(timers);
+        List<string> summary_text = new List<string>();
+        summary_text.Add("Heat " + race_heat.ToString());
+        summary_text.Add("Place,Name,Best,Lap1,Lap2,Lap3,Total");
 
         for(int iT = 0; iT < timers.Length; iT++)
         {
@@ -30,10 +35,36 @@ public class RaceSummary : MonoBehaviour
 
             RacerSummary s = go.GetComponent<RacerSummary>();
 
-            s.Init(timers[iT], iT + 1);
+            s.Init(timers[iT], iT + 1, summary_text);
 
             go.transform.SetParent(racerLayoutGroup);
         }
+
+        WriteHeatSummary(summary_text);
+
+        race_heat += 1;
+    }
+
+    string GetLogPath()
+    {
+        if(GlobalState.log_path != "default")
+            return GlobalState.log_path + "/";
+
+        return Application.dataPath + "/../log/";
+    }
+
+    void WriteHeatSummary(List<string> summary_text)
+    {
+        string filename = GetLogPath() + "HeatLog_" + race_heat.ToString() + ".csv";
+
+	    StreamWriter writer = new StreamWriter(filename);
+
+        foreach(String line in summary_text)
+        {
+            writer.WriteLine(line);
+        }
+
+        writer.Close();
     }
 
     public void Close()
