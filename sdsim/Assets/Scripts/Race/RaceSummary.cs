@@ -40,7 +40,13 @@ public class RaceSummary : MonoBehaviour
             go.transform.SetParent(racerLayoutGroup);
         }
 
-        WriteHeatSummary(summary_text);
+        try 
+        {
+            WriteHeatSummary(summary_text);
+        }
+        catch (Exception e) {
+		 	Debug.LogError("Troubles writing heat summary: " + e);
+		}
 
         race_heat += 1;
     }
