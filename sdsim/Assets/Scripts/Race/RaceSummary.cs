@@ -26,8 +26,8 @@ public class RaceSummary : MonoBehaviour
         // But first sort things according to place.
         Array.Sort(timers);
         List<string> summary_text = new List<string>();
-        summary_text.Add("Heat " + race_heat.ToString());
-        summary_text.Add("Place,Name,Best,Lap1,Lap2,Lap3,Total");
+
+        summary_text.Add("Heat,Place,Name,Best,Lap1,Lap2,Lap3,Total");
 
         for(int iT = 0; iT < timers.Length; iT++)
         {
@@ -35,7 +35,7 @@ public class RaceSummary : MonoBehaviour
 
             RacerSummary s = go.GetComponent<RacerSummary>();
 
-            s.Init(timers[iT], iT + 1, summary_text);
+            s.Init(timers[iT], iT + 1, race_heat, summary_text);
 
             go.transform.SetParent(racerLayoutGroup);
         }

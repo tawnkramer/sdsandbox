@@ -14,12 +14,31 @@ public class RaceCamSwitcher : MonoBehaviour
 
     int iActiveFPV = 0;
 
+    void DisableAllCamerasExSensors()
+    {
+        Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
+
+        foreach(Camera cam in cameras)
+        {
+            CameraSensor sensor = cam.gameObject.GetComponent<CameraSensor>();
+
+            if(sensor != null)
+                continue;
+
+            cam.gameObject.SetActive(false);
+        }
+    }
+
     public void OnActivateDynamicCam(Camera cam)
     {
         activeDynamicCam = cam;
 
         if(mode == Mode.Dynamic)
         {
+             if(activeDynamicCam == null)
+                return;
+
+            DisableAllCamerasExSensors();
             activeDynamicCam.gameObject.SetActive(true);
         }
     }
@@ -30,17 +49,14 @@ public class RaceCamSwitcher : MonoBehaviour
             return;
 
         mode = Mode.Dynamic;
-        highOverheadCam.gameObject.SetActive(false);
-        fpvCam.gameObject.SetActive(false);
+        DisableAllCamerasExSensors();
         activeDynamicCam.gameObject.SetActive(true);
     }
 
     public void OnHighOverheadCam()
     {
         mode = Mode.HighOverhead;
-        if(activeDynamicCam)
-            activeDynamicCam.gameObject.SetActive(false);
-        fpvCam.gameObject.SetActive(false);
+        DisableAllCamerasExSensors();
         highOverheadCam.gameObject.SetActive(true);
     }
 
@@ -55,9 +71,7 @@ public class RaceCamSwitcher : MonoBehaviour
             iActiveFPV += 1;
 
         mode = Mode.FPV;
-        if(activeDynamicCam)
-            activeDynamicCam.gameObject.SetActive(false);
-        highOverheadCam.gameObject.SetActive(false);
+        DisableAllCamerasExSensors();
         fpvCam.gameObject.SetActive(true);
         
         iActiveFPV = iActiveFPV % spawner.cars.Count;

@@ -17,10 +17,10 @@ public class RacerSummary : MonoBehaviour
     public Color bestLapTimeColor;
     
 
-    public void Init(LapTimer _timer, int _place, List<string> summary_text)
+    public void Init(LapTimer _timer, int _place, int heat, List<string> summary_text)
     {
         timer = _timer;
-        string summary = _place.ToString() + ",";
+        string summary = heat.ToString() + "," + _place.ToString() + ",";
         summary += timer.racerName + ",";
 
         place.text = _place.ToString() + ".";
