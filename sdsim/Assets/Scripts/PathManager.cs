@@ -192,8 +192,8 @@ public class PathManager : MonoBehaviour {
 			tparams.rotCur = Quaternion.identity;
 			tparams.lastPos = startPos.position;
 
-			float dY = 0.0f;
-			float turn = 0f;
+			Vector3 dTurn = new Vector3(0.0f, 0.0f, 0.0f);
+			Vector3 turn = new Vector3(0.0f, 0.0f, 0.0f);
 
 			Vector3 s = startPos.position;
 			s.y = 0.5f;
@@ -210,13 +210,22 @@ public class PathManager : MonoBehaviour {
 				}
 				else if(se.state == TrackParams.State.CurveY)
 				{
-					turn = 0.0f;
-					dY = se.value * turnVal;
+					turn.y = 0.0f;
+					dTurn.y = se.value * turnVal;
+				}
+				else if(se.state == TrackParams.State.AngleDZ)
+				{
+					turnVal = se.value;
+				}
+				else if(se.state == TrackParams.State.CurveZ)
+				{
+					turn.z = 0.0f;
+					dTurn.z = se.value * turnVal;
 				}
 				else
 				{
-					dY = 0.0f;
-					turn = 0.0f;
+					dTurn.y = 0.0f;
+					turn.y = 0.0f;
 				}
 
 				for(int i = 0; i < se.numToSet; i++)
@@ -227,9 +236,9 @@ public class PathManager : MonoBehaviour {
 					p.pos = np;
 					path.nodes.Add(p);
 
-					turn = dY;
+					turn.y = dTurn.y;
 
-					Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
+					Quaternion rot = Quaternion.Euler(dTurn.x, dTurn.y, dTurn.z);
 					span = rot * span.normalized;
 					span *= spanDist;
 					s = s + span;

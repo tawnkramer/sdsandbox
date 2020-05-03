@@ -57,7 +57,7 @@ public class Car : MonoBehaviour, ICar {
 
 		SavePosRot();
 
-        maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
+        //maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
 	}
 
 	public void SavePosRot()

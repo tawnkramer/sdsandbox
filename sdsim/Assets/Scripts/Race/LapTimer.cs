@@ -123,7 +123,8 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 
     void Update()
     {
-        if(currentTimeDisp.gameObject.activeSelf && !IsDisqualified())
+        //if(currentTimeDisp.gameObject.activeSelf && !IsDisqualified())
+        if(currentTimeDisp.gameObject.activeSelf)
         {
             float lapTime = GetCurrentLapTime();
             currentTimeDisp.text = (lapTime / 1000.0f).ToString("00.00");
