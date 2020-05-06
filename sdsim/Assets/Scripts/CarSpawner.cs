@@ -239,6 +239,11 @@ public class CarSpawner : MonoBehaviour {
         if(raceMan)
             bRaceActive = raceMan.bRaceActive;
 
+        GenPathFromDriving pathGen = GameObject.FindObjectOfType<GenPathFromDriving>();
+        
+        if(pathGen)
+            pathGen.Init(go);
+
 		//Detect that we have the second car. Doesn't really handle more than 2 right now.
 		if(cars.Count > 1 && !bRaceActive)
 		{
