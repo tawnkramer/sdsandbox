@@ -4,6 +4,63 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+public class Competitor
+{
+    public string car_name;
+    public string racer_name;
+    public string country;
+    public string info;
+
+    public int stage1_place;
+    public float qual_time;
+    public float best_stage1_time;
+    public List<float> stage1_lap_times;
+    public List<float> stage2_lap_times;
+}
+
+public struct Pairing
+{
+    public string name1;
+    public string name2;
+    public float time1;
+    public float time2;
+}
+
+public struct RaceState
+{
+    public enum RaceStage
+    {
+        None,           // init
+        Practice,       // 1 HR or more free runs, multiple competitors come and go.
+        Qualifying,     // For 30 min prior. All competitors must finish a lap.
+        EventIntro,     // Twitch feed begins. Race intro. Competitor list shown
+        Stage1PreRace,  // Competitors called to the line. Info screens shown.
+        Stage1Race,     // Laps completed or DQ
+        Stage1PostRace, // Finish times shown
+        Stage1Completed, // All stage 1 finished. Ladder seeded with 8 competitors.
+        Stage2PreRace,  // Show ladder, competitors called to the line.
+        Stage2Race,     // Competition
+        Stage2PostRace, // Results shown
+        Stage2Complete, // Final top 3 competitors shown.
+    }
+
+    public RaceStage   m_State;
+    public float m_TimeInState;
+    public List<Competitor> m_Competitors;
+    public string currentQual;
+    public int m_iQual;
+    public float m_CurrentQualElapsed;
+    public List<Pairing> m_Stage1Order;
+    public int m_Stage1Next;  // index of next competitors
+    public List<Pairing> m_Stage2a_4pairs;
+    public List<Pairing> m_Stage2b_2pairs;
+    public List<Pairing> m_Stage2c_final;
+    public int m_Stage2Next;  // index of next pairing
+
+    //constants
+    public float m_PracticeTime;
+}
+
 public class RaceManager : MonoBehaviour
 {
     List<GameObject> cars = new List<GameObject>();
@@ -19,10 +76,237 @@ public class RaceManager : MonoBehaviour
     public RaceCamSwitcher raceCamSwitcher;
 
     public bool bRaceActive = false;
+    RaceState raceState;
 
     int raceStatusHeight = 100;
 
-    public int race_num_laps = 1;
+    public int race_num_laps = 2;
+
+    void Start()
+    {
+        raceState.m_State = RaceState.RaceStage.None; 
+    }
+
+    void Update()
+    {
+        RaceState.RaceStage prev = raceState.m_State;
+        
+        OnStateUpdate();
+
+        if(raceState.m_State != prev)
+        {
+            raceState.m_TimeInState = 0.0f;
+            OnStateChange();
+        }
+        else
+        {
+            raceState.m_TimeInState += Time.deltaTime;
+        }
+    }
+
+    public void SetStatus(string msg)
+    {
+        //set scrolling text status
+    }
+
+    void OnStateChange()
+    {
+        switch(raceState.m_State)
+        {
+            case RaceState.RaceStage.Practice:
+                OnPracticeStart();
+                break;
+
+            case RaceState.RaceStage.Qualifying:
+                OnQualStart();
+                break;
+
+            case RaceState.RaceStage.EventIntro:
+                OnEventIntroStart();
+                break;
+
+            case RaceState.RaceStage.Stage1PreRace:
+                OnStage1PreRaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage1Race:
+                OnStage1RaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage1PostRace:
+                OnStage1PostRaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage1Completed:
+                OnStage1CompletedStart();
+                break;
+
+            case RaceState.RaceStage.Stage2PreRace:
+                OnStage2PreRaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage2Race:
+                OnStage2RaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage2PostRace:
+                OnStage2PostRaceStart();
+                break;
+
+            case RaceState.RaceStage.Stage2Complete:
+                OnStage2CompleteStart();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void OnStateUpdate()
+    {
+        switch(raceState.m_State)
+        {
+            case RaceState.RaceStage.None:
+                raceState.m_State = RaceState.RaceStage.Practice;
+                break;
+
+            case RaceState.RaceStage.Practice:
+                OnPracticeUpdate();
+                break;
+
+            case RaceState.RaceStage.Qualifying:
+                OnQualUpdate();
+                break;
+
+            case RaceState.RaceStage.EventIntro:
+                OnEventIntroUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage1PreRace:
+                OnStage1PreRaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage1Race:
+                OnStage1RaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage1PostRace:
+                OnStage1PostRaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage1Completed:
+                OnStage1CompletedUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage2PreRace:
+                OnStage2PreRaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage2Race:
+                OnStage2RaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage2PostRace:
+                OnStage2PostRaceUpdate();
+                break;
+
+            case RaceState.RaceStage.Stage2Complete:
+                OnStage2CompleteUpdate();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void OnPracticeStart()
+    {
+        SetStatus("This is practice time. Each competitor should verify code in working order, and select a startegy for race.");
+    }
+
+    void OnPracticeUpdate()
+    {
+        if(raceState.m_TimeInState > raceState.m_PracticeTime)
+        {
+            raceState.m_State = RaceState.RaceStage.Qualifying;
+        }
+    }
+
+    void OnQualStart() 
+    {
+        SetStatus("This is qualification time. Each competitor must complete one AI lap to qualify for the race.");
+    }
+
+    void OnQualUpdate() 
+    {
+        if(raceState.currentQual == "None")
+        {
+            Competitor c = GetNextCompetitor();
+
+            if(c != null)
+            {
+                //put car at start line and let them go.
+                raceState.currentQual = c.car_name;
+                raceState.m_CurrentQualElapsed = 0.0f;
+            }    
+        }
+        else
+        {
+            raceState.m_CurrentQualElapsed += Time.deltaTime;
+
+            float timeLimitQual = 60.0f;
+
+            if(raceState.m_CurrentQualElapsed > timeLimitQual)
+            {
+                //Boot current car.
+                raceState.currentQual == "None";
+                raceState.m_iQual += 1;
+            }
+            else if(IsRaceOver())
+            {
+                Competitor c = GetCompetitor(raceState.currentQual);
+                c.qual_time = GetBestTime(raceState.currentQual);
+            }
+        }
+    }
+
+    void OnEventIntroStart(){}
+    void OnEventIntroUpdate(){}
+
+    void OnStage1PreRaceStart(){}
+    void OnStage1PreRaceUpdate(){}
+
+    void OnStage1RaceStart(){}
+    
+    void OnStage1RaceUpdate()
+    {
+        if(IsRaceOver())
+        {
+            raceState.m_State = RaceState.RaceStage.Stage1PostRace;
+        }
+    }
+
+    void OnStage1PostRaceStart()
+    {
+        DoRaceSummary();
+    }
+
+    void OnStage1PostRaceUpdate(){}
+
+    void OnStage1CompletedStart(){}
+    void OnStage1CompletedUpdate(){}
+
+    void OnStage2PreRaceStart(){}
+    void OnStage2PreRaceUpdate(){}
+
+    void OnStage2RaceStart(){}
+    void OnStage2RaceUpdate(){}
+
+    void OnStage2PostRaceStart(){}
+    void OnStage2PostRaceUpdate(){}
+
+    void OnStage2CompleteStart(){}
+    void OnStage2CompleteUpdate(){}
 
     public void OnRaceStarted()
     {
@@ -201,14 +485,7 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if(IsRaceOver())
-        {
-            bRaceActive = false;
-            DoRaceSummary();
-        }
-    }
+
 
     bool IsRaceOver()
     {
