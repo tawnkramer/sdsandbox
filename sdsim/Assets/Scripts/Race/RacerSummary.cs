@@ -9,7 +9,7 @@ public class RacerSummary : MonoBehaviour
 
     public LapTimer timer;
     public Text place;
-    public Text userName;
+    public Text carName;
     public Text[] lap_times;
     public Text lap_total;
     public Text dqNot;
@@ -21,10 +21,10 @@ public class RacerSummary : MonoBehaviour
     {
         timer = _timer;
         string summary = heat.ToString() + "," + _place.ToString() + ",";
-        summary += timer.racerName + ",";
+        summary += timer.car_name + ",";
 
         place.text = _place.ToString() + ".";
-        userName.text = timer.racerName;
+        carName.text = timer.car_name;
 
         if(timer.IsDisqualified())
         {

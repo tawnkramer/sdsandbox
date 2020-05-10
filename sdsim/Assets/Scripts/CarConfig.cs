@@ -25,7 +25,7 @@ public class CarConfig : MonoBehaviour
         }
 
         if(timer != null)
-            timer.racerName = car_name;
+            timer.car_name = car_name;
 
         Color col = new Color();
         col.r = r / 255.0f;

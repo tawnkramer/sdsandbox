@@ -11,7 +11,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
     public TextMesh currentTimeDisp;
     public TextMesh bestTimeDisp;
     public TextMesh dqDisp;
-    public string racerName;
+    public string car_name;
 
     void Awake()
     {
@@ -75,14 +75,24 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
             
         if(currentStart == 0.0f)
         {
+            Debug.Log(car_name + " crossed start line.");
             currentStart = GetCurrentMS();
             currentTimeDisp.gameObject.SetActive(true);
         }
         else
         {
+
             float timeNow = GetCurrentMS();
             float lapTime = GetCurrentLapTime();
-            
+
+            if (lapTime < 5000.0f) //?!
+            {
+                Debug.Log(car_name + " what?!");
+                return;
+            }
+
+            Debug.Log(car_name + " finished a lap " + lapTime);
+
             lapTimes.Add(lapTime);
 
             if (lapTime < bestTime)
