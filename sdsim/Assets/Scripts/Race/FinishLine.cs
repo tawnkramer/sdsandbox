@@ -22,6 +22,9 @@ public class FinishLine : MonoBehaviour
                     t.OnCollideFinishLine();
                 }
             }
+
+            RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+            rm.OnHitStartLine(col.gameObject);
         }
     }
 }

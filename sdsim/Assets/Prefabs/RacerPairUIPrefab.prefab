@@ -117,7 +117,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5863704447807030676
 CanvasRenderer:
@@ -171,7 +171,7 @@ MonoBehaviour:
   racer2: {fileID: 5863704448467851916}
   racer1time: {fileID: 5863704448237781605}
   racer2time: {fileID: 5863704448390701030}
-  win_color: {r: 1, g: 0.28226548, b: 0.009433985, a: 1}
+  win_color: {r: 0, g: 0, b: 0, a: 1}
   loss_color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
 --- !u!1 &5863704448237781607
 GameObject:

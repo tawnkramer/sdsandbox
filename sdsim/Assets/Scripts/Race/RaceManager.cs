@@ -107,6 +107,7 @@ public class RaceState
     public int m_Stage2Next;  // index of next pairing
 
     //constants
+    public float m_CheckPointDelay;
     public float m_PracticeTime;
     public float m_QualTime;
     public float m_IntroTime;
@@ -135,6 +136,8 @@ public class RaceManager : MonoBehaviour
     public GameObject raceIntroPanel;
     public RaceLineupIntroPanel lineupIntroPanel;
 
+    public RaceCheckPoint[] checkPoints;
+
     public bool bRaceActive = false;
     public bool bDevmode = false;
     public RaceState raceState;
@@ -156,6 +159,7 @@ public class RaceManager : MonoBehaviour
         raceState.m_TimeToShowRaceSummary = 10.0f;
         raceState.m_BetweenStageTime = 3.0f;
         raceState.m_TimeLimitRace = 120.0f;
+        raceState.m_CheckPointDelay = 10.0f;
 
         if (bDevmode)
             StartDevMode();
@@ -272,31 +276,39 @@ public class RaceManager : MonoBehaviour
             }
         }
 
+        bool raceOverQuick = true;
+
         // force Qualifying time quickly.
-        if (raceState.m_State == RaceState.RaceStage.Qualifying && 
-            raceState.m_CurrentQualElapsed >= 1.0f && 
-            raceState.m_CurrentQualifier != "None")
+        if (raceState.m_State == RaceState.RaceStage.Qualifying && raceOverQuick)
         {
-            Debug.Log("raceState.m_CurrentQualElapsed: " + raceState.m_CurrentQualElapsed.ToString());
             //Make race over quickly.
             LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
             foreach (LapTimer t in timers)
             {
-                t.OnCollideFinishLine();
+                if(t.GetCurrentLapTimeSec() > 3.0f)
+                {
+                    t.min_lap_time = 3.0f;
+                    t.OnCollideFinishLine();
+                    OnHitStartLine(t.gameObject);
+                }
             }
         }
 
         // force race finish quickly.
-        if (raceState.m_State == RaceState.RaceStage.Stage1Race &&
-            raceState.m_TimeInState >= 2.0f)
+        if (raceState.m_State == RaceState.RaceStage.Stage1Race && raceOverQuick)
         {
             //Make race over quickly.
             LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
             foreach (LapTimer t in timers)
             {
-                t.OnCollideFinishLine();
+                if(t.GetCurrentLapTimeSec() > 3.0f)
+                {
+                    t.min_lap_time = 3.0f;
+                    t.OnCollideFinishLine();
+                    OnHitStartLine(t.gameObject);
+                }
             }
         }
     }
@@ -344,6 +356,11 @@ public class RaceManager : MonoBehaviour
 
     public void RemoveAllCars()
     {
+        foreach (RaceCheckPoint cp in checkPoints)
+        {
+            cp.Reset(0.0f);
+        }
+
         foreach (Competitor c in raceState.m_Competitors)
         {
             RemoveCar(c);
@@ -613,10 +630,23 @@ public class RaceManager : MonoBehaviour
         foreach (LapTimer t in timers)
         {
             if (t.car_name == car_name)
-                return t.GetBestLapTime() / 1000.0f;
+                return t.GetBestLapTimeSec();
         }
 
-        return 1000.0f;
+        return 0.0f;
+    }
+
+    public LapTimer GetLapTimer(string car_name)
+    {
+        LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
+
+        foreach (LapTimer t in timers)
+        {
+            if (t.car_name == car_name)
+                return t;
+        }
+
+        return null;
     }
 
     void OnQualUpdate() 
@@ -627,7 +657,7 @@ public class RaceManager : MonoBehaviour
         {
             //mainly to allow people to read status.
         }
-        else if(raceState.m_CurrentQualifier == "None" && raceState.m_TimeInState > 2.0f)
+        else if(raceState.m_CurrentQualifier == "None")
         {
             Competitor c = GetNextQualifier();
 
@@ -655,10 +685,29 @@ public class RaceManager : MonoBehaviour
         {
             Competitor c = GetCompetitorbyName(raceState.m_CurrentQualifier);
 
+            if (c == null)
+            {
+                Debug.LogError("Where is our competitor? " + raceState.m_CurrentQualifier);
+                raceState.m_CurrentQualifier = "None";
+            }
+
+            LapTimer lt = GetLapTimer(c.car_name);
+            float t = 10000.0f;
+
+            if (lt == null)
+            {
+                Debug.LogError("Where is our competitor LapTimer? " + raceState.m_CurrentQualifier);
+                t = 10000.0f;
+            }
+            else
+            {
+                t = lt.GetCurrentLapTimeSec();
+            }
+
             if (c == null || !c.is_online)
                 raceState.m_CurrentQualifier = "None";
 
-            raceState.m_CurrentQualElapsed += Time.deltaTime;            
+            raceState.m_CurrentQualElapsed = t;            
 
             if(raceState.m_CurrentQualElapsed > raceState.m_TimeLimitQual)
             {
@@ -668,17 +717,27 @@ public class RaceManager : MonoBehaviour
                 //Boot current car.
                 raceState.m_CurrentQualifier = "None";
                 raceState.m_iQual += 1;
-                raceState.m_TimeDelay = 1.0f;
+                raceState.m_TimeDelay = 3.0f;
             }
             else if(IsRaceOver())
             {
-                if (c != null)
+                if(lt.IsDisqualified())
                 {
-                    string msg = c.racer_name + " finished the qualification lap in " + System.String.Format("{0:F2}", raceState.m_CurrentQualElapsed) + " sec.";
+                    string msg = c.racer_name + " was disqualified. Will get another chance, given enough time.";
                     Debug.Log(msg);
                     SetStatus(msg);
 
-                    c.qual_time = raceState.m_CurrentQualElapsed;
+                    c.qual_time = 0.0f;
+                    RemoveCar(c);
+                }
+                else if (c != null)
+                {
+                    t = lt.GetBestLapTimeSec();
+                    string msg = c.racer_name + " finished the qualification lap in " + System.String.Format("{0:F2}", t) + " sec.";
+                    Debug.Log(msg);
+                    SetStatus(msg);
+
+                    c.qual_time = t;
                     RemoveCar(c);
                 }
                 else
@@ -688,7 +747,7 @@ public class RaceManager : MonoBehaviour
 
                 raceState.m_CurrentQualifier = "None";
                 raceState.m_iQual += 1;
-                raceState.m_TimeDelay = 1.0f;
+                raceState.m_TimeDelay = 3.0f;
             }
         }
 
@@ -1267,6 +1326,64 @@ public class RaceManager : MonoBehaviour
         foreach(LapTimer t in status)
         {
             t.OnDisqualified();
+        }
+    }
+
+    public void OnHitStartLine(GameObject body)
+    {
+        float delay = raceState.m_CheckPointDelay;
+        int iCh = 1;
+
+        Transform car = body.transform.parent;
+        LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
+
+        if(status.Length == 1)
+        {
+            if(status[0].GetNumLapsCompleted() == race_num_laps)
+            {
+                //No need to register any more checkpoints.
+                status[0].OnRaceCompleted();
+                string msg = System.String.Format("{0} finished in {1}!", status[0].car_name, status[0].GetBestLapTimeSec().ToString("00.00"));
+                SetStatus(msg);
+
+                foreach(RaceCheckPoint cp in checkPoints)
+                {
+                    cp.RemoveBody(body);
+                }
+
+                return;
+            }
+        }
+
+        foreach(RaceCheckPoint cp in checkPoints)
+        {
+            cp.Reset(delay);
+            cp.AddRequiredHit(body);
+            iCh += 1;
+            delay = iCh * raceState.m_CheckPointDelay;
+        }
+    }
+
+    public void OnHitCheckPoint(GameObject body)
+    {
+        Transform car = body.transform.parent;
+        LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
+        if(status.Length == 1)
+        {
+            string msg = System.String.Format("{0} hit checkpoint!", status[0].car_name);
+            SetStatus(msg);
+        }
+    }
+
+    public void OnCheckPointTimedOut(GameObject body)
+    {
+        Transform car = body.transform.parent;
+        LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
+        if(status.Length == 1)
+        {
+            string msg = System.String.Format("{0} failed to hit next checkpoint!", status[0].car_name);
+            SetStatus(msg);
+            status[0].OnDisqualified();
         }
     }
 
