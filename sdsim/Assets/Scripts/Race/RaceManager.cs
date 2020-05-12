@@ -57,7 +57,7 @@ public class Competitor
     }
 }
 
-public struct Pairing
+public class Pairing
 {
     public string name1;
     public string name2;
@@ -94,6 +94,7 @@ public class RaceState
 
     public RaceStage   m_State;
     public float m_TimeInState;
+    public float m_TimeDelay;
     public List<Competitor> m_Competitors;
     public string m_CurrentQualifier;
     public int m_iQual;
@@ -110,6 +111,10 @@ public class RaceState
     public float m_QualTime;
     public float m_IntroTime;
     public float m_TimeLimitQual;
+    public float m_BetweenStageTime;
+    public float m_TimeLimitRace;
+
+    public float m_TimeToShowRaceSummary;
 }
 
 public class RaceManager : MonoBehaviour
@@ -126,6 +131,9 @@ public class RaceManager : MonoBehaviour
     public RaceInfoBar raceInfoBar;
     public RaceSummary raceSummary;
     public RaceCamSwitcher raceCamSwitcher;
+    public GameObject raceIntroGroup;
+    public GameObject raceIntroPanel;
+    public RaceLineupIntroPanel lineupIntroPanel;
 
     public bool bRaceActive = false;
     public bool bDevmode = false;
@@ -140,13 +148,19 @@ public class RaceManager : MonoBehaviour
     {
         raceState = new RaceState();
         raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 5.0f; //seconds
+        raceState.m_PracticeTime = 2.0f; //seconds
         raceState.m_QualTime = 20.0f; //seconds
-        raceState.m_IntroTime = 10.0f;
+        raceState.m_IntroTime = 4.0f;
         raceState.m_TimeLimitQual = 60.0f;
+        raceState.m_TimeDelay = 0.0f;
+        raceState.m_TimeToShowRaceSummary = 10.0f;
+        raceState.m_BetweenStageTime = 3.0f;
+        raceState.m_TimeLimitRace = 120.0f;
 
         if (bDevmode)
             StartDevMode();
+
+        
     }
 
     void Update()
@@ -182,6 +196,14 @@ public class RaceManager : MonoBehaviour
             json.AddField("info", "I am a racer");
             json.AddField("country", "USA");
             raceState.m_Competitors[0].OnRacerInfo(json);
+
+            json = new JSONObject();
+            json.AddField("body_style", "car01");
+            json.AddField("body_r", "10");
+            json.AddField("body_g", "150");
+            json.AddField("body_b", "20");
+            json.AddField("car_name", "test_car");
+            raceState.m_Competitors[0].OnCarConfig(json);
         }
 
         server.MakeDebugClient();
@@ -194,6 +216,14 @@ public class RaceManager : MonoBehaviour
             json.AddField("info", "I am a ai racer");
             json.AddField("country", "Japan");
             raceState.m_Competitors[1].OnRacerInfo(json);
+
+            json = new JSONObject();
+            json.AddField("body_style", "donkey");
+            json.AddField("body_r", "100");
+            json.AddField("body_g", "250");
+            json.AddField("body_b", "250");
+            json.AddField("car_name", "other_car");
+            raceState.m_Competitors[1].OnCarConfig(json);
         }
     }
 
@@ -244,10 +274,23 @@ public class RaceManager : MonoBehaviour
 
         // force Qualifying time quickly.
         if (raceState.m_State == RaceState.RaceStage.Qualifying && 
-            raceState.m_CurrentQualElapsed >= 5.0f && 
+            raceState.m_CurrentQualElapsed >= 1.0f && 
             raceState.m_CurrentQualifier != "None")
         {
             Debug.Log("raceState.m_CurrentQualElapsed: " + raceState.m_CurrentQualElapsed.ToString());
+            //Make race over quickly.
+            LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
+
+            foreach (LapTimer t in timers)
+            {
+                t.OnCollideFinishLine();
+            }
+        }
+
+        // force race finish quickly.
+        if (raceState.m_State == RaceState.RaceStage.Stage1Race &&
+            raceState.m_TimeInState >= 2.0f)
+        {
             //Make race over quickly.
             LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
@@ -393,6 +436,26 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    bool DoDelay()
+    {
+        if (raceState.m_TimeDelay > 0.0f)
+        {
+            raceState.m_TimeDelay -= Time.deltaTime;
+
+            if (raceState.m_TimeDelay < 0.0f)
+            {
+                raceState.m_TimeDelay = 0.0f;
+            }
+            else
+            {
+                //don't update until time delay finished.
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void OnStateUpdate()
     {
         switch(raceState.m_State)
@@ -486,6 +549,9 @@ public class RaceManager : MonoBehaviour
 
             spawner.Spawn(c.client);
             c.has_car = true;
+
+            if(c.carConfig)
+                c.client.dispatcher.Dipatch("car_config", c.carConfig);
         }
     }
 
@@ -547,7 +613,7 @@ public class RaceManager : MonoBehaviour
         foreach (LapTimer t in timers)
         {
             if (t.car_name == car_name)
-                return t.GetBestLapTime();
+                return t.GetBestLapTime() / 1000.0f;
         }
 
         return 1000.0f;
@@ -557,7 +623,11 @@ public class RaceManager : MonoBehaviour
     {
         race_num_laps = 1;
 
-        if(raceState.m_CurrentQualifier == "None")
+        if(DoDelay())
+        {
+            //mainly to allow people to read status.
+        }
+        else if(raceState.m_CurrentQualifier == "None" && raceState.m_TimeInState > 2.0f)
         {
             Competitor c = GetNextQualifier();
 
@@ -571,11 +641,14 @@ public class RaceManager : MonoBehaviour
             if(c != null)
             {
                 Debug.Log("Starting qual for " + c.racer_name);
+                SetStatus("Starting qualification lap for " + c.racer_name);
+
                 CreateCarFor(c);
                 //put car at start line and let them go.
                 raceState.m_CurrentQualifier = c.racer_name;
                 raceState.m_CurrentQualElapsed = 0.0f;
                 OnResetRace();
+                StartRace();
             }    
         }
         else
@@ -589,23 +662,33 @@ public class RaceManager : MonoBehaviour
 
             if(raceState.m_CurrentQualElapsed > raceState.m_TimeLimitQual)
             {
-                Debug.Log("Qual past time limit for " + c.racer_name);
+                string msg = System.String.Format("Qualifying run over time limit of {0} seconds for {1}.", raceState.m_TimeLimitQual, c.racer_name);
+                Debug.Log(msg);
+                SetStatus(msg);
                 //Boot current car.
                 raceState.m_CurrentQualifier = "None";
                 raceState.m_iQual += 1;
+                raceState.m_TimeDelay = 1.0f;
             }
             else if(IsRaceOver())
             {
-                Debug.Log("Qual finished for " + c.racer_name + " at " + raceState.m_CurrentQualElapsed);
-
                 if (c != null)
                 {
+                    string msg = c.racer_name + " finished the qualification lap in " + System.String.Format("{0:F2}", raceState.m_CurrentQualElapsed) + " sec.";
+                    Debug.Log(msg);
+                    SetStatus(msg);
+
                     c.qual_time = raceState.m_CurrentQualElapsed;
                     RemoveCar(c);
+                }
+                else
+                {
+                    SetStatus(raceState.m_CurrentQualifier + " left before completing a lap.");
                 }
 
                 raceState.m_CurrentQualifier = "None";
                 raceState.m_iQual += 1;
+                raceState.m_TimeDelay = 1.0f;
             }
         }
 
@@ -622,27 +705,300 @@ public class RaceManager : MonoBehaviour
     {
         RemoveAllCars();
 
+        raceCompetitorPanel.gameObject.SetActive(false);
+        raceCamSwitcher.gameObject.SetActive(false);
+
         SetStatus("Welcome to Virtual Race League DIYRobocars online racing event!!");
+
+        raceIntroGroup.SetActive(true);
+        raceIntroPanel.SetActive(true);
+
+        DropCompetitorsThatDidNotQual();
+        PrepareStage1Pairings();
     }
 
     void OnEventIntroUpdate()
     {
+        if (raceState.m_TimeInState > raceState.m_IntroTime / 2.0f)
+        {
+            raceIntroPanel.SetActive(false);
+            lineupIntroPanel.gameObject.SetActive(true);
+        }
+
         if (raceState.m_TimeInState > raceState.m_IntroTime)
         {
             raceState.m_State = RaceState.RaceStage.Stage1PreRace;
+            lineupIntroPanel.gameObject.SetActive(false);
+            raceIntroGroup.SetActive(false);
+            AnnounceDueUp();
         }
 
         SetTimerDisplay(raceState.m_IntroTime - raceState.m_TimeInState);
     }
 
-    void OnStage1PreRaceStart()
+    List<Pairing> GetStage2List()
     {
+        if(raceState.m_Stage2c_final.Count > 0)
+            return raceState.m_Stage2c_final;
 
+        if(raceState.m_Stage2b_2pairs.Count > 0)
+            return raceState.m_Stage2b_2pairs;
+
+        if(raceState.m_Stage2a_4pairs.Count > 0)
+            return raceState.m_Stage2a_4pairs;
+
+            
+        return null;
     }
 
-    void OnStage1PreRaceUpdate(){}
+    private static int QualTimeSort(Competitor x, 
+                            Competitor y) 
+    { 
+        return x.qual_time.CompareTo(y.qual_time);
+    }
 
-    void OnStage1RaceStart(){}
+    private static int Stage1TimeSort(Competitor x, 
+                            Competitor y) 
+    { 
+        return x.best_stage1_time.CompareTo(y.best_stage1_time);
+    }
+
+    void DropCompetitorsThatDidNotQual()
+    {
+        for(int i = raceState.m_Competitors.Count - 1; i > 0; i--)
+        {
+            if(raceState.m_Competitors[i].qual_time == 0.0f)
+                raceState.m_Competitors.RemoveAt(i);
+        }
+    }
+
+    void PrepareStage1Pairings()
+    {
+        raceState.m_Stage1Next = 0;
+        raceState.m_Stage1Order = new List<Pairing>();
+        raceState.m_Competitors.Sort(QualTimeSort);
+
+        for(int i = 0; i < raceState.m_Competitors.Count / 2; i++)
+        {
+            Pairing p = new Pairing();
+            Competitor a = raceState.m_Competitors[i];
+            p.name1 = a.racer_name;
+            p.time1 = 0.0f;
+            p.time2 = 0.0f;
+
+            int iB = raceState.m_Competitors.Count - i - 1;
+
+            if(iB > i)
+            {
+                Competitor b = raceState.m_Competitors[iB];
+                p.name2 = b.racer_name;
+            }
+            else
+            {
+                p.name2 = "solo";
+            }
+
+            raceState.m_Stage1Order.Add(p);
+        }
+
+        lineupIntroPanel.Init(raceState.m_Stage1Order);
+    }
+
+    void PrepareStage2aPairings()
+    {
+        raceState.m_Stage2Next = 0;
+        raceState.m_Stage2a_4pairs = new List<Pairing>();
+        raceState.m_Competitors.Sort(Stage1TimeSort);
+        List<Competitor> stage2Competitors = new List<Competitor>();
+
+        //only the top 8 go through.
+        for(int i = 0; i < raceState.m_Competitors.Count && i < 8; i++)
+            stage2Competitors.Add(raceState.m_Competitors[i]);
+
+        for(int i = 0; i < stage2Competitors.Count / 2; i++)
+        {
+            Pairing p = new Pairing();
+            Competitor a = stage2Competitors[i];
+            p.name1 = a.racer_name;
+            p.time1 = 0.0f;
+            p.time2 = 0.0f;
+
+            int iB = stage2Competitors.Count - i - 1;
+
+            if(iB > i)
+            {
+                Competitor b = stage2Competitors[iB];
+                p.name2 = b.racer_name;
+            }
+            else
+            {
+                p.name2 = "solo";
+            }
+
+            raceState.m_Stage2a_4pairs.Add(p);
+        }
+    }
+
+    void PrepareStage2bPairings()
+    {
+        raceState.m_Stage2Next = 0;
+        raceState.m_Stage2b_2pairs = new List<Pairing>();
+
+        for(int i = 0; i < raceState.m_Stage2a_4pairs.Count; i += 2)
+        {
+            Pairing p1 = raceState.m_Stage2a_4pairs[i];
+            Pairing p2 = raceState.m_Stage2a_4pairs[i + 1];
+            Pairing p = new Pairing();
+
+            if(p1.time1 < p1.time2)
+                p.name1 = p1.name1;
+            else
+                p.name1 = p1.name2;
+
+
+            if(p2.time1 < p2.time2)
+                p.name2 = p2.name1;
+            else
+                p.name2 = p2.name2;
+
+            p.time1 = 0.0f;
+            p.time2 = 0.0f;
+            
+            raceState.m_Stage2b_2pairs.Add(p);
+        }
+    }
+
+    void PrepareStage2cPairings()
+    {
+        raceState.m_Stage2Next = 0;
+        raceState.m_Stage2c_final = new List<Pairing>();
+
+        for(int i = 0; i < raceState.m_Stage2b_2pairs.Count; i += 2)
+        {
+            Pairing p1 = raceState.m_Stage2b_2pairs[i];
+            Pairing p2 = raceState.m_Stage2b_2pairs[i + 1];
+            Pairing p = new Pairing();
+
+            if(p1.time1 < p1.time2)
+                p.name1 = p1.name1;
+            else
+                p.name1 = p1.name2;
+
+
+            if(p2.time1 < p2.time2)
+                p.name2 = p2.name1;
+            else
+                p.name2 = p2.name2;
+
+            p.time1 = 0.0f;
+            p.time2 = 0.0f;
+            
+            raceState.m_Stage2c_final.Add(p);
+        }
+    }
+
+    Pairing GetCurrentPairing()
+    {
+        switch(raceState.m_State)
+        {
+            case RaceState.RaceStage.Qualifying:
+            case RaceState.RaceStage.Stage1PreRace:
+            case RaceState.RaceStage.Stage1Race:
+            case RaceState.RaceStage.Stage1PostRace:
+            {
+                if (raceState.m_Stage1Order.Count == 0)
+                    return null;
+
+                return raceState.m_Stage1Order[raceState.m_Stage1Next % raceState.m_Stage1Order.Count];
+            }
+
+            case RaceState.RaceStage.Stage1Completed:
+            case RaceState.RaceStage.Stage2PreRace:
+            case RaceState.RaceStage.Stage2Race:
+            case RaceState.RaceStage.Stage2PostRace:
+            {
+                List<Pairing> pairingList = GetStage2List();
+                if (pairingList == null || pairingList.Count == 0)
+                    return null;
+
+                return pairingList[raceState.m_Stage2Next % pairingList.Count];
+            }
+            
+            default:
+                break;
+        }
+
+        return null;
+    }
+
+    Pairing GetNextPairing()
+    {
+        if(raceState.m_State == RaceState.RaceStage.Qualifying ||
+            raceState.m_State == RaceState.RaceStage.Stage1PreRace)
+        {
+            if (raceState.m_Stage1Order.Count == 0)
+                return null;
+
+            Pairing p = raceState.m_Stage1Order[(raceState.m_Stage1Next + 1) % raceState.m_Stage1Order.Count];
+            return p;
+        }
+
+        return null;
+    }
+
+    void AnnounceDueUp()
+    {
+        Pairing p = GetCurrentPairing();
+
+        if(p != null)
+        {
+            string dueUp = System.String.Format("Due up: {0} vs {1}", p.name1, p.name2);
+            SetStatus(dueUp);
+        }
+    }
+
+    void OnStage1PreRaceStart()
+    {
+        raceCompetitorPanel.gameObject.SetActive(true);
+
+        Pairing p = GetCurrentPairing();
+
+        if(p == null)
+        {
+            Debug.LogWarning("No competitors!");
+            SetStatus("No competitors found.");
+            raceState.m_State = RaceState.RaceStage.Stage1Completed;
+            return;
+        }
+
+        Competitor c = GetCompetitorbyName(p.name1);
+
+        if(c != null)
+            CreateCarFor(c);
+
+        c = GetCompetitorbyName(p.name2);
+
+        if (c != null)
+            CreateCarFor(c);
+
+        OnResetRace();
+    }
+
+    void OnStage1PreRaceUpdate()
+    {
+        if(raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        {
+            raceState.m_State = RaceState.RaceStage.Stage1Race;
+        }
+
+        SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
+    }
+
+    void OnStage1RaceStart()
+    {
+        raceCompetitorPanel.gameObject.SetActive(false);
+        StartRace();
+    }
     
     void OnStage1RaceUpdate()
     {
@@ -650,19 +1006,70 @@ public class RaceManager : MonoBehaviour
         {
             raceState.m_State = RaceState.RaceStage.Stage1PostRace;
         }
+
+        SetTimerDisplay(raceState.m_TimeInState);
     }
 
     void OnStage1PostRaceStart()
     {
+        Pairing p = GetCurrentPairing();
+        Competitor a = GetCompetitorbyName(p.name1);
+        Competitor b = GetCompetitorbyName(p.name2);
+        p.time1 = GetBestTime(a.car_name);
+        p.time2 = GetBestTime(b.car_name);
         DoRaceSummary();
+        RemoveAllCars();
     }
 
-    void OnStage1PostRaceUpdate(){}
+    void OnStage1PostRaceUpdate()
+    {
+        if(raceState.m_TimeInState > raceState.m_TimeToShowRaceSummary / 2)
+        {
+            DoLineupSummary();
+        }
 
-    void OnStage1CompletedStart(){}
-    void OnStage1CompletedUpdate(){}
+        if(raceState.m_TimeInState > raceState.m_TimeToShowRaceSummary)
+        {
+            raceState.m_Stage1Next += 1; //needs to hit limit and go to stage 2.
 
-    void OnStage2PreRaceStart(){}
+            lineupIntroPanel.gameObject.SetActive(false);
+
+            if (raceState.m_Stage1Next >= raceState.m_Stage1Order.Count)
+            {
+                raceState.m_State = RaceState.RaceStage.Stage1Completed;
+            }
+            else
+            {
+                raceState.m_State = RaceState.RaceStage.Stage1PreRace;
+            }
+        }
+
+        SetTimerDisplay(raceState.m_TimeToShowRaceSummary - raceState.m_TimeInState);
+    }
+
+    void OnStage1CompletedStart()
+    {
+        lineupIntroPanel.gameObject.SetActive(true);
+
+        SetStatus("Stage1 Complete!");
+    }
+
+    void OnStage1CompletedUpdate()
+    {
+        if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        {
+            lineupIntroPanel.gameObject.SetActive(false);
+            raceState.m_State = RaceState.RaceStage.Stage2PreRace;
+        }
+
+        SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
+    }
+
+    void OnStage2PreRaceStart()
+    {
+        //Show the tree view of stage2
+    }
+
     void OnStage2PreRaceUpdate(){}
 
     void OnStage2RaceStart(){}
@@ -769,7 +1176,10 @@ public class RaceManager : MonoBehaviour
 
         raceCamSwitcher.gameObject.SetActive(true);
         ResetRaceCams();
+    }
 
+    public void StartRace()
+    {
         raceBanner.SetActive(true);
         StartCoroutine(DoRaceBanner());
     }
@@ -860,8 +1270,6 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-
-
     bool IsRaceOver()
     {
         if(!bRaceActive)
@@ -870,7 +1278,11 @@ public class RaceManager : MonoBehaviour
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
         if(timers is null || timers.Length == 0)
-            return false;
+            return true;
+
+        //Needs some checkpoints!!!
+        if (raceState.m_TimeInState > raceState.m_TimeLimitRace)
+            return true;
 
         foreach(LapTimer t in timers)
         {
@@ -900,9 +1312,23 @@ public class RaceManager : MonoBehaviour
         {
             raceSummary.gameObject.SetActive(true);
             raceSummary.Init();
-        }    
+        }
+    }
 
-        // DropRacers();
+    void DoLineupSummary()
+    {
+         if(raceSummary.gameObject.activeInHierarchy)
+            raceSummary.gameObject.SetActive(false);
+
+        if(!lineupIntroPanel.gameObject.activeInHierarchy)
+        {
+            Pairing p = GetCurrentPairing();
+            
+            if(p != null)
+                lineupIntroPanel.SetResult(p);
+
+            lineupIntroPanel.gameObject.SetActive(true);
+        }
     }
 
     public void DropRacers()

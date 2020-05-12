@@ -606,7 +606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timer: {fileID: 0}
   place: {fileID: 8545861597047949910}
-  userName: {fileID: 5513357303786478130}
+  carName: {fileID: 5513357303786478130}
   lap_times:
   - {fileID: 5513357304205981575}
   - {fileID: 5169013493584493542}
