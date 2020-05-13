@@ -8,10 +8,15 @@ public class RaceCheckPoint : MonoBehaviour
 
     public float timer = 0.0f;
 
-    public void Reset(float required_col_time)
+    public void Reset()
     {
-        timer = required_col_time;
+        timer = 0.0f;
         required_col.Clear();
+    }
+
+    public void SetReqTime(float required_col_time)
+    {
+        timer = required_col_time;        
     }
 
     public void AddRequiredHit(GameObject ob)

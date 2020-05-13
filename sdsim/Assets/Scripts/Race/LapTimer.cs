@@ -29,7 +29,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         bestTimeDisp.gameObject.SetActive(false);
         dqDisp.gameObject.SetActive(false);
 
-        bestTime = 100000.0f;
+        bestTime = 1000000.0f;
         race_completed = false;
         currentStart = 0.0f;
         lapTimes = new List<float>();

@@ -8,6 +8,9 @@ public class RacePairUI : MonoBehaviour
     public Text racer1;
     public Text racer2;
 
+    public Text place1;
+    public Text place2;
+
     public Text racer1time;
     public Text racer2time;
 
@@ -20,10 +23,12 @@ public class RacePairUI : MonoBehaviour
         racer2time.text = "";
     }
 
-    public void SetRacers(string r1, string r2)
+    public void SetRacers(string r1, string r2, int p1, int p2)
     {
         racer1.text = r1;
         racer2.text = r2;
+        place1.text = System.String.Format("{0}.", p1);
+        place2.text = System.String.Format("{0}.", p2);
     }
 
     public void SetTimes(float t1, float t2)

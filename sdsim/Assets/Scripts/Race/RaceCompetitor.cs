@@ -11,11 +11,14 @@ public class RaceCompetitor : MonoBehaviour
     public Color online_color;
     public Color offline_color;
 
+    RaceState raceState;
+
     Competitor comp;
 
-    public void Init(Competitor c)
+    public void Init(Competitor c, RaceState r)
     {
         comp = c;
+        raceState = r;
     }
 
     public void Update()
@@ -34,15 +37,25 @@ public class RaceCompetitor : MonoBehaviour
             }
         }
 
-        if (comp.qual_time != 0.0f && !infoPanel.activeInHierarchy)
+        if (comp.qual_time != 0.0f && raceState.m_State == RaceState.RaceStage.Qualifying)
         {
             infoPanel.SetActive(true);
-
-//             int minutes = Mathf.FloorToInt(comp.qual_time / 60F);
-//             int seconds = Mathf.FloorToInt(comp.qual_time - minutes * 60);
-//             string niceTime = string.Format("{0:0}:{1:00}", minutes, seconds);
-
-            info.text = System.String.Format("{0:F2}", comp.qual_time);
+            info.text = System.String.Format("{0}.  {1:F2}", comp.qual_place, comp.qual_time);
         }
+
+        if(raceState.m_State == RaceState.RaceStage.Stage1PostRace)
+        {
+            if (comp.best_stage1_time != 0.0)
+            {
+                infoPanel.SetActive(true);
+                info.text = System.String.Format("{0}.  {1:F2}", comp.stage1_place, comp.best_stage1_time);
+            }
+            else
+            {
+                infoPanel.SetActive(false);
+                info.text = "";
+            }
+        }
+
     }
 }

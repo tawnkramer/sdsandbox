@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,5 +71,12 @@ public class RacerSummary : MonoBehaviour
             summary += lap_total.text;
 
         summary_text.Add(summary);
+    }
+
+    internal void InitFinal(Competitor c)
+    {
+        place.text = c.stage2_place.ToString();
+        lap_total.text = c.best_stage2_time.ToString("00.00");
+        carName.text = c.racer_name;
     }
 }

@@ -11,13 +11,17 @@ public class RaceLineupIntroPanel : MonoBehaviour
     List<RacePairUI> pair_ui = new List<RacePairUI>();
     public void Init(List<Pairing> pairs)
     {
-        foreach(Pairing p in pairs)
+        RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+
+        foreach (Pairing p in pairs)
         {
             GameObject go = Instantiate(racePairPrefab) as GameObject;
             RacePairUI ui = go.GetComponent<RacePairUI>();
             ui.transform.SetParent(infoParent.transform);
+            Competitor a = rm.GetCompetitorbyName(p.name1);
+            Competitor b = rm.GetCompetitorbyName(p.name2);
 
-            ui.SetRacers(p.name1, p.name2);
+            ui.SetRacers(p.name1, p.name2, a.qual_place, b.qual_place);
             pair_ui.Add(ui);
         }
     }
