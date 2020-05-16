@@ -21,6 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/small_looping_course.unity
     guid: b003bdd73179fe046b15d779a91c20e8
   - enabled: 1
-    path: Assets/Scenes/larger_loop.unity
+    path: Assets/Scenes/mountain_track.unity
     guid: fa958af1d4fc8ef449b0c7b710692aad
   m_configObjects: {}

@@ -22,7 +22,7 @@ namespace tk
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
 
-        float steer_to_angle = 16.0f;
+        float steer_to_angle = 45.0f;
 
         float ai_steering = 0.0f;
         float ai_throttle = 0.0f;
