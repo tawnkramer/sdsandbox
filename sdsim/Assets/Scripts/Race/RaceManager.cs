@@ -665,10 +665,15 @@ public class RaceManager : MonoBehaviour
         {
             Competitor c = GetNextQualifier();
 
-            if(c == null)
+            while(c == null)
             {
-                //reset iQual and try again.
-                raceState.m_iQual = 0;
+                raceState.m_iQual += 1;
+                if(raceState.m_iQual == raceState.m_Competitors.Count)
+                {
+                    raceState.m_iQual = 0;
+                    break;
+                }
+
                 c = GetNextQualifier();
             }
 
@@ -721,7 +726,6 @@ public class RaceManager : MonoBehaviour
                 SetStatus(msg);
                 //Boot current car.
                 raceState.m_CurrentQualifier = "None";
-                raceState.m_iQual += 1;
                 raceState.m_TimeDelay = 3.0f;
             }
             else if(IsRaceOver())
@@ -753,7 +757,6 @@ public class RaceManager : MonoBehaviour
                 }
 
                 raceState.m_CurrentQualifier = "None";
-                raceState.m_iQual += 1;
                 raceState.m_TimeDelay = 3.0f;
 
                 int numQualified = GetNumQualified();

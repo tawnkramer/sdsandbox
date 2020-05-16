@@ -188,16 +188,16 @@ public class CarSpawner : MonoBehaviour {
 
         //just stack more cars after the second. Not pretty.
         int iRow = iCar / 2;
-        offset = Vector3.forward * (-5f * iRow);
+        offset = startTm.forward * (-5f * iRow);
 
         if ((iCar + 1) % 2 == 0)
-            offset += Vector3.left * 4.5f;
+            offset += startTm.right * -6.0f;
 
         Vector3 startPos = startTm.position + offset;
 
         while(bAvoid && IsOccupied(startPos))
         {
-            startPos += Vector3.forward * (-5f * iRow++);
+            startPos += startTm.forward * (-5f * iRow++);
         }
 
         return startPos;
