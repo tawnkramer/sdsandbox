@@ -8,12 +8,15 @@ using tk;
 
 public class Competitor
 {
-    public Competitor(JsonTcpClient _client)
+    public Competitor(JsonTcpClient _client, RaceManager _raceMan)
     {
+        raceMan = _raceMan;
         has_car = false;
         SetClient(_client);
         client.dispatcher.Register("racer_info", new tk.Delegates.OnMsgRecv(OnRacerInfo));
         client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
+
+        UnityMainThreadDispatcher.Instance().Enqueue(SendNeedCarConfig());
     }
 
     public void SetClient(JsonTcpClient _client)
@@ -22,6 +25,17 @@ public class Competitor
         is_online = true;
     }
 
+    IEnumerator SendNeedCarConfig()
+    {
+        JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+        json.AddField("msg_type", "need_car_config");
+        if(client != null)
+            client.SendMsg(json);
+
+        yield return null;
+    }
+
+    public RaceManager raceMan;
     public string car_name;
     public string racer_name;
     public string country;
@@ -31,6 +45,7 @@ public class Competitor
     public bool got_qual_attempt = false;
     public JsonTcpClient client;
     public JSONObject carConfig;
+    public JSONObject racerBio;
 
     public int qual_place = 0;
     public int stage1_place = 0;
@@ -41,16 +56,17 @@ public class Competitor
     public List<float> stage1_lap_times;
     public List<float> stage2_lap_times;
 
+
     public void OnRacerInfo(JSONObject json)
     {
         Debug.Log("Got racer info");
+        racerBio = json;
 
         car_name = json.GetField("car_name").str;
         racer_name = json.GetField("racer_name").str;
         country = json.GetField("country").str;
-        info = json.GetField("info").str;
-
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+        info = json.GetField("bio").str;
+        
         raceMan.OnRacerInfo(this);
     }
 
@@ -58,6 +74,8 @@ public class Competitor
     {
         Debug.Log("Got car config message");
         carConfig = json;
+
+        raceMan.AddCompetitor(this);
     }
 }
 
@@ -120,6 +138,8 @@ public class RaceState
     public float m_BetweenStageTime;
     public float m_TimeLimitRace;
 
+    public float m_RacerBioDisplayTime;
+
     public float m_TimeToShowRaceSummary;
 }
 
@@ -144,6 +164,8 @@ public class RaceManager : MonoBehaviour
 
     public RaceCheckPoint[] checkPoints;
 
+    public RacerBioPanel racerBioPanel;
+
     public bool bRaceActive = false;
     public bool bDevmode = false;
     public RaceState raceState;
@@ -154,11 +176,13 @@ public class RaceManager : MonoBehaviour
     public int race_num_laps = 2;
     public float dq_time = 10000.0f;
 
+    List<Competitor> m_TempCompetitors = new List<Competitor>();
+
     void Start()
     {
         raceState = new RaceState();
         raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 15.0f; //seconds
+        raceState.m_PracticeTime = 60.0f * 10; //seconds
         raceState.m_QualTime = 30.0f; //seconds
         raceState.m_IntroTime = 20.0f;
         raceState.m_TimeLimitQual = 60.0f;
@@ -166,7 +190,8 @@ public class RaceManager : MonoBehaviour
         raceState.m_TimeToShowRaceSummary = 10.0f;
         raceState.m_BetweenStageTime = 5.0f;
         raceState.m_TimeLimitRace = 120.0f;
-        raceState.m_CheckPointDelay = 10.0f;
+        raceState.m_CheckPointDelay = 20.0f;
+        raceState.m_RacerBioDisplayTime = 10.0f;
 
         if (bDevmode)
             StartDevMode();        
@@ -205,7 +230,7 @@ public class RaceManager : MonoBehaviour
             JSONObject json = new JSONObject();
             json.AddField("car_name", "ai_car" + iRacer.ToString());
             json.AddField("racer_name", "ai_" + iRacer.ToString());
-            json.AddField("info", "I am a racer");
+            json.AddField("bio", "I am a racer");
             json.AddField("country", "USA");
             raceState.m_Competitors[iRacer].OnRacerInfo(json);
 
@@ -265,7 +290,8 @@ public class RaceManager : MonoBehaviour
             }
         }
 
-        bool raceOverQuick = true;
+        bool raceOverQuick = false;
+        float raceTargetTime = 3.0f;
 
         // force Qualifying time quickly.
         if ((raceState.m_State == RaceState.RaceStage.Qualifying ||
@@ -279,9 +305,9 @@ public class RaceManager : MonoBehaviour
             {
                 float rand_delay = UnityEngine.Random.Range(0.0f, 1.0f);
 
-                if (t.GetCurrentLapTimeSec() > (3.0f + rand_delay))
+                if (t.GetCurrentLapTimeSec() > (raceTargetTime + rand_delay))
                 {
-                    t.min_lap_time = 3.0f;
+                    t.min_lap_time = raceTargetTime;
                     t.OnCollideFinishLine();
                     OnHitStartLine(t.gameObject);
                 }
@@ -291,8 +317,8 @@ public class RaceManager : MonoBehaviour
 
     internal void OnClientJoined(JsonTcpClient client)
     {
-        Competitor c = new Competitor(client);
-        raceState.m_Competitors.Add(c);        
+        Competitor c = new Competitor(client, this);
+        m_TempCompetitors.Add(c);        
     }
 
     public void AddCompetitorDisplay(Competitor c)
@@ -528,18 +554,21 @@ public class RaceManager : MonoBehaviour
 
         SetTimerDisplay(raceState.m_PracticeTime - raceState.m_TimeInState);
 
-        foreach(Competitor c in raceState.m_Competitors)
+        foreach (Competitor c in raceState.m_Competitors)
         {
+            if (RemoveDuplicates(c))
+                break;
+
             if(c.is_online)
             {
-                CreateCarFor(c);
+                CreateCarFor(c);                
             }
         }
     }
 
     public void CreateCarFor(Competitor c)
     {
-        if (c.has_car)
+        if (c.has_car || c.carConfig == null || c.client == null)
             return;
 
         CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
@@ -689,6 +718,8 @@ public class RaceManager : MonoBehaviour
                 c.got_qual_attempt = true;
                 OnResetRace();
                 StartRace();
+
+                ShowRacerBio(c);
             }    
         }
         else
@@ -732,6 +763,7 @@ public class RaceManager : MonoBehaviour
             {
                 if(lt.IsDisqualified())
                 {
+                    raceState.m_iQual += 1;
                     string msg = c.racer_name + " was disqualified. Will get another chance, given enough time.";
                     Debug.Log(msg);
                     SetStatus(msg);
@@ -1133,12 +1165,41 @@ public class RaceManager : MonoBehaviour
     
     void OnStage1RaceUpdate()
     {
+        if(raceState.m_TimeInState > 10.0f && !racerBioPanel.gameObject.activeInHierarchy && raceState.m_TimeInState < 11.0f)
+        {
+            StartCoroutine(ShowBothRacerBios());
+        }
+
         if(IsRaceOver())
         {
             raceState.m_State = RaceState.RaceStage.Stage1PostRace;
         }
 
         SetTimerDisplay(raceState.m_TimeInState);
+    }
+
+    IEnumerator ShowBothRacerBios()
+    {
+        Pairing p = GetCurrentPairing();
+
+        Competitor c1 = GetCompetitorbyName(p.name1);
+        Competitor c2 = GetCompetitorbyName(p.name2);
+
+        racerBioPanel.gameObject.SetActive(true);
+        racerBioPanel.SetBio(c1.racerBio);
+
+        yield return new WaitForSeconds(raceState.m_RacerBioDisplayTime);
+
+        racerBioPanel.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(3.0f);
+
+        racerBioPanel.gameObject.SetActive(true);
+        racerBioPanel.SetBio(c1.racerBio);
+
+        yield return new WaitForSeconds(raceState.m_RacerBioDisplayTime);
+
+        racerBioPanel.gameObject.SetActive(false);
     }
 
     void OnStage1PostRaceStart()
@@ -1826,28 +1887,85 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    public void ShowRacerBio(Competitor c)
+    {
+        racerBioPanel.gameObject.SetActive(true);
+        racerBioPanel.SetBio(c.racerBio);
+        StartCoroutine(HideRacerBio());
+    }
+
+    public IEnumerator HideRacerBio()
+    {
+        yield return new WaitForSeconds(raceState.m_RacerBioDisplayTime);
+
+        racerBioPanel.gameObject.SetActive(false);
+    }
+
     internal void OnRacerInfo(Competitor competitor)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(SetRacerInfo(competitor));
+    }
+
+    bool RemoveDuplicates(Competitor competitor)
     {
         bool foundDuplicate = false;
 
-        foreach(Competitor c in raceState.m_Competitors)
-        {
-            if (c == competitor)
-                continue;
+        Competitor keepComp = GetCompetitorbyName(competitor.racer_name);
 
-            if(c.racer_name == competitor.racer_name)
+        foreach (Competitor c in raceState.m_Competitors)
+        {
+            if (c.racer_name == competitor.racer_name)
             {
-                c.SetClient(competitor.client);
-                raceState.m_Competitors.Remove(competitor);
-                foundDuplicate = true;
-                Debug.Log("removing previous client.");
-                break;
+                if(keepComp.client == null && competitor.client != null)
+                {
+                    keepComp.SetClient(competitor.client);
+                    raceState.m_Competitors.Remove(competitor);
+                    foundDuplicate = true;
+                    Debug.Log("removing previous client.");
+                    break;
+                }                
             }
         }
 
-        if(!foundDuplicate)
+        return foundDuplicate;
+    }
+
+    public void AddCompetitor(Competitor c)
+    {
+        if(!RemoveDuplicates(c))
         {
+            raceState.m_Competitors.Add(c);
+        }
+    }
+
+    bool IsCompetitorDisplayed(Competitor competitor)
+    {
+        if (raceCompetitorPrefab == null)
+            return false;
+
+        for(int iCh = 0; iCh < raceCompetitorPanel.transform.childCount; iCh++)
+        {
+            Transform ch = raceCompetitorPanel.transform.GetChild(iCh);
+            RaceCompetitor rc = ch.GetComponent<RaceCompetitor>();
+            if (rc.racer_name.text == competitor.racer_name)
+                return true;
+        }
+
+        return false;
+    }
+
+    IEnumerator SetRacerInfo(Competitor competitor)
+    {
+        RemoveDuplicates(competitor);
+
+        if(!IsCompetitorDisplayed(competitor))
+        {
+            if(raceState.m_State == RaceState.RaceStage.Practice)
+                ShowRacerBio(competitor);
+
             AddCompetitorDisplay(competitor);
-        }       
+        }
+
+        yield return null;
     }
 }
