@@ -1641,7 +1641,7 @@ MonoBehaviour:
   lastSteer: 0
   lastAccel: 0
   activity: keep_lane
-  maxSteer: 32
+  maxSteer: 25
   last_collision: none
   blockControls: 0
 --- !u!114 &114314152752413966
