@@ -5543,7 +5543,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &792018517
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11378,7 +11378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1478940445
 Transform:
   m_ObjectHideFlags: 0
@@ -12639,6 +12639,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1382209123900052, guid: 852eb3ada6241b14ca4ada99861d5879,
         type: 3}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: m_CarLeftRightSpace
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 114505510698512190, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: menuPanel
@@ -14507,7 +14512,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794075470}
   m_LocalRotation: {x: -0, y: -0.9999999, z: -0, w: -0.00048524135}
-  m_LocalPosition: {x: 53.802, y: 5.01, z: 35.09}
+  m_LocalPosition: {x: 51.32, y: 5.01, z: 35.09}
   m_LocalScale: {x: 1, y: 0.81529, z: 1.22656}
   m_Children: []
   m_Father: {fileID: 1494528134}
