@@ -6,7 +6,8 @@ using UnityEngine;
 public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 {
     public List<float> lapTimes = new List<float>();
-    public float bestTime = 100000.0f;
+    public float bestTime = 1000000.0f;
+    float minTime = 10000.0f;
     float currentStart = 0.0f; //milliseconds
     public TextMesh currentTimeDisp;
     public TextMesh bestTimeDisp;
@@ -26,7 +27,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         bestTimeDisp.gameObject.SetActive(false);
         dqDisp.gameObject.SetActive(false);
 
-        bestTime = 100000.0f;
+        bestTime = 1000000.0f;
         currentStart = 0.0f;
         lapTimes = new List<float>();
     }
@@ -72,7 +73,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
     {
         if( IsDisqualified())
             return;
-            
+
         if(currentStart == 0.0f)
         {
             currentStart = GetCurrentMS();
@@ -82,6 +83,9 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         {
             float timeNow = GetCurrentMS();
             float lapTime = GetCurrentLapTime();
+
+            if (lapTime < minTime)
+                return;
             
             lapTimes.Add(lapTime);
 
@@ -93,6 +97,14 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
             }
 
             currentStart = timeNow;
+            
+        }
+
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+
+        if (raceMan != null)
+        {
+            raceMan.OnCarCrosStartLine(transform.parent.parent.gameObject);
         }
     }
 

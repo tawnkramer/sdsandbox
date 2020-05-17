@@ -110,6 +110,12 @@ public class RaceManager : MonoBehaviour
             car.blockControls = true;
         }
 
+        tk.TcpCarHandler[] carHanders = GameObject.FindObjectsOfType<tk.TcpCarHandler>();
+        foreach (tk.TcpCarHandler handler in carHanders)
+        {
+            handler.SendStopRaceMsg();
+        }
+
         // reset lap timers
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
         foreach(LapTimer t in timers)
@@ -184,7 +190,13 @@ public class RaceManager : MonoBehaviour
             car.blockControls = false;
         }
 
-		yield return new WaitForSeconds(2);
+        tk.TcpCarHandler[] carHanders = GameObject.FindObjectsOfType<tk.TcpCarHandler>();
+        foreach(tk.TcpCarHandler handler in carHanders)
+        {
+            handler.SendStartRaceMsg();
+        }
+
+        yield return new WaitForSeconds(2);
 
 		raceBanner.SetActive(false);
         raceStatusPanel.gameObject.SetActive(true);
@@ -193,12 +205,30 @@ public class RaceManager : MonoBehaviour
 
     public void OnCarOutOfBounds(GameObject car)
     {
-        LapTimer[] status = car.transform.GetComponentsInChildren<LapTimer>();
+        LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
 
-        foreach(LapTimer t in status)
-        {
-            t.OnDisqualified();
-        }
+        if(status != null)
+            status.OnDisqualified();        
+
+        tk.TcpCarHandler handler = car.GetComponentInChildren<tk.TcpCarHandler>();
+
+        if (handler)
+            handler.SendDQRaceMsg();
+    }
+
+    public void OnCarCrosStartLine(GameObject car)
+    {
+        LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
+
+        float lapTime = 0.0f;
+
+        if (status.GetNumLapsCompleted() > 1)
+            lapTime = status.GetLapTime(status.GetNumLapsCompleted() - 1);
+
+        tk.TcpCarHandler handler = car.GetComponentInChildren<tk.TcpCarHandler>();
+
+        if (handler)
+            handler.SendCrosStartRaceMsg(lapTime);
     }
 
     void Update()

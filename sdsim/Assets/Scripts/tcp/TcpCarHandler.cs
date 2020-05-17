@@ -178,6 +178,47 @@ namespace tk
             }
         }
 
+        internal void SendStartRaceMsg()
+        {
+            if (client == null)
+                return;
+
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "race_start");
+            client.SendMsg(json);            
+        }
+
+        internal void SendStopRaceMsg()
+        {
+            if (client == null)
+                return;
+
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "race_stop");
+            client.SendMsg(json);
+        }
+
+        internal void SendDQRaceMsg()
+        {
+            if (client == null)
+                return;
+
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "DQ");
+            client.SendMsg(json);
+        }
+
+        internal void SendCrosStartRaceMsg(float lap_time)
+        {
+            if (client == null)
+                return;
+
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "cross_start");
+            json.AddField("lap_time", lap_time.ToString());
+            client.SendMsg(json);
+        }
+
         void OnExitSceneRecv(JSONObject json)
         {
             bExitScene = true;
