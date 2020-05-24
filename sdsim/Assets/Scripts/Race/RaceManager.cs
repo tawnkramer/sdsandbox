@@ -60,23 +60,23 @@ public class Competitor
 
     public void OnRacerInfo(JSONObject json)
     {
-        Debug.Log("Got racer info");
         racerBio = json;
 
         car_name = json.GetField("car_name").str;
         racer_name = json.GetField("racer_name").str;
         country = json.GetField("country").str;
         info = json.GetField("bio").str;
-        
+
+        Debug.Log("Got racer info for " + racer_name);
+
+
         raceMan.OnRacerInfo(this);
     }
 
     public void OnCarConfig(JSONObject json)
     {
-        Debug.Log("Got car config message");
+        Debug.Log("Got car config for " + racer_name);
         carConfig = json;
-
-        //raceMan.AddCompetitor(this);
     }
 }
 
@@ -185,7 +185,7 @@ public class RaceManager : MonoBehaviour
     {
         raceState = new RaceState();
         raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 60.0f * 10; //seconds
+        raceState.m_PracticeTime = 60.0f * 1; //seconds
         raceState.m_QualTime = 30.0f; //seconds
         raceState.m_IntroTime = 20.0f;
         raceState.m_TimeLimitQual = 60.0f;
@@ -594,12 +594,9 @@ public class RaceManager : MonoBehaviour
         if (spawner)
         {
             Debug.Log("spawning car.");
-
             spawner.Spawn(c.client);
             c.has_car = true;
-
-            if(c.carConfig)
-                c.client.dispatcher.Dipatch("car_config", c.carConfig);
+            c.client.dispatcher.Dipatch("car_config", c.carConfig);
         }
     }
 
@@ -1736,8 +1733,8 @@ public class RaceManager : MonoBehaviour
 
         float lapTime = 0.0f;
 
-        if (status.GetNumLapsCompleted() > 1)
-            lapTime = status.GetLapTime(status.GetNumLapsCompleted() - 1);
+        if (status.GetNumLapsCompleted() > 0)
+            lapTime = status.GetLapTimeSec(status.GetNumLapsCompleted() - 1);
 
         tk.TcpCarHandler handler = car.GetComponentInChildren<tk.TcpCarHandler>();
 
@@ -1755,7 +1752,8 @@ public class RaceManager : MonoBehaviour
 
         if(status.Length == 1)
         {
-            if(status[0].GetNumLapsCompleted() == race_num_laps)
+            if(status[0].GetNumLapsCompleted() == race_num_laps && 
+                raceState.m_State != RaceState.RaceStage.Practice)
             {
                 //No need to register any more checkpoints.
                 status[0].OnRaceCompleted();
@@ -1982,6 +1980,10 @@ public class RaceManager : MonoBehaviour
         else
         {
             c.SetClient(competitor.client);
+
+            //Set the car config if we don't have it.
+            if (c.carConfig == null && competitor.carConfig != null)
+                c.carConfig = competitor.carConfig;
         }
 
         yield return null;

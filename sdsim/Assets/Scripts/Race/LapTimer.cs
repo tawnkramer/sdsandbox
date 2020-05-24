@@ -151,6 +151,11 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         return 0.0f;
     }
 
+    public float GetLapTimeSec(int iLap)
+    {
+        return GetLapTimeMS(iLap) / 1000.0f;
+    }
+
     public float GetTotalTimeMS()
     {
         float total = 0.0f;
