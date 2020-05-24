@@ -11,9 +11,9 @@ public class RaceCompetitor : MonoBehaviour
     public Color online_color;
     public Color offline_color;
 
-    RaceState raceState;
+    public RaceState raceState;
 
-    Competitor comp;
+    public Competitor comp;
 
     public void Init(Competitor c, RaceState r)
     {
@@ -27,7 +27,7 @@ public class RaceCompetitor : MonoBehaviour
         {
             racer_name.text = comp.racer_name;
 
-            if (comp.is_online)
+            if (comp.IsOnline())
             {
                 racer_name.color = online_color;
             }

@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using tk;
 
+[Serializable]
 public class Competitor
 {
     public Competitor(JsonTcpClient _client, RaceManager _raceMan)
@@ -22,7 +23,6 @@ public class Competitor
     public void SetClient(JsonTcpClient _client)
     {
         client = _client;
-        is_online = true;
     }
 
     IEnumerator SendNeedCarConfig()
@@ -35,12 +35,13 @@ public class Competitor
         yield return null;
     }
 
+    public bool IsOnline() { return client != null; }
+
     public RaceManager raceMan;
     public string car_name;
     public string racer_name;
     public string country;
     public string info;
-    public bool is_online;
     public bool has_car;
     public bool got_qual_attempt = false;
     public JsonTcpClient client;
@@ -75,10 +76,11 @@ public class Competitor
         Debug.Log("Got car config message");
         carConfig = json;
 
-        raceMan.AddCompetitor(this);
+        //raceMan.AddCompetitor(this);
     }
 }
 
+[Serializable]
 public class Pairing
 {
     public string name1;
@@ -87,6 +89,7 @@ public class Pairing
     public float time2;
 }
 
+[Serializable]
 public class RaceState
 {
     public enum RaceStage
@@ -248,7 +251,7 @@ public class RaceManager : MonoBehaviour
     {
         bool bTestDisconnect = false;
         // Test disconnect
-        if (raceState.m_TimeInState > 3.0f && raceState.m_Competitors.Count == 2 && raceState.m_Competitors[1].is_online && bTestDisconnect)
+        if (raceState.m_TimeInState > 3.0f && raceState.m_Competitors.Count == 2 && raceState.m_Competitors[1].IsOnline() && bTestDisconnect)
         {
             Debug.Log("Test client disconnect: " + raceState.m_Competitors[1].racer_name);
             SandboxServer server = GameObject.FindObjectOfType<SandboxServer>();
@@ -260,7 +263,7 @@ public class RaceManager : MonoBehaviour
         }
 
         // Test re-connect
-        if (raceState.m_TimeInState > 5.0f && raceState.m_Competitors.Count == 2 && !raceState.m_Competitors[1].is_online && bTestDisconnect)
+        if (raceState.m_TimeInState > 5.0f && raceState.m_Competitors.Count == 2 && !raceState.m_Competitors[1].IsOnline() && bTestDisconnect)
         {
             Competitor c = raceState.m_Competitors[1];
             Debug.Log("Test client re-connect: " + c.racer_name);
@@ -279,7 +282,7 @@ public class RaceManager : MonoBehaviour
         // Random driving.
         foreach (Competitor c in raceState.m_Competitors)
         {
-            if(c.is_online && c.has_car)
+            if(c.IsOnline() && c.has_car)
             {
                 JSONObject json = new JSONObject();
                 float steer = UnityEngine.Random.Range(-0.5f, 0.5f);
@@ -318,7 +321,7 @@ public class RaceManager : MonoBehaviour
     internal void OnClientJoined(JsonTcpClient client)
     {
         Competitor c = new Competitor(client, this);
-        m_TempCompetitors.Add(c);        
+        m_TempCompetitors.Add(c);
     }
 
     public void AddCompetitorDisplay(Competitor c)
@@ -347,8 +350,7 @@ public class RaceManager : MonoBehaviour
             {
                 RemoveCar(c);
                 Debug.Log("Competitor " + c.racer_name + " went offline.");
-                c.is_online = false;
-                c.client = null;
+                c.SetClient(null);
                 return;
             }
         }
@@ -556,12 +558,28 @@ public class RaceManager : MonoBehaviour
 
         foreach (Competitor c in raceState.m_Competitors)
         {
-            if (RemoveDuplicates(c))
-                break;
-
-            if(c.is_online)
+            if(c.IsOnline())
             {
-                CreateCarFor(c);                
+                CreateCarFor(c);
+            }
+            
+        }
+
+        ResetRacerDQToStart();
+    }
+
+    public void ResetRacerDQToStart()
+    {
+        Car[] cars = GameObject.FindObjectsOfType<Car>();
+        for(int iCar = 0; iCar < cars.Length; iCar++)
+        {
+            Car car = cars[iCar];
+            LapTimer t = car.transform.GetComponentInChildren<LapTimer>();
+            if(t != null && t.IsDisqualified())
+            {
+                car.RestorePosRot();
+                t.ResetDisqualified();
+                t.RestartCurrentLap();
             }
         }
     }
@@ -602,7 +620,7 @@ public class RaceManager : MonoBehaviour
         int iComp = 0;
         foreach(Competitor c in raceState.m_Competitors)
         {
-            if (c.qual_time == 0.0 && c.is_online)
+            if (c.qual_time == 0.0 && c.IsOnline())
             {
                 if(raceState.m_iQual == iComp)
                     return c;
@@ -745,7 +763,7 @@ public class RaceManager : MonoBehaviour
                 t = lt.GetCurrentLapTimeSec();
             }
 
-            if (c == null || !c.is_online)
+            if (c == null || !c.IsOnline())
                 raceState.m_CurrentQualifier = "None";
 
             raceState.m_CurrentQualElapsed = t;            
@@ -1435,7 +1453,7 @@ public class RaceManager : MonoBehaviour
 
         if (DidAllRacersDQ())
         {
-            SetStatus("All racers DQ'ed. Restarting race!");            
+            SetStatus("All racers DQ'ed. Restarting race!");
         }
         else
         {
@@ -1738,7 +1756,7 @@ public class RaceManager : MonoBehaviour
         LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
         if(status.Length == 1)
         {
-            string msg = System.String.Format("{0} hit checkpoint!", status[0].car_name);
+            string msg = System.String.Format("{0} hit checkpoint at {1:F2}!", status[0].car_name, status[0].GetCurrentLapTimeSec());
             SetStatus(msg);
         }
     }
@@ -1906,64 +1924,34 @@ public class RaceManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(SetRacerInfo(competitor));
     }
 
-    bool RemoveDuplicates(Competitor competitor)
-    {
-        bool foundDuplicate = false;
-
-        Competitor keepComp = GetCompetitorbyName(competitor.racer_name);
-
-        foreach (Competitor c in raceState.m_Competitors)
-        {
-            if (c.racer_name == competitor.racer_name)
-            {
-                if(keepComp.client == null && competitor.client != null)
-                {
-                    keepComp.SetClient(competitor.client);
-                    raceState.m_Competitors.Remove(competitor);
-                    foundDuplicate = true;
-                    Debug.Log("removing previous client.");
-                    break;
-                }                
-            }
-        }
-
-        return foundDuplicate;
-    }
-
     public void AddCompetitor(Competitor c)
     {
-        if(!RemoveDuplicates(c))
-        {
-            raceState.m_Competitors.Add(c);
-        }
+        if(GetCompetitorbyName(c.racer_name) != null)
+            Debug.LogError("Shouldnt' be adding racer twice! " + c.racer_name);
+
+        Debug.Log("Adding new competitor: " + c.racer_name);
+        raceState.m_Competitors.Add(c);
     }
 
-    bool IsCompetitorDisplayed(Competitor competitor)
-    {
-        if (raceCompetitorPrefab == null)
-            return false;
-
-        for(int iCh = 0; iCh < raceCompetitorPanel.transform.childCount; iCh++)
-        {
-            Transform ch = raceCompetitorPanel.transform.GetChild(iCh);
-            RaceCompetitor rc = ch.GetComponent<RaceCompetitor>();
-            if (rc.racer_name.text == competitor.racer_name)
-                return true;
-        }
-
-        return false;
-    }
-
+    
     IEnumerator SetRacerInfo(Competitor competitor)
     {
-        RemoveDuplicates(competitor);
+        m_TempCompetitors.Remove(competitor);
 
-        if(!IsCompetitorDisplayed(competitor))
+        Competitor c = GetCompetitorbyName(competitor.racer_name);
+
+        if(c == null)
         {
             if(raceState.m_State == RaceState.RaceStage.Practice)
                 ShowRacerBio(competitor);
 
+            // Only add the competitor once we have their full info.
+            AddCompetitor(competitor);
             AddCompetitorDisplay(competitor);
+        }
+        else
+        {
+            c.SetClient(competitor.client);
         }
 
         yield return null;

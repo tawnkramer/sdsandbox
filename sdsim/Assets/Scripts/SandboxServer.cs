@@ -88,7 +88,7 @@ public class SandboxServer : MonoBehaviour
             if (_server.debug)
                 Debug.Log("client joined race.");
 
-            raceMan.OnClientJoined(client.gameObject.GetComponent<tk.JsonTcpClient>());            
+            raceMan.OnClientJoined(client.gameObject.GetComponent<tk.JsonTcpClient>());
         }
         else if (spawnCarswClients)
         {

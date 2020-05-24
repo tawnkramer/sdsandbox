@@ -85,6 +85,17 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         dqDisp.gameObject.SetActive(true);
     }
 
+    public void ResetDisqualified()
+    {
+        dqDisp.gameObject.SetActive(false);
+    }
+
+    public void RestartCurrentLap()
+    {
+        float timeNow = GetCurrentMS();
+        currentStart = timeNow;
+    }
+
     public void OnCollideFinishLine()
     {
         if( IsDisqualified() || race_completed)
