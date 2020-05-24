@@ -7,6 +7,7 @@ public class RaceSummary : MonoBehaviour
 {
     public Transform racerLayoutGroup;
     public GameObject racerSummaryPrefab;
+    public GameObject racerSummaryFinalPrefab;
 
     int race_heat = 1;
 
@@ -77,5 +78,26 @@ public class RaceSummary : MonoBehaviour
     {
         this.gameObject.SetActive(false);
     }
-   
+
+    internal void InitFinal(List<Competitor> finalPlace)
+    {
+        //clean out any previous summary...
+        int count = racerLayoutGroup.childCount;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            Transform child = racerLayoutGroup.transform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+
+        for (int iT = 0; iT < finalPlace.Count; iT++)
+        {
+            GameObject go = Instantiate(racerSummaryFinalPrefab) as GameObject;
+
+            RacerSummary s = go.GetComponent<RacerSummary>();
+
+            s.InitFinal(finalPlace[iT]);
+
+            go.transform.SetParent(racerLayoutGroup);
+        }
+    }
 }

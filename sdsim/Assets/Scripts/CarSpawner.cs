@@ -197,7 +197,7 @@ public class CarSpawner : MonoBehaviour {
 
         while(bAvoid && IsOccupied(startPos))
         {
-            startPos += Vector3.forward * (-5f * iRow++);
+            startPos += startTm.forward * (-5f * iRow++);
         }
 
         return startPos;

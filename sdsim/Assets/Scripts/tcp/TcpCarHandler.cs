@@ -13,8 +13,8 @@ namespace tk
 
         public GameObject carObj;
         public ICar car;
-
         public PathManager pm;
+        public CarConfig conf;
         public CameraSensor camSensor;
         private tk.JsonTcpClient client;
         public Text ai_text;
@@ -45,8 +45,8 @@ namespace tk
         void Awake()
         {
             car = carObj.GetComponent<ICar>();
+            conf = carObj.GetComponent<CarConfig>();
             pm = GameObject.FindObjectOfType<PathManager>();
-
             Canvas canvas = GameObject.FindObjectOfType<Canvas>();
             GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
             if (go != null)
@@ -128,6 +128,16 @@ namespace tk
                     pm.path.ResetActiveSpan();
                     json.AddField("cte", 0.0f);
                 }
+                json.AddField("activeNode", pm.path.iActiveSpan);
+                json.AddField("totalNodes", pm.path.nodes.Capacity);
+            }
+
+            if (conf!=null && conf.timer != null)
+            {
+                json.AddField("disqualified", conf.timer.IsDisqualified() ? 1 : 0);
+                json.AddField("bestLapTimeMS", conf.timer.GetBestLapTimeMS());
+                json.AddField("currentLapTimeMS", conf.timer.GetCurrentLapTimeMS());
+                json.AddField("numLapsCompleted", conf.timer.GetNumLapsCompleted());
             }
 
             client.SendMsg( json );

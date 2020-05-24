@@ -12,7 +12,10 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
     public TextMesh currentTimeDisp;
     public TextMesh bestTimeDisp;
     public TextMesh dqDisp;
-    public string racerName;
+    public string car_name;
+
+    public float min_lap_time = 10.0f; //seconds
+    public bool race_completed = false;
 
     void Awake()
     {
@@ -28,8 +31,14 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         dqDisp.gameObject.SetActive(false);
 
         bestTime = 1000000.0f;
+        race_completed = false;
         currentStart = 0.0f;
         lapTimes = new List<float>();
+    }
+
+    public void OnRaceCompleted()
+    {
+        race_completed = true;
     }
 
     // implement IComparable interface
@@ -52,11 +61,19 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         return Time.time * 1000.0f;
     }
 
-    float GetCurrentLapTime()
+    public float GetCurrentLapTimeMS()
     {
+        if (currentStart == 0.0f)
+            return 0.0f;
+
         float timeNow = GetCurrentMS();
         float lapTime = timeNow - currentStart;
         return lapTime;
+    }
+
+    public float GetCurrentLapTimeSec()
+    {
+        return GetCurrentLapTimeMS() / 1000.0f;
     }
 
     public bool IsDisqualified()
@@ -69,24 +86,42 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         dqDisp.gameObject.SetActive(true);
     }
 
+    public void ResetDisqualified()
+    {
+        dqDisp.gameObject.SetActive(false);
+    }
+
+    public void RestartCurrentLap()
+    {
+        float timeNow = GetCurrentMS();
+        currentStart = timeNow;
+    }
+
     public void OnCollideFinishLine()
     {
-        if( IsDisqualified())
+        if( IsDisqualified() || race_completed)
             return;
-
+            
         if(currentStart == 0.0f)
         {
+            Debug.Log(car_name + " crossed start line.");
             currentStart = GetCurrentMS();
             currentTimeDisp.gameObject.SetActive(true);
         }
         else
         {
-            float timeNow = GetCurrentMS();
-            float lapTime = GetCurrentLapTime();
 
-            if (lapTime < minTime)
+            float timeNow = GetCurrentMS();
+            float lapTime = GetCurrentLapTimeMS();
+
+            // preventing quick loop and collide again w finish.
+            if (lapTime < (min_lap_time * 1000.0f))
+            {
                 return;
-            
+            }
+
+            Debug.Log(car_name + " finished a lap " + lapTime / 1000.0f);
+
             lapTimes.Add(lapTime);
 
             if (lapTime < bestTime)
@@ -108,7 +143,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         }
     }
 
-    public float GetLapTime(int iLap)
+    public float GetLapTimeMS(int iLap)
     {
         if(iLap < lapTimes.Count)
             return lapTimes[iLap];
@@ -116,7 +151,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         return 0.0f;
     }
 
-    public float GetTotalTime()
+    public float GetTotalTimeMS()
     {
         float total = 0.0f;
 
@@ -128,9 +163,14 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         return total;
     }
 
-    public float GetBestLapTime()
+    public float GetBestLapTimeMS()
     {
         return bestTime;
+    }
+
+    public float GetBestLapTimeSec()
+    {
+        return bestTime / 1000.0f;
     }
 
     void Update()
@@ -138,8 +178,8 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         //if(currentTimeDisp.gameObject.activeSelf && !IsDisqualified())
         if(currentTimeDisp.gameObject.activeSelf)
         {
-            float lapTime = GetCurrentLapTime();
-            currentTimeDisp.text = (lapTime / 1000.0f).ToString("00.00");
+            float lapTime = GetCurrentLapTimeSec();
+            currentTimeDisp.text = lapTime.ToString("00.00");
         }
     }
 }
