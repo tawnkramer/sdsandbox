@@ -177,7 +177,6 @@ public class PathManager : MonoBehaviour {
 			p.pos = np;
 			path.nodes.Add(p);
 		}
-			
 	}
 
 	void MakeScriptedPath()

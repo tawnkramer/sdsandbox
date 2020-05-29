@@ -7,7 +7,6 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 {
     public List<float> lapTimes = new List<float>();
     public float bestTime = 1000000.0f;
-    float minTime = 10000.0f;
     float currentStart = 0.0f; //milliseconds
     public TextMesh currentTimeDisp;
     public TextMesh bestTimeDisp;
@@ -22,6 +21,8 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         currentTimeDisp.gameObject.SetActive(false);
         bestTimeDisp.gameObject.SetActive(false);
         dqDisp.gameObject.SetActive(false);
+
+        ResetRace();
     }
 
     public void ResetRace()
@@ -180,7 +181,6 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 
     void Update()
     {
-        //if(currentTimeDisp.gameObject.activeSelf && !IsDisqualified())
         if(currentTimeDisp.gameObject.activeSelf)
         {
             float lapTime = GetCurrentLapTimeSec();
