@@ -107,7 +107,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 487138124084492276}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: -0.062294293, y: -0.70566165}
   m_AnchorMax: {x: 1.0534699, y: 1.3157798}
@@ -606,76 +606,6 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &487138123123055865
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 487138123123055864}
-  - component: {fileID: 487138123123055863}
-  m_Layer: 5
-  m_Name: Video Player
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &487138123123055864
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487138123123055865}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 487138124084492276}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9.4, y: -73}
-  m_SizeDelta: {x: 1687.3, y: 791.7}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!328 &487138123123055863
-VideoPlayer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 487138123123055865}
-  m_Enabled: 1
-  m_VideoClip: {fileID: 0}
-  m_TargetCameraAlpha: 1
-  m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: cd07ead663c97c449b251cd4e47ece18, type: 2}
-  m_TimeReference: 0
-  m_TargetMaterialRenderer: {fileID: 0}
-  m_TargetMaterialProperty: _MainTex
-  m_RenderMode: 2
-  m_AspectRatio: 2
-  m_DataSource: 1
-  m_PlaybackSpeed: 1
-  m_AudioOutputMode: 2
-  m_TargetAudioSources:
-  - {fileID: 0}
-  m_DirectAudioVolumes:
-  - 1
-  m_Url: https://r4---sn-a5meknzl.googlevideo.com/videoplayback?expire=1589113458&ei=Ep63Xp3CH8WPkga3ma34BA&ip=70.95.221.13&id=o-AOOZbdxTC5LIdO3twQ5sg91vm09C1pDECArmAlEk1_O2&itag=18&source=youtube&requiressl=yes&mh=09&mm=31%2C26&mn=sn-a5meknzl%2Csn-q4fl6nlz&ms=au%2Conr&mv=m&mvi=3&pl=16&gcr=us&initcwndbps=1453750&vprv=1&mime=video%2Fmp4&gir=yes&clen=674573258&ratebypass=yes&dur=6826.782&lmt=1557128842485061&mt=1589091754&fvip=4&c=WEB&txp=5531432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgZ-lExnD300I7Z8suxNpyAZYqYXv2219PsZoeIqT-3bQCIESXzfHDcYUC1d1OiKwWrR0_KWOaC9h3zoaho-Thx4nM&sig=AOq0QJ8wRQIgYCHtHeQ7xyeMuAo7Et_FeuErdC14ecTBRmlJE7kx5bUCIQCHYuuwLaqw4mvtjRcn0utZffKUPGegKZHVAVTyQzFqvA%3D%3D
-  m_EnabledAudioTracks: 01
-  m_DirectAudioMutes: 01
-  m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 1
-  m_SkipOnDrop: 1
-  m_Looping: 0
-  m_WaitForFirstFrame: 1
-  m_FrameReadyEventEnabled: 0
 --- !u!1 &487138123157498074
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,7 +930,7 @@ RectTransform:
   - {fileID: 487138122459807424}
   - {fileID: 487138123803743632}
   m_Father: {fileID: 487138124084492276}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1037,7 +967,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 487138123123055864}
   - {fileID: 487138122258922732}
   - {fileID: 487138123905220214}
   m_Father: {fileID: 0}
