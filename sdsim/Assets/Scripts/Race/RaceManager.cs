@@ -16,6 +16,8 @@ public class Competitor
         SetClient(_client);
         client.dispatcher.Register("racer_info", new tk.Delegates.OnMsgRecv(OnRacerInfo));
         client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
+        client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
+        client.dispatcher.Register("connected", new tk.Delegates.OnMsgRecv(OnConnected));
 
         UnityMainThreadDispatcher.Instance().Enqueue(SendNeedCarConfig());
     }
@@ -46,6 +48,7 @@ public class Competitor
     public bool got_qual_attempt = false;
     public JsonTcpClient client;
     public JSONObject carConfig;
+    public JSONObject camConfig;
     public JSONObject racerBio;
 
     public int qual_place = 0;
@@ -75,8 +78,22 @@ public class Competitor
 
     public void OnCarConfig(JSONObject json)
     {
-        Debug.Log("Got car config for " + racer_name);
+        if(racer_name != null)
+            Debug.Log("Got car config for " + racer_name);
+
         carConfig = json;
+    }
+
+    public void OnCamConfig(JSONObject json)
+    {
+        if (racer_name != null)
+            Debug.Log("Got cam config for " + racer_name);
+        camConfig = json;
+    }
+
+    public void OnConnected(JSONObject json)
+    {
+        
     }
 }
 
@@ -291,7 +308,7 @@ public class RaceManager : MonoBehaviour
                 json.AddField("steering", steer.ToString());
                 json.AddField("throttle", "0.2");
                 json.AddField("brake", "0.0");
-                c.client.dispatcher.Dipatch("control", json);
+                c.client.dispatcher.Dispatch("control", json);
             }
         }
 
@@ -598,7 +615,12 @@ public class RaceManager : MonoBehaviour
             Debug.Log("spawning car.");
             spawner.Spawn(c.client);
             c.has_car = true;
-            c.client.dispatcher.Dipatch("car_config", c.carConfig);
+            c.client.dispatcher.Dispatch("car_config", c.carConfig);
+
+            if (c.camConfig != null)
+                c.client.dispatcher.Dispatch("cam_config", c.camConfig);
+            else
+                Debug.LogWarning("camera config was null.");
         }
     }
 
