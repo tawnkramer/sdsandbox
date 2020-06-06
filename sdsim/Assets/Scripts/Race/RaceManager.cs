@@ -1870,10 +1870,6 @@ public class RaceManager : MonoBehaviour
         if(timers is null || timers.Length == 0)
             return true;
 
-        //Needs some checkpoints!!!
-        if (raceState.m_TimeInState > raceState.m_TimeLimitRace)
-            return true;
-
         foreach(LapTimer t in timers)
         {
             if(!t.IsDisqualified())
