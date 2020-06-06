@@ -4,6 +4,7 @@ import json
 import time
 from io import BytesIO
 import base64
+import logging
 
 from PIL import Image
 import numpy as np
@@ -20,6 +21,8 @@ class SimpleClient(SDClient):
         self.car_loaded = False
 
     def on_msg_recv(self, json_packet):
+        if json_packet['msg_type'] == "need_car_config":
+            self.send_config()
 
         if json_packet['msg_type'] == "car_loaded":
             self.car_loaded = True
@@ -36,14 +39,54 @@ class SimpleClient(SDClient):
 
         print("got:", json_packet)
 
+    def send_config(self):
+        '''
+        send three config messages to setup car, racer, and camera
+        '''
+        racer_name = "Your Name"
+        car_name = "Car"
+        bio = "I race robots."
+        country = "Neverland"
+
+        # Racer info
+        msg = {'msg_type': 'racer_info',
+            'racer_name': racer_name,
+            'car_name' : car_name,
+            'bio' : bio,
+            'country' : country }
+        self.send_now(json.dumps(msg))
+
+        
+        # Car config
+        # body_style = "donkey" | "bare" | "car01" choice of string
+        # body_rgb  = (128, 128, 128) tuple of ints
+        # car_name = "string less than 64 char"
+
+        msg = '{ "msg_type" : "car_config", "body_style" : "car01", "body_r" : "255", "body_g" : "0", "body_b" : "255", "car_name" : "%s", "font_size" : "100" }' % (car_name)
+        self.send_now(msg)
+
+        #this sleep gives the car time to spawn. Once it's spawned, it's ready for the camera config.
+        time.sleep(0.1)
+
+        # Camera config
+        # set any field to Zero to get the default camera setting.
+        # this will position the camera right above the car, with max fisheye and wide fov
+        # this also changes the img output to 255x255x1 ( actually 255x255x3 just all three channels have same value)
+        # the offset_x moves camera left/right
+        # the offset_y moves camera up/down
+        # the offset_z moves camera forward/back
+        # with fish_eye_x/y == 0.0 then you get no distortion
+        # img_enc can be one of JPG|PNG|TGA        
+        msg = '{ "msg_type" : "cam_config", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "JPG", "offset_x" : "0.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
+        self.send_now(msg)
+
 
     def send_controls(self, steering, throttle):
-        p = { "msg_type" : "control",
+        msg = { "msg_type" : "control",
                 "steering" : steering.__str__(),
                 "throttle" : throttle.__str__(),
                 "brake" : "0.0" }
-        msg = json.dumps(p)
-        self.send(msg)
+        self.send(json.dumps(msg))
 
         #this sleep lets the SDClient thread poll our message and send it out.
         time.sleep(self.poll_socket_sleep_sec)
@@ -60,6 +103,8 @@ class SimpleClient(SDClient):
 ## Make some clients and have them connect with the simulator
 
 def test_clients():
+    logging.basicConfig(level=logging.DEBUG)
+
     # test params
     host = "127.0.0.1" # "trainmydonkey.com" for virtual racing server
     port = 9091
@@ -76,34 +121,8 @@ def test_clients():
     time.sleep(1)
 
     # Load Scene message. Only one client needs to send the load scene.
-    msg = '{ "msg_type" : "load_scene", "scene_name" : "generated_track" }'
-    clients[0].send(msg)
-
-    # Wait briefly for the scene to load.
-    loaded = False
-    while(not loaded):
-        time.sleep(1.0)
-        for c in clients:
-            loaded = c.car_loaded           
-        
-
-    # Car config
-    msg = '{ "msg_type" : "car_config", "body_style" : "car01", "body_r" : "255", "body_g" : "0", "body_b" : "255", "car_name" : "Tawn", "font_size" : "100" }'
-    clients[0].send(msg)
-    time.sleep(1)
-
-    # Camera config
-    # set any field to Zero to get the default camera setting.
-    # this will position the camera right above the car, with max fisheye and wide fov
-    # this also changes the img output to 255x255x1 ( actually 255x255x3 just all three channels have same value)
-    # the offset_x moves camera left/right
-    # the offset_y moves camera up/down
-    # the offset_z moves camera forward/back
-    # with fish_eye_x/y == 0.0 then you get no distortion
-    # img_enc can be one of JPG|PNG|TGA
-    msg = '{ "msg_type" : "cam_config", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "PNG", "offset_x" : "0.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
-    clients[0].send(msg)
-    time.sleep(1)
+    msg = '{ "msg_type" : "load_scene", "scene_name" : "mountain_track" }'
+    clients[0].send_now(msg)
 
 
     # Send random driving controls
@@ -116,13 +135,11 @@ def test_clients():
                 print("Client socket problem, stopping driving.")
                 do_drive = False
 
-    time.sleep(1.0)
+    time.sleep(3.0)
 
-    # Exist Scene
-    msg = '{ "msg_type" : "exit_scene" }'
-    clients[0].send(msg)
-
-    time.sleep(1.0)
+    # Exit Scene - optionally..
+    # msg = '{ "msg_type" : "exit_scene" }'
+    # clients[0].send_now(msg)
 
     # Close down clients
     print("waiting for msg loop to stop")
