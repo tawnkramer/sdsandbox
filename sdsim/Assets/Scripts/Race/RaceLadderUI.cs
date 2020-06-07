@@ -39,8 +39,10 @@ public class RaceLadderUI : MonoBehaviour
             ui.transform.SetParent(r.transform);
             Competitor a = rm.GetCompetitorbyName(p.name1);
             Competitor b = rm.GetCompetitorbyName(p.name2);
-
-            ui.SetRacers(p.name1, p.name2, a.stage1_place, b.stage1_place);
+            if(b == null)
+                ui.SetRacers(p.name1, p.name2, a.stage1_place, 0);
+            else
+                ui.SetRacers(p.name1, p.name2, a.stage1_place, b.stage1_place);
             pui.Add(ui);
         }
     }

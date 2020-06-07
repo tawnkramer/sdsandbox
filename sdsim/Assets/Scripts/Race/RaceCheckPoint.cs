@@ -7,6 +7,7 @@ public class RaceCheckPoint : MonoBehaviour
     public List<GameObject> required_col = new List<GameObject>();
 
     public float timer = 0.0f;
+    public int m_iCheckPoint = 1;
 
     public void Reset()
     {
@@ -36,7 +37,7 @@ public class RaceCheckPoint : MonoBehaviour
             if(required_col[iO] == col.gameObject)
             {
                 RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
-                rm.OnHitCheckPoint(col.gameObject);
+                rm.OnHitCheckPoint(col.gameObject, m_iCheckPoint);
                 required_col.RemoveAt(iO);
             }
         }

@@ -159,6 +159,7 @@ public class RaceState
     public float m_TimeLimitQual;
     public float m_BetweenStageTime;
     public float m_TimeLimitRace;
+    public int m_MinCompetitorCount;
 
     public float m_RacerBioDisplayTime;
 
@@ -196,7 +197,7 @@ public class RaceManager : MonoBehaviour
     int raceCompetitorHeight = 50;
 
     public int race_num_laps = 2;
-    public float dq_time = 10000.0f;
+    public static float dq_time = 1000000.0f;
 
     List<Competitor> m_TempCompetitors = new List<Competitor>();
 
@@ -204,16 +205,17 @@ public class RaceManager : MonoBehaviour
     {
         raceState = new RaceState();
         raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 60.0f * 1; //seconds
+        raceState.m_PracticeTime = 5.0f; // 60.0f * 0.5f; //seconds
         raceState.m_QualTime = 30.0f; //seconds
-        raceState.m_IntroTime = 20.0f;
+        raceState.m_IntroTime = 2.0f;
         raceState.m_TimeLimitQual = 60.0f;
         raceState.m_TimeDelay = 0.0f;
-        raceState.m_TimeToShowRaceSummary = 10.0f;
-        raceState.m_BetweenStageTime = 5.0f;
+        raceState.m_TimeToShowRaceSummary = 3.0f;
+        raceState.m_BetweenStageTime = 3.0f;
         raceState.m_TimeLimitRace = 120.0f;
         raceState.m_CheckPointDelay = 20.0f;
         raceState.m_RacerBioDisplayTime = 15.0f;
+        raceState.m_MinCompetitorCount = 3;
 
         if (bDevmode)
             StartDevMode();        
@@ -243,26 +245,28 @@ public class RaceManager : MonoBehaviour
     {
         SandboxServer server = GameObject.FindObjectOfType<SandboxServer>();
 
-        int numDebugRacers = 10;
+        int numDebugRacers = 7;
 
         for(int iRacer = 0; iRacer < numDebugRacers; iRacer++)
         {
             server.MakeDebugClient();
+            Competitor c = m_TempCompetitors[iRacer];
 
             JSONObject json = new JSONObject();
-            json.AddField("car_name", "ai_car" + iRacer.ToString());
-            json.AddField("racer_name", "ai_" + iRacer.ToString());
-            json.AddField("bio", "I am a racer");
-            json.AddField("country", "USA");
-            raceState.m_Competitors[iRacer].OnRacerInfo(json);
-
+            
             json = new JSONObject();
             json.AddField("body_style", "car01");
             json.AddField("body_r", "10");
             json.AddField("body_g", "150");
             json.AddField("body_b", "20");
             json.AddField("car_name", "ai_car" + iRacer.ToString());
-            raceState.m_Competitors[iRacer].OnCarConfig(json);
+            c.OnCarConfig(json);
+
+            json.AddField("car_name", "ai_car" + iRacer.ToString());
+            json.AddField("racer_name", "ai_" + iRacer.ToString());
+            json.AddField("bio", "I am a racer");
+            json.AddField("country", "USA");
+            c.OnRacerInfo(json);
         }
     }
 
@@ -312,8 +316,8 @@ public class RaceManager : MonoBehaviour
             }
         }
 
-        bool raceOverQuick = false;
-        float raceTargetTime = 3.0f;
+        bool raceOverQuick = true;
+        float raceTargetTime = 2.0f;
 
         // force Qualifying time quickly.
         if ((raceState.m_State == RaceState.RaceStage.Qualifying ||
@@ -570,7 +574,14 @@ public class RaceManager : MonoBehaviour
     {
         if(raceState.m_TimeInState > raceState.m_PracticeTime)
         {
-            raceState.m_State = RaceState.RaceStage.Qualifying;
+            if(raceState.m_Competitors.Count >= raceState.m_MinCompetitorCount)
+                raceState.m_State = RaceState.RaceStage.Qualifying;
+            else
+            {
+                string msg = System.String.Format("Waiting for a minimum of {0} racers to begin qualifying.", raceState.m_MinCompetitorCount);
+                SetStatus(msg);
+                raceState.m_TimeInState -= 10000.0f; //Subtract 10 seconds
+            }
         }
 
         SetTimerDisplay(raceState.m_PracticeTime - raceState.m_TimeInState);
@@ -966,31 +977,58 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    public static bool IsOdd(int value)
+    {
+        return value % 2 != 0;
+    }
+
     void PrepareStage1Pairings()
     {
         raceState.m_Stage1Next = 0;
         raceState.m_Stage1Order = new List<Pairing>();
         raceState.m_Competitors.Sort(QualTimeSort);
 
+        //make mutable copy of competitor list
+        List<Competitor> comp = new List<Competitor>();
+        foreach (Competitor c in raceState.m_Competitors)
+            comp.Add(c);
 
-        for(int i = 0; i < raceState.m_Competitors.Count / 2; i++)
+        if (IsOdd(comp.Count))
+        {
+            //Then the first competitor gets a bye.
+            Pairing p = new Pairing();
+            Competitor a = raceState.m_Competitors[0];
+            p.name1 = a.racer_name;
+            p.time1 = 0.0f;
+
+            p.time2 = dq_time;
+            p.name2 = "solo";
+
+            raceState.m_Stage1Order.Add(p);
+
+            //remove top competitor to make list even.
+            comp.Remove(a);
+        }
+
+        for (int i = 0; i < comp.Count / 2; i++)
         {
             Pairing p = new Pairing();
-            Competitor a = raceState.m_Competitors[i];
+            Competitor a = comp[i];
             p.name1 = a.racer_name;
             p.time1 = 0.0f;
             p.time2 = 0.0f;
 
-            int iB = raceState.m_Competitors.Count - i - 1;
+            int iB = comp.Count - i - 1;
 
             if(iB > i)
             {
-                Competitor b = raceState.m_Competitors[iB];
+                Competitor b = comp[iB];
                 p.name2 = b.racer_name;
             }
             else
             {
                 p.name2 = "solo";
+                Debug.LogError("Logic error. Should be even pairing!");
             }
 
             raceState.m_Stage1Order.Add(p);
@@ -1043,23 +1081,46 @@ public class RaceManager : MonoBehaviour
         for (int i = 0; i < raceState.m_Competitors.Count; i++)
             stage2Competitors.Add(raceState.m_Competitors[i]);
 
-        for (int i = 0; i < stage2Competitors.Count / 2; i++)
+        //make mutable copy of competitor list
+        List<Competitor> comp = new List<Competitor>();
+        foreach (Competitor c in stage2Competitors)
+            comp.Add(c);
+
+        if (IsOdd(comp.Count))
+        {
+            //Then the first competitor gets a bye.
+            Pairing p = new Pairing();
+            Competitor a = comp[0];
+            p.name1 = a.racer_name;
+            p.time1 = 0.0f;
+
+            p.time2 = dq_time;
+            p.name2 = "solo";
+
+            pairs.Add(p);
+
+            //remove top competitor to make list even.
+            comp.Remove(a);
+        }
+
+        for (int i = 0; i < comp.Count / 2; i++)
         {
             Pairing p = new Pairing();
-            Competitor a = stage2Competitors[i];
+            Competitor a = comp[i];
             p.name1 = a.racer_name;
             p.time1 = 0.0f;
             p.time2 = 0.0f;
 
-            int iB = stage2Competitors.Count - i - 1;
+            int iB = comp.Count - i - 1;
 
             if(iB > i)
             {
-                Competitor b = stage2Competitors[iB];
+                Competitor b = comp[iB];
                 p.name2 = b.racer_name;
             }
             else
             {
+                Debug.LogError("Logic error, should be even pairings.");
                 p.name2 = "solo";
             }
 
@@ -1073,6 +1134,26 @@ public class RaceManager : MonoBehaviour
     {
         raceState.m_Stage2Next = 0;
         List<Pairing> new_pairs = new List<Pairing>();
+
+        Pairing addEnd = null;
+
+        if (IsOdd(prevPairs.Count))
+        {
+            //Take the winner of the last pairing and allow them a bye.
+            Pairing p = prevPairs[prevPairs.Count - 1];
+
+            if (p.time1 > p.time2)
+            {
+                p.name1 = p.name2;
+                p.time1 = p.time2;
+            }
+            
+            p.time2 = dq_time;
+            p.name2 = "solo";
+
+            addEnd = p;
+            prevPairs.Remove(p);
+        }
 
         for (int i = 0; i < prevPairs.Count; i += 2)
         {
@@ -1096,6 +1177,9 @@ public class RaceManager : MonoBehaviour
 
             new_pairs.Add(p);
         }
+
+        if (addEnd != null)
+            new_pairs.Add(addEnd);
 
         return new_pairs;
     }
@@ -1156,7 +1240,17 @@ public class RaceManager : MonoBehaviour
 
         if(p != null)
         {
-            string dueUp = System.String.Format("Due up: {0} vs {1}", p.name1, p.name2);
+            string dueUp;
+
+            if (p.GetNumRacers() == 1)
+            {
+                dueUp = System.String.Format("Odd number of competitors, so {0} races alone for time.", p.name1);
+            }
+            else
+            {
+                dueUp = System.String.Format("Due up: {0} vs {1}", p.name1, p.name2);
+            }
+
             SetStatus(dueUp);
         }
     }
@@ -1199,6 +1293,15 @@ public class RaceManager : MonoBehaviour
         return cars.Length;
     }
 
+    void BlockCarsFromMoving()
+    {
+        Car[] icars = GameObject.FindObjectsOfType<Car>();
+        foreach (Car car in icars)
+        {
+            car.blockControls = true;
+        }
+    }
+
     void OnStage1PreRaceUpdate()
     {
         Pairing p = GetCurrentPairing();
@@ -1206,6 +1309,8 @@ public class RaceManager : MonoBehaviour
         CreateCarsForPairing(p);
 
         int numCars = GetNumCars();
+
+        BlockCarsFromMoving();
 
         if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
         {
@@ -1218,7 +1323,7 @@ public class RaceManager : MonoBehaviour
             {
                 raceState.m_State = RaceState.RaceStage.Stage1Race;
             }
-        }
+        }        
 
         SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
     }
@@ -1258,34 +1363,47 @@ public class RaceManager : MonoBehaviour
 
         racerBioPanel.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(3.0f);
+        if(c2 != null)
+        {
+            yield return new WaitForSeconds(3.0f);
 
-        racerBioPanel.gameObject.SetActive(true);
-        racerBioPanel.SetBio(c2.racerBio);
+            racerBioPanel.gameObject.SetActive(true);
+            racerBioPanel.SetBio(c2.racerBio);
 
-        yield return new WaitForSeconds(raceState.m_RacerBioDisplayTime);
+            yield return new WaitForSeconds(raceState.m_RacerBioDisplayTime);
 
-        racerBioPanel.gameObject.SetActive(false);
+            racerBioPanel.gameObject.SetActive(false);
+        }
     }
 
     void OnStage1PostRaceStart()
     {
         Pairing p = GetCurrentPairing();
         Competitor a = GetCompetitorbyName(p.name1);
-        Competitor b = GetCompetitorbyName(p.name2);
         p.time1 = GetBestTime(a.car_name);
-        p.time2 = GetBestTime(b.car_name);
         a.best_stage1_time = p.time1;
-        b.best_stage1_time = p.time2;
         LapTimer ta = GetLapTimer(a.car_name);
-        LapTimer tb = GetLapTimer(b.car_name);
 
         if(ta.IsDisqualified())
         {
             p.time1 = dq_time;
         }
 
-        if (tb.IsDisqualified())
+        //remember sometimes only one competitor!
+        Competitor b = GetCompetitorbyName(p.name2);
+
+        if (b != null)
+        {
+            p.time2 = b != null ? GetBestTime(b.car_name) : dq_time;
+            b.best_stage1_time = p.time2;
+            LapTimer tb = GetLapTimer(b.car_name);
+
+            if (tb.IsDisqualified())
+            {
+                p.time2 = dq_time;
+            }
+        }
+        else
         {
             p.time2 = dq_time;
         }
@@ -1389,19 +1507,19 @@ public class RaceManager : MonoBehaviour
         int numRacers = raceState.m_Competitors.Count;
 
         //Show the tree view of stage2
-        if(raceState.m_Stage2a_4pairs.Count == 0 && numRacers == 8)
+        if(raceState.m_Stage2a_4pairs.Count == 0 && numRacers >= 5)
         {
             raceState.m_Stage2a_4pairs = PreparePairingsFromStage1();
             racerLadder.Init(raceState.m_Stage2a_4pairs, 0);
         }
         else if (raceState.m_Stage2b_2pairs.Count == 0)
         {
-            if (numRacers == 8 && NumFinishedPairs(raceState.m_Stage2a_4pairs) == 4)
+            if (numRacers >= 5 && NumFinishedPairs(raceState.m_Stage2a_4pairs) == ((numRacers + 1) / 2))
             {
                 raceState.m_Stage2b_2pairs = PrepareStage2bPairings(raceState.m_Stage2a_4pairs);
                 racerLadder.Init(raceState.m_Stage2b_2pairs, 1);
             }
-            else if (numRacers == 4)
+            else if (numRacers < 5)
             {
                 raceState.m_Stage2b_2pairs = PreparePairingsFromStage1();
                 racerLadder.Init(raceState.m_Stage2b_2pairs, 1);
@@ -1450,13 +1568,19 @@ public class RaceManager : MonoBehaviour
 
         int numCars = GetNumCars();
 
+        if (numCars == p.GetNumRacers() && numCars == 1)
+        {
+            SetStatus("Solo racer gets a BYE in the race ladder.");
+            raceState.m_State = RaceState.RaceStage.Stage2PostRace;
+        }
+
         if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
         {
             if (numCars != p.GetNumRacers())
             {
                 SetStatus("Waiting for competitors to connect.");
                 raceState.m_TimeInState = 0.0f;
-            }
+            }            
             else
             {
                 OnResetRace();
@@ -1487,23 +1611,38 @@ public class RaceManager : MonoBehaviour
     {
         Pairing p = GetCurrentPairing();
         Competitor a = GetCompetitorbyName(p.name1);
-        Competitor b = GetCompetitorbyName(p.name2);
         p.time1 = GetBestTime(a.car_name);
-        p.time2 = GetBestTime(b.car_name);
         LapTimer ta = GetLapTimer(a.car_name);
-        LapTimer tb = GetLapTimer(b.car_name);
 
-        if (ta.IsDisqualified())
+        if(p.GetNumRacers() == 1)
+        {
+            p.time1 = a.best_stage1_time;
+        }
+        else if (ta.IsDisqualified())
         {
             p.time1 = dq_time;
         }
 
-        if (tb.IsDisqualified())
+        Competitor b = GetCompetitorbyName(p.name2);
+
+        if (b != null)
+        {
+            p.time2 = GetBestTime(b.car_name);
+            LapTimer tb = GetLapTimer(b.car_name);
+
+            if (tb.IsDisqualified())
+            {
+                p.time2 = dq_time;
+            }
+        }
+        else
         {
             p.time2 = dq_time;
         }
 
-        DoRaceSummary();
+        if(p.GetNumRacers() == 2)
+            DoRaceSummary();
+
         RemoveAllCars();
 
         if (DidAllRacersDQ())
@@ -1562,7 +1701,7 @@ public class RaceManager : MonoBehaviour
         RemoveAllCars();
 
         //Event is finished.
-        SetStatus("Event is completed!");
+        SetStatus("Event has concluded! Thanks for watching. Bye everyone!");
     }
 
     void OnStage2CompleteUpdate()
@@ -1657,10 +1796,9 @@ public class RaceManager : MonoBehaviour
             car.startPos = startPos;
 
             car.RestorePosRot();
-
-            //keep them at the start line.
-            car.blockControls = true;
         }
+
+        BlockCarsFromMoving();
 
         tk.TcpCarHandler[] carHanders = GameObject.FindObjectsOfType<tk.TcpCarHandler>();
         foreach (tk.TcpCarHandler handler in carHanders)
@@ -1687,6 +1825,7 @@ public class RaceManager : MonoBehaviour
 
     public void StartRace()
     {
+        BlockCarsFromMoving();
         raceBanner.SetActive(true);
         StartCoroutine(DoRaceBanner());
     }
@@ -1739,6 +1878,7 @@ public class RaceManager : MonoBehaviour
         if(raceState.m_State == RaceState.RaceStage.Qualifying)
         {
             raceBannerText.text = "Go!";
+            yield return new WaitForSeconds(2);
         }
         else
         {
@@ -1837,13 +1977,13 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    public void OnHitCheckPoint(GameObject body)
+    public void OnHitCheckPoint(GameObject body, int iCheckPoint)
     {
         Transform car = body.transform.parent;
         LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
         if(status.Length == 1)
         {
-            string msg = System.String.Format("{0} hit checkpoint at {1:F2}!", status[0].car_name, status[0].GetCurrentLapTimeSec());
+            string msg = System.String.Format("{0} hit checkpoint {1} at {2:F2}!", status[0].car_name, iCheckPoint, status[0].GetCurrentLapTimeSec());
             SetStatus(msg);
         }
     }

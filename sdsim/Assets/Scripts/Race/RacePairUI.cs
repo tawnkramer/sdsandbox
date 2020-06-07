@@ -26,15 +26,26 @@ public class RacePairUI : MonoBehaviour
     public void SetRacers(string r1, string r2, int p1, int p2)
     {
         racer1.text = r1;
-        racer2.text = r2;
+
+        if (r2 == "solo")
+            racer2.gameObject.SetActive(false);
+        else
+            racer2.text = r2;
+
         place1.text = System.String.Format("{0}.", p1);
-        place2.text = System.String.Format("{0}.", p2);
+
+        if (p2 > 0)
+            place2.text = System.String.Format("{0}.", p2);
+        else
+            place2.gameObject.SetActive(false);
     }
 
     public void SetTimes(float t1, float t2)
     {
         racer1time.text = System.String.Format("{0:F2}", t1);
-        racer2time.text = System.String.Format("{0:F2}", t2);
+
+        if(t2 != RaceManager.dq_time)
+            racer2time.text = System.String.Format("{0:F2}", t2);
     }
 
     public void SetWinner(bool firstWon)

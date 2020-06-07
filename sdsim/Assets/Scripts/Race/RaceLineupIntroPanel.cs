@@ -21,7 +21,13 @@ public class RaceLineupIntroPanel : MonoBehaviour
             Competitor a = rm.GetCompetitorbyName(p.name1);
             Competitor b = rm.GetCompetitorbyName(p.name2);
 
-            ui.SetRacers(p.name1, p.name2, a.qual_place, b.qual_place);
+            if(b == null)
+            {
+                ui.SetRacers(p.name1, p.name2, a.qual_place, 0);
+            }
+            else
+                ui.SetRacers(p.name1, p.name2, a.qual_place, b.qual_place);
+
             pair_ui.Add(ui);
         }
     }
