@@ -3311,8 +3311,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b232da0daf96bd145bfbee108c9f6557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  required_col: []
-  timer: 0
   m_iCheckPoint: 4
 --- !u!65 &598660744
 BoxCollider:
@@ -9668,7 +9666,7 @@ PrefabInstance:
     - target: {fileID: 2990279959550327447, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: bDevmode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7689310684743306162, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
