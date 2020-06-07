@@ -205,12 +205,12 @@ public class RaceManager : MonoBehaviour
     {
         raceState = new RaceState();
         raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 5.0f; // 60.0f * 0.5f; //seconds
+        raceState.m_PracticeTime = 60.0f * 1.0f; //seconds
         raceState.m_QualTime = 30.0f; //seconds
-        raceState.m_IntroTime = 2.0f;
+        raceState.m_IntroTime = 30.0f;
         raceState.m_TimeLimitQual = 60.0f;
         raceState.m_TimeDelay = 0.0f;
-        raceState.m_TimeToShowRaceSummary = 3.0f;
+        raceState.m_TimeToShowRaceSummary = 5.0f;
         raceState.m_BetweenStageTime = 3.0f;
         raceState.m_TimeLimitRace = 120.0f;
         raceState.m_CheckPointDelay = 20.0f;
