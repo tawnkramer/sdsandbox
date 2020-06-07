@@ -57,7 +57,20 @@ public class RaceSummary : MonoBehaviour
         if(GlobalState.log_path != "default")
             return GlobalState.log_path + "/";
 
-        return Application.dataPath + "/../log/";
+        string path = Application.dataPath + "/../log/";
+
+        // Make an attempt to create log if we can.
+        try
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+        catch
+        {
+            // Well. I tried.
+        }
+
+        return path;
     }
 
     void WriteHeatSummary(List<string> summary_text)

@@ -2,39 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class ObjectTimer
+{
+    public GameObject obj;
+    public float timer = 0.0f;
+}
+
 public class RaceCheckPoint : MonoBehaviour
 {
-    public List<GameObject> required_col = new List<GameObject>();
+    public List<ObjectTimer> required_col = new List<ObjectTimer>();
 
-    public float timer = 0.0f;
     public int m_iCheckPoint = 1;
 
     public void Reset()
     {
-        timer = 0.0f;
         required_col.Clear();
     }
 
-    public void SetReqTime(float required_col_time)
+    public void AddRequiredHit(GameObject ob, float required_col_time)
     {
-        timer = required_col_time;        
-    }
-
-    public void AddRequiredHit(GameObject ob)
-    {
-        required_col.Add(ob);
+        ObjectTimer ot = new ObjectTimer();
+        ot.obj = ob;
+        ot.timer = required_col_time;
+        required_col.Add(ot);
     } 
 
     public void RemoveBody(GameObject go)
     {
-        required_col.Remove(go);
+        for (int iT = 0; iT < required_col.Count; iT++)
+        {
+            if(required_col[iT].obj == go)
+            {
+                required_col.RemoveAt(iT);
+                break;
+            }
+        }
     }
 
     void OnTriggerEnter(Collider col)
     {
         for(int iO = 0; iO < required_col.Count; iO++)
         {
-            if(required_col[iO] == col.gameObject)
+            if(required_col[iO].obj == col.gameObject)
             {
                 RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
                 rm.OnHitCheckPoint(col.gameObject, m_iCheckPoint);
@@ -46,21 +55,17 @@ public class RaceCheckPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(timer > 0.0f)
-        {
-            timer -= Time.deltaTime;
-
-            if(timer <= 0.0f)
+        foreach (ObjectTimer ot in required_col)
+            if (ot.timer > 0.0f)
             {
-                timer = 0.0f;
-                RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+                ot.timer -= Time.deltaTime;
 
-                foreach(GameObject go in required_col)
+                if(ot.timer <= 0.0f)
                 {
-                    if(go != null)
-                        rm.OnCheckPointTimedOut(go);
+                    ot.timer = 0.0f;
+                    RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+                    rm.OnCheckPointTimedOut(ot.obj);                    
                 }
             }
-        }
     }
 }

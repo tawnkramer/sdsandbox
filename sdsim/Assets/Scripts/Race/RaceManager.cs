@@ -150,6 +150,9 @@ public class RaceState
     public List<Pairing> m_Stage2b_2pairs;
     public List<Pairing> m_Stage2c_final;
     public int m_Stage2Next;  // index of next pairing
+    public int m_RaceRestarts;  // number of restarts.
+    public int m_RaceRestartsLimit;  // max number of restarts.
+
 
     //constants
     public float m_CheckPointDelay;
@@ -216,6 +219,8 @@ public class RaceManager : MonoBehaviour
         raceState.m_CheckPointDelay = 20.0f;
         raceState.m_RacerBioDisplayTime = 15.0f;
         raceState.m_MinCompetitorCount = 3;
+        raceState.m_RaceRestartsLimit = 3;
+        raceState.m_RaceRestarts = 0;
 
         if (bDevmode)
             StartDevMode();        
@@ -245,7 +250,7 @@ public class RaceManager : MonoBehaviour
     {
         SandboxServer server = GameObject.FindObjectOfType<SandboxServer>();
 
-        int numDebugRacers = 7;
+        int numDebugRacers = 4;
 
         for(int iRacer = 0; iRacer < numDebugRacers; iRacer++)
         {
@@ -317,12 +322,13 @@ public class RaceManager : MonoBehaviour
         }
 
         bool raceOverQuick = true;
-        float raceTargetTime = 2.0f;
+        float raceTargetTime = 4.0f;
 
         // force Qualifying time quickly.
-        if ((raceState.m_State == RaceState.RaceStage.Qualifying ||
-            raceState.m_State == RaceState.RaceStage.Stage1Race ||
-            raceState.m_State == RaceState.RaceStage.Stage2Race) && raceOverQuick)
+//         if ((raceState.m_State == RaceState.RaceStage.Qualifying ||
+//             raceState.m_State == RaceState.RaceStage.Stage1Race ||
+//             raceState.m_State == RaceState.RaceStage.Stage2Race) && raceOverQuick)
+         if (raceState.m_State == RaceState.RaceStage.Qualifying && raceOverQuick)
         {
             //Make race over quickly.
             LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
@@ -580,7 +586,7 @@ public class RaceManager : MonoBehaviour
             {
                 string msg = System.String.Format("Waiting for a minimum of {0} racers to begin qualifying.", raceState.m_MinCompetitorCount);
                 SetStatus(msg);
-                raceState.m_TimeInState -= 10000.0f; //Subtract 10 seconds
+                raceState.m_TimeInState -= 10.0f; //Subtract 10 seconds
             }
         }
 
@@ -630,8 +636,6 @@ public class RaceManager : MonoBehaviour
 
             if (c.camConfig != null)
                 c.client.dispatcher.Dispatch("cam_config", c.camConfig);
-            else
-                Debug.LogWarning("camera config was null.");
         }
     }
 
@@ -1434,12 +1438,14 @@ public class RaceManager : MonoBehaviour
 
         if(raceState.m_TimeInState > raceState.m_TimeToShowRaceSummary)
         {
-            if(DidAllRacersDQ())
+            if(DidAllRacersDQ() && raceState.m_RaceRestarts < raceState.m_RaceRestartsLimit)
             {
                 SetStatus("All racers DQ'ed. Restarting race!");
+                raceState.m_RaceRestarts += 1;
             }
             else
             {
+                raceState.m_RaceRestarts = 0;
                 raceState.m_Stage1Next += 1; //needs to hit limit and go to stage 2.
             }
 
@@ -1949,7 +1955,7 @@ public class RaceManager : MonoBehaviour
         Transform car = body.transform.parent;
         LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
 
-        if(status.Length == 1)
+        if(status.Length == 1 && body.name == "body")
         {
             if(status[0].GetNumLapsCompleted() == race_num_laps && 
                 raceState.m_State != RaceState.RaceStage.Practice)
@@ -1962,18 +1968,17 @@ public class RaceManager : MonoBehaviour
                 foreach(RaceCheckPoint cp in checkPoints)
                 {
                     cp.RemoveBody(body);
-                }
-
-                return;
+                }                
             }
-        }
-
-        foreach(RaceCheckPoint cp in checkPoints)
-        {
-            cp.SetReqTime(delay);
-            cp.AddRequiredHit(body);
-            iCh += 1;
-            delay = iCh * raceState.m_CheckPointDelay;
+            else
+            {
+                foreach (RaceCheckPoint cp in checkPoints)
+                {
+                    cp.AddRequiredHit(body, delay);
+                    iCh += 1;
+                    delay = iCh * raceState.m_CheckPointDelay;
+                }
+            }
         }
     }
 
