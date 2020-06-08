@@ -4,11 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.IO;
 using tk;
+using System.Xml.Serialization;
 
 [Serializable]
 public class Competitor
 {
+    public Competitor()
+    {
+    }
+
     public Competitor(JsonTcpClient _client, RaceManager _raceMan)
     {
         raceMan = _raceMan;
@@ -39,14 +45,19 @@ public class Competitor
 
     public bool IsOnline() { return client != null; }
 
+    [XmlIgnoreAttribute]
     public RaceManager raceMan;
+
+    [XmlIgnoreAttribute]
+    public JsonTcpClient client;
+
     public string car_name;
     public string racer_name;
     public string country;
     public string info;
     public bool has_car;
     public bool got_qual_attempt = false;
-    public JsonTcpClient client;
+
     public JSONObject carConfig;
     public JSONObject camConfig;
     public JSONObject racerBio;
@@ -130,6 +141,25 @@ public class RaceState
 
     public RaceState()
     {
+        m_State = RaceState.RaceStage.None;
+        m_PracticeTime = 60.0f * 30.0f; // 30 minutes
+        m_QualTime = 60.0f * 30.0f; //30 minutes
+        m_IntroTime = 60.0f * 5.0f;
+        m_TimeLimitQual = 100.0f;
+        m_TimeDelay = 0.0f;
+        m_TimeToShowRaceSummary = 10.0f;
+        m_BetweenStageTime = 5.0f;
+        m_TimeLimitRace = 120.0f;
+        m_CheckPointDelay = 20.0f;
+        m_RacerBioDisplayTime = 15.0f;
+        m_MinCompetitorCount = 3;
+        m_RaceRestartsLimit = 3;
+        m_RaceRestarts = 0;
+        m_CurrentQualifier = "None";
+        m_iQual = 0;
+        m_Stage1Next = 0;
+        m_Stage2Next = 0;
+
         m_Competitors = new List<Competitor>();
         m_Stage1Order = new List<Pairing>();
         m_Stage2a_4pairs = new List<Pairing>();
@@ -140,15 +170,10 @@ public class RaceState
     public RaceStage   m_State;
     public float m_TimeInState;
     public float m_TimeDelay;
-    public List<Competitor> m_Competitors;
     public string m_CurrentQualifier;
     public int m_iQual;
     public float m_CurrentQualElapsed;
-    public List<Pairing> m_Stage1Order;
     public int m_Stage1Next;  // index of next competitors
-    public List<Pairing> m_Stage2a_4pairs;
-    public List<Pairing> m_Stage2b_2pairs;
-    public List<Pairing> m_Stage2c_final;
     public int m_Stage2Next;  // index of next pairing
     public int m_RaceRestarts;  // number of restarts.
     public int m_RaceRestartsLimit;  // max number of restarts.
@@ -163,10 +188,42 @@ public class RaceState
     public float m_BetweenStageTime;
     public float m_TimeLimitRace;
     public int m_MinCompetitorCount;
-
     public float m_RacerBioDisplayTime;
-
     public float m_TimeToShowRaceSummary;
+
+    // lists of pairings
+    public List<Pairing> m_Stage1Order;
+    public List<Pairing> m_Stage2a_4pairs;
+    public List<Pairing> m_Stage2b_2pairs;
+    public List<Pairing> m_Stage2c_final;
+
+    // competitors
+    public List<Competitor> m_Competitors;
+
+
+    public void Write(string path)
+    {
+        System.Xml.Serialization.XmlSerializer writer =
+            new System.Xml.Serialization.XmlSerializer(typeof(RaceState));
+
+        System.IO.FileStream file = System.IO.File.Create(path);
+
+        writer.Serialize(file, this);
+        file.Close();
+    }
+
+    public static RaceState Read(string path)
+    {
+        System.Xml.Serialization.XmlSerializer reader =
+            new System.Xml.Serialization.XmlSerializer(typeof(RaceState));
+
+        System.IO.StreamReader file = new System.IO.StreamReader(path);
+
+        RaceState s = (RaceState)reader.Deserialize(file);
+        file.Close();
+
+        return s;
+    }
 }
 
 public class RaceManager : MonoBehaviour
@@ -194,36 +251,142 @@ public class RaceManager : MonoBehaviour
 
     public bool bRaceActive = false;
     public bool bDevmode = false;
-    public RaceState raceState;
+    RaceState raceState;
 
     public int raceStatusHeight = 100;
     int raceCompetitorHeight = 50;
+    bool paused = false;
+    public Text pauseButtonText;
 
     public int race_num_laps = 2;
     public static float dq_time = 1000000.0f;
+    string race_state_filename = "default";
 
     List<Competitor> m_TempCompetitors = new List<Competitor>();
 
     void Start()
     {
+        // specify --race path/to/race_state.xml to load a previous race state.
+        string[] args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "--race")
+            {
+                race_state_filename = args[i + 1];
+            }
+        }
+
         raceState = new RaceState();
-        raceState.m_State = RaceState.RaceStage.None;
-        raceState.m_PracticeTime = 60.0f * 1.0f; //seconds
-        raceState.m_QualTime = 30.0f; //seconds
-        raceState.m_IntroTime = 30.0f;
-        raceState.m_TimeLimitQual = 60.0f;
-        raceState.m_TimeDelay = 0.0f;
-        raceState.m_TimeToShowRaceSummary = 5.0f;
-        raceState.m_BetweenStageTime = 3.0f;
-        raceState.m_TimeLimitRace = 120.0f;
-        raceState.m_CheckPointDelay = 20.0f;
-        raceState.m_RacerBioDisplayTime = 15.0f;
-        raceState.m_MinCompetitorCount = 3;
-        raceState.m_RaceRestartsLimit = 3;
-        raceState.m_RaceRestarts = 0;
+
+        try
+        {
+            if(race_state_filename != "default")
+            {
+                LoadRaceState();
+                OnStateChange();
+                foreach (Competitor c in raceState.m_Competitors)
+                    AddCompetitorDisplay(c);
+            }
+        }
+        catch
+        {
+            Debug.LogError("Failed to load " + race_state_filename);    
+        }
 
         if (bDevmode)
             StartDevMode();        
+    }
+
+    string GetLogPath()
+    {
+        if (GlobalState.log_path != "default")
+            return GlobalState.log_path + "/";
+
+        string path = Application.dataPath + "/../log/";
+
+        // Make an attempt to create log if we can.
+        try
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+        catch
+        {
+            // Well. I tried.
+        }
+
+        return path;
+    }
+
+    void SaveRaceState()
+    {
+        string filepath = race_state_filename;
+
+        if (filepath == "default")
+            filepath = GetLogPath() + "race_state.xml";
+
+        raceState.Write(filepath);
+    }
+
+    void LoadRaceState()
+    {
+        string filepath = race_state_filename;
+        
+        if(filepath == "default")
+            filepath = GetLogPath() + "race_state.xml";
+
+        raceState = RaceState.Read(filepath);
+    }
+
+    public void OnPausePressed()
+    {
+        paused = !paused;
+
+        if (pauseButtonText == null)
+            return;
+
+        if (paused)
+        {
+            pauseButtonText.text = "~";
+        }
+        else
+        {
+            pauseButtonText.text = "II";
+        }
+    }
+
+    public void OnRewindPressed()
+    {
+        if (raceState.m_State == 0)
+            return;
+
+        HidePopUps();
+        raceState.m_State -= 1;
+        raceState.m_TimeInState = 0.0f;
+        OnStateChange();
+    }
+
+    public void OnFastForwardPressed()
+    {
+        if (raceState.m_State == RaceState.RaceStage.Stage2Complete)
+            return;
+
+        HidePopUps();
+        raceState.m_State += 1;
+        raceState.m_TimeInState = 0.0f;
+        OnStateChange();
+    }
+
+    void HidePopUps()
+    {
+        raceCompetitorPanel.gameObject.SetActive(false);
+        racerBioPanel.gameObject.SetActive(false);
+        raceCamSwitcher.gameObject.SetActive(false);
+        raceIntroGroup.SetActive(false);
+        raceIntroPanel.SetActive(false);
+        lineupIntroPanel.gameObject.SetActive(false);
+        racerLadder.gameObject.SetActive(false);
+        raceBanner.SetActive(false);
     }
 
     void Update()
@@ -235,11 +398,13 @@ public class RaceManager : MonoBehaviour
         if(raceState.m_State != prev)
         {
             raceState.m_TimeInState = 0.0f;
+            SaveRaceState();
             OnStateChange();
         }
         else
         {
-            raceState.m_TimeInState += Time.deltaTime;
+            if(!paused)
+                raceState.m_TimeInState += Time.deltaTime;
         }
 
         if (bDevmode)
@@ -644,9 +809,6 @@ public class RaceManager : MonoBehaviour
         SetStatus("This is qualification time. Each competitor must complete one AI lap to qualify for the race.");
 
         RemoveAllCars();
-
-        raceState.m_CurrentQualifier = "None";
-        raceState.m_iQual = 0;
     }
 
     Competitor GetNextQualifier()
@@ -748,16 +910,19 @@ public class RaceManager : MonoBehaviour
         {
             Competitor c = GetNextQualifier();
 
-            while(c == null)
+            int max_tries = raceState.m_Competitors.Count + 1;
+            int iTry = 0;
+            while (c == null && iTry < max_tries)
             {
                 raceState.m_iQual += 1;
-                if(raceState.m_iQual == raceState.m_Competitors.Count)
+                if(raceState.m_iQual >= raceState.m_Competitors.Count)
                 {
                     raceState.m_iQual = 0;
                     break;
                 }
 
                 c = GetNextQualifier();
+                iTry += 1;
             }
 
             if(c != null)
@@ -885,6 +1050,7 @@ public class RaceManager : MonoBehaviour
 
     void OnPreEventStart()
     {
+        race_num_laps = 3;
         RemoveAllCars();
 
         raceCompetitorPanel.gameObject.SetActive(false);
@@ -1284,7 +1450,6 @@ public class RaceManager : MonoBehaviour
         {
             Debug.LogWarning("No competitors!");
             SetStatus("No competitors found.");
-            raceState.m_State = RaceState.RaceStage.Stage1Completed;
             return;
         }
 
@@ -1310,7 +1475,8 @@ public class RaceManager : MonoBehaviour
     {
         Pairing p = GetCurrentPairing();
 
-        CreateCarsForPairing(p);
+        if(p != null)
+            CreateCarsForPairing(p);
 
         int numCars = GetNumCars();
 
@@ -1345,7 +1511,8 @@ public class RaceManager : MonoBehaviour
             StartCoroutine(ShowBothRacerBios());
         }
 
-        if(IsRaceOver())
+        // testing for time in state allows easier fast forward, rewind.
+        if(IsRaceOver() && raceState.m_TimeInState > 10.0f)
         {
             raceState.m_State = RaceState.RaceStage.Stage1PostRace;
         }
@@ -1383,10 +1550,17 @@ public class RaceManager : MonoBehaviour
     void OnStage1PostRaceStart()
     {
         Pairing p = GetCurrentPairing();
+        if (p == null)
+            return;
         Competitor a = GetCompetitorbyName(p.name1);
+        if (a == null)
+            return;
         p.time1 = GetBestTime(a.car_name);
         a.best_stage1_time = p.time1;
         LapTimer ta = GetLapTimer(a.car_name);
+
+        if (ta == null)
+            return;
 
         if(ta.IsDisqualified())
         {
@@ -1605,7 +1779,8 @@ public class RaceManager : MonoBehaviour
 
     void OnStage2RaceUpdate()
     {
-        if (IsRaceOver())
+        // testing for time in state allows easier fast forward, rewind.
+        if (IsRaceOver() && raceState.m_TimeInState > 10.0f)
         {
             raceState.m_State = RaceState.RaceStage.Stage2PostRace;
         }
@@ -2056,12 +2231,17 @@ public class RaceManager : MonoBehaviour
             Competitor secondPlace;
             Competitor thirdPlace;
 
+            if (raceState.m_Stage2c_final.Count == 0)
+                return;
+
             Pairing final = raceState.m_Stage2c_final[0];
 
             if (final.time1 < final.time2)
             {
                 firstPlace = GetCompetitorbyName(final.name1);
                 secondPlace = GetCompetitorbyName(final.name2);
+                if (firstPlace == null || secondPlace == null)
+                    return;
                 firstPlace.best_stage2_time = final.time1;
                 secondPlace.best_stage2_time = final.time2;
             }
@@ -2069,6 +2249,9 @@ public class RaceManager : MonoBehaviour
             {
                 firstPlace = GetCompetitorbyName(final.name2);
                 secondPlace = GetCompetitorbyName(final.name1);
+                if (firstPlace == null || secondPlace == null)
+                    return;
+
                 firstPlace.best_stage2_time = final.time2;
                 secondPlace.best_stage2_time = final.time1;
             }
