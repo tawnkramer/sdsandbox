@@ -64,7 +64,9 @@ public class RaceCheckPoint : MonoBehaviour
                 {
                     ot.timer = 0.0f;
                     RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
-                    rm.OnCheckPointTimedOut(ot.obj);                    
+
+                    if (ot.obj != null)
+                        rm.OnCheckPointTimedOut(ot.obj);                    
                 }
             }
     }
