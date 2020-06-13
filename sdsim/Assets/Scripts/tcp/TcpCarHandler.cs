@@ -396,6 +396,11 @@ namespace tk
                     {
                         LapTimer t = carObj.transform.GetComponentInChildren<LapTimer>();
 
+                        //reset last controls
+                        car.RequestSteering(0.0f);
+                        car.RequestThrottle(0.0f);
+                        car.RequestFootBrake(10.0f);
+
                         if(t != null)
                         {
                             t.ResetRace();
