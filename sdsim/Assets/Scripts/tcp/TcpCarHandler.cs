@@ -32,6 +32,7 @@ namespace tk
         float time_step = 0.1f;
         bool bResetCar = false;
         bool bExitScene = false;
+        bool extendedTelemetry = true;
 
         public enum State
         {
@@ -104,42 +105,61 @@ namespace tk
             json.AddField("steering_angle", car.GetSteering() / steer_to_angle);
             json.AddField("throttle", car.GetThrottle());
             json.AddField("speed", car.GetVelocity().magnitude);
-            json.AddField("image", System.Convert.ToBase64String(camSensor.GetImageBytes()));
+            json.AddField("image", Convert.ToBase64String(camSensor.GetImageBytes()));
 
             json.AddField("hit", car.GetLastCollision());
             car.ClearLastCollision();
-
-            Transform tm = car.GetTransform();
-            json.AddField("pos_x", tm.position.x);
-            json.AddField("pos_y", tm.position.y);
-            json.AddField("pos_z", tm.position.z);
-
             json.AddField("time", Time.timeSinceLevelLoad);
 
-            if(pm != null)
-            {
-                float cte = 0.0f;
-                if(pm.path.GetCrossTrackErr(tm.position, ref cte))
-                {
-                    json.AddField("cte", cte);
-                }
-                else
-                {
-                    pm.path.ResetActiveSpan();
-                    json.AddField("cte", 0.0f);
-                }
-                json.AddField("activeNode", pm.path.iActiveSpan);
-                json.AddField("totalNodes", pm.path.nodes.Capacity);
-            }
+            Vector3 accel = car.GetAccel();
+            json.AddField("accel_x", accel.x);
+            json.AddField("accel_y", accel.y);
+            json.AddField("accel_z", accel.z);
 
-            if (conf!=null && conf.timer != null)
-            {
-                json.AddField("disqualified", conf.timer.IsDisqualified() ? 1 : 0);
-                json.AddField("bestLapTimeMS", conf.timer.GetBestLapTimeMS());
-                json.AddField("currentLapTimeMS", conf.timer.GetCurrentLapTimeMS());
-                json.AddField("numLapsCompleted", conf.timer.GetNumLapsCompleted());
-            }
+            Quaternion gyro = car.GetGyro();
+            json.AddField("gyro_x", gyro.x);
+            json.AddField("gyro_y", gyro.y);
+            json.AddField("gyro_z", gyro.z);
+            json.AddField("gyro_w", gyro.w);
 
+
+            // not intended to use in races, just to train 
+            if (extendedTelemetry)
+            {
+                Transform tm = car.GetTransform();
+                json.AddField("pos_x", tm.position.x);
+                json.AddField("pos_y", tm.position.y);
+                json.AddField("pos_z", tm.position.z);
+
+                Vector3 velocity = car.GetVelocity();
+                json.AddField("vel_x", velocity.x);
+                json.AddField("vel_y", velocity.y);
+                json.AddField("vel_z", velocity.z);
+
+                if (pm != null)
+                {
+                    float cte = 0.0f;
+                    if (pm.path.GetCrossTrackErr(tm.position, ref cte))
+                    {
+                        json.AddField("cte", cte);
+                    }
+                    else
+                    {
+                        pm.path.ResetActiveSpan();
+                        json.AddField("cte", 0.0f);
+                    }
+                    json.AddField("activeNode", pm.path.iActiveSpan);
+                    json.AddField("totalNodes", pm.path.nodes.Count);
+                }
+
+                if (conf != null && conf.timer != null)
+                {
+                    json.AddField("disqualified", conf.timer.IsDisqualified() ? 1 : 0);
+                    json.AddField("bestLapTimeMS", conf.timer.GetBestLapTimeMS());
+                    json.AddField("currentLapTimeMS", conf.timer.GetCurrentLapTimeMS());
+                    json.AddField("numLapsCompleted", conf.timer.GetNumLapsCompleted());
+                }
+            }
             client.SendMsg( json );
         }
 
