@@ -6,19 +6,20 @@ using UnityEngine.UI;
 public class RaceStatus : MonoBehaviour
 {
     public LapTimer timer;
-    public Text userName;
+    public Text carName;
+    public Text racerName;
     public Text currentLapTime;
     public Text bestLapTime;
     public Text iLap;
     public Text dqNot;
 
-    tk.JsonTcpClient client;
+    Competitor comp;
     
-    public void Init(LapTimer _timer, tk.JsonTcpClient _client)
+    public void Init(LapTimer _timer, Competitor c)
     {
         timer = _timer;
         dqNot.gameObject.SetActive(false);
-        client = _client;
+        comp = c;
     }
 
     public void BootRacer()
@@ -26,14 +27,15 @@ public class RaceStatus : MonoBehaviour
         KickPlayerUI kickUI = GameObject.FindObjectOfType<KickPlayerUI>();
 
         if(kickUI != null && timer != null)
-            kickUI.Init(client, timer.racerName);
+            kickUI.Init(comp.client, comp.car_name);
     }
 
     void Update()
     {
         if(timer != null)
         {
-            userName.text = timer.racerName;
+            carName.text = comp.car_name;
+            racerName.text = comp.racer_name;
 
             if(timer.currentTimeDisp.gameObject.activeSelf)
             {

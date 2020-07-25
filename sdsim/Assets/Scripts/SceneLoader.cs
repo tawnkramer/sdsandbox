@@ -30,6 +30,11 @@ public void LoadGeneratedTrackScene()
     SceneManager.LoadSceneAsync(4);
 }
 
+public void LoadMountainTrackScene()
+{
+    SceneManager.LoadSceneAsync(5);
+}
+
 public void QuitApplication()
 {
     Application.Quit();

@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 5513357303504393942}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.69567114, y: 0.75767493}
-  m_AnchorMax: {x: 0.8528434, y: 0.9715634}
+  m_AnchorMin: {x: 0.70330274, y: 0.48801202}
+  m_AnchorMax: {x: 0.860475, y: 0.7019005}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.000030517578, y: 0}
+  m_SizeDelta: {x: -0.0000030994415, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8592468968972868964
 CanvasRenderer:
@@ -155,6 +155,83 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: DQ
+--- !u!1 &4176781578499059221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 818619999662894997}
+  - component: {fileID: 7192813543811710950}
+  - component: {fileID: 9196930439747716263}
+  m_Layer: 5
+  m_Name: RacerName
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &818619999662894997
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4176781578499059221}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5513357303504393942}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.014249997, y: 0.41815203}
+  m_AnchorMax: {x: 0.8376974, y: 1.0000713}
+  m_AnchoredPosition: {x: 93.34, y: 12.484}
+  m_SizeDelta: {x: -186.68, y: -24.98}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7192813543811710950
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4176781578499059221}
+  m_CullTransparentMesh: 0
+--- !u!114 &9196930439747716263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4176781578499059221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5, g: 0.23113209, b: 0.23113209, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Racer Name
 --- !u!1 &5513357302988889086
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,6 +348,7 @@ RectTransform:
   - {fileID: 7884261049553058334}
   - {fileID: 7345177620004122891}
   - {fileID: 7408625917968666262}
+  - {fileID: 818619999662894997}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -328,7 +406,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timer: {fileID: 0}
-  userName: {fileID: 5513357303786478130}
+  carName: {fileID: 5513357303786478130}
+  racerName: {fileID: 9196930439747716263}
   currentLapTime: {fileID: 5513357304205981575}
   bestLapTime: {fileID: 5513357304790523842}
   iLap: {fileID: 5801682213050343747}
@@ -476,7 +555,7 @@ GameObject:
   - component: {fileID: 5513357303786478131}
   - component: {fileID: 5513357303786478130}
   m_Layer: 5
-  m_Name: RacerName
+  m_Name: CarName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -540,7 +619,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Racer Name
+  m_Text: Car Name
 --- !u!1 &5513357304205981593
 GameObject:
   m_ObjectHideFlags: 0

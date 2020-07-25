@@ -111,7 +111,7 @@ namespace tk
 
                         string msg_type = j["msg_type"].str;
 
-                        dispatcher.Dipatch(msg_type, j);
+                        dispatcher.Dispatch(msg_type, j);
 
                     }
                     catch(Exception e)

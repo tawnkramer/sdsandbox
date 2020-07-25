@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 
@@ -21,6 +21,8 @@ public class Car : MonoBehaviour, ICar {
 
 	public Vector3 startPos;
 	public Quaternion startRot;
+	private Quaternion rotation = Quaternion.identity;
+	private Quaternion gyro = Quaternion.identity;
 
 	public float length = 1.7f;
 
@@ -34,7 +36,7 @@ public class Car : MonoBehaviour, ICar {
 	//use this label to pull partial training samples from a run 
 	public string activity = "keep_lane";
 
-    public float maxSteer = 16.0f;
+	public float maxSteer = 16.0f;
 
 	//name of the last object we hit.
 	public string last_collision = "none";
@@ -57,7 +59,7 @@ public class Car : MonoBehaviour, ICar {
 
 		SavePosRot();
 
-        maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
+		//maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
 	}
 
 	public void SavePosRot()
@@ -78,18 +80,18 @@ public class Car : MonoBehaviour, ICar {
 		//Debug.Log("request throttle: " + val);
 	}
 
-    public void SetMaxSteering(float val)
-    {
-        maxSteer = val;
+	public void SetMaxSteering(float val)
+	{
+		maxSteer = val;
 
-        PlayerPrefs.SetFloat("max_steer", maxSteer);
-        PlayerPrefs.Save();
-    }
+		PlayerPrefs.SetFloat("max_steer", maxSteer);
+		PlayerPrefs.Save();
+	}
 
-    public float GetMaxSteering()
-    {
-        return maxSteer;
-    }
+	public float GetMaxSteering()
+	{
+		return maxSteer;
+	}
 
 	public void RequestSteering(float val)
 	{
@@ -154,6 +156,10 @@ public class Car : MonoBehaviour, ICar {
 	{
 		return acceleration;
 	}
+	public Quaternion GetGyro()
+	{
+	  return gyro;
+  }
 
 	public float GetOrient ()
 	{
@@ -210,7 +216,7 @@ public class Car : MonoBehaviour, ICar {
 
 		float throttle = requestTorque * maxTorque;
 		float steerAngle = requestSteering;
-        float brake = requestBrake;
+		float brake = requestBrake;
 
 
 		//front two tires.
@@ -233,6 +239,8 @@ public class Car : MonoBehaviour, ICar {
 		}
 
 		acceleration = rb.velocity - prevVel;
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 	}
 
 	void FlipUpright()

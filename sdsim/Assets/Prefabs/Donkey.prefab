@@ -550,6 +550,7 @@ GameObject:
   - component: {fileID: 33734187457034856}
   - component: {fileID: 65773801739061638}
   - component: {fileID: 23449541386900906}
+  - component: {fileID: 8255145619947899216}
   m_Layer: 0
   m_Name: body
   m_TagString: Untagged
@@ -590,7 +591,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.73, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &23449541386900906
 MeshRenderer:
@@ -631,6 +632,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!135 &8255145619947899216
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123922780602242}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 1.32, z: 0}
 --- !u!1 &1136738006861236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1552,7 +1566,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382209123900052}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 59.76341, y: 4.5879946, z: 56.364357}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1583,7 +1597,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382209123900052}
   serializedVersion: 2
-  m_Mass: 2000
+  m_Mass: 500
   m_Drag: 0.1
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -1627,7 +1641,7 @@ MonoBehaviour:
   lastSteer: 0
   lastAccel: 0
   activity: keep_lane
-  maxSteer: 7
+  maxSteer: 45
   last_collision: none
   blockControls: 0
 --- !u!114 &114314152752413966
@@ -2287,7 +2301,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.32
   m_SuspensionSpring:
-    spring: 35000
+    spring: 25000
     damper: 1000
     targetPosition: 0.5
   m_SuspensionDistance: 0.15
@@ -2305,7 +2319,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.1
   m_Enabled: 1
 --- !u!1 &1477061125221046
 GameObject:
@@ -2427,7 +2441,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.32
   m_SuspensionSpring:
-    spring: 35000
+    spring: 25000
     damper: 1000
     targetPosition: 0.5
   m_SuspensionDistance: 0.15
@@ -2445,7 +2459,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.1
   m_Enabled: 1
 --- !u!1 &1492330652998922
 GameObject:
@@ -4108,7 +4122,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.32
   m_SuspensionSpring:
-    spring: 35000
+    spring: 25000
     damper: 1000
     targetPosition: 0.5
   m_SuspensionDistance: 0.15
@@ -4126,7 +4140,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.1
   m_Enabled: 1
 --- !u!1 &1869755540700278
 GameObject:
@@ -4569,7 +4583,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.32
   m_SuspensionSpring:
-    spring: 35000
+    spring: 25000
     damper: 1000
     targetPosition: 0.5
   m_SuspensionDistance: 0.15
@@ -4587,7 +4601,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 1.1
   m_Enabled: 1
 --- !u!1 &1994745762937128
 GameObject:
@@ -5130,18 +5144,6 @@ PrefabInstance:
     - target: {fileID: 1094918606176732, guid: 5bb1f14131476c74a95504263bf0558f, type: 3}
       propertyPath: m_Name
       value: SportCar20_Static_EU
-      objectReference: {fileID: 0}
-    - target: {fileID: 1306715505234210, guid: 5bb1f14131476c74a95504263bf0558f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1948355173295162, guid: 5bb1f14131476c74a95504263bf0558f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1984564221714836, guid: 5bb1f14131476c74a95504263bf0558f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4539661262775328, guid: 5bb1f14131476c74a95504263bf0558f, type: 3}
       propertyPath: m_LocalPosition.x

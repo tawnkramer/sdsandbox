@@ -18,10 +18,13 @@ public class FinishLine : MonoBehaviour
 
                 foreach(LapTimer t in status)
                 {
-                    Debug.Log("on timer collide w finish line.");
+                    Debug.Log(parent.name + " timer collide w finish line.");
                     t.OnCollideFinishLine();
                 }
             }
+
+            RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+            rm.OnHitStartLine(col.gameObject);
         }
     }
 }
