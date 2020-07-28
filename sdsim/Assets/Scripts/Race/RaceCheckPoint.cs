@@ -27,29 +27,37 @@ public class RaceCheckPoint : MonoBehaviour
         required_col.Add(ot);
     } 
 
-    public void RemoveBody(GameObject go)
+    public bool RemoveBody(GameObject go)
     {
         for (int iT = 0; iT < required_col.Count; iT++)
         {
             if(required_col[iT].obj == go)
             {
                 required_col.RemoveAt(iT);
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     void OnTriggerEnter(Collider col)
     {
+        int iRemove = -1;
+
         for(int iO = 0; iO < required_col.Count; iO++)
         {
             if(required_col[iO].obj == col.gameObject)
             {
+                iRemove = iO;
                 RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
                 rm.OnHitCheckPoint(col.gameObject, m_iCheckPoint);
-                required_col.RemoveAt(iO);
+                break;
             }
         }
+
+        if(iRemove != -1 && iRemove < required_col.Count)
+            required_col.RemoveAt(iRemove);
     }
 
     // Update is called once per frame
@@ -66,7 +74,10 @@ public class RaceCheckPoint : MonoBehaviour
                     RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
 
                     if (ot.obj != null)
-                        rm.OnCheckPointTimedOut(ot.obj);                    
+                    {
+                        rm.OnCheckPointTimedOut(ot.obj);
+                        break;
+                    }
                 }
             }
     }

@@ -102,6 +102,21 @@ public class Competitor
         camConfig = json;
     }
 
+    public void OnMissedCheckpoint()
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(SendMissCheckpointMsg());
+    }
+
+    IEnumerator SendMissCheckpointMsg()
+    {
+        JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+        json.AddField("msg_type", "missed_checkpoint");
+        if (client != null)
+            client.SendMsg(json);
+
+        yield return null;
+    }
+
     public void OnConnected(JSONObject json)
     {
         
@@ -292,10 +307,14 @@ public class RaceManager : MonoBehaviour
                 foreach (Competitor c in raceState.m_Competitors)
                     AddCompetitorDisplay(c);
             }
+            else
+            {
+                SaveRaceState();
+            }
         }
         catch
         {
-            Debug.LogError("Failed to load " + race_state_filename);    
+            Debug.LogError("Failed to load " + race_state_filename);
         }
 
         if (bDevmode)
@@ -870,6 +889,17 @@ public class RaceManager : MonoBehaviour
         foreach (Competitor c in raceState.m_Competitors)
         {
             if (c.racer_name == race_name)
+                return c;
+        }
+
+        return null;
+    }
+
+    public Competitor GetCompetitorbyCarName(string car_name)
+    {
+        foreach (Competitor c in raceState.m_Competitors)
+        {
+            if (c.car_name == car_name)
                 return c;
         }
 
@@ -2259,7 +2289,21 @@ public class RaceManager : MonoBehaviour
             string msg = System.String.Format("{0} failed to hit next checkpoint!", status[0].car_name);
             SetStatus(msg);
             status[0].OnDisqualified();
+            Competitor c = GetCompetitorbyCarName(status[0].car_name);
+
+            if (c != null)
+            {
+                c.OnMissedCheckpoint();
+            }            
         }
+
+        RemoveCarFromCheckpoints(body);
+    }
+
+    public void RemoveCarFromCheckpoints(GameObject body)
+    {
+        foreach (RaceCheckPoint ch in checkPoints)
+            ch.RemoveBody(body);
     }
 
     bool IsRaceOver()

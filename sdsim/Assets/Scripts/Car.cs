@@ -273,13 +273,18 @@ public class Car : MonoBehaviour, ICar {
 		return last_collision;
 	}
 
-	public void ClearLastCollision()
+    public void SetLastCollision(string col_name)
+    {
+        last_collision = col_name;
+    }
+
+    public void ClearLastCollision()
 	{
 		last_collision = "none";
 	}
 
 	void OnCollisionEnter(Collision col)
 	{
-		last_collision = col.gameObject.name;
+        SetLastCollision(col.gameObject.name);
 	}
 }
