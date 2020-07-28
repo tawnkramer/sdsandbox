@@ -54,7 +54,7 @@ namespace tk
             }
             else
             {
-                Debug.Log("No delegates for msg type: " + msgType);
+                //Debug.Log("No delegates for msg type: " + msgType);
             }
         }
     }

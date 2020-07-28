@@ -89,7 +89,7 @@ namespace tk
 
     public void OnDestroy()
     {
-      if (client)
+      if (client != null && client.dispatcher != null)
         client.dispatcher.Reset();
     }
 

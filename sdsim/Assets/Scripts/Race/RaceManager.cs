@@ -128,7 +128,8 @@ public class RaceState
         Practice,       // 1 HR or more free runs, multiple competitors come and go.
         Qualifying,     // For 30 min prior. All competitors must finish a lap.
         PreEvent,       // Roll up to twitch feed begin.
-        EventIntro,     // Twitch feed begins. Race intro. Competitor list shown
+        EventIntro,     // Twitch feed begins. Race intro.
+        CompeitorIntro, // Competitor list shown
         Stage1PreRace,  // Competitors called to the line. Info screens shown.
         Stage1Race,     // Laps completed or DQ
         Stage1PostRace, // Finish times shown
@@ -142,13 +143,14 @@ public class RaceState
     public RaceState()
     {
         m_State = RaceState.RaceStage.None;
+        m_QueuedState = RaceState.RaceStage.None;
         m_PracticeTime = 60.0f * 30.0f; // 30 minutes
         m_QualTime = 60.0f * 30.0f; //30 minutes
         m_IntroTime = 60.0f * 5.0f;
         m_TimeLimitQual = 100.0f;
         m_TimeDelay = 0.0f;
-        m_TimeToShowRaceSummary = 10.0f;
-        m_BetweenStageTime = 5.0f;
+        m_TimeToShowRaceSummary = 60.0f;
+        m_BetweenStageTime = 10.0f;
         m_TimeLimitRace = 120.0f;
         m_CheckPointDelay = 20.0f;
         m_RacerBioDisplayTime = 15.0f;
@@ -168,6 +170,7 @@ public class RaceState
     }
 
     public RaceStage   m_State;
+    public RaceStage   m_QueuedState;
     public float m_TimeInState;
     public float m_TimeDelay;
     public string m_CurrentQualifier;
@@ -248,6 +251,8 @@ public class RaceManager : MonoBehaviour
     public RaceCheckPoint[] checkPoints;
 
     public RacerBioPanel racerBioPanel;
+
+    public GameObject raceControls;
 
     public bool bRaceActive = false;
     public bool bDevmode = false;
@@ -348,22 +353,22 @@ public class RaceManager : MonoBehaviour
         if (paused)
         {
             pauseButtonText.text = "~";
+            Time.timeScale = 0.0f;
         }
         else
         {
             pauseButtonText.text = "II";
+            Time.timeScale = 1.0f;
         }
-    }
+    }    
 
     public void OnRewindPressed()
     {
         if (raceState.m_State == 0)
             return;
 
+        raceState.m_QueuedState = raceState.m_State - 1;
         HidePopUps();
-        raceState.m_State -= 1;
-        raceState.m_TimeInState = 0.0f;
-        OnStateChange();
     }
 
     public void OnFastForwardPressed()
@@ -371,10 +376,26 @@ public class RaceManager : MonoBehaviour
         if (raceState.m_State == RaceState.RaceStage.Stage2Complete)
             return;
 
+        raceState.m_QueuedState = raceState.m_State + 1;
         HidePopUps();
-        raceState.m_State += 1;
-        raceState.m_TimeInState = 0.0f;
-        OnStateChange();
+    }
+
+    public void ToggleRaceControls()
+    {
+        if(raceControls.activeInHierarchy)
+            raceControls.SetActive(false);
+        else
+            raceControls.SetActive(true);
+    }
+
+    public void OnLoadRace()
+    {
+        LoadRaceState();
+    }
+
+    public void OnSaveRace()
+    {
+        SaveRaceState();
     }
 
     void HidePopUps()
@@ -618,6 +639,10 @@ public class RaceManager : MonoBehaviour
                 OnEventIntroStart();
                 break;
 
+            case RaceState.RaceStage.CompeitorIntro:
+                OnCompetitorIntroStart();
+                break;
+
             case RaceState.RaceStage.Stage1PreRace:
                 OnStage1PreRaceStart();
                 break;
@@ -699,6 +724,10 @@ public class RaceManager : MonoBehaviour
                 OnEventIntroUpdate();
                 break;
 
+            case RaceState.RaceStage.CompeitorIntro:
+                OnCompetitorIntroUpdate();
+                break;
+
             case RaceState.RaceStage.Stage1PreRace:
                 OnStage1PreRaceUpdate();
                 break;
@@ -734,6 +763,13 @@ public class RaceManager : MonoBehaviour
             default:
                 break;
         }
+
+        if(raceState.m_QueuedState != RaceState.RaceStage.None)
+        {
+            raceState.m_State = raceState.m_QueuedState;
+            raceState.m_QueuedState = RaceState.RaceStage.None;
+            Debug.Log("Queued state applied: " + raceState.m_State.ToString());
+        }
     }
 
     void OnPracticeStart()
@@ -762,8 +798,7 @@ public class RaceManager : MonoBehaviour
             if(c.IsOnline())
             {
                 CreateCarFor(c);
-            }
-            
+            }            
         }
 
         ResetRacerDQToStart();
@@ -902,7 +937,10 @@ public class RaceManager : MonoBehaviour
     {
         race_num_laps = 1;
 
-        if(DoDelay())
+        if (!raceCompetitorPanel.gameObject.activeInHierarchy)
+            raceCompetitorPanel.gameObject.SetActive(true);
+
+        if (DoDelay())
         {
             //mainly to allow people to read status.
         }
@@ -936,6 +974,7 @@ public class RaceManager : MonoBehaviour
                 raceState.m_CurrentQualElapsed = 0.0f;
                 OnResetRace();
                 StartRace();
+                SaveRaceState();
 
                 ShowRacerBio(c);
             }    
@@ -1019,6 +1058,8 @@ public class RaceManager : MonoBehaviour
                 {
                     raceState.m_TimeInState = raceState.m_QualTime;
                 }
+
+                SaveRaceState();
             }
         }
 
@@ -1088,12 +1129,22 @@ public class RaceManager : MonoBehaviour
 
     void OnEventIntroUpdate()
     {
-        if (raceState.m_TimeInState > raceState.m_IntroTime / 2.0f)
+        if (raceState.m_TimeInState > raceState.m_IntroTime)
         {
-            raceIntroPanel.SetActive(false);
-            lineupIntroPanel.gameObject.SetActive(true);
+            raceState.m_State = RaceState.RaceStage.CompeitorIntro;            
         }
 
+        SetTimerDisplay(raceState.m_IntroTime - raceState.m_TimeInState);
+    }
+
+    void OnCompetitorIntroStart()
+    {
+        raceIntroPanel.SetActive(false);
+        lineupIntroPanel.gameObject.SetActive(true);
+    }
+
+    void OnCompetitorIntroUpdate()
+    {
         if (raceState.m_TimeInState > raceState.m_IntroTime)
         {
             raceState.m_State = RaceState.RaceStage.Stage1PreRace;
@@ -1101,8 +1152,6 @@ public class RaceManager : MonoBehaviour
             raceIntroGroup.SetActive(false);
             AnnounceDueUp();
         }
-
-        SetTimerDisplay(raceState.m_IntroTime - raceState.m_TimeInState);
     }
 
     List<Pairing> GetStage2List()
@@ -1493,7 +1542,10 @@ public class RaceManager : MonoBehaviour
             {
                 raceState.m_State = RaceState.RaceStage.Stage1Race;
             }
-        }        
+        }
+
+        if (!raceCompetitorPanel.gameObject.activeInHierarchy)
+            raceCompetitorPanel.gameObject.SetActive(true);
 
         SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
     }
@@ -1516,6 +1568,9 @@ public class RaceManager : MonoBehaviour
         {
             raceState.m_State = RaceState.RaceStage.Stage1PostRace;
         }
+
+        if (!raceCompetitorPanel.gameObject.activeInHierarchy)
+            raceCompetitorPanel.gameObject.SetActive(true);
 
         SetTimerDisplay(raceState.m_TimeInState);
     }
@@ -1769,6 +1824,9 @@ public class RaceManager : MonoBehaviour
             }
         }
 
+        if (!raceCompetitorPanel.gameObject.activeInHierarchy)
+            raceCompetitorPanel.gameObject.SetActive(true);
+
         SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
     }
 
@@ -1896,17 +1954,41 @@ public class RaceManager : MonoBehaviour
         SetTimerDisplay(raceState.m_TimeInState);
     }
 
-    public void OnRaceStarted()
+    public void OnRaceRestartPressed()
     {
-         OnResetRace();
+        if (raceState.m_State == RaceState.RaceStage.Qualifying)
+        {
+            raceState.m_CurrentQualElapsed = 0.0f;
+            OnResetRace();
+            StartRace();
+        }
+        else if (raceState.m_State == RaceState.RaceStage.Stage1Race)
+        {
+            RemoveAllCars();
+            raceState.m_QueuedState = RaceState.RaceStage.Stage1PreRace;
+        }
+        else if (raceState.m_State == RaceState.RaceStage.Stage2Race)
+        {
+            RemoveAllCars();
+            raceState.m_QueuedState = RaceState.RaceStage.Stage2PreRace;
+        }
     }
 
     public void OnStopRace()
     {
-        if(bRaceActive)
+        if(raceState.m_State == RaceState.RaceStage.Qualifying)
         {
-            bRaceActive = false;
-            DoRaceSummary();
+            RemoveAllCars();
+            raceState.m_CurrentQualifier = "None";
+            raceState.m_iQual += 1;
+        }
+        else if(raceState.m_State == RaceState.RaceStage.Stage1Race)
+        {
+            raceState.m_QueuedState = RaceState.RaceStage.Stage1PostRace;
+        }
+        else if (raceState.m_State == RaceState.RaceStage.Stage2Race)
+        {
+            raceState.m_QueuedState = RaceState.RaceStage.Stage2PostRace;
         }
     }
 
