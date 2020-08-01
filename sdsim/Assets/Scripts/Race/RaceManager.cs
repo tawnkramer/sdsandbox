@@ -166,6 +166,7 @@ public class RaceState
         m_TimeDelay = 0.0f;
         m_TimeToShowRaceSummary = 60.0f;
         m_BetweenStageTime = 10.0f;
+        m_BetweenStageTwoTime = 20.0f;
         m_TimeLimitRace = 120.0f;
         m_CheckPointDelay = 20.0f;
         m_RacerBioDisplayTime = 15.0f;
@@ -204,6 +205,7 @@ public class RaceState
     public float m_IntroTime;
     public float m_TimeLimitQual;
     public float m_BetweenStageTime;
+    public float m_BetweenStageTwoTime;
     public float m_TimeLimitRace;
     public int m_MinCompetitorCount;
     public float m_RacerBioDisplayTime;
@@ -349,7 +351,20 @@ public class RaceManager : MonoBehaviour
         if (filepath == "default")
             filepath = GetLogPath() + "race_state.xml";
 
-        raceState.Write(filepath);
+        // auto insert the current state and a time val to
+        // help role the raceback to any state easilly.
+        // first strip off the .xml
+        string p = filepath.Substring(0, filepath.Length - 4);
+        p += "_";
+        p += raceState.m_State.ToString();
+        p += "_";
+        int t = (int)Time.realtimeSinceStartup;
+        p += t.ToString();
+        p += ".xml";
+        
+        Debug.Log("saving race to: " + p);
+        
+        raceState.Write(p);
     }
 
     void LoadRaceState()
@@ -360,7 +375,48 @@ public class RaceManager : MonoBehaviour
             filepath = GetLogPath() + "race_state.xml";
 
         raceState = RaceState.Read(filepath);
+
+        // Once we've read this state, update the ladder UI with previous results.
+        if(raceState.m_Stage1Order.Count > 0)
+        {
+            lineupIntroPanel.Init(raceState.m_Stage1Order);
+            SetStageOneResults(raceState.m_Stage1Order);
+        }
+
+        if(raceState.m_Stage2a_4pairs.Count > 0)
+        {
+            racerLadder.Init(raceState.m_Stage2a_4pairs, 0);
+            SetLadderPairingResults(raceState.m_Stage2a_4pairs, 0);
+        }
+
+        if(raceState.m_Stage2b_2pairs.Count > 0)
+        {
+            racerLadder.Init(raceState.m_Stage2b_2pairs, 1);
+            SetLadderPairingResults(raceState.m_Stage2b_2pairs, 1);
+        }
+
+        if(raceState.m_Stage2c_final.Count > 0)
+        {
+            racerLadder.Init(raceState.m_Stage2c_final, 2);
+            SetLadderPairingResults(raceState.m_Stage2c_final, 2);
+        }
+
+        SetStatus("Loaded race state from file.");
     }
+
+    void SetStageOneResults(List<Pairing> pairs)
+    {
+        foreach(Pairing p in pairs)
+            if(p.time1 > 0.0)
+                lineupIntroPanel.SetResult(p);
+    }    
+
+    void SetLadderPairingResults(List<Pairing> pairs, int stage)
+    {
+        foreach(Pairing p in pairs)
+            if(p.time1 > 0.0)
+                racerLadder.SetResult(p, stage);
+    }    
 
     public void OnPausePressed()
     {
@@ -1831,6 +1887,8 @@ public class RaceManager : MonoBehaviour
 
         CreateCarsForPairing(p);
 
+        BlockCarsFromMoving();
+
         int numCars = GetNumCars();
 
         if (numCars == p.GetNumRacers() && numCars == 1)
@@ -1839,13 +1897,13 @@ public class RaceManager : MonoBehaviour
             raceState.m_State = RaceState.RaceStage.Stage2PostRace;
         }
 
-        if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        if (raceState.m_TimeInState > raceState.m_BetweenStageTwoTime)
         {
             if (numCars != p.GetNumRacers())
             {
                 SetStatus("Waiting for competitors to connect.");
                 raceState.m_TimeInState = 0.0f;
-            }            
+            }
             else
             {
                 OnResetRace();
@@ -1857,7 +1915,7 @@ public class RaceManager : MonoBehaviour
         if (!raceCompetitorPanel.gameObject.activeInHierarchy)
             raceCompetitorPanel.gameObject.SetActive(true);
 
-        SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
+        SetTimerDisplay(raceState.m_BetweenStageTwoTime - raceState.m_TimeInState);
     }
 
     void OnStage2RaceStart()
@@ -1933,7 +1991,7 @@ public class RaceManager : MonoBehaviour
 
     void OnStage2PostRaceUpdate()
     {
-        if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        if (raceState.m_TimeInState > raceState.m_BetweenStageTwoTime)
         {
             bool re_start = false;
 
@@ -1956,7 +2014,7 @@ public class RaceManager : MonoBehaviour
             }            
         }
 
-        SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
+        SetTimerDisplay(raceState.m_BetweenStageTwoTime - raceState.m_TimeInState);
     }
 
     void OnStage2CompleteStart()

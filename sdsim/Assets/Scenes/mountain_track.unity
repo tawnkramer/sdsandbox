@@ -13074,6 +13074,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.x
       value: 0.8975038
       objectReference: {fileID: 0}
+    - target: {fileID: 6256646848407398419, guid: f4e72e332a1824d4ba5e92b69ad024d0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6256646848625271365, guid: f4e72e332a1824d4ba5e92b69ad024d0,
         type: 3}
       propertyPath: m_textInfo.characterCount

@@ -455,10 +455,7 @@ namespace tk
                 RaceCheckPoint[] checkPoints = GameObject.FindObjectsOfType<RaceCheckPoint>();
                 foreach (RaceCheckPoint cp in checkPoints)
                 {
-                    if(cp.RemoveBody(body))
-                       Debug.Log("resetting checkpoint.");
-                    else
-                       Debug.LogWarning("failed to reset checkpoint.");
+                    cp.RemoveBody(body);
                 }
             }
             else
