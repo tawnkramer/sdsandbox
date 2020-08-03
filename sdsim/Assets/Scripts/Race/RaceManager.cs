@@ -102,15 +102,17 @@ public class Competitor
         camConfig = json;
     }
 
-    public void OnMissedCheckpoint()
+    public void OnDQ(bool missedCheckpoint)
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(SendMissCheckpointMsg());
+        UnityMainThreadDispatcher.Instance().Enqueue(SendDQMsg(missedCheckpoint));
     }
 
-    IEnumerator SendMissCheckpointMsg()
+    IEnumerator SendDQMsg(bool missedCheckpoint)
     {
         JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-        json.AddField("msg_type", "missed_checkpoint");
+        json.AddField("msg_type", "DQ");
+        json.AddField("missed_cp", missedCheckpoint);
+
         if (client != null)
             client.SendMsg(json);
 
@@ -1993,18 +1995,18 @@ public class RaceManager : MonoBehaviour
     {
         if (raceState.m_TimeInState > raceState.m_BetweenStageTwoTime)
         {
-            bool re_start = false;
+            bool restart = false;
 
             if (DidAllRacersDQ())
             {
-                re_start = true;
+                restart = true;
             }
             else
             {
                 raceState.m_Stage2Next += 1; //needs to hit limit and go to stage 2.
             }
 
-            if (raceState.m_Stage2c_final.Count == 1 && !re_start)
+            if (raceState.m_Stage2c_final.Count == 1 && !restart)
             {
                 raceState.m_State = RaceState.RaceStage.Stage2Complete;
             }
@@ -2062,7 +2064,7 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    public void OnStopRace()
+    public void OnStopRacePressed()
     {
         if(raceState.m_State == RaceState.RaceStage.Qualifying)
         {
@@ -2077,6 +2079,24 @@ public class RaceManager : MonoBehaviour
         else if (raceState.m_State == RaceState.RaceStage.Stage2Race)
         {
             raceState.m_QueuedState = RaceState.RaceStage.Stage2PostRace;
+        }
+    }
+
+    public void OnDQPressed()
+    {
+        Car[] cars = GameObject.FindObjectsOfType<Car>();
+        foreach(Car car in cars)
+        {
+            LapTimer timer = car.gameObject.transform.GetComponentInChildren<LapTimer>();
+
+            if(timer == null)
+                continue;
+
+            if(!timer.IsDisqualified())
+            {
+                OnCarDQ(car.gameObject, true);
+                break;
+            }
         }
     }
 
@@ -2269,12 +2289,32 @@ public class RaceManager : MonoBehaviour
         LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
 
         if(status != null)
-            status.OnDisqualified();        
+        {
+            string msg = System.String.Format("{0} out of bounds!", status.car_name);
+            SetStatus(msg);
+        }
+        
+        OnCarDQ(car, false);
+    }
 
-        tk.TcpCarHandler handler = car.GetComponentInChildren<tk.TcpCarHandler>();
+    public void OnCarDQ(GameObject car, bool missedCheckpoint)
+    {
+        LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
 
-        if (handler)
-            handler.SendDQRaceMsg();
+        if(status != null)
+        {    
+            status.OnDisqualified();
+
+            Competitor c = GetCompetitorbyCarName(status.car_name);
+
+            if(c != null)
+                c.OnDQ(missedCheckpoint);
+        }
+
+        GameObject body = CarSpawner.getChildGameObject(car, "body");
+    
+        if(body != null)
+            RemoveCarFromCheckpoints(body);
     }
 
     public void OnCarCrosStartLine(GameObject car)
@@ -2330,10 +2370,10 @@ public class RaceManager : MonoBehaviour
     public void OnHitCheckPoint(GameObject body, int iCheckPoint)
     {
         Transform car = body.transform.parent;
-        LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
-        if(status.Length == 1)
+        LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
+        if(status != null)
         {
-            string msg = System.String.Format("{0} hit checkpoint {1} at {2:F2}!", status[0].car_name, iCheckPoint, status[0].GetCurrentLapTimeSec());
+            string msg = System.String.Format("{0} hit checkpoint {1} at {2:F2}!", status.car_name, iCheckPoint, status.GetCurrentLapTimeSec());
             SetStatus(msg);
         }
     }
@@ -2341,21 +2381,15 @@ public class RaceManager : MonoBehaviour
     public void OnCheckPointTimedOut(GameObject body)
     {
         Transform car = body.transform.parent;
-        LapTimer[] status = car.GetComponentsInChildren<LapTimer>();
-        if(status.Length == 1)
+        LapTimer status = car.GetComponentInChildren<LapTimer>();
+        
+        if(status != null)
         {
-            string msg = System.String.Format("{0} failed to hit next checkpoint!", status[0].car_name);
+            string msg = System.String.Format("{0} failed to hit next checkpoint!", status.car_name);
             SetStatus(msg);
-            status[0].OnDisqualified();
-            Competitor c = GetCompetitorbyCarName(status[0].car_name);
-
-            if (c != null)
-            {
-                c.OnMissedCheckpoint();
-            }            
         }
 
-        RemoveCarFromCheckpoints(body);
+        OnCarDQ(car.gameObject, true);
     }
 
     public void RemoveCarFromCheckpoints(GameObject body)
