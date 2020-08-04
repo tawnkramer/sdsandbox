@@ -284,7 +284,7 @@ public class RaceManager : MonoBehaviour
 
     public int race_num_laps = 2;
     public static float dq_time = 1000000.0f;
-    string race_state_filename = "default";
+    public string race_state_filename = "default";
 
     List<Competitor> m_TempCompetitors = new List<Competitor>();
 
@@ -378,8 +378,20 @@ public class RaceManager : MonoBehaviour
 
         raceState = RaceState.Read(filepath);
 
+        // if saved during a race, switch to pre-race state.
+        if (raceState.m_State == RaceState.RaceStage.Stage2Race)
+            raceState.m_State = RaceState.RaceStage.Stage2PreRace;
+        else if (raceState.m_State == RaceState.RaceStage.Stage1Race)
+            raceState.m_State = RaceState.RaceStage.Stage1PreRace;
+
+        // All competitors don't have a car. So reset that var.
+        foreach(Competitor c in raceState.m_Competitors)
+        {
+            c.has_car = false;
+        }
+
         // Once we've read this state, update the ladder UI with previous results.
-        if(raceState.m_Stage1Order.Count > 0)
+        if (raceState.m_Stage1Order.Count > 0)
         {
             lineupIntroPanel.Init(raceState.m_Stage1Order);
             SetStageOneResults(raceState.m_Stage1Order);
@@ -2000,10 +2012,16 @@ public class RaceManager : MonoBehaviour
             if (DidAllRacersDQ())
             {
                 restart = true;
+
+                // The times need to be reset to cause the race to go again.
+                Pairing p = GetCurrentPairing();
+                p.time1 = 0.0f;
+                p.time2 = 0.0f;
             }
             else
             {
-                raceState.m_Stage2Next += 1; //needs to hit limit and go to stage 2.
+                // needs to hit limit and go to stage 2.
+                raceState.m_Stage2Next += 1;
             }
 
             if (raceState.m_Stage2c_final.Count == 1 && !restart)
