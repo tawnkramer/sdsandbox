@@ -1154,13 +1154,6 @@ public class RaceManager : MonoBehaviour
                 raceState.m_CurrentQualifier = "None";
                 raceState.m_TimeDelay = 3.0f;
 
-                int numQualified = GetNumQualified();
-
-                if (numQualified == raceState.m_Competitors.Count)
-                {
-                    raceState.m_TimeInState = raceState.m_QualTime;
-                }
-
                 SaveRaceState();
             }
         }
@@ -2595,12 +2588,11 @@ public class RaceManager : MonoBehaviour
     public void AddCompetitor(Competitor c)
     {
         if(GetCompetitorbyName(c.racer_name) != null)
-            Debug.LogError("Shouldnt' be adding racer twice! " + c.racer_name);
+            Debug.LogError("Shouldn't be adding racer twice! " + c.racer_name);
 
         Debug.Log("Adding new competitor: " + c.racer_name);
         raceState.m_Competitors.Add(c);
     }
-
     
     IEnumerator SetRacerInfo(Competitor competitor)
     {
@@ -2613,9 +2605,13 @@ public class RaceManager : MonoBehaviour
             if(raceState.m_State == RaceState.RaceStage.Practice)
                 ShowRacerBio(competitor);
 
-            // Only add the competitor once we have their full info.
-            AddCompetitor(competitor);
-            AddCompetitorDisplay(competitor);
+            // Can't add competitors during the race.
+            if (raceState.m_State <= RaceState.RaceStage.Qualifying)
+            {
+                // Only add the competitor once we have their full info.
+                AddCompetitor(competitor);
+                AddCompetitorDisplay(competitor);
+            }            
         }
         else
         {
