@@ -17,7 +17,7 @@ public class RacePairUI : MonoBehaviour
     public Color win_color;
     public Color loss_color;
 
-    public void Start()
+    public void Awake()
     {
         racer1time.text = "";
         racer2time.text = "";
