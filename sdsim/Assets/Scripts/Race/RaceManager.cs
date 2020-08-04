@@ -175,6 +175,7 @@ public class RaceState
         m_MinCompetitorCount = 3;
         m_RaceRestartsLimit = 3;
         m_RaceRestarts = 0;
+        m_AnyCompetitorFinishALap = false;
         m_CurrentQualifier = "None";
         m_iQual = 0;
         m_Stage1Next = 0;
@@ -198,6 +199,7 @@ public class RaceState
     public int m_Stage2Next;  // index of next pairing
     public int m_RaceRestarts;  // number of restarts.
     public int m_RaceRestartsLimit;  // max number of restarts.
+    public bool m_AnyCompetitorFinishALap; // need to keep this because timers destroyed and this flag helps keep result in double DQ case.
 
 
     //constants
@@ -1717,7 +1719,10 @@ public class RaceManager : MonoBehaviour
         if (ta == null)
             return;
 
-        if(ta.IsDisqualified())
+        if (ta.GetNumLapsCompleted() > 0)
+            raceState.m_AnyCompetitorFinishALap = true;
+
+        if (ta.IsDisqualified())
         {
             p.time1 = dq_time;
         }
@@ -1730,6 +1735,9 @@ public class RaceManager : MonoBehaviour
             p.time2 = b != null ? GetBestTime(b.car_name) : dq_time;
             b.best_stage1_time = p.time2;
             LapTimer tb = GetLapTimer(b.car_name);
+
+            if (tb.GetNumLapsCompleted() > 0)
+                raceState.m_AnyCompetitorFinishALap = true;
 
             if (tb.IsDisqualified())
             {
@@ -1756,7 +1764,7 @@ public class RaceManager : MonoBehaviour
     {
         Pairing p = GetCurrentPairing();
         return p.time1 == dq_time || p.time2 == dq_time;
-    }
+    }   
 
     void OnStage1PostRaceUpdate()
     {
@@ -1767,13 +1775,18 @@ public class RaceManager : MonoBehaviour
 
         if(raceState.m_TimeInState > raceState.m_TimeToShowRaceSummary)
         {
-            if(DidAllRacersDQ() && raceState.m_RaceRestarts < raceState.m_RaceRestartsLimit)
+            if(DidAllRacersDQ() && raceState.m_RaceRestarts < raceState.m_RaceRestartsLimit && !raceState.m_AnyCompetitorFinishALap)
             {
                 SetStatus("All racers DQ'ed. Restarting race!");
                 raceState.m_RaceRestarts += 1;
             }
             else
             {
+                if (DidAllRacersDQ() && raceState.m_RaceRestarts >= raceState.m_RaceRestartsLimit)
+                {
+                    SetStatus("Hit limit of restarts. Racers accept times!");
+                }
+
                 raceState.m_RaceRestarts = 0;
                 raceState.m_Stage1Next += 1; //needs to hit limit and go to stage 2.
             }
@@ -1961,8 +1974,12 @@ public class RaceManager : MonoBehaviour
         }
         else if (ta.IsDisqualified())
         {
-            p.time1 = dq_time;
+            if(ta.GetNumLapsCompleted() == 0)                
+                p.time1 = dq_time;
         }
+
+        if (ta.GetNumLapsCompleted() > 0)
+            raceState.m_AnyCompetitorFinishALap = true;
 
         Competitor b = GetCompetitorbyName(p.name2);
 
@@ -1973,8 +1990,12 @@ public class RaceManager : MonoBehaviour
 
             if (tb.IsDisqualified())
             {
-                p.time2 = dq_time;
+                if (tb.GetNumLapsCompleted() == 0)
+                    p.time2 = dq_time;
             }
+
+            if (tb.GetNumLapsCompleted() > 0)
+                raceState.m_AnyCompetitorFinishALap = true;
         }
         else
         {
@@ -1986,7 +2007,7 @@ public class RaceManager : MonoBehaviour
 
         RemoveAllCars();
 
-        if (DidAllRacersDQ())
+        if (DidAllRacersDQ() && !raceState.m_AnyCompetitorFinishALap)
         {
             SetStatus("All racers DQ'ed. Restarting race!");
         }
@@ -2009,7 +2030,7 @@ public class RaceManager : MonoBehaviour
         {
             bool restart = false;
 
-            if (DidAllRacersDQ())
+            if (DidAllRacersDQ() && !raceState.m_AnyCompetitorFinishALap)
             {
                 restart = true;
 
@@ -2207,7 +2228,7 @@ public class RaceManager : MonoBehaviour
             cp.Reset();
         }
 
-
+        raceState.m_AnyCompetitorFinishALap = false;
         raceCamSwitcher.gameObject.SetActive(true);
         ResetRaceCams();
     }
