@@ -467,7 +467,31 @@ public class RaceManager : MonoBehaviour
         if (raceState.m_State == RaceState.RaceStage.Stage2Complete)
             return;
 
-        raceState.m_QueuedState = raceState.m_State + 1;
+        if (raceState.m_State == RaceState.RaceStage.Stage2PostRace)
+        {
+            OnLeaveStage2PostRace(true);
+        }
+        else if (raceState.m_State == RaceState.RaceStage.Stage1PostRace)
+        {
+            OnLeaveStage1PostRace(true);
+        }
+        else if (raceState.m_State == RaceState.RaceStage.Qualifying)
+        {
+            // Give all competitors random qual time.
+            foreach(Competitor c in raceState.m_Competitors)
+            {
+                if (c.qual_time == 0.0f)
+                    c.qual_time = UnityEngine.Random.Range(30.0f, 35.0f);
+            }
+
+            raceState.m_QueuedState = raceState.m_State + 1;
+        }
+        else
+        {
+            raceState.m_QueuedState = raceState.m_State + 1;
+        }
+        
+
         HidePopUps();
     }
 
@@ -1768,35 +1792,46 @@ public class RaceManager : MonoBehaviour
 
         if(raceState.m_TimeInState > raceState.m_TimeToShowRaceSummary)
         {
-            if(DidAllRacersDQ() && raceState.m_RaceRestarts < raceState.m_RaceRestartsLimit && !raceState.m_AnyCompetitorFinishALap)
-            {
-                SetStatus("All racers DQ'ed. Restarting race!");
-                raceState.m_RaceRestarts += 1;
-            }
-            else
-            {
-                if (DidAllRacersDQ() && raceState.m_RaceRestarts >= raceState.m_RaceRestartsLimit)
-                {
-                    SetStatus("Hit limit of restarts. Racers accept times!");
-                }
-
-                raceState.m_RaceRestarts = 0;
-                raceState.m_Stage1Next += 1; //needs to hit limit and go to stage 2.
-            }
-
-            lineupIntroPanel.gameObject.SetActive(false);
-
-            if (raceState.m_Stage1Next >= raceState.m_Stage1Order.Count)
-            {
-                raceState.m_State = RaceState.RaceStage.Stage1Completed;
-            }
-            else
-            {
-                raceState.m_State = RaceState.RaceStage.Stage1PreRace;
-            }
+            OnLeaveStage1PostRace(false);
         }
 
         SetTimerDisplay(raceState.m_TimeToShowRaceSummary - raceState.m_TimeInState);
+    }
+
+    void OnLeaveStage1PostRace(bool ff)
+    {
+        if (DidAllRacersDQ() && raceState.m_RaceRestarts < raceState.m_RaceRestartsLimit && !raceState.m_AnyCompetitorFinishALap)
+        {
+            SetStatus("All racers DQ'ed. Restarting race!");
+            raceState.m_RaceRestarts += 1;
+        }
+        else
+        {
+            if (DidAllRacersDQ() && raceState.m_RaceRestarts >= raceState.m_RaceRestartsLimit)
+            {
+                SetStatus("Hit limit of restarts. Racers accept times!");
+            }
+
+            raceState.m_RaceRestarts = 0;
+            raceState.m_Stage1Next += 1; //needs to hit limit and go to stage 2.
+        }
+
+        lineupIntroPanel.gameObject.SetActive(false);
+
+        if (raceState.m_Stage1Next >= raceState.m_Stage1Order.Count)
+        {
+            if(ff)
+                raceState.m_QueuedState = RaceState.RaceStage.Stage1Completed;
+            else
+                raceState.m_State = RaceState.RaceStage.Stage1Completed;
+        }
+        else
+        {
+            if (ff)
+                raceState.m_QueuedState = RaceState.RaceStage.Stage1PreRace;
+            else
+                raceState.m_State = RaceState.RaceStage.Stage1PreRace;
+        }
     }
 
     void OnStage1CompletedStart()
@@ -2021,34 +2056,45 @@ public class RaceManager : MonoBehaviour
     {
         if (raceState.m_TimeInState > raceState.m_BetweenStageTwoTime)
         {
-            bool restart = false;
-
-            if (DidAllRacersDQ() && !raceState.m_AnyCompetitorFinishALap)
-            {
-                restart = true;
-
-                // The times need to be reset to cause the race to go again.
-                Pairing p = GetCurrentPairing();
-                p.time1 = 0.0f;
-                p.time2 = 0.0f;
-            }
-            else
-            {
-                // needs to hit limit and go to stage 2.
-                raceState.m_Stage2Next += 1;
-            }
-
-            if (raceState.m_Stage2c_final.Count == 1 && !restart)
-            {
-                raceState.m_State = RaceState.RaceStage.Stage2Complete;
-            }
-            else
-            {
-                raceState.m_State = RaceState.RaceStage.Stage2PreRace;
-            }            
+            OnLeaveStage2PostRace(false);            
         }
 
         SetTimerDisplay(raceState.m_BetweenStageTwoTime - raceState.m_TimeInState);
+    }
+
+    void OnLeaveStage2PostRace(bool ff)
+    {
+        bool restart = false;
+
+        if (DidAllRacersDQ() && !raceState.m_AnyCompetitorFinishALap)
+        {
+            restart = true;
+
+            // The times need to be reset to cause the race to go again.
+            Pairing p = GetCurrentPairing();
+            p.time1 = 0.0f;
+            p.time2 = 0.0f;
+        }
+        else
+        {
+            // needs to hit limit and go to stage 2.
+            raceState.m_Stage2Next += 1;
+        }
+
+        if (raceState.m_Stage2c_final.Count == 1 && !restart)
+        {
+            if (ff)
+                raceState.m_QueuedState = RaceState.RaceStage.Stage2Complete;
+            else
+                raceState.m_State = RaceState.RaceStage.Stage2Complete;
+        }
+        else
+        {
+            if (ff)
+                raceState.m_QueuedState = RaceState.RaceStage.Stage2PreRace;
+            else
+                raceState.m_State = RaceState.RaceStage.Stage2PreRace;
+        }
     }
 
     void OnStage2CompleteStart()
@@ -2098,20 +2144,7 @@ public class RaceManager : MonoBehaviour
 
     public void OnStopRacePressed()
     {
-        if(raceState.m_State == RaceState.RaceStage.Qualifying)
-        {
-            RemoveAllCars();
-            raceState.m_CurrentQualifier = "None";
-            raceState.m_iQual += 1;
-        }
-        else if(raceState.m_State == RaceState.RaceStage.Stage1Race)
-        {
-            raceState.m_QueuedState = RaceState.RaceStage.Stage1PostRace;
-        }
-        else if (raceState.m_State == RaceState.RaceStage.Stage2Race)
-        {
-            raceState.m_QueuedState = RaceState.RaceStage.Stage2PostRace;
-        }
+        DQAll();        
     }
 
     public void OnDQPressed()
@@ -2128,6 +2161,23 @@ public class RaceManager : MonoBehaviour
             {
                 OnCarDQ(car.gameObject, true);
                 break;
+            }
+        }
+    }
+
+    public void DQAll()
+    {
+        Car[] cars = GameObject.FindObjectsOfType<Car>();
+        foreach (Car car in cars)
+        {
+            LapTimer timer = car.gameObject.transform.GetComponentInChildren<LapTimer>();
+
+            if (timer == null)
+                continue;
+
+            if (!timer.IsDisqualified())
+            {
+                OnCarDQ(car.gameObject, true);
             }
         }
     }
