@@ -93,6 +93,53 @@ MonoBehaviour:
   infoPanel: {fileID: 5950194370275819265}
   online_color: {r: 0, g: 0, b: 0, a: 1}
   offline_color: {r: 0.509434, g: 0.028835895, b: 0.028835895, a: 1}
+  raceState:
+    m_State: 0
+    m_QueuedState: 0
+    m_TimeInState: 0
+    m_TimeDelay: 0
+    m_CurrentQualifier: None
+    m_iQual: 0
+    m_CurrentQualElapsed: 0
+    m_Stage1Next: 0
+    m_Stage2Next: 0
+    m_RaceRestarts: 0
+    m_RaceRestartsLimit: 3
+    m_AnyCompetitorFinishALap: 0
+    m_CheckPointDelay: 20
+    m_PracticeTime: 1800
+    m_QualTime: 1800
+    m_IntroTime: 300
+    m_TimeLimitQual: 100
+    m_BetweenStageTime: 10
+    m_BetweenStageTwoTime: 20
+    m_TimeLimitRace: 120
+    m_MinCompetitorCount: 3
+    m_RacerBioDisplayTime: 15
+    m_TimeToShowRaceSummary: 60
+    m_Stage1Order: []
+    m_Stage2a_4pairs: []
+    m_Stage2b_2pairs: []
+    m_Stage2c_final: []
+    m_Competitors: []
+  comp:
+    raceMan: {fileID: 0}
+    client: {fileID: 0}
+    car_name: 
+    racer_name: 
+    country: 
+    info: 
+    has_car: 0
+    got_qual_attempt: 0
+    dropped: 0
+    qual_place: 0
+    stage1_place: 0
+    stage2_place: 0
+    qual_time: 0
+    best_stage1_time: 0
+    best_stage2_time: 0
+    stage1_lap_times: []
+    stage2_lap_times: []
 --- !u!1 &247364741196534976
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,11 +205,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 50
+    m_FontSize: 214
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 5
-    m_MaxSize: 81
+    m_MinSize: 0
+    m_MaxSize: 214
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -280,8 +327,8 @@ RectTransform:
   m_Father: {fileID: 247364740256288782}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.7484861, y: 0.0000057264106}
-  m_AnchorMax: {x: 1, y: 0.5472025}
+  m_AnchorMin: {x: 0.59385264, y: 0.0000057264106}
+  m_AnchorMax: {x: 1, y: 0.6639211}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

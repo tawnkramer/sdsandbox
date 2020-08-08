@@ -158,7 +158,7 @@ public class RaceState
         Qualifying,     // For 30 min prior. All competitors must finish a lap.
         PreEvent,       // Roll up to twitch feed begin.
         EventIntro,     // Twitch feed begins. Race intro.
-        CompeitorIntro, // Competitor list shown
+        CompetitorIntro, // Competitor list shown
         Stage1PreRace,  // Competitors called to the line. Info screens shown.
         Stage1Race,     // Laps completed or DQ
         Stage1PostRace, // Finish times shown
