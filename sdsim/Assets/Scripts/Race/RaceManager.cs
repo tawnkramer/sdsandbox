@@ -173,7 +173,7 @@ public class RaceState
     {
         m_State = RaceState.RaceStage.None;
         m_QueuedState = RaceState.RaceStage.None;
-        m_PracticeTime = 60.0f * 30.0f; // 30 minutes
+        m_PracticeTime = 100 * 60.0f * 30.0f; // 30 minutes
         m_QualTime = 60.0f * 30.0f; //30 minutes
         m_IntroTime = 60.0f * 5.0f;
         m_TimeLimitQual = 100.0f;
@@ -769,7 +769,7 @@ public class RaceManager : MonoBehaviour
                 OnEventIntroStart();
                 break;
 
-            case RaceState.RaceStage.CompeitorIntro:
+            case RaceState.RaceStage.CompetitorIntro:
                 OnCompetitorIntroStart();
                 break;
 
@@ -854,7 +854,7 @@ public class RaceManager : MonoBehaviour
                 OnEventIntroUpdate();
                 break;
 
-            case RaceState.RaceStage.CompeitorIntro:
+            case RaceState.RaceStage.CompetitorIntro:
                 OnCompetitorIntroUpdate();
                 break;
 
@@ -1265,7 +1265,7 @@ public class RaceManager : MonoBehaviour
     {
         if (raceState.m_TimeInState > raceState.m_IntroTime)
         {
-            raceState.m_State = RaceState.RaceStage.CompeitorIntro;            
+            raceState.m_State = RaceState.RaceStage.CompetitorIntro;            
         }
 
         SetTimerDisplay(raceState.m_IntroTime - raceState.m_TimeInState);
