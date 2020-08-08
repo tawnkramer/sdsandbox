@@ -57,6 +57,7 @@ public class Competitor
     public string info;
     public bool has_car;
     public bool got_qual_attempt = false;
+    public bool dropped = false;
 
     public JSONObject carConfig;
     public JSONObject camConfig;
@@ -133,7 +134,18 @@ public class Pairing
     public float time1;
     public float time2;
 
-    public int GetNumRacers() { return name2 == "solo" ? 1 : 2; }
+    public int GetNumRacers()
+    {
+        int n = 0;
+
+        if (name1 != "drop")
+            n++;
+
+        if (name2 != "solo" && name2 != "drop")
+            n++;
+
+        return n;
+    }
 }
 
 [Serializable]
@@ -272,6 +284,7 @@ public class RaceManager : MonoBehaviour
     public RaceCheckPoint[] checkPoints;
 
     public RacerBioPanel racerBioPanel;
+    public DropCompetitorUI dropCompetitorPanel;
 
     public GameObject raceControls;
 
@@ -283,6 +296,8 @@ public class RaceManager : MonoBehaviour
     int raceCompetitorHeight = 50;
     bool paused = false;
     public Text pauseButtonText;
+
+    string removeRacerName = "";
 
     public int race_num_laps = 2;
     public static float dq_time = 1000000.0f;
@@ -1291,10 +1306,10 @@ public class RaceManager : MonoBehaviour
     private static int QualTimeSort(Competitor x, 
                             Competitor y) 
     {
-        if (x.qual_time == 0.0f)
+        if (x.qual_time == 0.0f || x.dropped)
             return 1;
 
-        if (y.qual_time == 0.0f)
+        if (y.qual_time == 0.0f || y.dropped)
             return -1;
 
         return x.qual_time.CompareTo(y.qual_time);
@@ -1397,12 +1412,24 @@ public class RaceManager : MonoBehaviour
 
     void TrimToTopEightCompetitors()
     {
+        //remove dropped competitors.
+        for (int i = raceState.m_Competitors.Count - 1; i >= 0; i--)
+        {
+            Competitor c = raceState.m_Competitors[i];
+
+            if (c.dropped)
+                raceState.m_Competitors.RemoveAt(i);
+        }
+
         raceState.m_Competitors.Sort(Stage1TimeSort);
         List<Competitor> stage2Competitors = new List<Competitor>();
 
         //only the top 8 go through.
         for (int i = 0; i < raceState.m_Competitors.Count && i < 8; i++)
-            stage2Competitors.Add(raceState.m_Competitors[i]);
+        {
+            Competitor c = raceState.m_Competitors[i];
+            stage2Competitors.Add(c);
+        }
 
         //Re-make the list with just remaining competitors.
         raceState.m_Competitors.Clear();
@@ -1580,7 +1607,11 @@ public class RaceManager : MonoBehaviour
         {
             string dueUp;
 
-            if (p.GetNumRacers() == 1)
+            if (p.GetNumRacers() == 0)
+            {
+                dueUp = "Due up: No competitors.";
+            }
+            else if (p.GetNumRacers() == 1)
             {
                 dueUp = System.String.Format("Odd number of competitors, so {0} races alone for time.", p.name1);
             }
@@ -1639,6 +1670,70 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    void ShowRemoveRacerDialog()
+    {
+        Pairing p = GetCurrentPairing();
+
+        Competitor c1 = GetCompetitorbyName(p.name1);
+        Competitor c2 = GetCompetitorbyName(p.name2);
+
+        if(c1 != null && !c1.has_car && !c1.dropped)
+        {
+            removeRacerName = p.name1;
+        }
+        else if (c2 != null && !c2.has_car && !c2.dropped)
+        {
+            removeRacerName = p.name2;
+        }
+
+        if (removeRacerName.Length < 1)
+            return;
+
+        dropCompetitorPanel.gameObject.SetActive(true);
+        dropCompetitorPanel.prompt.text = System.String.Format("{0} has not connected. Would you like to remove them from the race?", removeRacerName);
+    }
+
+    public void OnChooseToRemoveRacer()
+    {
+        dropCompetitorPanel.gameObject.SetActive(false);
+
+        Pairing p = GetCurrentPairing();
+
+        Competitor c = GetCompetitorbyName(removeRacerName);
+
+        if (c != null)
+            c.dropped = true;
+        else
+            return;
+
+        if (p.name1 == removeRacerName)
+        {
+            if (p.name2 != "solo")
+                p.name1 = p.name2;
+            else
+                p.name1 = "drop";
+
+            p.name2 = "solo";
+        }
+        else if (p.name2 == removeRacerName)
+        {
+            p.name2 = "solo";            
+        }
+
+        string msg = System.String.Format("{0} has been dropped from the event.", removeRacerName);
+        SetStatus(msg);
+
+        removeRacerName = "";
+        
+        SaveRaceState();
+    }
+
+    public void OnCancelRemoveRacer()
+    {
+        dropCompetitorPanel.gameObject.SetActive(false);
+        removeRacerName = "";
+    }
+
     void OnStage1PreRaceUpdate()
     {
         Pairing p = GetCurrentPairing();
@@ -1650,14 +1745,28 @@ public class RaceManager : MonoBehaviour
 
         BlockCarsFromMoving();
 
-        if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        if (p.GetNumRacers() == 0)
         {
-            if (numCars != p.GetNumRacers())
-            {
+            SetStatus("No competitors to race.");
+            raceState.m_State = RaceState.RaceStage.Stage1PostRace;
+        }
+        else
+            if (numCars > p.GetNumRacers())
+        {
+            SetStatus("Too many cars for the race.");
+            RemoveAllCars();            
+        }
+
+        if (raceState.m_TimeInState > raceState.m_BetweenStageTime)
+        {            
+            if (numCars < p.GetNumRacers())
+            {                
                 SetStatus("Waiting for competitors to connect.");
+                ShowRemoveRacerDialog();
                 raceState.m_TimeInState = 0.0f;
             }
             else
+            if (numCars == p.GetNumRacers())
             {
                 raceState.m_State = RaceState.RaceStage.Stage1Race;
             }
@@ -1668,6 +1777,7 @@ public class RaceManager : MonoBehaviour
 
         SetTimerDisplay(raceState.m_BetweenStageTime - raceState.m_TimeInState);
     }
+
 
     void OnStage1RaceStart()
     {
@@ -1724,25 +1834,34 @@ public class RaceManager : MonoBehaviour
     void OnStage1PostRaceStart()
     {
         Pairing p = GetCurrentPairing();
+
         if (p == null)
             return;
+
         Competitor a = GetCompetitorbyName(p.name1);
-        if (a == null)
-            return;
-        p.time1 = GetBestTime(a.car_name);
-        a.best_stage1_time = p.time1;
-        LapTimer ta = GetLapTimer(a.car_name);
 
-        if (ta == null)
-            return;
+        if (a != null)
+        {
+            p.time1 = GetBestTime(a.car_name);
+            a.best_stage1_time = p.time1;
+            LapTimer ta = GetLapTimer(a.car_name);
 
-        if (ta.GetNumLapsCompleted() > 0)
-            raceState.m_AnyCompetitorFinishALap = true;
+            if (ta == null)
+                return;
 
-        if (ta.IsDisqualified())
+            if (ta.GetNumLapsCompleted() > 0)
+                raceState.m_AnyCompetitorFinishALap = true;
+
+            if (ta.IsDisqualified())
+            {
+                p.time1 = dq_time;
+            }
+        }
+        else
         {
             p.time1 = dq_time;
         }
+
 
         //remember sometimes only one competitor!
         Competitor b = GetCompetitorbyName(p.name2);
@@ -1951,15 +2070,29 @@ public class RaceManager : MonoBehaviour
             SetStatus("Solo racer gets a BYE in the race ladder.");
             raceState.m_State = RaceState.RaceStage.Stage2PostRace;
         }
+        else
+        if (p.GetNumRacers() == 0)
+        {
+            SetStatus("No competitors to race.");
+            raceState.m_State = RaceState.RaceStage.Stage2PostRace;
+        }
+        else
+            if (numCars > p.GetNumRacers())
+        {
+            SetStatus("Too many cars for the race.");
+            RemoveAllCars();
+        }
 
         if (raceState.m_TimeInState > raceState.m_BetweenStageTwoTime)
-        {
-            if (numCars != p.GetNumRacers())
+        {          
+            if (numCars < p.GetNumRacers())
             {
                 SetStatus("Waiting for competitors to connect.");
+                ShowRemoveRacerDialog();
                 raceState.m_TimeInState = 0.0f;
             }
             else
+            if (numCars == p.GetNumRacers())
             {
                 OnResetRace();
                 racerLadder.gameObject.SetActive(false);
