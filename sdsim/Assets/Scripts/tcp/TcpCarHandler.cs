@@ -166,20 +166,27 @@ namespace tk
         if (pm.path.nodes.Count > 10)
         {
           NavMeshHit hit = new NavMeshHit();
-          bool onNavMesh = NavMesh.SamplePosition(carObj.transform.position, out hit, 5, NavMesh.AllAreas);
+          Vector3 position = carObj.transform.position;
+          bool onNavMesh = NavMesh.SamplePosition(position, out hit, 5, NavMesh.AllAreas);
           json.AddField("on_road", onNavMesh ? 1 : 0);
           if (onNavMesh)
           {
             Vector3 target = pm.path.nodes[(pm.path.iActiveSpan + pm.path.nodes.Count + pm.path.nodes.Count / 3) % (pm.path.nodes.Count)].pos;
-            double currentDistance = pm.path.getDistance(carObj.transform.position, target);
-            double distanceToLastTarget = pm.path.getDistance(carObj.transform.position, this.lastTarget);
-            if (this.lastTarget.x <= 0.0001)
+            double currentDistance = pm.path.getDistance(position, target);
+            double distanceToLastTarget = pm.path.getDistance(position, this.lastTarget);
+            if (this.lastTarget.x == 0 || Math.Abs(currentDistance) < 0.001 || Math.Abs(distanceToLastTarget) < 0.001 || Math.Abs(this.lastDistance)<0.001)
             {
               this.lastDistance = currentDistance;
             }
             json.AddField("progress_on_shortest_path", (float)(this.lastDistance - distanceToLastTarget));
             this.lastDistance = currentDistance;
             this.lastTarget = target;
+          }
+          else
+          {
+            this.lastTarget = new Vector3(0, 0, 0);
+            this.lastDistance = 0.0;
+            json.AddField("progress_on_shortest_path",0.0f);
           }
         }
       }

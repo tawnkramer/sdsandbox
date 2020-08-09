@@ -58,11 +58,16 @@ public class CarPath
     double distance = 0.0;
     if (NavMesh.CalculatePath(currentPosition, target, NavMesh.AllAreas, this.navMeshPath))
     {
-      for (int i = 1; i < this.navMeshPath.corners.Length; i++)
+      if (this.navMeshPath.corners.Length > 5)
       {
-        Vector3 start = this.navMeshPath.corners[i - 1];
-        Vector3 end = this.navMeshPath.corners[i];
-        distance += (end - start).magnitude;
+        //ignore the first corners -> more stable
+        distance += (this.navMeshPath.corners[2] - currentPosition).magnitude;
+        for (int i = 3; i < this.navMeshPath.corners.Length; i++)
+        {
+          Vector3 start = this.navMeshPath.corners[i - 1];
+          Vector3 end = this.navMeshPath.corners[i];
+          distance += (end - start).magnitude;
+        }
       }
     }
     return distance;
