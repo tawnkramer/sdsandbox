@@ -1403,7 +1403,7 @@ BoxCollider:
   m_GameObject: {fileID: 1359121091781854}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1496,7 +1496,7 @@ BoxCollider:
   m_GameObject: {fileID: 1361063095071970}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -2965,6 +2965,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carObj: {fileID: 1382209123900052}
   pm: {fileID: 0}
+  conf: {fileID: 0}
   camSensor: {fileID: 114024581143197506}
   ai_text: {fileID: 0}
   limitFPS: 20
@@ -3019,7 +3020,7 @@ BoxCollider:
   m_GameObject: {fileID: 1675052834431110}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -3816,7 +3817,7 @@ BoxCollider:
   m_GameObject: {fileID: 1847856618860832}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -5133,7 +5134,9 @@ MonoBehaviour:
   currentTimeDisp: {fileID: 2952315563541295976}
   bestTimeDisp: {fileID: 6887246554731453261}
   dqDisp: {fileID: 1343198762973231984}
-  racerName: 
+  car_name: 
+  min_lap_time: 10
+  race_completed: 0
 --- !u!1001 &8483989291752445735
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -94,8 +94,13 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 
     public void RestartCurrentLap()
     {
-        float timeNow = GetCurrentMS();
-        currentStart = timeNow;
+        //float timeNow = GetCurrentMS();
+        currentStart = 0.0f;
+    }
+
+    public bool HasCrossedStartLine()
+    {
+        return (currentStart != 0.0f);
     }
 
     public void OnCollideFinishLine()
@@ -103,7 +108,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
         if( IsDisqualified() || race_completed)
             return;
             
-        if(currentStart == 0.0f)
+        if(!HasCrossedStartLine())
         {
             Debug.Log(car_name + " crossed start line.");
             currentStart = GetCurrentMS();
@@ -134,13 +139,6 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
 
             currentStart = timeNow;
             
-        }
-
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
-
-        if (raceMan != null)
-        {
-            raceMan.OnCarCrosStartLine(transform.parent.parent.gameObject);
         }
     }
 
