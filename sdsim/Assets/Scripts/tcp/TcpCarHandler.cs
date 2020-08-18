@@ -539,17 +539,12 @@ namespace tk
               t.ResetRace();
             }
 
-            GameObject body = CarSpawner.getChildGameObject(carObj, "body");
-            if(body != null)
+            RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+            if(rm != null)
             {
-                RaceCheckPoint[] checkPoints = GameObject.FindObjectsOfType<RaceCheckPoint>();
-                foreach (RaceCheckPoint cp in checkPoints)
-                {
-                    cp.RemoveBody(body);
-                }
+              rm.OnCarReset(carObj);
             }
-            else
-                Debug.LogWarning("failed to find car body.");
+
           }
 
           bResetCar = false;

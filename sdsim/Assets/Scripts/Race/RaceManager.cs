@@ -972,15 +972,15 @@ public class RaceManager : MonoBehaviour
                 if (carObj != null && raceState.m_UseCheckpointDuringPractice)
                 {
                     Debug.Log("OnPracticeUpdate : add car to start checkpoint " + c.racer_name);
-                    AddCarToStartLineCheckpoint(carObj, c);    
+                    AddCarToStartLineCheckpoint(carObj);    
                 }
             }            
         }
 
-        ResetRacerDQToStart();
+        PracticeResetRacerDQToStart();
     }
 
-    public void ResetRacerDQToStart()
+    public void PracticeResetRacerDQToStart()
     {
         Car[] cars = GameObject.FindObjectsOfType<Car>();
         for(int iCar = 0; iCar < cars.Length; iCar++)
@@ -999,13 +999,13 @@ public class RaceManager : MonoBehaviour
                     GameObject body = CarSpawner.getChildGameObject(car.gameObject, "body");
                     RemoveCarFromCheckpoints(body);
                     Competitor c = GetCompetitorbyCarName(t.car_name);
-                    AddCarToStartLineCheckpoint(car.gameObject, c);
+                    AddCarToStartLineCheckpoint(car.gameObject);
                 }
             }
         }
     }
 
-    void AddCarToStartLineCheckpoint(GameObject car, Competitor c)
+    void AddCarToStartLineCheckpoint(GameObject car)
     {
         RaceCheckPoint startCheckPoint = checkPoints[m_finishLineCheckpoint];
         float timeToHitStartline = 10.0f;
@@ -2561,7 +2561,7 @@ public class RaceManager : MonoBehaviour
         foreach(Car car in icars)
         {         
             car.blockControls = false;
-            AddCarToStartLineCheckpoint(car.gameObject, null);
+            AddCarToStartLineCheckpoint(car.gameObject);
         }
 
         tk.TcpCarHandler[] carHanders = GameObject.FindObjectsOfType<tk.TcpCarHandler>();
@@ -2592,6 +2592,16 @@ public class RaceManager : MonoBehaviour
         RemoveCarFromCheckpoints(body);
         
         OnCarDQ(car, false);
+    }
+
+    // Usually from external Reset request from the car client.
+    public void OnCarReset(GameObject car)
+    {
+        GameObject body = CarSpawner.getChildGameObject(car, "body");
+        RemoveCarFromCheckpoints(body);
+
+        if (raceState.m_State != RaceState.RaceStage.Practice || raceState.m_UseCheckpointDuringPractice )                
+            AddCarToStartLineCheckpoint(body);
     }
 
     public void OnCarDQ(GameObject car, bool missedCheckpoint)
@@ -2635,8 +2645,8 @@ public class RaceManager : MonoBehaviour
         Transform car = body.transform.parent;
         LapTimer status = car.transform.GetComponentInChildren<LapTimer>();
 
-        RaceCheckPoint currentCp = checkPoints[iCheckPoint];
-        currentCp.RemoveBody(body);
+         RaceCheckPoint currentCp = checkPoints[iCheckPoint];
+         currentCp.RemoveBody(body);
 
         if (status != null)
         {
@@ -2671,7 +2681,7 @@ public class RaceManager : MonoBehaviour
             {
                 int iNextCheckpoint = (iCheckPoint + 1) % checkPoints.Length;
                 RaceCheckPoint cp = checkPoints[iNextCheckpoint];
-                cp.AddRequiredHit(body, raceState.m_CheckPointDelay);
+                cp.AddRequiredHit(body, raceState.m_CheckPointDelay);                
             }
 
             Debug.Log("OnHitCheckPoint: " + msg);

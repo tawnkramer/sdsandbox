@@ -21,14 +21,11 @@ public class RaceCheckPoint : MonoBehaviour
 
     public void Reset()
     {
-        Debug.Log("RaceCheckPoint reset");
         required_col.Clear();
     }
 
     public void AddRequiredHit(GameObject ob, float required_col_time)
     {
-        Debug.Log("AddRequiredHit: " + ob.name + " to ch " + m_iCheckPoint.ToString());
-
         ObjectTimer ot = new ObjectTimer();
         ot.obj = ob;
         ot.timer = required_col_time;
@@ -41,8 +38,6 @@ public class RaceCheckPoint : MonoBehaviour
         {
             if(required_col[iT].obj == go)
             {
-                Debug.Log("RemoveBody: " + go.name + " from ch " + m_iCheckPoint.ToString());
-
                 required_col.RemoveAt(iT);
                 return true;
             }
@@ -53,21 +48,17 @@ public class RaceCheckPoint : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        Debug.Log("OnTriggerEnter: " + col.gameObject.name + " hit checkpoint " + m_iCheckPoint.ToString());
         bool isBody = col.gameObject.name == "body";
 
         for (int iO = 0; iO < required_col.Count; iO++)
         {
             if(required_col[iO].obj == col.gameObject)
             {
-                Debug.Log("onTriggerEnter: found: " + col.gameObject.name);
-
                 RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
                 rm.OnHitCheckPoint(col.gameObject, m_iCheckPoint);
                 break;
             }
-        }
-     
+        }     
     }
 
     // Update is called once per frame
