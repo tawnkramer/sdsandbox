@@ -9,13 +9,32 @@ public class LidarPoint
     public float x;
     public float y;
     public float z;
+    public float rx;
+    public float ry;
 
-	public LidarPoint(Vector3 p)
+	public LidarPoint(Vector3 p, float _rx, float _ry)
 	{
 		x = p.x;
 		y = p.y;
 		z = p.z;
+        rx = _rx;
+        ry = _ry;
 	}
+}
+
+[Serializable]
+public class V3
+{
+    public float x;
+    public float y;
+    public float z;
+
+    public V3(Vector3 p)
+    {
+        x = p.x;
+        y = p.y;
+        z = p.z;
+    }
 }
 
 [Serializable]
@@ -23,9 +42,9 @@ public class LidarPointArray
 {
 	//All coordinates in World coordinate system
 
-	public LidarPoint lidarPos;
+	public V3 lidarPos;
 
-	public LidarPoint lidarOrientation;
+	public V3 lidarOrientation;
 
     public LidarPoint[] points;
 
@@ -47,7 +66,7 @@ public class Lidar : MonoBehaviour {
 	public float degAngDown = 25f;
 
 	//what angle change between sweeps 
-	public float defAngDelta = -1f;
+	public float degAngDelta = -1f;
 
 	//how many complete 360 sweeps
 	public int numSweepsLevels = 25;
@@ -63,20 +82,80 @@ public class Lidar : MonoBehaviour {
 
 	public bool DisplayDebugInScene = false;
 
+    // are there layers we don't want to collide with?
+    public string[] layerMaskNames;
+
+    int collMask = 0;
+
 	void Awake()
 	{
 		pointArr = new LidarPointArray();
 		pointArr.Init(360 / degPerSweepInc * numSweepsLevels);
-	}
 
+        int v = 0;
+
+        foreach (string layerName in layerMaskNames)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            v |= 1 << layer;
+        }
+
+        collMask |= ~v;
+
+    }
+
+    public void SetConfig(float offset_x, float offset_y, float offset_z, float rot_x,
+        int _degPerSweepInc, float _degAngDown, float _degAngDelta, float _maxRange, float _noise, int _numSweepsLevels)
+    {
+        degPerSweepInc = _degPerSweepInc;
+        degAngDown = _degAngDown;
+        degAngDelta = _degAngDelta;
+        maxRange = _maxRange;
+        noise = _noise;
+        numSweepsLevels = _numSweepsLevels;
+
+        if (offset_x != 0.0f || offset_y != 0.0f || offset_z != 0.0f)
+            transform.localPosition = new Vector3(offset_x, offset_y, offset_z);
+
+        if (rot_x != 0.0f)
+            transform.eulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
+
+        pointArr = new LidarPointArray();
+        pointArr.Init(360 / degPerSweepInc * numSweepsLevels);
+    }
+
+    public JSONObject GetOutputAsJson()
+    {
+        LidarPointArray points = GetOutput();
+        JSONObject json = JSONObject.Create();
+        foreach(LidarPoint p in points.points)
+        {
+            JSONObject vec = JSONObject.Create();
+            try
+            {
+                vec.AddField("x", p.x);
+                vec.AddField("y", p.y);
+                vec.AddField("z", p.z);
+                vec.AddField("rx", p.rx);
+                vec.AddField("ry", p.ry);
+                json.Add(vec);
+            }
+            catch
+            {
+                // just ignore points that don't resolve.
+            }
+        }
+        
+        return json;
+    }
     
 	public LidarPointArray GetOutput()
 	{
 		pointArr = new LidarPointArray();
 		pointArr.Init(360 / degPerSweepInc * numSweepsLevels);
 
-		pointArr.lidarPos = new LidarPoint(transform.position);
-		pointArr.lidarOrientation = new LidarPoint(transform.rotation.eulerAngles);
+		pointArr.lidarPos = new V3(transform.position);
+		pointArr.lidarOrientation = new V3(transform.rotation.eulerAngles);
 		
 		Ray ray = new Ray();
 
@@ -90,21 +169,26 @@ public class Lidar : MonoBehaviour {
 		int numSweep = 360 / degPerSweepInc;
 
 		Quaternion rotSide = Quaternion.AngleAxis(degPerSweepInc, transform.up);
-		Quaternion rotUp = Quaternion.AngleAxis(defAngDelta, transform.right);
+		Quaternion rotUp = Quaternion.AngleAxis(degAngDelta, transform.right);
 
 		RaycastHit hit;
 
 		//Sample the output texture to create rays.
 		int iP = 0;
+        float rx = 0.0f;
+        float ry = 0.0f;
 
 		for(int iS = 0; iS < numSweepsLevels; iS++)
 		{
 			for(int iA = 0; iA < numSweep; iA++)
-			{
-				if(Physics.Raycast(ray, out hit, maxRange))
+			{               
+				if(Physics.Raycast(ray, out hit, maxRange, collMask))
 				{
 					//sample that ray at the depth given by the pixel.
 					Vector3 pos = ray.GetPoint(hit.distance);
+
+                    //make points relative to my pos.
+                    pos = pos - transform.position;
 
 					//shouldn't hit this unless user is messing around in the interface with things running.
 					if(iP >= pointArr.points.Length)
@@ -118,16 +202,20 @@ public class Lidar : MonoBehaviour {
 					pos.z += noise * noiseZ;
 
 					//set iPoint
-					pointArr.points[iP] = new LidarPoint(pos);
+					pointArr.points[iP] = new LidarPoint(pos, rx, ry);
 
 					ray.direction = rotSide * ray.direction;
 
 					iP++;
 				}
-			}
 
-			ray.direction = rotUp * ray.direction; 
-		}
+                rx += degPerSweepInc;
+            }
+
+			ray.direction = rotUp * ray.direction;
+            ry += degAngDelta;
+            rx = 0.0f;
+        }
 
 		return pointArr;
 	}
@@ -152,7 +240,10 @@ public class Lidar : MonoBehaviour {
 			pos.y = p.y;
 			pos.z = p.z;
 
-			Gizmos.DrawSphere(pos, gizmoSize);
+            //make points global space for drawing
+            pos = transform.position + pos;
+
+            Gizmos.DrawSphere(pos, gizmoSize);
 		}
 	}
 

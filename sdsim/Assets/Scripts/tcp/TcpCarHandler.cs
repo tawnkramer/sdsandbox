@@ -18,6 +18,9 @@ namespace tk
     public PathManager pm;
     public CarConfig conf;
     public CameraSensor camSensor;
+    public CameraSensor camSensorB;
+    public Lidar lidar;
+    public Odometry[] odom;
     private tk.JsonTcpClient client;
     public Text ai_text;
 
@@ -74,6 +77,8 @@ namespace tk
       client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
       client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
       client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
+      client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
+      client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
     }
 
     public void Start()
@@ -110,6 +115,29 @@ namespace tk
       json.AddField("throttle", car.GetThrottle());
       json.AddField("speed", car.GetVelocity().magnitude);
       json.AddField("image", Convert.ToBase64String(camSensor.GetImageBytes()));
+
+        if (camSensorB != null && camSensorB.gameObject.activeInHierarchy)
+        {
+            json.AddField("imageb", Convert.ToBase64String(camSensorB.GetImageBytes()));
+        }
+
+        if (lidar != null && lidar.gameObject.activeInHierarchy)
+        {
+            json.AddField("lidar", lidar.GetOutputAsJson());
+        }
+
+        if(odom.Length > 0)
+        {
+            JSONObject odom_arr = JSONObject.Create();
+
+            foreach (Odometry o in odom)
+            {
+                odom_arr.Add(o.GetOutputAsJson());
+            }
+
+            json.AddField("odom", odom_arr);
+
+        }
 
       json.AddField("hit", car.GetLastCollision());
       car.ClearLastCollision();
@@ -362,32 +390,54 @@ namespace tk
 
     void OnCamConfig(JSONObject json)
     {
-      float fov = float.Parse(json.GetField("fov").str, CultureInfo.InvariantCulture.NumberFormat);
-      float offset_x = float.Parse(json.GetField("offset_x").str, CultureInfo.InvariantCulture.NumberFormat);
-      float offset_y = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
-      float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
-      float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
-      float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str, CultureInfo.InvariantCulture.NumberFormat);
-      float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str, CultureInfo.InvariantCulture.NumberFormat);
-      int img_w = int.Parse(json.GetField("img_w").str);
-      int img_h = int.Parse(json.GetField("img_h").str);
-      int img_d = int.Parse(json.GetField("img_d").str);
-      string img_enc = json.GetField("img_enc").str;
-
-      if (carObj != null)
-        UnityMainThreadDispatcher.Instance().Enqueue(SetCamConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc, fish_eye_x, fish_eye_y));
+        ParseCamConfig(json, 0);
     }
 
-    IEnumerator SetCamConfig(float fov, float offset_x, float offset_y, float offset_z, float rot_x,
+    void OnCamConfigB(JSONObject json)
+    {
+        ParseCamConfig(json, 1);
+    }
+
+    void ParseCamConfig(JSONObject json, int iCamera)
+    {
+        float fov = float.Parse(json.GetField("fov").str, CultureInfo.InvariantCulture.NumberFormat);
+        float offset_x = float.Parse(json.GetField("offset_x").str, CultureInfo.InvariantCulture.NumberFormat);
+        float offset_y = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
+        float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
+        float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
+        float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str, CultureInfo.InvariantCulture.NumberFormat);
+        float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str, CultureInfo.InvariantCulture.NumberFormat);
+        int img_w = int.Parse(json.GetField("img_w").str);
+        int img_h = int.Parse(json.GetField("img_h").str);
+        int img_d = int.Parse(json.GetField("img_d").str);
+        string img_enc = json.GetField("img_enc").str;
+
+        if (carObj != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(SetCamConfig(iCamera, fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc, fish_eye_x, fish_eye_y));
+    }
+
+    IEnumerator SetCamConfig(int iCamera, float fov, float offset_x, float offset_y, float offset_z, float rot_x,
         int img_w, int img_h, int img_d, string img_enc, float fish_eye_x, float fish_eye_y)
     {
-      CameraSensor camSensor = carObj.transform.GetComponentInChildren<CameraSensor>();
+        CameraSensor cam = null;
 
-      if (camSensor)
+        if (iCamera == 0)
+            cam = camSensor;
+        else
+        {
+            cam = camSensorB;
+
+            if(cam != null && !cam.gameObject.activeInHierarchy)
+            {
+                cam.gameObject.SetActive(true);
+            }
+        }
+
+      if (cam)
       {
-        camSensor.SetConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc);
+        cam.SetConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc);
 
-        Fisheye fe = camSensor.gameObject.GetComponent<Fisheye>();
+        Fisheye fe = cam.gameObject.GetComponent<Fisheye>();
 
         if (fe != null && (fish_eye_x != 0.0f || fish_eye_y != 0.0f))
         {
@@ -400,7 +450,40 @@ namespace tk
       yield return null;
     }
 
-    void OnStepModeRecv(JSONObject json)
+    void OnLidarConfig(JSONObject json)
+    {
+        float offset_x = float.Parse(json.GetField("offset_x").str, CultureInfo.InvariantCulture.NumberFormat);
+        float offset_y = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
+        float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
+        float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
+
+        int degPerSweepInc = int.Parse(json.GetField("degPerSweepInc").str);
+        float degAngDown = float.Parse(json.GetField("degAngDown").str, CultureInfo.InvariantCulture.NumberFormat);
+        float degAngDelta = float.Parse(json.GetField("degAngDelta").str, CultureInfo.InvariantCulture.NumberFormat);
+        float maxRange = float.Parse(json.GetField("maxRange").str, CultureInfo.InvariantCulture.NumberFormat);
+        float noise = float.Parse(json.GetField("noise").str, CultureInfo.InvariantCulture.NumberFormat);
+        int numSweepsLevels = int.Parse(json.GetField("numSweepsLevels").str);
+
+
+        if (carObj != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(SetLidarConfig(offset_x, offset_y, offset_z, rot_x, degPerSweepInc, degAngDown, degAngDelta, maxRange, noise, numSweepsLevels));
+    }
+
+    IEnumerator SetLidarConfig(float offset_x, float offset_y, float offset_z, float rot_x,
+        int degPerSweepInc, float degAngDown, float degAngDelta, float maxRange, float noise, int numSweepsLevels)
+    {
+        if(lidar != null)
+        {
+                if (!lidar.gameObject.activeInHierarchy)
+                    lidar.gameObject.SetActive(true);
+
+                lidar.SetConfig(offset_x, offset_y, offset_z, rot_x, degPerSweepInc, degAngDown, degAngDelta, maxRange, noise, numSweepsLevels);
+            }            
+
+        yield return null;
+    }
+
+        void OnStepModeRecv(JSONObject json)
     {
       string step_mode = json.GetField("step_mode").str;
       float _time_step = float.Parse(json.GetField("time_step").str);

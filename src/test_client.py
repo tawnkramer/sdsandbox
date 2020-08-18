@@ -30,12 +30,29 @@ class SimpleClient(SDClient):
         if json_packet['msg_type'] == "telemetry":
             imgString = json_packet["image"]
             image = Image.open(BytesIO(base64.b64decode(imgString)))
-            image.save("test.png")
+            image.save("camera_a.png")
             self.last_image = np.asarray(image)
             print("img:", self.last_image.shape)
 
             #don't have to, but to clean up the print, delete the image string.
             del json_packet["image"]
+
+            if "imageb" in json_packet:
+                imgString = json_packet["imageb"]
+                image = Image.open(BytesIO(base64.b64decode(imgString)))
+                image.save("camera_b.png")
+                np_img = np.asarray(image)
+                print("imgb:", np_img.shape)
+
+                #don't have to, but to clean up the print, delete the image string.
+                del json_packet["imageb"]
+
+            if "lidar" in json_packet:
+                lidar = json_packet["lidar"]
+                print("lidar:", len(lidar), "pts")
+
+                #don't have to, but to clean up the print, delete the lidar string.
+                del json_packet["lidar"]
 
         print("got:", json_packet)
 
@@ -80,6 +97,34 @@ class SimpleClient(SDClient):
         msg = '{ "msg_type" : "cam_config", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "JPG", "offset_x" : "0.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
         self.send_now(msg)
 
+        # Camera config B, for the second camera
+        # set any field to Zero to get the default camera setting.
+        # this will position the camera right above the car, with max fisheye and wide fov
+        # this also changes the img output to 255x255x1 ( actually 255x255x3 just all three channels have same value)
+        # the offset_x moves camera left/right
+        # the offset_y moves camera up/down
+        # the offset_z moves camera forward/back
+        # with fish_eye_x/y == 0.0 then you get no distortion
+        # img_enc can be one of JPG|PNG|TGA
+        msg = '{ "msg_type" : "cam_config_b", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "JPG", "offset_x" : "3.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
+        self.send_now(msg)
+
+        # Lidar config
+        # the offset_x moves camera left/right
+        # the offset_y moves camera up/down
+        # the offset_z moves camera forward/back
+        # degPerSweepInc : as the ray sweeps around, how many degrees does it advance per sample (int)
+        # degAngDown : what is the starting angle for the initial sweep compared to the forward vector
+        # degAngDelta : what angle change between sweeps
+        # numSweepsLevels : how many complete 360 sweeps (int)
+        # maxRange : what it max distance we will register a hit
+        # noise : what is the scalar on the perlin noise applied to point position
+        # Here's some sample settings that similate a more sophisticated lidar:
+        # msg = '{ "msg_type" : "lidar_config", "degPerSweepInc" : "2", "degAngDown" : "25", "degAngDelta" : "-1.0", "numSweepsLevels" : "25", "maxRange" : "50.0", "noise" : "0.2", "offset_x" : "0.0", "offset_y" : "1.0", "offset_z" : "1.0", "rot_x" : "0.0" }'
+        # And here's some sample settings that similate a simple RpLidar A2 one level horizontal scan.
+        msg = '{ "msg_type" : "lidar_config", "degPerSweepInc" : "2", "degAngDown" : "0", "degAngDelta" : "-1.0", "numSweepsLevels" : "1", "maxRange" : "50.0", "noise" : "0.4", "offset_x" : "0.0", "offset_y" : "0.5", "offset_z" : "0.5", "rot_x" : "0.0" }'
+        self.send_now(msg)
+
 
     def send_controls(self, steering, throttle):
         msg = { "msg_type" : "control",
@@ -110,7 +155,7 @@ def test_clients():
     port = 9091
     num_clients = 1
     clients = []
-    time_to_drive = 1.0
+    time_to_drive = 2.0
 
 
     # Start Clients

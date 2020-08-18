@@ -23,6 +23,8 @@ public class Competitor
         client.dispatcher.Register("racer_info", new tk.Delegates.OnMsgRecv(OnRacerInfo));
         client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
         client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
+        client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
+        client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
         client.dispatcher.Register("connected", new tk.Delegates.OnMsgRecv(OnConnected));
 
         UnityMainThreadDispatcher.Instance().Enqueue(SendNeedCarConfig());
@@ -61,6 +63,8 @@ public class Competitor
 
     public JSONObject carConfig;
     public JSONObject camConfig;
+    public JSONObject camConfigB;
+    public JSONObject lidarConfig;
     public JSONObject racerBio;
 
     public int qual_place = 0;
@@ -101,6 +105,20 @@ public class Competitor
         if (racer_name != null)
             Debug.Log("Got cam config for " + racer_name);
         camConfig = json;
+    }
+
+    public void OnCamConfigB(JSONObject json)
+    {
+        if (racer_name != null)
+            Debug.Log("Got cam config b for " + racer_name);
+        camConfigB = json;
+    }
+
+    public void OnLidarConfig(JSONObject json)
+    {
+        if (racer_name != null)
+            Debug.Log("Got lidar config for " + racer_name);
+        lidarConfig = json;
     }
 
     public void OnDQ(bool missedCheckpoint)
@@ -1011,6 +1029,12 @@ public class RaceManager : MonoBehaviour
 
             if (c.camConfig != null)
                 c.client.dispatcher.Dispatch("cam_config", c.camConfig);
+
+            if (c.camConfigB != null)
+                c.client.dispatcher.Dispatch("cam_config_b", c.camConfigB);
+
+            if (c.lidarConfig != null)
+                c.client.dispatcher.Dispatch("lidar_config", c.lidarConfig);
 
             Debug.Log("Creating car for " + c.racer_name);
             return carObj;
