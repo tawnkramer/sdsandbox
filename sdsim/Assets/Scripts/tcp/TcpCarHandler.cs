@@ -76,6 +76,7 @@ namespace tk
       client.dispatcher.Register("quit_app", new tk.Delegates.OnMsgRecv(OnQuitApp));
       client.dispatcher.Register("regen_road", new tk.Delegates.OnMsgRecv(OnRegenRoad));
       client.dispatcher.Register("car_config", new tk.Delegates.OnMsgRecv(OnCarConfig));
+      client.dispatcher.Register("racer_info", new tk.Delegates.OnMsgRecv(OnRacerInfo));
       client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
       client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
       client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
@@ -387,6 +388,19 @@ namespace tk
 
       yield return null;
     }
+
+    public void OnRacerInfo(JSONObject json)
+    {
+        string guid = json.GetField("guid").str;
+
+        CarConfig conf = carObj.GetComponent<CarConfig>();
+
+        if (conf)
+        {
+            conf.SetGuid(guid);
+        }
+    }       
+
 
     void OnCamConfig(JSONObject json)
     {

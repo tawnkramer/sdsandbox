@@ -37,12 +37,12 @@ public class RaceLadderUI : MonoBehaviour
             GameObject go = Instantiate(racePairPrefab) as GameObject;
             RacePairUI ui = go.GetComponent<RacePairUI>();
             ui.transform.SetParent(r.transform);
-            Competitor a = rm.GetCompetitorbyName(p.name1);
-            Competitor b = rm.GetCompetitorbyName(p.name2);
+            Competitor a = rm.GetCompetitor(p.guid1);
+            Competitor b = rm.GetCompetitor(p.guid2);
             if(b == null)
-                ui.SetRacers(p.name1, p.name2, a.stage1_place, 0);
+                ui.SetRacers(a.car_name, "solo", a.stage1_place, 0);
             else
-                ui.SetRacers(p.name1, p.name2, a.stage1_place, b.stage1_place);
+                ui.SetRacers(a.car_name, b.car_name, a.stage1_place, b.stage1_place);
             pui.Add(ui);
         }
     }
@@ -63,9 +63,11 @@ public class RaceLadderUI : MonoBehaviour
             r = stage2c;
         }
 
+        RaceManager rm = GameObject.FindObjectOfType<RaceManager>();
+        string car_name = rm.GetCompetitorCarName(p.guid1);
         foreach(RacePairUI ui in pui)
         {
-            if(ui.racer1.text == p.name1)
+            if(ui.racer1.text == car_name)
             {
                 ui.SetWinner(p.time1 < p.time2);
                 ui.SetTimes(p.time1, p.time2);

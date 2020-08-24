@@ -57,6 +57,7 @@ public class Competitor
     public string racer_name;
     public string country;
     public string info;
+    public string guid;
     public bool has_car;
     public bool got_qual_attempt = false;
     public bool dropped = false;
@@ -85,6 +86,7 @@ public class Competitor
         racer_name = json.GetField("racer_name").str;
         country = json.GetField("country").str;
         info = json.GetField("bio").str;
+        guid = json.GetField("guid").str;
 
         Debug.Log("Got racer info for " + racer_name);
 
@@ -147,8 +149,8 @@ public class Competitor
 [Serializable]
 public class Pairing
 {
-    public string name1;
-    public string name2;
+    public string guid1;
+    public string guid2;
     public float time1;
     public float time2;
 
@@ -156,10 +158,10 @@ public class Pairing
     {
         int n = 0;
 
-        if (name1 != "drop")
+        if (guid1 != "drop")
             n++;
 
-        if (name2 != "solo" && name2 != "drop")
+        if (guid2 != "solo" && guid2 != "drop")
             n++;
 
         return n;
@@ -319,6 +321,7 @@ public class RaceManager : MonoBehaviour
     public Text pauseButtonText;
 
     string removeRacerName = "";
+    string removeRacerGuid = "";
 
     public int race_num_laps = 2;
     public static float dq_time = 1000000.0f;
@@ -622,6 +625,7 @@ public class RaceManager : MonoBehaviour
             json.AddField("car_name", "ai_car" + iRacer.ToString());
             json.AddField("racer_name", "ai_" + iRacer.ToString());
             json.AddField("bio", "I am a racer");
+            json.AddField("guid", iRacer.ToString());
             json.AddField("country", "USA");
             c.OnRacerInfo(json);
         }
@@ -633,7 +637,7 @@ public class RaceManager : MonoBehaviour
         // Test disconnect
         if (raceState.m_TimeInState > 3.0f && raceState.m_Competitors.Count == 2 && raceState.m_Competitors[1].IsOnline() && bTestDisconnect)
         {
-            Debug.Log("Test client disconnect: " + raceState.m_Competitors[1].racer_name);
+            Debug.Log("Test client disconnect: " + raceState.m_Competitors[1].guid);
             SandboxServer server = GameObject.FindObjectOfType<SandboxServer>();
             if (raceState.m_Competitors[1].client != null)
             {
@@ -998,7 +1002,7 @@ public class RaceManager : MonoBehaviour
                 {
                     GameObject body = CarSpawner.getChildGameObject(car.gameObject, "body");
                     RemoveCarFromCheckpoints(body);
-                    Competitor c = GetCompetitorbyCarName(t.car_name);
+                    Competitor c = GetCompetitor(t.guid);
                     AddCarToStartLineCheckpoint(car.gameObject);
                 }
             }
@@ -1036,6 +1040,9 @@ public class RaceManager : MonoBehaviour
             if (c.lidarConfig != null)
                 c.client.dispatcher.Dispatch("lidar_config", c.lidarConfig);
 
+            if(c.racerBio != null)
+                c.client.dispatcher.Dispatch("racer_info", c.racerBio);
+
             Debug.Log("Creating car for " + c.racer_name);
             return carObj;
         }
@@ -1069,26 +1076,37 @@ public class RaceManager : MonoBehaviour
         return null;
     }
 
-    public Competitor GetCompetitorbyName(string race_name)
+    public Competitor GetCompetitor(string guid)
     {
         foreach (Competitor c in raceState.m_Competitors)
         {
-            if (c.racer_name == race_name)
+            if (c.guid == guid)
                 return c;
         }
 
         return null;
     }
 
-    public Competitor GetCompetitorbyCarName(string car_name)
+    public string GetCompetitorRacerName(string guid)
     {
         foreach (Competitor c in raceState.m_Competitors)
         {
-            if (c.car_name == car_name)
-                return c;
+            if (c.guid == guid)
+                return c.racer_name;
         }
 
-        return null;
+        return "missing!";
+    }
+
+    public string GetCompetitorCarName(string guid)
+    {
+        foreach (Competitor c in raceState.m_Competitors)
+        {
+            if (c.guid == guid)
+                return c.car_name;
+        }
+
+        return "missing!";
     }
 
     public Competitor GetCompetitorByClient(tk.JsonTcpClient client)
@@ -1102,26 +1120,26 @@ public class RaceManager : MonoBehaviour
         return null;
     }
 
-    public float GetBestTime(string car_name)
+    public float GetBestTime(string guid)
     {
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
         foreach (LapTimer t in timers)
         {
-            if (t.car_name == car_name)
+            if (t.guid == guid)
                 return t.GetBestLapTimeSec();
         }
 
         return 0.0f;
     }
 
-    public LapTimer GetLapTimer(string car_name)
+    public LapTimer GetLapTimer(string guid)
     {
         LapTimer[] timers = GameObject.FindObjectsOfType<LapTimer>();
 
         foreach (LapTimer t in timers)
         {
-            if (t.car_name == car_name)
+            if (t.guid == guid)
                 return t;
         }
 
@@ -1185,7 +1203,7 @@ public class RaceManager : MonoBehaviour
 
                 CreateCarFor(c);
                 //put car at start line and let them go.
-                raceState.m_CurrentQualifier = c.racer_name;
+                raceState.m_CurrentQualifier = c.guid;
                 raceState.m_CurrentQualElapsed = 0.0f;
                 OnResetRace();
                 StartRace();
@@ -1196,7 +1214,7 @@ public class RaceManager : MonoBehaviour
         }
         else
         {
-            Competitor c = GetCompetitorbyName(raceState.m_CurrentQualifier);
+            Competitor c = GetCompetitor(raceState.m_CurrentQualifier);
 
             if (c == null)
             {
@@ -1204,7 +1222,7 @@ public class RaceManager : MonoBehaviour
                 raceState.m_CurrentQualifier = "None";
             }
 
-            LapTimer lt = GetLapTimer(c.car_name);
+            LapTimer lt = GetLapTimer(c.guid);
             float t = dq_time;
 
             if (lt == null)
@@ -1427,11 +1445,11 @@ public class RaceManager : MonoBehaviour
             //Then the first competitor gets a bye.
             Pairing p = new Pairing();
             Competitor a = raceState.m_Competitors[0];
-            p.name1 = a.racer_name;
+            p.guid1 = a.guid;
             p.time1 = 0.0f;
 
             p.time2 = dq_time;
-            p.name2 = "solo";
+            p.guid2 = "solo";
 
             raceState.m_Stage1Order.Add(p);
 
@@ -1443,7 +1461,7 @@ public class RaceManager : MonoBehaviour
         {
             Pairing p = new Pairing();
             Competitor a = comp[i];
-            p.name1 = a.racer_name;
+            p.guid1 = a.guid;
             p.time1 = 0.0f;
             p.time2 = 0.0f;
 
@@ -1452,11 +1470,11 @@ public class RaceManager : MonoBehaviour
             if(iB > i)
             {
                 Competitor b = comp[iB];
-                p.name2 = b.racer_name;
+                p.guid2 = b.guid;
             }
             else
             {
-                p.name2 = "solo";
+                p.guid2 = "solo";
                 Debug.LogError("Logic error. Should be even pairing!");
             }
 
@@ -1532,11 +1550,11 @@ public class RaceManager : MonoBehaviour
             //Then the first competitor gets a bye.
             Pairing p = new Pairing();
             Competitor a = comp[0];
-            p.name1 = a.racer_name;
+            p.guid1 = a.guid;
             p.time1 = 0.0f;
 
             p.time2 = dq_time;
-            p.name2 = "solo";
+            p.guid2 = "solo";
 
             pairs.Add(p);
 
@@ -1548,7 +1566,7 @@ public class RaceManager : MonoBehaviour
         {
             Pairing p = new Pairing();
             Competitor a = comp[i];
-            p.name1 = a.racer_name;
+            p.guid1 = a.guid;
             p.time1 = 0.0f;
             p.time2 = 0.0f;
 
@@ -1557,12 +1575,12 @@ public class RaceManager : MonoBehaviour
             if(iB > i)
             {
                 Competitor b = comp[iB];
-                p.name2 = b.racer_name;
+                p.guid2 = b.guid;
             }
             else
             {
                 Debug.LogError("Logic error, should be even pairings.");
-                p.name2 = "solo";
+                p.guid2 = "solo";
             }
 
             pairs.Add(p);
@@ -1585,12 +1603,12 @@ public class RaceManager : MonoBehaviour
 
             if (p.time1 > p.time2)
             {
-                p.name1 = p.name2;
+                p.guid1 = p.guid2;
                 p.time1 = p.time2;
             }
             
             p.time2 = dq_time;
-            p.name2 = "solo";
+            p.guid2 = "solo";
 
             addEnd = p;
             prevPairs.Remove(p);
@@ -1603,15 +1621,15 @@ public class RaceManager : MonoBehaviour
             Pairing p = new Pairing();
 
             if(p1.time1 < p1.time2)
-                p.name1 = p1.name1;
+                p.guid1 = p1.guid1;
             else
-                p.name1 = p1.name2;
+                p.guid1 = p1.guid2;
 
 
             if(p2.time1 < p2.time2)
-                p.name2 = p2.name1;
+                p.guid2 = p2.guid1;
             else
-                p.name2 = p2.name2;
+                p.guid2 = p2.guid2;
 
             p.time1 = 0.0f;
             p.time2 = 0.0f;
@@ -1682,6 +1700,8 @@ public class RaceManager : MonoBehaviour
         if(p != null)
         {
             string dueUp;
+            string car1 = GetCompetitorCarName(p.guid1);
+            string car2 = GetCompetitorCarName(p.guid2);
 
             if (p.GetNumRacers() == 0)
             {
@@ -1689,11 +1709,11 @@ public class RaceManager : MonoBehaviour
             }
             else if (p.GetNumRacers() == 1)
             {
-                dueUp = System.String.Format("Odd number of competitors, so {0} races alone for time.", p.name1);
+                dueUp = System.String.Format("Odd number of competitors, so {0} races alone for time.", car1);
             }
             else
             {
-                dueUp = System.String.Format("Due up: {0} vs {1}", p.name1, p.name2);
+                dueUp = System.String.Format("Due up: {0} vs {1}", car1, car2);
             }
 
             SetStatus(dueUp);
@@ -1702,12 +1722,12 @@ public class RaceManager : MonoBehaviour
 
     void CreateCarsForPairing(Pairing p)
     {
-        Competitor c = GetCompetitorbyName(p.name1);
+        Competitor c = GetCompetitor(p.guid1);
 
         if (c != null)
             CreateCarFor(c);
 
-        c = GetCompetitorbyName(p.name2);
+        c = GetCompetitor(p.guid2);
 
         if (c != null)
             CreateCarFor(c);
@@ -1750,16 +1770,18 @@ public class RaceManager : MonoBehaviour
     {
         Pairing p = GetCurrentPairing();
 
-        Competitor c1 = GetCompetitorbyName(p.name1);
-        Competitor c2 = GetCompetitorbyName(p.name2);
+        Competitor c1 = GetCompetitor(p.guid1);
+        Competitor c2 = GetCompetitor(p.guid2);
 
         if(c1 != null && !c1.has_car && !c1.dropped)
         {
-            removeRacerName = p.name1;
+            removeRacerName = c1.racer_name;
+            removeRacerGuid = c1.guid;
         }
         else if (c2 != null && !c2.has_car && !c2.dropped)
         {
-            removeRacerName = p.name2;
+            removeRacerName = c2.racer_name;
+            removeRacerGuid = c2.guid;
         }
 
         if (removeRacerName.Length < 1)
@@ -1775,32 +1797,33 @@ public class RaceManager : MonoBehaviour
 
         Pairing p = GetCurrentPairing();
 
-        Competitor c = GetCompetitorbyName(removeRacerName);
+        Competitor c = GetCompetitor(removeRacerGuid);
 
         if (c != null)
             c.dropped = true;
         else
             return;
 
-        if (p.name1 == removeRacerName)
+        if (p.guid1 == removeRacerGuid)
         {
-            if (p.name2 != "solo")
-                p.name1 = p.name2;
+            if (p.guid2 != "solo")
+                p.guid1 = p.guid2;
             else
-                p.name1 = "drop";
+                p.guid1 = "drop";
 
-            p.name2 = "solo";
+            p.guid2 = "solo";
         }
-        else if (p.name2 == removeRacerName)
+        else if (p.guid2 == removeRacerGuid)
         {
-            p.name2 = "solo";            
+            p.guid2 = "solo";            
         }
 
         string msg = System.String.Format("{0} has been dropped from the event.", removeRacerName);
         SetStatus(msg);
 
         removeRacerName = "";
-        
+        removeRacerGuid = "";
+
         SaveRaceState();
     }
 
@@ -1808,6 +1831,7 @@ public class RaceManager : MonoBehaviour
     {
         dropCompetitorPanel.gameObject.SetActive(false);
         removeRacerName = "";
+        removeRacerGuid = "";
     }
 
     void OnStage1PreRaceUpdate()
@@ -1884,8 +1908,8 @@ public class RaceManager : MonoBehaviour
     {
         Pairing p = GetCurrentPairing();
 
-        Competitor c1 = GetCompetitorbyName(p.name1);
-        Competitor c2 = GetCompetitorbyName(p.name2);
+        Competitor c1 = GetCompetitor(p.guid1);
+        Competitor c2 = GetCompetitor(p.guid2);
 
         racerBioPanel.gameObject.SetActive(true);
         racerBioPanel.SetBio(c1.racerBio);
@@ -1914,13 +1938,13 @@ public class RaceManager : MonoBehaviour
         if (p == null)
             return;
 
-        Competitor a = GetCompetitorbyName(p.name1);
+        Competitor a = GetCompetitor(p.guid1);
 
         if (a != null)
         {
-            p.time1 = GetBestTime(a.car_name);
+            p.time1 = GetBestTime(a.guid);
             a.best_stage1_time = p.time1;
-            LapTimer ta = GetLapTimer(a.car_name);
+            LapTimer ta = GetLapTimer(a.guid);
 
             if (ta == null)
                 return;
@@ -1940,13 +1964,13 @@ public class RaceManager : MonoBehaviour
 
 
         //remember sometimes only one competitor!
-        Competitor b = GetCompetitorbyName(p.name2);
+        Competitor b = GetCompetitor(p.guid2);
 
         if (b != null)
         {
-            p.time2 = b != null ? GetBestTime(b.car_name) : dq_time;
+            p.time2 = b != null ? GetBestTime(b.guid) : dq_time;
             b.best_stage1_time = p.time2;
-            LapTimer tb = GetLapTimer(b.car_name);
+            LapTimer tb = GetLapTimer(b.guid);
 
             if (tb.GetNumLapsCompleted() > 0)
                 raceState.m_AnyCompetitorFinishALap = true;
@@ -2201,37 +2225,37 @@ public class RaceManager : MonoBehaviour
     void OnStage2PostRaceStart()
     {
         Pairing p = GetCurrentPairing();
-        Competitor a = GetCompetitorbyName(p.name1);
-        p.time1 = GetBestTime(a.car_name);
-        LapTimer ta = GetLapTimer(a.car_name);
+        Competitor a = GetCompetitor(p.guid1);
+        p.time1 = GetBestTime(a.guid);
+        LapTimer ta = GetLapTimer(a.guid);
 
         if(p.GetNumRacers() == 1)
         {
             p.time1 = a.best_stage1_time;
         }
-        else if (ta.IsDisqualified())
+        else if (ta != null && ta.IsDisqualified())
         {
             if(ta.GetNumLapsCompleted() == 0)                
                 p.time1 = dq_time;
         }
 
-        if (ta.GetNumLapsCompleted() > 0)
+        if (ta != null && ta.GetNumLapsCompleted() > 0)
             raceState.m_AnyCompetitorFinishALap = true;
 
-        Competitor b = GetCompetitorbyName(p.name2);
+        Competitor b = GetCompetitor(p.guid2);
 
         if (b != null)
         {
-            p.time2 = GetBestTime(b.car_name);
-            LapTimer tb = GetLapTimer(b.car_name);
+            p.time2 = GetBestTime(b.guid);
+            LapTimer tb = GetLapTimer(b.guid);
 
-            if (tb.IsDisqualified())
+            if (tb != null && tb.IsDisqualified())
             {
                 if (tb.GetNumLapsCompleted() == 0)
                     p.time2 = dq_time;
             }
 
-            if (tb.GetNumLapsCompleted() > 0)
+            if (tb != null && tb.GetNumLapsCompleted() > 0)
                 raceState.m_AnyCompetitorFinishALap = true;
         }
         else
@@ -2612,7 +2636,7 @@ public class RaceManager : MonoBehaviour
         {    
             status.OnDisqualified();
 
-            Competitor c = GetCompetitorbyCarName(status.car_name);
+            Competitor c = GetCompetitor(status.guid);
 
             if(c != null)
                 c.OnDQ(missedCheckpoint);
@@ -2773,8 +2797,8 @@ public class RaceManager : MonoBehaviour
 
             if (final.time1 < final.time2)
             {
-                firstPlace = GetCompetitorbyName(final.name1);
-                secondPlace = GetCompetitorbyName(final.name2);
+                firstPlace = GetCompetitor(final.guid1);
+                secondPlace = GetCompetitor(final.guid2);
                 if (firstPlace == null || secondPlace == null)
                     return;
                 firstPlace.best_stage2_time = final.time1;
@@ -2782,8 +2806,8 @@ public class RaceManager : MonoBehaviour
             }
             else
             {
-                firstPlace = GetCompetitorbyName(final.name2);
-                secondPlace = GetCompetitorbyName(final.name1);
+                firstPlace = GetCompetitor(final.guid2);
+                secondPlace = GetCompetitor(final.guid1);
                 if (firstPlace == null || secondPlace == null)
                     return;
 
@@ -2805,14 +2829,14 @@ public class RaceManager : MonoBehaviour
             if (raceState.m_Stage2b_2pairs.Count == 2)
             {
                 Pairing p = raceState.m_Stage2b_2pairs[0];
-                thirdPlaceCandidate1 = (p.name1 == final.name1 || p.name1 == final.name2) ? p.name2 : p.name1;
-                thirdPlaceTimeCand1 = (p.name1 == final.name1 || p.name1 == final.name2) ? p.time2 : p.time1;
+                thirdPlaceCandidate1 = (p.guid1 == final.guid1 || p.guid1 == final.guid2) ? p.guid2 : p.guid1;
+                thirdPlaceTimeCand1 = (p.guid1 == final.guid1 || p.guid1 == final.guid2) ? p.time2 : p.time1;
 
                 p = raceState.m_Stage2b_2pairs[1];
-                thirdPlaceCandidate2 = (p.name1 == final.name1 || p.name1 == final.name2) ? p.name2 : p.name1;
-                thirdPlaceTimeCand2 = (p.name1 == final.name1 || p.name1 == final.name2) ? p.time2 : p.time1;
+                thirdPlaceCandidate2 = (p.guid1 == final.guid1 || p.guid1 == final.guid2) ? p.guid2 : p.guid1;
+                thirdPlaceTimeCand2 = (p.guid1 == final.guid1 || p.guid1 == final.guid2) ? p.time2 : p.time1;
 
-                thirdPlace = GetCompetitorbyName(thirdPlaceTimeCand1 < thirdPlaceTimeCand2 ? thirdPlaceCandidate1 : thirdPlaceCandidate2);
+                thirdPlace = GetCompetitor(thirdPlaceTimeCand1 < thirdPlaceTimeCand2 ? thirdPlaceCandidate1 : thirdPlaceCandidate2);
                 thirdPlace.stage2_place = 3;
                 thirdPlace.best_stage2_time = thirdPlaceTimeCand1 < thirdPlaceTimeCand2 ? thirdPlaceTimeCand1 : thirdPlaceTimeCand2;
                 
@@ -2872,7 +2896,7 @@ public class RaceManager : MonoBehaviour
 
     public void AddCompetitor(Competitor c)
     {
-        if(GetCompetitorbyName(c.racer_name) != null)
+        if(GetCompetitor(c.guid) != null)
             Debug.LogError("Shouldn't be adding racer twice! " + c.racer_name);
 
         Debug.Log("Adding new competitor: " + c.racer_name);
@@ -2883,7 +2907,7 @@ public class RaceManager : MonoBehaviour
     {
         m_TempCompetitors.Remove(competitor);
 
-        Competitor c = GetCompetitorbyName(competitor.racer_name);
+        Competitor c = GetCompetitor(competitor.guid);
 
         if(c == null)
         {

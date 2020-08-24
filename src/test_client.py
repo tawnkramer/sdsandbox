@@ -64,15 +64,17 @@ class SimpleClient(SDClient):
         car_name = "Car"
         bio = "I race robots."
         country = "Neverland"
+        guid = "some random constant string"
 
         # Racer info
         msg = {'msg_type': 'racer_info',
             'racer_name': racer_name,
             'car_name' : car_name,
             'bio' : bio,
-            'country' : country }
+            'country' : country,
+            'guid' : guid }
         self.send_now(json.dumps(msg))
-
+        time.sleep(0.2)
         
         # Car config
         # body_style = "donkey" | "bare" | "car01" choice of string
@@ -83,7 +85,7 @@ class SimpleClient(SDClient):
         self.send_now(msg)
 
         #this sleep gives the car time to spawn. Once it's spawned, it's ready for the camera config.
-        time.sleep(0.1)
+        time.sleep(0.2)
 
         # Camera config
         # set any field to Zero to get the default camera setting.
@@ -96,6 +98,7 @@ class SimpleClient(SDClient):
         # img_enc can be one of JPG|PNG|TGA        
         msg = '{ "msg_type" : "cam_config", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "JPG", "offset_x" : "0.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
         self.send_now(msg)
+        time.sleep(0.2)
 
         # Camera config B, for the second camera
         # set any field to Zero to get the default camera setting.
@@ -108,6 +111,7 @@ class SimpleClient(SDClient):
         # img_enc can be one of JPG|PNG|TGA
         msg = '{ "msg_type" : "cam_config_b", "fov" : "150", "fish_eye_x" : "1.0", "fish_eye_y" : "1.0", "img_w" : "255", "img_h" : "255", "img_d" : "1", "img_enc" : "JPG", "offset_x" : "3.0", "offset_y" : "3.0", "offset_z" : "0.0", "rot_x" : "90.0" }'
         self.send_now(msg)
+        time.sleep(0.2)
 
         # Lidar config
         # the offset_x moves camera left/right
@@ -124,6 +128,7 @@ class SimpleClient(SDClient):
         # And here's some sample settings that similate a simple RpLidar A2 one level horizontal scan.
         msg = '{ "msg_type" : "lidar_config", "degPerSweepInc" : "2", "degAngDown" : "0", "degAngDelta" : "-1.0", "numSweepsLevels" : "1", "maxRange" : "50.0", "noise" : "0.4", "offset_x" : "0.0", "offset_y" : "0.5", "offset_z" : "0.5", "rot_x" : "0.0" }'
         self.send_now(msg)
+        time.sleep(0.2)
 
 
     def send_controls(self, steering, throttle):

@@ -12,6 +12,7 @@ public class LapTimer : MonoBehaviour, IComparable<LapTimer>
     public TextMesh bestTimeDisp;
     public TextMesh dqDisp;
     public string car_name;
+    public string guid;
 
     public float min_lap_time = 10.0f; //seconds
     public bool race_completed = false;
