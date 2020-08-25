@@ -49,7 +49,8 @@ class SimpleClient(SDClient):
 
             if "lidar" in json_packet:
                 lidar = json_packet["lidar"]
-                print("lidar:", len(lidar), "pts")
+                if lidar is not None:
+                    print("lidar:", len(lidar), "pts")
 
                 #don't have to, but to clean up the print, delete the lidar string.
                 del json_packet["lidar"]
