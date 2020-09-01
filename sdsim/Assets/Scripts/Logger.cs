@@ -213,7 +213,7 @@ public class Logger : MonoBehaviour {
 			}
 		}
 
-		if(lidar != null && lidar.gameObject.activeInHierarchy)
+		if(lidar != null)
 		{
 			LidarPointArray pa = lidar.GetOutput();
 
@@ -227,7 +227,7 @@ public class Logger : MonoBehaviour {
 			}
 		}
 
-        if (optionlB_CamSensor != null && optionlB_CamSensor.gameObject.activeInHierarchy)
+        if (optionlB_CamSensor != null)
         {
             SaveCamSensor(camSensor, activity, "_a");
             SaveCamSensor(optionlB_CamSensor, activity, "_b");

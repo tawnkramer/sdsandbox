@@ -10,7 +10,7 @@ using System;
 public class SandboxServer : MonoBehaviour
 {
     public string host = "0.0.0.0";
-    public int port = 9091;
+    public int port = 9090;
 
     tk.TcpServer _server = null;
 
@@ -80,17 +80,7 @@ public class SandboxServer : MonoBehaviour
 
     private void InitClient(tk.TcpClient client)
     {
-        //Is there a race manager active?
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
-
-        if (raceMan != null)
-        {
-            if (_server.debug)
-                Debug.Log("client joined race.");
-
-            raceMan.OnClientJoined(client.gameObject.GetComponent<tk.JsonTcpClient>());
-        }
-        else if (spawnCarswClients)
+        if (spawnCarswClients)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
@@ -121,7 +111,6 @@ public class SandboxServer : MonoBehaviour
     public void OnSceneLoaded(bool bFrontEnd)
     {
         spawnCarswClients = !bFrontEnd;
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
 
         List<tk.TcpClient> clients = _server.GetClients();
 
@@ -133,7 +122,7 @@ public class SandboxServer : MonoBehaviour
             InitClient(client);
         }
 
-        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0 && raceMan == null)
+        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
@@ -149,28 +138,13 @@ public class SandboxServer : MonoBehaviour
 
     public void OnClientDisconnected(tk.TcpClient client)
     {
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
-        if(raceMan)
+        if (spawner)
         {
-            raceMan.OnClientDisconnected(client.gameObject.GetComponent<tk.JsonTcpClient>());
-        }
-        else
-        {
-            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
-
-            if (spawner)
-            {
-                spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
-            }
+            spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
         }
 
         GameObject.Destroy(client.gameObject);
-    }
-
-    internal void MakeDebugClient()
-    {
-        Debug.Log("making debug client.");
-        OnClientConnected();
     }
 }

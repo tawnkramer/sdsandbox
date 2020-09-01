@@ -12,13 +12,13 @@ public class CarSpawner : MonoBehaviour {
 
 	public delegate void OnNewCar(GameObject carObj);
 	public OnNewCar OnNewCarCB;	
-    public float m_CarLeftRightSpace = 4.5f;
 
-    public Camera splitScreenCamLeft;
+
+	public Camera splitScreenCamLeft;
 	public Camera splitScreenCamRight;
 	public GameObject splitScreenPanel;
 
-	public List<GameObject> cars = new List<GameObject>();
+	private List<GameObject> cars = new List<GameObject>();
 
 	static public GameObject getChildGameObject(GameObject fromGameObject, string withName) {
          //Author: Isaac Dart, June-13.
@@ -51,39 +51,23 @@ public class CarSpawner : MonoBehaviour {
 
         if(toRemove != null)
         {
-            RemoveLapTimer(toRemove);
             cars.Remove(toRemove);
             GameObject.Destroy(toRemove);
 
             if (cars.Count < 2)
-                DeactivateSplitScreen();            
+                DeactivateSplitScreen();
 
             return true;
         }
 
 
-        Debug.LogError("failed to remove car");
         return false;
-    }
-
-    void RemoveLapTimer(GameObject go)
-    {
-        //Remove race status, if possible.
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
-        if(raceMan != null)
-        {
-            GameObject to = getChildGameObject(go, "LapTimer");
-            
-            if(to != null)
-                raceMan.RemoveLapTimer(to.GetComponent<LapTimer>());
-        }
     }
 
     public void RemoveAllCars()
     {
         foreach(GameObject car in cars)
         {
-            RemoveLapTimer(car);
             GameObject.Destroy(car);
         }
 
@@ -139,18 +123,6 @@ public class CarSpawner : MonoBehaviour {
 
         if (splitScreenPanel)
             splitScreenPanel.SetActive(false);
-
-        if(cars.Count == 1)
-        {
-            Transform camFollow = getChildGameObject(cars[0], "CameraFollowTm").transform;
-
-            if(Camera.main != null)
-            {
-                CameraFollow mainCamFollow = Camera.main.transform.GetComponent<CameraFollow>();
-
-                mainCamFollow.target = camFollow;
-            }
-        }
     }
 
     public void CarTextFacecamera(GameObject car, Transform target)
@@ -167,40 +139,6 @@ public class CarSpawner : MonoBehaviour {
 
         ft.target = target;
     
-    }
-
-    public bool IsOccupied(Vector3 pos)
-    {
-        int carCount = cars.Count - 1;
-
-        for(int iCar = 0; iCar < carCount; iCar++)
-        {
-            if(Vector3.Distance(cars[iCar].transform.position, pos) < 2.0f)
-                return true;
-        }
-
-        return false;
-    }
-
-    public Vector3 GetCarStartPos(int iCar, bool bAvoid)
-    {
-        Vector3 offset = Vector3.zero;
-
-        //just stack more cars after the second. Not pretty.
-        int iRow = iCar / 2;
-        offset = startTm.forward * (-5f * iRow);
-
-        if ((iCar + 1) % 2 == 0)
-            offset += startTm.right * -1 * m_CarLeftRightSpace;
-
-        Vector3 startPos = startTm.position + offset;
-
-        while(bAvoid && IsOccupied(startPos))
-        {
-            startPos += startTm.forward * (-5f * iRow++);
-        }
-
-        return startPos;
     }
 
     public GameObject Spawn (tk.JsonTcpClient client) 
@@ -222,30 +160,29 @@ public class CarSpawner : MonoBehaviour {
         }
 
         cars.Add(go);
-        
-        Vector3 startPos = GetCarStartPos(cars.Count - 1, true);
+        Vector3 offset = Vector3.zero;
+
+		if(cars.Count == 2)
+		{
+			//just stack more cars after the second. Not pretty.
+			offset = Vector3.left * 4.5f;
+		}
+        else if(cars.Count > 2)
+		{
+			//just stack more cars after the second. Not pretty.
+			offset = Vector3.forward * (-5f * (cars.Count - 1));
+		}
+
 		go.transform.rotation = startTm.rotation;
-		go.transform.position = startPos;
+		go.transform.position = startTm.position + offset;		
         go.GetComponent<Car>().SavePosRot();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
         Camera cam = Camera.main;
 
-        bool bRaceActive = false;
-
-        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
-
-        if(raceMan)
-            bRaceActive = raceMan.bRaceActive;
-
-        GenPathFromDriving pathGen = GameObject.FindObjectOfType<GenPathFromDriving>();
-        
-        if(pathGen)
-            pathGen.Init(go);
-
 		//Detect that we have the second car. Doesn't really handle more than 2 right now.
-		if(cars.Count > 1 && !bRaceActive)
+		if(cars.Count > 1)
 		{
             cam = ActivateSplitScreen();
 		}
@@ -269,9 +206,7 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         //Search scene to find these.
-        CameraFollow cameraFollow = null;
-        if(cam != null)
-            cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
@@ -307,6 +242,7 @@ public class CarSpawner : MonoBehaviour {
             {
                 panelMenu.SetActive(false);
             }
+
         }
 
         //Set the PID ui hooks
@@ -319,15 +255,6 @@ public class CarSpawner : MonoBehaviour {
 		{
 			Debug.LogError("failed to find PID_UI");
 		}
-
-        //Add race status, if possible.
-        if(raceMan != null)
-        {
-            GameObject to = getChildGameObject(go, "LapTimer");
-
-            if(to != null)
-                raceMan.AddLapTimer(to.GetComponent<LapTimer>(), client);
-        }
 
         return go;
     }
@@ -344,9 +271,7 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         //Search scene to find these.
-        CameraFollow cameraFollow = null;
-        if(cam != null)
-            cameraFollow = cam.transform.GetComponent<CameraFollow>();
+        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");

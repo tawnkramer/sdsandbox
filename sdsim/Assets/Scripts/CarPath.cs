@@ -1,122 +1,101 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AI;
 
 public class PathNode
 {
-  public Vector3 pos;
-  public CarModel cm;
-  public string activity;
+	public Vector3 pos;
+	public CarModel cm;
+	public string activity;
 }
 
-public class CarPath
+public class CarPath 
 {
-  public List<PathNode> nodes;
-  public NavMeshPath navMeshPath;
-  public int iActiveSpan = 0;
+	public List<PathNode> nodes;
+	public int iActiveSpan = 0;
 
 
-  public CarPath()
-  {
-    nodes = new List<PathNode>();
-    navMeshPath = new NavMeshPath();
-    ResetActiveSpan();
-  }
+	public CarPath()
+	{
+		nodes = new List<PathNode>();
 
-  public void ResetActiveSpan()
-  {
-    iActiveSpan = 0;
-  }
+		ResetActiveSpan();
+	}
 
-  public PathNode GetActiveNode()
-  {
-    if (iActiveSpan < nodes.Count)
-      return nodes[iActiveSpan];
+	public void ResetActiveSpan()
+	{
+		iActiveSpan = 0;
+	}
 
-    return null;
-  }
+	public PathNode GetActiveNode()
+	{
+		if (iActiveSpan < nodes.Count)
+			return nodes[iActiveSpan];
 
-  public void SmoothPath(float factor = 0.5f)
-  {
-    LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
+		return null;
+	}
 
-    for (int iN = 1; iN < nodes.Count - 2; iN++)
-    {
-      PathNode p = nodes[iN - 1];
-      PathNode c = nodes[iN];
-      PathNode n = nodes[iN + 1];
+	public void SmoothPath(float factor = 0.5f)
+	{
+		LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
 
-      LineSeg3d seg = new LineSeg3d(ref p.pos, ref n.pos);
-      Vector3 closestP = seg.ClosestPointOnSegmentTo(ref c.pos, ref segRes);
-      Vector3 dIntersect = closestP - c.pos;
-      c.pos += dIntersect.normalized * factor;
-    }
-  }
-  public double getDistance(Vector3 currentPosition, Vector3 target)
-  {
-    double distance = 0.0;
-    if (NavMesh.CalculatePath(currentPosition, target, NavMesh.AllAreas, this.navMeshPath))
-    {
-      if (this.navMeshPath.corners.Length > 5)
-      {
-        //ignore the first corners -> more stable
-        distance += (this.navMeshPath.corners[2] - currentPosition).magnitude;
-        for (int i = 3; i < this.navMeshPath.corners.Length; i++)
-        {
-          Vector3 start = this.navMeshPath.corners[i - 1];
-          Vector3 end = this.navMeshPath.corners[i];
-          distance += (end - start).magnitude;
-        }
-      }
-    }
-    return distance;
-  }
+		for(int iN = 1; iN < nodes.Count - 2; iN++)
+		{
+			PathNode p = nodes[iN - 1];
+			PathNode c = nodes[iN];
+			PathNode n = nodes[iN + 1];
 
-  public bool GetCrossTrackErr(Vector3 pos, ref float err)
-  {
-    if (iActiveSpan >= nodes.Count - 2)
-      return false;
+			LineSeg3d seg = new LineSeg3d(ref p.pos, ref n.pos);
+			Vector3 closestP = seg.ClosestPointOnSegmentTo(ref c.pos, ref segRes);
+			Vector3 dIntersect = closestP - c.pos;
+			c.pos += dIntersect.normalized * factor;
+		}
+	}
 
-    PathNode a = nodes[iActiveSpan];
-    PathNode b = nodes[iActiveSpan + 1];
+	public bool GetCrossTrackErr(Vector3 pos, ref float err)
+	{
+		if(iActiveSpan >= nodes.Count - 2)
+			return false;
 
-    //2d path.
-    pos.y = a.pos.y;
+		PathNode a = nodes[iActiveSpan];
+		PathNode b = nodes[iActiveSpan + 1];
 
-    LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref b.pos);
+		//2d path.
+		pos.y = a.pos.y;
 
-    pathSeg.Draw(Color.green);
+		LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref b.pos);
 
-    LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
+		pathSeg.Draw( Color.green);		
 
-    Vector3 closePt = pathSeg.ClosestPointOnSegmentTo(ref pos, ref segRes);
+		LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
 
-    Debug.DrawLine(a.pos, closePt, Color.blue);
+		Vector3 closePt = pathSeg.ClosestPointOnSegmentTo(ref pos, ref segRes);  
 
-    if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
-    {
-      iActiveSpan++;
-    }
-    else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
-    {
-      if (iActiveSpan > 0)
-        iActiveSpan--;
-    }
+		Debug.DrawLine(a.pos, closePt, Color.blue);
 
-    Vector3 errVec = pathSeg.ClosestVectorTo(ref pos);
+		if(segRes == LineSeg3d.SegResult.GreaterThanEnd)
+		{
+			iActiveSpan++;
+		}
+		else if(segRes == LineSeg3d.SegResult.LessThanOrigin)
+		{
+			if(iActiveSpan > 0)
+				iActiveSpan--;
+		}
 
-    Debug.DrawRay(closePt, errVec, Color.white);
+		Vector3 errVec = pathSeg.ClosestVectorTo( ref pos );
 
-    float sign = 1.0f;
+		Debug.DrawRay(closePt, errVec, Color.white);
 
-    Vector3 cp = Vector3.Cross(pathSeg.m_dir.normalized, errVec.normalized);
+		float sign = 1.0f;
 
-    if (cp.y > 0.0f)
-      sign = -1f;
+		Vector3 cp = Vector3.Cross(pathSeg.m_dir.normalized, errVec.normalized);
 
-    err = errVec.magnitude * sign;
-    return true;
-  }
+		if(cp.y > 0.0f)
+			sign = -1f;
+
+		err = errVec.magnitude * sign;
+		return true;
+	}
 
 }
