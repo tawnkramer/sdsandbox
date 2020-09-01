@@ -40,9 +40,6 @@ namespace tk
         // Verbose messages
         public bool debug = false;
 
-        public List<string> blocked = new List<string>();
-
-
         // Call the Run method to start the server. The ip address is typically 127.0.0.1 to accept only local connections.
         // Or 0.0.0.0 to bind to all incoming connections for this NIC.
         public void Run(string ip, int port)
@@ -100,11 +97,6 @@ namespace tk
                     Debug.Log("sent: " + System.Text.Encoding.Default.GetString(data));
                 }
             }
-        }
-
-        public void Block(string ip)
-        {
-            blocked.Add(ip);
         }
 
         // Remove reference to TcpClient
@@ -211,17 +203,6 @@ namespace tk
 
                 lock (_locker)
                 {
-                   string ip = ((IPEndPoint)(handler.RemoteEndPoint)).Address.ToString();
-
-                   foreach(string blockedip in blocked)
-                   {
-                       if(blockedip == ip)
-                       {
-                           Debug.LogWarning(ip + " is a blocked ip address.");
-                           return;
-                       }
-                   }
-
                     // Add clients to this new_clients list.
                     // They will get a onClientConntedCB later on in the Update method.
                     new_clients.Add(handler);
