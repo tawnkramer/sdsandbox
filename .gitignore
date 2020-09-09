@@ -10,6 +10,6 @@ sdsim/Build
 dataset
 sdsim/Assets/Town Creator Kit V2
 sdsim/Library
-/sdsim/Packages
-/sdsim/ProjectSettings
-/sdsim/Logs
+sdsim/Packages
+sdsim/ProjectSettings
+sdsim/Logs
