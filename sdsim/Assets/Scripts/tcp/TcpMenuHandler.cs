@@ -112,6 +112,10 @@ namespace tk
             {
                 loader.LoadGeneratedTrackScene();
             }
+            else if (scene_name == "cristallin")
+            {
+                loader.LoadCristallinScene();
+            }
         }
         
         void OnQuitApp(JSONObject json)

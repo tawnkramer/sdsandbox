@@ -30,6 +30,11 @@ public void LoadGeneratedTrackScene()
     SceneManager.LoadSceneAsync(4);
 }
 
+public void LoadCristallinScene()
+{
+    SceneManager.LoadSceneAsync(6);
+}
+
 public void QuitApplication()
 {
     Application.Quit();
