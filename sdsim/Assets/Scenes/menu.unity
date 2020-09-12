@@ -304,8 +304,8 @@ RectTransform:
   m_Father: {fileID: 1871358710}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.18580091, y: 0.10580027}
-  m_AnchorMax: {x: 0.4191091, y: 0.28489152}
+  m_AnchorMin: {x: 0.08648649, y: 0.10580027}
+  m_AnchorMax: {x: 0.31841776, y: 0.28489152}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2053,10 +2053,10 @@ RectTransform:
   m_Father: {fileID: 2047057427}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.014492754, y: -0.22103658}
+  m_AnchorMin: {x: 0.014492754, y: -0.29142156}
   m_AnchorMax: {x: 1, y: -0.028963415}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
+  m_SizeDelta: {x: 0, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1498640657
 MonoBehaviour:
@@ -2089,7 +2089,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Cristallin track
+  m_Text: Robo Racing League 1
 --- !u!222 &1498640658
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2535,9 +2535,9 @@ RectTransform:
   m_Father: {fileID: 1871358710}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.18580091, y: 0.10580027}
-  m_AnchorMax: {x: 0.4191091, y: 0.28489152}
-  m_AnchoredPosition: {x: 353.9, y: 0}
+  m_AnchorMin: {x: 0.3832992, y: 0.10580027}
+  m_AnchorMax: {x: 0.6206519, y: 0.28489152}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2047057428
@@ -2584,7 +2584,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2140273047}
-        m_MethodName: LoadCristallinScene
+        m_MethodName: LoadRoboRacingLeague1Scene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

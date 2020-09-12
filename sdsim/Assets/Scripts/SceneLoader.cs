@@ -30,7 +30,7 @@ public void LoadGeneratedTrackScene()
     SceneManager.LoadSceneAsync(4);
 }
 
-public void LoadCristallinScene()
+public void LoadRoboRacingLeague1Scene()
 {
     SceneManager.LoadSceneAsync(6);
 }
