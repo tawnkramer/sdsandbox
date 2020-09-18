@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/mountain_track.unity
     guid: fa958af1d4fc8ef449b0c7b710692aad
   - enabled: 1
+    path: Assets/Scenes/mtrail_track.unity
+    guid: f18d4caa9a54b564ea88bf9b9f1c1c27
+  - enabled: 1
     path: Assets/Scenes/roboracingleague_1.unity
     guid: b37ac42fbc7419143a38115aec8b91ba
   m_configObjects: {}

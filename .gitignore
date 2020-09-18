@@ -1,5 +1,6 @@
 *.pyc
 *.h5
+sdsim/log/*
 sdsim/obj
 *.sln
 *.userprefs
@@ -13,3 +14,5 @@ sdsim/Library
 sdsim/Packages
 sdsim/ProjectSettings
 sdsim/Logs
+
+/sdsim/debug.log

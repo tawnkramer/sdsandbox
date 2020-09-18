@@ -34,6 +34,7 @@ public interface ICar
 
 	Vector3 GetAccel();
 
+	Quaternion GetGyro();
 
 	//mark the current activity for partial selections when creating training sets later.
 	string GetActivity();
@@ -52,5 +53,6 @@ public interface ICar
 
 	//get the name of the last object we collided with
 	string GetLastCollision();
+    void SetLastCollision(string col_name);
 	void ClearLastCollision();
 }

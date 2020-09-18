@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 
@@ -21,6 +21,8 @@ public class Car : MonoBehaviour, ICar {
 
 	public Vector3 startPos;
 	public Quaternion startRot;
+	private Quaternion rotation = Quaternion.identity;
+	private Quaternion gyro = Quaternion.identity;
 
 	public float length = 1.7f;
 
@@ -34,10 +36,13 @@ public class Car : MonoBehaviour, ICar {
 	//use this label to pull partial training samples from a run 
 	public string activity = "keep_lane";
 
-    public float maxSteer = 16.0f;
+	public float maxSteer = 16.0f;
 
 	//name of the last object we hit.
 	public string last_collision = "none";
+
+	// used by race manager to keep cars at the starting line.
+	public bool blockControls = false;
 
 	// Use this for initialization
 	void Awake () 
@@ -54,7 +59,7 @@ public class Car : MonoBehaviour, ICar {
 
 		SavePosRot();
 
-        maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
+		//maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
 	}
 
 	public void SavePosRot()
@@ -75,18 +80,18 @@ public class Car : MonoBehaviour, ICar {
 		//Debug.Log("request throttle: " + val);
 	}
 
-    public void SetMaxSteering(float val)
-    {
-        maxSteer = val;
+	public void SetMaxSteering(float val)
+	{
+		maxSteer = val;
 
-        PlayerPrefs.SetFloat("max_steer", maxSteer);
-        PlayerPrefs.Save();
-    }
+		PlayerPrefs.SetFloat("max_steer", maxSteer);
+		PlayerPrefs.Save();
+	}
 
-    public float GetMaxSteering()
-    {
-        return maxSteer;
-    }
+	public float GetMaxSteering()
+	{
+		return maxSteer;
+	}
 
 	public void RequestSteering(float val)
 	{
@@ -151,6 +156,10 @@ public class Car : MonoBehaviour, ICar {
 	{
 		return acceleration;
 	}
+	public Quaternion GetGyro()
+	{
+	  return gyro;
+  }
 
 	public float GetOrient ()
 	{
@@ -196,12 +205,18 @@ public class Car : MonoBehaviour, ICar {
 
 	void FixedUpdate()
 	{
+		if(blockControls)
+		{
+			requestSteering = 0.0f;
+			requestTorque = 0.0f;
+		}
+
 		lastSteer = requestSteering;
 		lastAccel = requestTorque;
 
 		float throttle = requestTorque * maxTorque;
 		float steerAngle = requestSteering;
-        float brake = requestBrake;
+		float brake = requestBrake;
 
 
 		//front two tires.
@@ -224,6 +239,8 @@ public class Car : MonoBehaviour, ICar {
 		}
 
 		acceleration = rb.velocity - prevVel;
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 	}
 
 	void FlipUpright()
@@ -256,13 +273,18 @@ public class Car : MonoBehaviour, ICar {
 		return last_collision;
 	}
 
-	public void ClearLastCollision()
+    public void SetLastCollision(string col_name)
+    {
+        last_collision = col_name;
+    }
+
+    public void ClearLastCollision()
 	{
 		last_collision = "none";
 	}
 
 	void OnCollisionEnter(Collision col)
 	{
-		last_collision = col.gameObject.name;
+        SetLastCollision(col.gameObject.name);
 	}
 }

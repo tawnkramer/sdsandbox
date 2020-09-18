@@ -60,7 +60,7 @@ namespace tk
         {
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("msg_type", "scene_selection_ready");
-            json.AddField("loaded", "1");        
+            json.AddField("loaded", "1");
 
             client.SendMsg( json );
         }
@@ -78,6 +78,8 @@ namespace tk
             scenes.Add("warehouse");
             scenes.Add("sparkfun_avc");
             scenes.Add("generated_track");
+            scenes.Add("mountain_track");
+            scenes.Add("lake_track");
             scenes.Add("roboracingleague_1");
 
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
@@ -112,12 +114,20 @@ namespace tk
             else if (scene_name == "generated_track")
             {
                 loader.LoadGeneratedTrackScene();
-            }
+		    }
+		    else if (scene_name == "mountain_track")
+		    {
+		        loader.LoadMountainTrackScene();
+		    }
+		    else if (scene_name == "lake_track")
+		    {
+		        loader.LoadLakeTrackScene();
+		    }
             else if (scene_name == "roboracingleague_1")
             {
                 loader.LoadRoboRacingLeague1Scene();
             }
-        }
+    }
         
         void OnQuitApp(JSONObject json)
         {

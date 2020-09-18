@@ -126,6 +126,17 @@ namespace tk
             return dropped;
         }
 
+        public void Drop()
+        {
+            dropped = true;
+        }
+
+        public string GetIPAddress()
+        {
+            string ip = ((IPEndPoint)(_clientSocket.RemoteEndPoint)).Address.ToString();
+            return ip;
+        }
+
         public void Update()
         {
             // Update our drop detection...
@@ -144,7 +155,7 @@ namespace tk
                     try
                     {
                         // this is the minimal form of message for a JsonTCPClient
-                        string msg = "{}\n";
+                        string msg = "{\"msg_type\" : \"ping\"}\n";
                         System.Text.Encoding encoding = System.Text.Encoding.Default;
                         _clientSocket.Send(encoding.GetBytes(msg));
                     }

@@ -12,8 +12,9 @@ public class GenPathFromDriving : MonoBehaviour {
 	public float sampleDist = 2.0f;
 	Vector3 lastSample = Vector3.zero;
 
-	void Awake()
+	public void Init(GameObject _carObj)
 	{
+		carObj = _carObj;
 		car = carObj.GetComponent<ICar>();
 
 		if(car != null)

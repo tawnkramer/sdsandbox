@@ -80,7 +80,17 @@ public class SandboxServer : MonoBehaviour
 
     private void InitClient(tk.TcpClient client)
     {
-        if (spawnCarswClients)
+        //Is there a race manager active?
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
+
+        if (raceMan != null)
+        {
+            if (_server.debug)
+                Debug.Log("client joined race.");
+
+            raceMan.OnClientJoined(client.gameObject.GetComponent<tk.JsonTcpClient>());
+        }
+        else if (spawnCarswClients)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
@@ -111,6 +121,7 @@ public class SandboxServer : MonoBehaviour
     public void OnSceneLoaded(bool bFrontEnd)
     {
         spawnCarswClients = !bFrontEnd;
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
 
         List<tk.TcpClient> clients = _server.GetClients();
 
@@ -122,7 +133,7 @@ public class SandboxServer : MonoBehaviour
             InitClient(client);
         }
 
-        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
+        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0 && raceMan == null)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
@@ -138,13 +149,28 @@ public class SandboxServer : MonoBehaviour
 
     public void OnClientDisconnected(tk.TcpClient client)
     {
-        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+        RaceManager raceMan = GameObject.FindObjectOfType<RaceManager>();
 
-        if (spawner)
+        if(raceMan)
         {
-            spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
+            raceMan.OnClientDisconnected(client.gameObject.GetComponent<tk.JsonTcpClient>());
+        }
+        else
+        {
+            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+
+            if (spawner)
+            {
+                spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
+            }
         }
 
         GameObject.Destroy(client.gameObject);
+    }
+
+    internal void MakeDebugClient()
+    {
+        Debug.Log("making debug client.");
+        OnClientConnected();
     }
 }

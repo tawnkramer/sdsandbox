@@ -28,11 +28,11 @@ namespace tk
 
         public void Register(string msgType, Delegates.OnMsgRecv regCallback)
         {
-            Delegates Delegates = null;
+            Delegates delegates = null;
         
-            if (eventDictionary.TryGetValue (msgType, out Delegates))
+            if (eventDictionary.TryGetValue (msgType, out delegates))
             {
-                Delegates.onMsgCb += regCallback;
+                delegates.onMsgCb += regCallback;
             }
             else
             {
@@ -44,7 +44,7 @@ namespace tk
             }
         }
 
-        public void Dipatch(string msgType, JSONObject msgPayload)
+        public void Dispatch(string msgType, JSONObject msgPayload)
         {
             Delegates delegates = null;
         
@@ -54,7 +54,7 @@ namespace tk
             }
             else
             {
-                Debug.Log("No delegates for msg type: " + msgType);
+                //Debug.Log("No delegates for msg type: " + msgType);
             }
         }
     }

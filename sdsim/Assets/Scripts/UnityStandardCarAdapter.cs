@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
@@ -13,6 +13,8 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	float handBrake = 0.0f;
 	Vector3 vel = Vector3.zero;
 	Vector3 accel = Vector3.zero;
+	Quaternion rotation = Quaternion.identity;
+	Quaternion gyro = Quaternion.identity;
 	public string activity = "keep_lane";
 
 	Rigidbody rb;
@@ -49,22 +51,19 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	//query state.
 	public Transform GetTransform() { return this.transform; }
 
-	public Vector3 GetVelocity()
+	public Vector3 GetVelocity() { return rb.velocity; }
+	public Vector3 GetAccel() { return accel; }
+	public Quaternion GetGyro() { return gyro; }
+
+	public void SetMaxSteering(float val)
 	{
-		return rb.velocity;
+		MaximumSteerAngle = val;
 	}
 
-	public Vector3 GetAccel() { return accel; }
-
-    public void SetMaxSteering(float val)
-    {
-        MaximumSteerAngle = val;
-    }
-
-    public float GetMaxSteering()
-    {
-        return MaximumSteerAngle;
-    }
+	public float GetMaxSteering()
+	{
+		return MaximumSteerAngle;
+	}
 
 	//Save and restore State
 	public void SavePosRot() 
@@ -107,6 +106,8 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	{
 		accel = rb.velocity - vel;
 		vel = rb.velocity;
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 
 		unityCar.Move(steering / MaximumSteerAngle, throttle, footBrake, handBrake);
 	}
@@ -127,15 +128,20 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 		return last_collision;
 	}
 
-	public void ClearLastCollision()
-	{
-		last_collision = "none";
-	}
+    public void SetLastCollision(string col_name)
+    {
+        last_collision = col_name;
+    }
 
-	void OnCollisionEnter(Collision col)
-	{
-		last_collision = col.gameObject.name;
-	}
+    public void ClearLastCollision()
+    {
+        last_collision = "none";
+    }
 
-	string last_collision = "none";
+    void OnCollisionEnter(Collision col)
+    {
+        SetLastCollision(col.gameObject.name);
+    }
+
+    string last_collision = "none";
 }
