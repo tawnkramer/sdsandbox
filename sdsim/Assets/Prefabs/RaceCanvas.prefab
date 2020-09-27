@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4160164102731652160}
   - component: {fileID: 4160164102731652161}
   m_Layer: 5
-  m_Name: defaultCanvas
+  m_Name: RaceCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,10 +78,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: 224395337476948522, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.3618393
+      value: -0.36184692
       objectReference: {fileID: 0}
     - target: {fileID: 224395337476948522, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -225,12 +225,12 @@ PrefabInstance:
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1.4000015
+      value: 1.3999939
       objectReference: {fileID: 0}
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.14999962
+      value: 0.15000153
       objectReference: {fileID: 0}
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -290,12 +290,12 @@ PrefabInstance:
     - target: {fileID: 224280005622024586, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.300003
+      value: -1.3000183
       objectReference: {fileID: 0}
     - target: {fileID: 224280005622024586, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.8999996
+      value: 0.9000015
       objectReference: {fileID: 0}
     - target: {fileID: 224494488356718942, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
@@ -402,6 +402,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4160164102731652190}
     m_Modifications:
+    - target: {fileID: 114004372304906892, guid: e9fff5699d2384074977a12cf04b4db8,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Steer Max: 7'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114333044586679056, guid: e9fff5699d2384074977a12cf04b4db8,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Diff: 60'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114390039734892222, guid: e9fff5699d2384074977a12cf04b4db8,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Prop: 10'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114508305361058362, guid: e9fff5699d2384074977a12cf04b4db8,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Max Speed: 5'
+      objectReference: {fileID: 0}
     - target: {fileID: 114577809269408254, guid: e9fff5699d2384074977a12cf04b4db8,
         type: 3}
       propertyPath: pid
@@ -617,6 +637,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 224501983197500574, guid: 74a5e5f01dbed34429e74e845bc3b9af,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.0999985
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74a5e5f01dbed34429e74e845bc3b9af, type: 3}
 --- !u!224 &4226390373409643846 stripped
@@ -740,7 +765,12 @@ PrefabInstance:
     - target: {fileID: 224852417293375932, guid: 0eae2b67074794fe697e7dd14e8aa706,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.05000305
+      value: -0.049987793
+      objectReference: {fileID: 0}
+    - target: {fileID: 224852417293375932, guid: 0eae2b67074794fe697e7dd14e8aa706,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.70000076
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0eae2b67074794fe697e7dd14e8aa706, type: 3}
@@ -1036,6 +1066,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4160164102731652190}
     m_Modifications:
+    - target: {fileID: 224221694726057282, guid: 2ca947ac50c0b1a4ab9e9525071b6731,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.517395
+      objectReference: {fileID: 0}
+    - target: {fileID: 224221694726057282, guid: 2ca947ac50c0b1a4ab9e9525071b6731,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.28637695
+      objectReference: {fileID: 0}
     - target: {fileID: 224897315559760696, guid: 2ca947ac50c0b1a4ab9e9525071b6731,
         type: 3}
       propertyPath: m_LocalPosition.x
