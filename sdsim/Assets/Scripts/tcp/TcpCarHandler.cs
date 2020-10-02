@@ -13,6 +13,7 @@ namespace tk
 
         public GameObject carObj;
         public ICar car;
+        public LapTimer lapTimer;
 
         public PathManager pm;
         public CameraSensor camSensor;
@@ -344,8 +345,9 @@ namespace tk
             if(state == State.SendTelemetry)
             {
                 if (bResetCar)
-                {
+                {   
                     car.RestorePosRot();
+                    lapTimer.ResetRace();
                     pm.path.ResetActiveSpan();
                     bResetCar = false;
                 }
