@@ -13,10 +13,17 @@ public class CarSpawner : MonoBehaviour {
 	public delegate void OnNewCar(GameObject carObj);
 	public OnNewCar OnNewCarCB;	
 
+    public int numCarRows = 2;
+    public float distCarCols = 4.5f;
+    public float distCarRows = 5f;
 
 	public Camera splitScreenCamLeft;
 	public Camera splitScreenCamRight;
 	public GameObject splitScreenPanel;
+
+    public GameObject racerStatusPrefab;
+    public RectTransform raceStatusPanel;
+    int raceStatusHeight = 100;
 
 	private List<GameObject> cars = new List<GameObject>();
 
@@ -38,7 +45,7 @@ public class CarSpawner : MonoBehaviour {
         {
             GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
-            if(TcpClientObj)
+            if(TcpClientObj != null)
             {
                 tk.TcpCarHandler handler = TcpClientObj.GetComponent<tk.TcpCarHandler>();
                 
@@ -50,24 +57,30 @@ public class CarSpawner : MonoBehaviour {
         }
 
         if(toRemove != null)
-        {
+        {   
+            RemoveTimer(toRemove);
             cars.Remove(toRemove);
             GameObject.Destroy(toRemove);
 
             if (cars.Count < 2)
                 DeactivateSplitScreen();
 
+            Debug.Log("Removed car");
             return true;
         }
-
-
-        return false;
+        else
+        {
+            Debug.LogError("failed to remove car");
+            return false;
+        
+        }
     }
 
     public void RemoveAllCars()
     {
         foreach(GameObject car in cars)
         {
+            RemoveTimer(car);
             GameObject.Destroy(car);
         }
 
@@ -76,8 +89,49 @@ public class CarSpawner : MonoBehaviour {
         RemoveUiReferences();
     }
 
-    
+    public void AddTimer(Timer t, tk.JsonTcpClient client)
+    {
+        if(racerStatusPrefab == null)
+            return;
 
+        GameObject go = Instantiate(racerStatusPrefab) as GameObject;
+        RaceStatus rs = go.GetComponent<RaceStatus>();
+        rs.Init(t, client);
+        go.transform.SetParent(raceStatusPanel.transform);
+        
+        float height = raceStatusPanel.transform.childCount * raceStatusHeight;
+        raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,  height);
+        raceStatusPanel.anchoredPosition = new Vector3(8.0f, -1 * height, 0.0f);
+        Debug.Log("Added timer");
+        
+    }
+    
+    public void RemoveTimer(GameObject go)
+    {   
+        Timer timer = getChildGameObject(go, "Timer").GetComponent<Timer>();
+        
+        if(timer != null && raceStatusPanel != null){
+            int count = raceStatusPanel.transform.childCount;
+            for(int i = 0; i < count; i++)
+            {
+                Transform child = raceStatusPanel.transform.GetChild(i);
+                RaceStatus rs = child.GetComponent<RaceStatus>();
+                if(rs.timer == timer)
+                {
+                    Destroy(child.gameObject);
+                    float height = (count - 1) * raceStatusHeight;
+                    raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,  height);
+                    raceStatusPanel.anchoredPosition = new Vector3(8.0f, -1 * height, 0.0f);
+                    Debug.Log("removed timer");
+                    return;
+                }
+            }
+            Debug.LogError("failed to find timer while removing it");
+            return;
+        }
+        Debug.LogError("failed to remove timer");
+    }
+    
     public Camera ActivateSplitScreen()
     {
         Camera cam = Camera.main;
@@ -141,6 +195,40 @@ public class CarSpawner : MonoBehaviour {
     
     }
 
+    public bool IsOccupied(Vector3 pos)
+    {
+        int carCount = cars.Count - 1;
+
+        for(int iCar = 0; iCar < carCount; iCar++)
+        {
+            if(Vector3.Distance(cars[iCar].transform.position, pos) == 0.0f)
+                return true;
+        }
+
+        return false;
+    }
+
+    public Vector3 GetCarStartPos(int iCar, bool bAvoid)
+    {
+        Vector3 offset = Vector3.zero;
+
+        int iRow = iCar / numCarRows;
+        offset = Vector3.forward * (distCarRows * iRow);
+
+        if (iCar % numCarRows != 0)
+            offset += Vector3.left * distCarCols * (iCar % numCarRows);
+
+        Vector3 startPos = startTm.position + offset;
+
+        while(bAvoid && IsOccupied(startPos))
+        {
+            startPos += Vector3.forward * (distCarRows * iRow++);
+        }
+
+        return startPos;
+    }
+
+
     public GameObject Spawn (tk.JsonTcpClient client) 
 	{
         if(carPrefab == null)
@@ -160,21 +248,10 @@ public class CarSpawner : MonoBehaviour {
         }
 
         cars.Add(go);
-        Vector3 offset = Vector3.zero;
-
-		if(cars.Count == 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.left * 4.5f;
-		}
-        else if(cars.Count > 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.forward * (-5f * (cars.Count - 1));
-		}
-
+        
+        Vector3 startPos = GetCarStartPos(cars.Count - 1, true);
 		go.transform.rotation = startTm.rotation;
-		go.transform.position = startTm.position + offset;		
+		go.transform.position = startPos;
         go.GetComponent<Car>().SavePosRot();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
@@ -254,6 +331,18 @@ public class CarSpawner : MonoBehaviour {
 		else
 		{
 			Debug.LogError("failed to find PID_UI");
+		}
+        
+        //Add race status, if possible.
+        GameObject to = getChildGameObject(go, "Timer");
+
+        if(to != null)
+        {
+            AddTimer(to.GetComponent<Timer>(), client);
+        }   
+		else
+		{
+			Debug.LogError("failed to find Timer");
 		}
 
         return go;

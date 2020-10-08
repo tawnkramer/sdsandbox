@@ -36,6 +36,8 @@ public class PathManager : MonoBehaviour {
 
 	public bool doShowPath = false;
 
+	public int numRandCone = 0;
+
     public string pathToLoad = "none";
 
 	public RoadBuilder roadBuilder;
@@ -80,11 +82,12 @@ public class PathManager : MonoBehaviour {
 		if(doBuildRoad && semanticSegRoadBuilder != null)
 			semanticSegRoadBuilder.InitRoad(path);
 
-		if(laneChTrainer != null && doChangeLanes)
-		{
+		if(doChangeLanes && laneChTrainer != null)
 			laneChTrainer.ModifyPath(ref path);
-		}
 
+		for (int i = 0; i < numRandCone; i++){
+			roadBuilder.RandomCone(path);
+		}
 		if(locationMarkerPrefab != null && path != null)
 		{
 			int iLocId = 0;

@@ -7,6 +7,8 @@ public class RoadBuilder : MonoBehaviour {
 	public float roadWidth = 1.0f;
 	public float roadHeightOffset = 0.0f;
 	public float roadOffsetW = 0.0f;
+	public float coneHeightOffset = 0.0f;
+	public float coneOffset = 1.0f;
 	public bool doFlattenAtStart = true;
 	public bool doErodeTerrain = true;
 	public bool doGenerateTerrain = true;
@@ -23,6 +25,8 @@ public class RoadBuilder : MonoBehaviour {
 	public Texture2D[] roadTextures;
 	public float[] roadOffsets;
 	public float[] roadWidths;
+	public int iConePrefab = 0;
+	public GameObject[] conePrefabs;
 
 	Texture2D customRoadTexure;
 
@@ -239,5 +243,14 @@ public class RoadBuilder : MonoBehaviour {
 
 			//terToolkit.TextureTerrain(slopeStops, heightStops, textures);
 		}
+	}
+
+	public void RandomCone(CarPath path){
+		int random_index = Random.Range(0, path.nodes.Count);
+		PathNode random_node = path.nodes[random_index];
+
+		Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
+		Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z);
+		Instantiate(conePrefabs[iConePrefab], xz_coords+rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
 	}
 }

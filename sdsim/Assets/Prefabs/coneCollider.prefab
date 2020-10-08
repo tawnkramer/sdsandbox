@@ -62,6 +62,7 @@ GameObject:
   - component: {fileID: 33025162242222234}
   - component: {fileID: 23438640429785850}
   - component: {fileID: 136204063839943664}
+  - component: {fileID: 6959517251501867472}
   m_Layer: 0
   m_Name: Line01
   m_TagString: Untagged
@@ -138,12 +139,24 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226131555621538}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.27
   m_Height: 0.8075083
   m_Direction: 1
   m_Center: {x: 0.23235816, y: 0.08056114, z: 0.00000007450582}
+--- !u!114 &6959517251501867472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226131555621538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3af54a8b8b43b4c889da938862e3e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1702004190242720
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4287206443184916}
   m_Layer: 0
-  m_Name: cone
+  m_Name: coneCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
