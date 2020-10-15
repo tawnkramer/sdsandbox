@@ -6,16 +6,21 @@ public class Timer : MonoBehaviour
 {
     public TextMesh currentTotTimeDisp;
     public TextMesh penaltiesDisp;
-    public float TimePenalty = 1f; //seconds
-    public bool enabled_timer = true;
+    public bool enabled_timer = false;
     public string racerName;
-    float penalties = 0.0f; //seconds
-    float currentStart = 0.0f; //seconds
+    public float penalties = 0.0f; //seconds
+    public float currentStart = 0.0f; //seconds
 
-    void awake()
-    {
-        currentTotTimeDisp.gameObject.SetActive(false);
-        penaltiesDisp.gameObject.SetActive(false);
+    void Awake()
+    {   
+        if(enabled_timer)
+        {
+            StartTimer();
+        }
+        else
+        {
+            DisableTimer();
+        }
     }
 
     public void StartTimer()
@@ -35,6 +40,13 @@ public class Timer : MonoBehaviour
         currentStart = 0.0f;
         enabled_timer = false;
     }
+    public void ResetTimer()
+    {
+        penalties = 0.0f;
+        currentStart = GetTime();
+        enabled_timer = true;
+    }
+
 
     float GetTime()
     {
@@ -49,12 +61,12 @@ public class Timer : MonoBehaviour
         return (GetTime() - currentStart) + GetPenalties();
     }
 
-    public void OnCollideCone()
+    public void OnCollideCone(float penalty)
     {   
         if(enabled_timer == false)
             return;
 
-        penalties += TimePenalty;
+        penalties += penalty;
         if(penaltiesDisp.gameObject.activeSelf){
             float penalties = GetPenalties();
             penaltiesDisp.text = penalties.ToString("00.00");
@@ -72,6 +84,10 @@ public class Timer : MonoBehaviour
         {
             float currentTime = GetCurrentTime();
             currentTotTimeDisp.text = currentTime.ToString("00.00");
+        }
+        if(penaltiesDisp.text != penalties.ToString("00.00"))
+        {
+            penaltiesDisp.text = penalties.ToString("00.00");
         }
     }
 }

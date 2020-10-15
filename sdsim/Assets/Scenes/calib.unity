@@ -522,6 +522,22 @@ PrefabInstance:
       propertyPath: EnableTrainingManager
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: startsTm.Array.data[0]
+      value: 
+      objectReference: {fileID: 5767380760155116801}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: racerStatusPrefab
+      value: 
+      objectReference: {fileID: 5513357303504393897, guid: a1864cde44a421748a1c50021b96b997,
+        type: 3}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: raceStatusPanel
+      value: 
+      objectReference: {fileID: 4627178892352357925}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doLoadScriptPath
@@ -755,6 +771,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4225871592731027740, guid: b4bfaf4102a71204692041cf5b06c6bb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.20001125
+      objectReference: {fileID: 0}
     - target: {fileID: 4226500186136556145, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -880,6 +901,12 @@ PrefabInstance:
 --- !u!224 &4627178892352357924 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4160164102731652190, guid: b4bfaf4102a71204692041cf5b06c6bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4627178892352357923}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4627178892352357925 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2521743496535695184, guid: b4bfaf4102a71204692041cf5b06c6bb,
     type: 3}
   m_PrefabInstance: {fileID: 4627178892352357923}
   m_PrefabAsset: {fileID: 0}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ColCone : MonoBehaviour
 {
     string targetName = "body";
+    float penalty = 1;
     
     void OnTriggerEnter(Collider col)
     {
@@ -19,7 +20,7 @@ public class ColCone : MonoBehaviour
                 foreach(Timer t in status)
                 {
                     Debug.Log("Collision with penalty cone");
-                    t.OnCollideCone();
+                    t.OnCollideCone(penalty);
                 }
             }
         }
