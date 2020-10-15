@@ -13,6 +13,8 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	float handBrake = 0.0f;
 	Vector3 vel = Vector3.zero;
 	Vector3 accel = Vector3.zero;
+	Quaternion rotation = Quaternion.identity;
+	Quaternion gyro = Quaternion.identity;
 	public string activity = "keep_lane";
 
 	Rigidbody rb;
@@ -55,7 +57,7 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 	}
 
 	public Vector3 GetAccel() { return accel; }
-
+	public Quaternion GetGyro() { return gyro; }
     public void SetMaxSteering(float val)
     {
         MaximumSteerAngle = val;
@@ -109,6 +111,8 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 		vel = rb.velocity;
 
 		unityCar.Move(steering / MaximumSteerAngle, throttle, footBrake, handBrake);
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 	}
 
 	public string GetActivity()

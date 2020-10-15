@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//view scripts at Aug 17
+//https://github.com/tawnkramer/sdsandbox/tree/7c88596a3fd8ffe32d11074ab1ff661d24602152/sdsim/Assets/Scripts
+
+//https://github.com/tawnkramer/sdsandbox/commit/7c88596a3fd8ffe32d11074ab1ff661d24602152
 
 //Create an interface class that the sdsim will expect. We can use this to wrap other car implementations
 //like the Unity standard asset car.
@@ -34,6 +38,7 @@ public interface ICar
 
 	Vector3 GetAccel();
 
+	Quaternion GetGyro();
 
 	//mark the current activity for partial selections when creating training sets later.
 	string GetActivity();

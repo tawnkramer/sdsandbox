@@ -22,7 +22,8 @@ public class Car : MonoBehaviour, ICar {
 
 	public Vector3 startPos;
 	public Quaternion startRot;
-
+	private Quaternion rotation = Quaternion.identity;
+	private Quaternion gyro = Quaternion.identity;
 	public float length = 1.7f;
 
 	Rigidbody rb;
@@ -152,7 +153,10 @@ public class Car : MonoBehaviour, ICar {
 	{
 		return acceleration;
 	}
-
+	public Quaternion GetGyro()
+	{
+	  return gyro;
+  	}
 	public float GetOrient ()
 	{
 		Vector3 dir = transform.forward;
@@ -227,6 +231,8 @@ public class Car : MonoBehaviour, ICar {
 		prevVel = velocity;
 		velocity = transform.InverseTransformDirection(rb.velocity);
 		acceleration = (velocity - prevVel)/Time.deltaTime;
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 	}
 
 	void FlipUpright()
