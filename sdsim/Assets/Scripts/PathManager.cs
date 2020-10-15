@@ -46,6 +46,7 @@ public class PathManager : MonoBehaviour {
 	public GameObject locationMarkerPrefab;
 
 	public int markerEveryN = 2;
+	public GameObject[] challenges;
 
 	void Awake () 
 	{
@@ -75,14 +76,19 @@ public class PathManager : MonoBehaviour {
 
 		//Should we build a road mesh along the path?
 		if(doBuildRoad && roadBuilder != null)
-			roadBuilder.InitRoad(path);
+			roadBuilder.InitRoad(path); 
 
 		if(doBuildRoad && semanticSegRoadBuilder != null)
 			semanticSegRoadBuilder.InitRoad(path);
 
-		if(laneChTrainer != null && doChangeLanes)
-		{
+		if(doChangeLanes && laneChTrainer != null)
 			laneChTrainer.ModifyPath(ref path);
+
+		foreach(GameObject challenge in challenges) // Init each challenges
+		{	
+			IChallenge chal = challenge.GetComponent<IChallenge>();
+			if(chal != null)
+				chal.InitChallenge(path);
 		}
 
 		if(locationMarkerPrefab != null && path != null)

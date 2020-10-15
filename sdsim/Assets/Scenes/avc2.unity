@@ -35060,6 +35060,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.049987793
       objectReference: {fileID: 0}
+    - target: {fileID: 224776354760608250, guid: 0eae2b67074794fe697e7dd14e8aa706,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.20001125
+      objectReference: {fileID: 0}
     - target: {fileID: 224803864854266692, guid: 0eae2b67074794fe697e7dd14e8aa706,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -71324,6 +71329,11 @@ PrefabInstance:
       propertyPath: splitScreenCamRight
       value: 
       objectReference: {fileID: 1979231447}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: startsTm.Array.data[0]
+      value: 
+      objectReference: {fileID: 196010501}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: startPos

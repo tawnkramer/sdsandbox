@@ -11,6 +11,7 @@ public class CarConfig : MonoBehaviour
     public GameObject[] rc_car_parts;
     public GameObject car_name_base;
     public TextMesh car_name_text;
+    public Timer timer;
 
     public void SetStyle(string body_style, int r, int g, int b, string car_name, int font_size)
     {
@@ -21,6 +22,15 @@ public class CarConfig : MonoBehaviour
             car_name_base.SetActive(true);
             car_name_text.text = car_name;
             car_name_text.fontSize = font_size;
+        }
+        
+        if(timer != null)
+        {
+            timer.racerName = car_name;
+        }
+        else
+        {
+            Debug.LogError("timer not found while mapping racer name");
         }
 
         Color col = new Color();

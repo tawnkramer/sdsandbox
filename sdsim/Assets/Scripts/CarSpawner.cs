@@ -7,16 +7,24 @@ using System;
 public class CarSpawner : MonoBehaviour {
 
 	public GameObject carPrefab;
-	public Transform startTm;
+	public Transform[] startsTm; // list containing multiple starting points
     public bool EnableTrainingManager = false;
 
 	public delegate void OnNewCar(GameObject carObj);
 	public OnNewCar OnNewCarCB;	
 
+    public int numCarRows = 2;
+    public float distCarCols = 4.5f;
+    public float distCarRows = 5f;
 
 	public Camera splitScreenCamLeft;
 	public Camera splitScreenCamRight;
-	public GameObject splitScreenPanel;
+
+    public GameObject racerStatusPrefab;
+    public RectTransform raceStatusPanel;
+    int raceStatusWidth = 380;
+    int raceStatusHeight = 100;
+    int n_columns = 2; // number of columns in the RaceStatus panel
 
 	private List<GameObject> cars = new List<GameObject>();
 
@@ -38,7 +46,7 @@ public class CarSpawner : MonoBehaviour {
         {
             GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
-            if(TcpClientObj)
+            if(TcpClientObj != null)
             {
                 tk.TcpCarHandler handler = TcpClientObj.GetComponent<tk.TcpCarHandler>();
                 
@@ -50,24 +58,30 @@ public class CarSpawner : MonoBehaviour {
         }
 
         if(toRemove != null)
-        {
+        {   
+            RemoveTimer(toRemove);
             cars.Remove(toRemove);
             GameObject.Destroy(toRemove);
 
             if (cars.Count < 2)
                 DeactivateSplitScreen();
 
+            Debug.Log("Removed car");
             return true;
         }
-
-
-        return false;
+        else
+        {
+            Debug.LogError("failed to remove car");
+            return false;
+        
+        }
     }
 
     public void RemoveAllCars()
     {
         foreach(GameObject car in cars)
         {
+            RemoveTimer(car);
             GameObject.Destroy(car);
         }
 
@@ -76,7 +90,60 @@ public class CarSpawner : MonoBehaviour {
         RemoveUiReferences();
     }
 
+    void UpdateRaceStatusPannel()
+    {
+        int n_children = raceStatusPanel.transform.childCount;
+        int row = n_children;
+        if (row > n_columns)
+            row = n_columns;
+
+        int col = (n_children / n_columns) + (n_children % n_columns);
+        float width = row * raceStatusWidth;
+        float height = col * raceStatusHeight;
+        raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,  width);
+        raceStatusPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,  height);
+        raceStatusPanel.anchoredPosition = new Vector3(8.0f, -1 * height, 0.0f);
+    }
+
+    public void AddTimer(Timer t, tk.JsonTcpClient client)
+    {
+        if(racerStatusPrefab == null)
+            return;
+
+        GameObject go = Instantiate(racerStatusPrefab) as GameObject;
+        RaceStatus rs = go.GetComponent<RaceStatus>();
+        rs.Init(t, client);
+        go.transform.SetParent(raceStatusPanel.transform);
+        
+        UpdateRaceStatusPannel(); // update the UI with the new child count
+        Debug.Log("Added timer");
+        
+    }
     
+    public void RemoveTimer(GameObject go)
+    {   
+        Timer timer = getChildGameObject(go, "Timer").GetComponent<Timer>();
+        
+        if(timer != null && raceStatusPanel != null){
+            int count = raceStatusPanel.transform.childCount;
+            for(int i = 0; i < count; i++)
+            {
+                Transform child = raceStatusPanel.transform.GetChild(i);
+                RaceStatus rs = child.GetComponent<RaceStatus>();
+                if(rs.timer == timer)
+                {   
+                    child.transform.parent = null; // detach from parent
+                    Destroy(child.gameObject); // destroy child
+                    UpdateRaceStatusPannel(); // update the UI with the new child count
+                    Debug.Log("removed timer");
+                    return;
+                }
+            }
+            Debug.LogError("failed to find timer while removing it");
+            return;
+        }
+        Debug.LogError("failed to remove timer");
+    }
 
     public Camera ActivateSplitScreen()
     {
@@ -91,17 +158,10 @@ public class CarSpawner : MonoBehaviour {
         if (splitScreenCamRight != null)
         {
             splitScreenCamRight.gameObject.SetActive(true);
-
-            //would be better to render both to textures, but too much work.
             Transform camFollowRt = getChildGameObject(cars[0], "CameraFollowTm").transform;
-
             CameraFollow rtCameraFollow = splitScreenCamRight.transform.GetComponent<CameraFollow>();
-
             rtCameraFollow.target = camFollowRt;
         }
-
-        if (splitScreenPanel)
-            splitScreenPanel.SetActive(true);
 
         return cam;
     }
@@ -120,9 +180,6 @@ public class CarSpawner : MonoBehaviour {
         {
             splitScreenCamRight.gameObject.SetActive(false);
         }
-
-        if (splitScreenPanel)
-            splitScreenPanel.SetActive(false);
     }
 
     public void CarTextFacecamera(GameObject car, Transform target)
@@ -141,6 +198,56 @@ public class CarSpawner : MonoBehaviour {
     
     }
 
+    public bool IsOccupied(Vector3 pos)
+    {
+        int carCount = cars.Count - 1;
+
+        for(int iCar = 0; iCar < carCount; iCar++)
+        {
+            if(Vector3.Distance(cars[iCar].transform.position, pos) < 1.0f)
+                return true;
+        }
+
+        return false;
+    }
+
+    public (Vector3, Quaternion) GetStartPosRot(int iCar)
+    {   
+
+        int iSpawn = iCar % startsTm.Length;
+        int iCol = (iCar / startsTm.Length) % numCarRows;
+        int iRow = (iCar / startsTm.Length) / numCarRows;
+
+        Vector3 offset = Vector3.zero;
+        offset += Vector3.forward * distCarRows * iRow;
+        offset += Vector3.left * distCarCols * iCol;
+
+        Transform spawn = startsTm[iSpawn];
+        Vector3 pos = spawn.position + offset;
+        Quaternion rot = spawn.rotation;
+        return (pos, rot);
+    }
+
+    public (Vector3, Quaternion) GetCarStartPosRot()
+    {   
+
+        Vector3 startPos = startsTm[0].position; // default position
+        Quaternion startRot = startsTm[0].rotation; // default rotation
+
+        if (IsOccupied(startPos))
+        {
+            int iCar = 0;
+            while(IsOccupied(startPos))
+            {   
+                (startPos, startRot) = GetStartPosRot(iCar);
+                iCar++;
+            }
+        }
+
+        return (startPos, startRot);
+    }
+
+
     public GameObject Spawn (tk.JsonTcpClient client) 
 	{
         if(carPrefab == null)
@@ -149,8 +256,8 @@ public class CarSpawner : MonoBehaviour {
             return null;
         }
 
-        //Create a car object, and also hook up all the connections
-        //to various places in game that need to hook into the car.
+        // Create a car object, and also hook up all the connections
+        // to various places in game that need to hook into the car.
 		GameObject go = GameObject.Instantiate(carPrefab) as GameObject;
 
         if (go == null)
@@ -160,41 +267,30 @@ public class CarSpawner : MonoBehaviour {
         }
 
         cars.Add(go);
-        Vector3 offset = Vector3.zero;
-
-		if(cars.Count == 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.left * 4.5f;
-		}
-        else if(cars.Count > 2)
-		{
-			//just stack more cars after the second. Not pretty.
-			offset = Vector3.forward * (-5f * (cars.Count - 1));
-		}
-
-		go.transform.rotation = startTm.rotation;
-		go.transform.position = startTm.position + offset;		
+        
+        (Vector3 startPos, Quaternion startRot) = GetCarStartPosRot();
+        go.transform.position = startPos;
+        go.transform.rotation = startRot;
         go.GetComponent<Car>().SavePosRot();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
         Camera cam = Camera.main;
 
-		//Detect that we have the second car. Doesn't really handle more than 2 right now.
+		// Detect that we have the second car. Doesn't really handle more than 2 right now.
 		if(cars.Count > 1)
 		{
             cam = ActivateSplitScreen();
 		}
 
-       // CarTextFacecamera(go, cam.transform);
+        // CarTextFacecamera(go, cam.transform);
 
 		if(TcpClientObj != null)
 		{
-			//without this it will not connect.
+			// without this it will not connect.
 			TcpClientObj.SetActive(true);
 
-			//now set the connection settings.
+			// now set the connection settings.
 			TcpCarHandler carHandler = TcpClientObj.GetComponent<TcpCarHandler>();
 
             if (carHandler != null)
@@ -205,7 +301,7 @@ public class CarSpawner : MonoBehaviour {
 			OnNewCarCB.Invoke(go);
 
         ///////////////////////////////////////////////
-        //Search scene to find these.
+        // Search scene to find these.
         CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
@@ -217,11 +313,11 @@ public class CarSpawner : MonoBehaviour {
         if (pidPanel)
             pid_ui = pidPanel.GetComponent<PID_UI>();
 
-        //set camera target follow tm
+        // set camera target follow tm
         if (cameraFollow != null)
 			cameraFollow.target = getChildGameObject(go, "CameraFollowTm").transform;
 
-        //Set menu handler hooks
+        // Set menu handler hooks
 		if(menuHandler != null)
 		{
 			menuHandler.PIDContoller = getChildGameObject(go, "PIDController");
@@ -245,7 +341,7 @@ public class CarSpawner : MonoBehaviour {
 
         }
 
-        //Set the PID ui hooks
+        // Set the PID ui hooks
 		if (pid_ui != null)
 		{
 			pid_ui.pid = getChildGameObject(go, "PIDController").GetComponent<PIDController>();
@@ -254,6 +350,18 @@ public class CarSpawner : MonoBehaviour {
 		else
 		{
 			Debug.LogError("failed to find PID_UI");
+		}
+        
+        // Add race status, if possible.
+        GameObject to = getChildGameObject(go, "Timer");
+
+        if(to != null)
+        {
+            AddTimer(to.GetComponent<Timer>(), client);
+        }   
+		else
+		{
+			Debug.LogError("failed to find Timer");
 		}
 
         return go;
@@ -270,7 +378,7 @@ public class CarSpawner : MonoBehaviour {
         Camera cam = Camera.main;
 
         ///////////////////////////////////////////////
-        //Search scene to find these.
+        // Search scene to find these.
         CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
@@ -282,11 +390,11 @@ public class CarSpawner : MonoBehaviour {
         if (pidPanel)
             pid_ui = pidPanel.GetComponent<PID_UI>();
 
-        //set camera target follow tm
+        // set camera target follow tm
         if (cameraFollow != null)
 			cameraFollow.target = null;
 
-        //Set menu handler hooks
+        // Set menu handler hooks
 		if(menuHandler != null)
 		{
 			menuHandler.PIDContoller = null;
@@ -296,7 +404,7 @@ public class CarSpawner : MonoBehaviour {
 			menuHandler.trainingManager  = null;
         }
 
-        //Set the PID ui hooks
+        // Set the PID ui hooks
 		if (pid_ui != null)
 		{
 			pid_ui.pid = null;

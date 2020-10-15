@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6593467655631341761}
   - component: {fileID: 6593467655631341764}
   - component: {fileID: 6593467655631341767}
-  - component: {fileID: 6593467655631341766}
+  - component: {fileID: 2838806476482888898}
   m_Layer: 5
   m_Name: RaceStatus
   m_TagString: Untagged
@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 8.099976, y: -88.69702}
-  m_SizeDelta: {x: 380, y: 81}
+  m_SizeDelta: {x: 380, y: 80}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &6593467655631341764
 CanvasRenderer:
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6593467655631341766
+--- !u!114 &2838806476482888898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,19 +83,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 6593467655631341760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 2
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 2
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 376, y: 98}
+  m_Spacing: {x: 2, y: 2}
+  m_Constraint: 1
+  m_ConstraintCount: 1

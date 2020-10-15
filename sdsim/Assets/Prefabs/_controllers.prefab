@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4074926714667122}
-  - component: {fileID: 114920941206241424}
   m_Layer: 0
   m_Name: _controllers
   m_TagString: Untagged
@@ -34,20 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114920941206241424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1154898232873122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4efaaf7922b6daa4e9eafc08b1a175ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menuObj: {fileID: 0}
-  networkObj: {fileID: 0}
 --- !u!1 &1487591003234834
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,11 +77,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 1382209123900052, guid: f15848a2f31588e4fbc6c42244f0b989, type: 3}
-  startTm: {fileID: 0}
+  startsTm:
+  - {fileID: 0}
   EnableTrainingManager: 1
+  numCarRows: 2
+  distCarCols: 4.5
+  distCarRows: 5
   splitScreenCamLeft: {fileID: 0}
   splitScreenCamRight: {fileID: 0}
-  splitScreenPanel: {fileID: 0}
+  racerStatusPrefab: {fileID: 0}
+  raceStatusPanel: {fileID: 0}
 --- !u!1 &1612042024290732
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,3 +225,4 @@ MonoBehaviour:
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
+  challenges_obj: []

@@ -25,7 +25,6 @@ public class RoadBuilder : MonoBehaviour {
 	public float[] roadWidths;
 
 	Texture2D customRoadTexure;
-
 	GameObject createdRoad;
 
 	void Start()
@@ -239,5 +238,6 @@ public class RoadBuilder : MonoBehaviour {
 
 			//terToolkit.TextureTerrain(slopeStops, heightStops, textures);
 		}
+		// todo: return CarPath
 	}
 }
