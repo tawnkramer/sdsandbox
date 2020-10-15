@@ -15,10 +15,11 @@ from gym_donkeycar.core.sim_client import SDClient
 
 class SimpleClient(SDClient):
 
-    def __init__(self, address, poll_socket_sleep_time=0.01):
+    def __init__(self, address, poll_socket_sleep_time=0.01, verbose=True):
         super().__init__(*address, poll_socket_sleep_time=poll_socket_sleep_time)
         self.last_image = None
         self.car_loaded = False
+        self.verbose = verbose
 
     def on_msg_recv(self, json_packet):
         if json_packet['msg_type'] == "need_car_config":
@@ -32,9 +33,10 @@ class SimpleClient(SDClient):
             image = Image.open(BytesIO(base64.b64decode(imgString)))
             image.save("camera_a.png")
             self.last_image = np.asarray(image)
-            print("img:", self.last_image.shape)
+            if self.verbose:
+                print("img:", self.last_image.shape)
 
-            #don't have to, but to clean up the print, delete the image string.
+            # don't have to, but to clean up the print, delete the image string.
             del json_packet["image"]
 
             if "imageb" in json_packet:
@@ -42,20 +44,23 @@ class SimpleClient(SDClient):
                 image = Image.open(BytesIO(base64.b64decode(imgString)))
                 image.save("camera_b.png")
                 np_img = np.asarray(image)
-                print("imgb:", np_img.shape)
+                if self.verbose:
+                    print("imgb:", np_img.shape)
 
-                #don't have to, but to clean up the print, delete the image string.
+                # don't have to, but to clean up the print, delete the image string.
                 del json_packet["imageb"]
 
             if "lidar" in json_packet:
                 lidar = json_packet["lidar"]
                 if lidar is not None:
-                    print("lidar:", len(lidar), "pts")
+                    if self.verbose:
+                        print("lidar:", len(lidar), "pts")
 
-                #don't have to, but to clean up the print, delete the lidar string.
+                # don't have to, but to clean up the print, delete the lidar string.
                 del json_packet["lidar"]
 
-        print("got:", json_packet)
+        if self.verbose:
+            print("got:", json_packet)
 
     def send_config(self):
         '''
@@ -85,7 +90,7 @@ class SimpleClient(SDClient):
         msg = '{ "msg_type" : "car_config", "body_style" : "car01", "body_r" : "255", "body_g" : "0", "body_b" : "255", "car_name" : "%s", "font_size" : "100" }' % (car_name)
         self.send_now(msg)
 
-        #this sleep gives the car time to spawn. Once it's spawned, it's ready for the camera config.
+        # this sleep gives the car time to spawn. Once it's spawned, it's ready for the camera config.
         time.sleep(0.2)
 
         # Camera config
@@ -139,7 +144,7 @@ class SimpleClient(SDClient):
                 "brake" : "0.0" }
         self.send(json.dumps(msg))
 
-        #this sleep lets the SDClient thread poll our message and send it out.
+        # this sleep lets the SDClient thread poll our message and send it out.
         time.sleep(self.poll_socket_sleep_sec)
 
     def update(self):
@@ -200,7 +205,5 @@ def test_clients():
     print("clients to stopped")
 
 
-
 if __name__ == "__main__":
     test_clients()
-
