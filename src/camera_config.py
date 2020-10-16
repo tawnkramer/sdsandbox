@@ -1,14 +1,13 @@
-import os
-import random
+'''
+Minimalistic client to configure your car's camera
+Author: Maxime Ellerbach
+'''
 import json
-import time
-from io import BytesIO
-import base64
-import logging
-
-import cv2
 import threading
 import tkinter
+
+import cv2
+
 from test_client import SimpleClient
 
 
@@ -22,7 +21,7 @@ class CameraConfigClient(SimpleClient):
     def __init__(self, address, poll_socket_sleep_time=0.01):
         super().__init__(address, poll_socket_sleep_time=poll_socket_sleep_time, verbose=False)
 
-        self.cam_config = {
+        self.default = {
             "msg_type": "cam_config",
             "fov": 90,
             "fish_eye_x": 0.4,
@@ -36,8 +35,7 @@ class CameraConfigClient(SimpleClient):
             "offset_z": 0.5528488,
             "rot_x": 15.0
         }  # default camera config
-
-        self.default = self.cam_config
+        self.cam_config = self.default.copy()
 
         self.resolutions = {
             "fov": (1, 0, 180, int),
@@ -55,7 +53,7 @@ class CameraConfigClient(SimpleClient):
         self.window = windowInterface()
         self.scales_value = []
 
-        # create the sliders
+        # create some sliders
         for it, key in enumerate(self.resolutions):
             value = tkinter.DoubleVar()
             step, min_, max_, _ = self.resolutions[key]
@@ -68,9 +66,9 @@ class CameraConfigClient(SimpleClient):
             s.grid(row=0, column=it)
             self.scales_value.append(value)
 
-        # set the sliders to a default value
-        for it, key in enumerate(self.resolutions):
-            self.scales_value[it].set(self.cam_config[key])
+        tkinter.Button(self.window, text="Reset to default", command=self.set_to_default).grid(row=1, column=0)
+        self.set_to_default()
+
 
         # send camera config for the first time
         self.send_config()
@@ -79,14 +77,34 @@ class CameraConfigClient(SimpleClient):
         # start the imshow thread to have the camera feedback
         threading.Thread(target=self.imgshow_thread).start()
 
+    def set_to_default(self):
+        '''
+        Sets the camera config back to default
+        '''
+        self.cam_config = self.default.copy()
+        self.set_slider_to_default()
+        self.send_camera_config()
+
+    def set_slider_to_default(self):
+        '''
+        Sets the sliders values to default
+        '''
+        for it, key in enumerate(self.resolutions):
+            self.scales_value[it].set(self.default[key])
+
     def update_slider_value(self, v=0):
+        '''
+        Called when the slider value changes
+        '''
         for key, scale_value in zip(self.resolutions, self.scales_value):
             data_type = self.resolutions[key][-1]
             self.cam_config[key] = data_type(scale_value.get())
         self.send_camera_config()
 
     def send_camera_config(self):
-        # prepare the packet
+        '''
+        Sends the camera config to the server
+        '''
         tmp_config = {}
         for key in self.cam_config:
             tmp_config[key] = str(self.cam_config[key])
@@ -94,10 +112,14 @@ class CameraConfigClient(SimpleClient):
         self.send_now(json.dumps(tmp_config))
 
     def imgshow_thread(self):
+        '''
+        Shows the image captured by the camera
+        '''
         while(True):
             if self.last_image is None:
                 continue
-            cv2.imshow('camera', self.last_image)
+            tmp_img = cv2.cvtColor(self.last_image, cv2.COLOR_BGR2RGBA)
+            cv2.imshow('camera', tmp_img)
             cv2.waitKey(33)
 
 
