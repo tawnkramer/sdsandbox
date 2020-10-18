@@ -25,6 +25,7 @@ class SimpleClient(SDClient):
             self.send_config()
 
         if json_packet['msg_type'] == "car_loaded":
+            self.send_config()
             self.car_loaded = True
         
         if json_packet['msg_type'] == "telemetry":
@@ -172,7 +173,7 @@ def test_clients():
     time.sleep(1)
 
     # Load Scene message. Only one client needs to send the load scene.
-    msg = '{ "msg_type" : "load_scene", "scene_name" : "mountain_track" }'
+    msg = '{ "msg_type" : "load_scene", "scene_name" : "sparkfun_avc" }'
     clients[0].send_now(msg)
 
 
