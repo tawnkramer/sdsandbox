@@ -19,11 +19,14 @@ public class ConeChallenge : MonoBehaviour, IChallenge
     }
 
     public void RandomCone(CarPath path){
-		int random_index = Random.Range(0, path.nodes.Count);
-		PathNode random_node = path.nodes[random_index];
+		if (path.centerNodes != null){
 
-		Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
-		Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z);
-		Instantiate(conePrefabs[iConePrefab], xz_coords+rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
+			int random_index = Random.Range(0, path.centerNodes.Count);
+			PathNode random_node = path.centerNodes[random_index];
+
+			Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
+			Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z);
+			Instantiate(conePrefabs[iConePrefab], xz_coords+rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
+		}		
 	}
 }
