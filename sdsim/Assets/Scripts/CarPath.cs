@@ -20,6 +20,7 @@ public class CarPath
   public CarPath()
   {
     nodes = new List<PathNode>();
+    centerNodes = new List<PathNode>();
     navMeshPath = new NavMeshPath();
     ResetActiveSpan();
   }

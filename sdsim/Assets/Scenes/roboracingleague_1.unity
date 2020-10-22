@@ -1953,6 +1953,12 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &685028483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8037181034751879481, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 1099254913}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &722709094
 GameObject:
   m_ObjectHideFlags: 0
@@ -2813,6 +2819,11 @@ PrefabInstance:
         type: 3}
       propertyPath: iConePrefab
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1685762601780632596, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: coneOffset
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4250907045257525364, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
@@ -5331,7 +5342,7 @@ PrefabInstance:
     - target: {fileID: 4225871592731027740, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.20001125
+      value: 0.2000122
       objectReference: {fileID: 0}
     - target: {fileID: 4226328660224021295, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
@@ -5913,6 +5924,11 @@ PrefabInstance:
       objectReference: {fileID: 1729123147319856651}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
+      propertyPath: challenges.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
       propertyPath: doMakeRandomPath
       value: 0
       objectReference: {fileID: 0}
@@ -5946,6 +5962,11 @@ PrefabInstance:
       propertyPath: numRandCone
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[0]
+      value: 
+      objectReference: {fileID: 685028483}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: conePrefabs.Array.size
