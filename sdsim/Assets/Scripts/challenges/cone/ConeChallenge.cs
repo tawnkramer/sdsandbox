@@ -25,7 +25,7 @@ public class ConeChallenge : MonoBehaviour, IChallenge
 			PathNode random_node = path.centerNodes[random_index];
 
 			Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
-			Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z);
+			Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z); // height variation is not supported yet
 			Instantiate(conePrefabs[iConePrefab], xz_coords+rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
 			Debug.Log("Added a new random cone");
 		}
