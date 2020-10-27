@@ -1017,7 +1017,9 @@ Transform:
   - {fileID: 2064657666}
   - {fileID: 782781134}
   - {fileID: 1502391797}
+  - {fileID: 558944183508344107}
   - {fileID: 1704719947}
+  - {fileID: 809818855}
   - {fileID: 936863767}
   m_Father: {fileID: 7793585166132769265}
   m_RootOrder: 0
@@ -1071,7 +1073,7 @@ Transform:
   m_LocalScale: {x: 0.01, y: 1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1704719947}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &327855904
 MeshRenderer:
@@ -2427,12 +2429,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 809818854}
-  m_LocalRotation: {x: 0.000000029802322, y: -0.7071068, z: 0.7071068, w: -0.000000029802322}
-  m_LocalPosition: {x: 0, y: 6.3500013, z: -0.059000075}
-  m_LocalScale: {x: 0.09999998, y: 0.09999997, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9, y: 0.059900135, z: -1.6349999}
+  m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.10000002}
   m_Children: []
-  m_Father: {fileID: 936863767}
-  m_RootOrder: 0
+  m_Father: {fileID: 323423415}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &809818856
 BoxCollider:
@@ -2635,11 +2637,10 @@ Transform:
   m_LocalPosition: {x: -9, y: 0.0009, z: -1}
   m_LocalScale: {x: 1, y: 0.09999999, z: 1}
   m_Children:
-  - {fileID: 809818855}
   - {fileID: 1721152587}
   - {fileID: 1177756824}
   m_Father: {fileID: 323423415}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 90, y: 90.00001, z: 0}
 --- !u!64 &936863768
 MeshCollider:
@@ -3357,7 +3358,7 @@ GameObject:
   - component: {fileID: 1177756826}
   - component: {fileID: 1177756825}
   m_Layer: 0
-  m_Name: red (2)
+  m_Name: blue (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3375,7 +3376,7 @@ Transform:
   m_LocalScale: {x: 0.0100000035, y: 1, z: 0.100000024}
   m_Children: []
   m_Father: {fileID: 936863767}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &1177756825
 MeshRenderer:
@@ -4343,11 +4344,10 @@ Transform:
   m_LocalPosition: {x: 10, y: 0.0009999999, z: 0}
   m_LocalScale: {x: 1, y: 0.09999999, z: 1}
   m_Children:
-  - {fileID: 558944183508344107}
   - {fileID: 2026135257}
   - {fileID: 327855903}
   m_Father: {fileID: 323423415}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 90, y: 90.00001, z: 0}
 --- !u!64 &1704719948
 MeshCollider:
@@ -4607,7 +4607,7 @@ GameObject:
   - component: {fileID: 1721152589}
   - component: {fileID: 1721152588}
   m_Layer: 0
-  m_Name: red (1)
+  m_Name: blue (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4625,7 +4625,7 @@ Transform:
   m_LocalScale: {x: 0.0100000035, y: 1, z: 0.100000024}
   m_Children: []
   m_Father: {fileID: 936863767}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &1721152588
 MeshRenderer:
@@ -5318,7 +5318,7 @@ Transform:
   m_LocalScale: {x: 0.01, y: 1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1704719947}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!23 &2026135259
 MeshRenderer:
@@ -5592,12 +5592,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5471787968616378680}
-  m_LocalRotation: {x: 0.000000029802322, y: -0.7071068, z: 0.7071068, w: -0.000000029802322}
-  m_LocalPosition: {x: 0, y: 6.3500013, z: -0.059000075}
-  m_LocalScale: {x: 0.09999998, y: 0.09999997, z: 1}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalPosition: {x: 10, y: 0.06000001, z: 0.63500005}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.10000001}
   m_Children: []
-  m_Father: {fileID: 1704719947}
-  m_RootOrder: 0
+  m_Father: {fileID: 323423415}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &749220251028240914
 MeshRenderer:
@@ -6467,6 +6467,11 @@ PrefabInstance:
       propertyPath: startsTm.Array.data[1]
       value: 
       objectReference: {fileID: 809818855}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: numCarRows
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: challenges.Array.size

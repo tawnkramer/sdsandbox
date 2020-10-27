@@ -610,6 +610,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SplitScreenCameras
       objectReference: {fileID: 0}
+    - target: {fileID: 1442484511959090, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916162440306946, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
