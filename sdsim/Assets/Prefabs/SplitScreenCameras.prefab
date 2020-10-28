@@ -90,7 +90,7 @@ Camera:
     width: 0.5
     height: 1
   near clip plane: 0.01
-  far clip plane: 500
+  far clip plane: 800
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -198,7 +198,7 @@ Camera:
     width: 0.5
     height: 1
   near clip plane: 0.01
-  far clip plane: 500
+  far clip plane: 800
   field of view: 60
   orthographic: 0
   orthographic size: 5

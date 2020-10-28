@@ -1527,6 +1527,7 @@ MonoBehaviour:
   requestBrake: 0
   requestSteering: 0
   acceleration: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
   prevVel: {x: 0, y: 0, z: 0}
   startPos: {x: 0, y: 0, z: 0}
   startRot: {x: 0, y: 0, z: 0, w: 0}
@@ -2857,7 +2858,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carObj: {fileID: 1382209123900052}
   pm: {fileID: 0}
+  conf: {fileID: 0}
   camSensor: {fileID: 114024581143197506}
+  camSensorB: {fileID: 0}
+  lidar: {fileID: 0}
+  odom: []
   ai_text: {fileID: 0}
   limitFPS: 20
   state: 0
@@ -3372,8 +3377,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 0.01
+  far clip plane: 800
   field of view: 90
   orthographic: 0
   orthographic size: 5
@@ -4913,9 +4918,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentTotTimeDisp: {fileID: 5564249481094585900}
   penaltiesDisp: {fileID: 3239163606405007155}
-  TimePenalty: 1
   enabled_timer: 0
   racerName: 
+  penalties: 0
+  currentStart: 0
 --- !u!1 &6981573988398996875
 GameObject:
   m_ObjectHideFlags: 0
