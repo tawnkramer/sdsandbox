@@ -6,13 +6,13 @@ using UnityEngine.AI;
 public class PathNode
 {
   public Vector3 pos;
-  public CarModel cm;
   public string activity;
 }
 
 public class CarPath
 {
   public List<PathNode> nodes;
+  public List<PathNode> centerNodes;
   public NavMeshPath navMeshPath;
   public int iActiveSpan = 0;
 
@@ -20,6 +20,7 @@ public class CarPath
   public CarPath()
   {
     nodes = new List<PathNode>();
+    centerNodes = new List<PathNode>();
     navMeshPath = new NavMeshPath();
     ResetActiveSpan();
   }

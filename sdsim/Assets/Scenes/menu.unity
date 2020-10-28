@@ -2775,7 +2775,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SDSandbox v 20.9.14
+  m_Text: SDSandbox v 20.10.28
 --- !u!222 &2080155096
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -182,6 +182,7 @@ public class PathManager : MonoBehaviour {
 			PathNode p = new PathNode();
 			p.pos = np;
 			path.nodes.Add(p);
+			path.centerNodes.Add(p);
 		}
 			
 	}
