@@ -2153,7 +2153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2078260, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6, type: 3}
       propertyPath: far clip plane
-      value: 700
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 2078260, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6, type: 3}
       propertyPath: m_HDR
@@ -6329,6 +6329,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7201082943530616577}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &7201082943530616579 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20708391671952756, guid: 2583f9ad305fa814c9808ce6d6479152,
+    type: 3}
+  m_PrefabInstance: {fileID: 7201082943530616577}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &7201082943530616580 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20151993083218756, guid: 2583f9ad305fa814c9808ce6d6479152,
+    type: 3}
+  m_PrefabInstance: {fileID: 7201082943530616577}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7306904206160427172
 Transform:
   m_ObjectHideFlags: 0
@@ -6427,14 +6439,12 @@ PrefabInstance:
         type: 3}
       propertyPath: splitScreenCamLeft
       value: 
-      objectReference: {fileID: 3774267253430838277, guid: 823d0c7739d3ffc4da1466e8dd61ca67,
-        type: 3}
+      objectReference: {fileID: 7201082943530616580}
     - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: splitScreenCamRight
       value: 
-      objectReference: {fileID: 3778218942987131445, guid: 823d0c7739d3ffc4da1466e8dd61ca67,
-        type: 3}
+      objectReference: {fileID: 7201082943530616579}
     - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: splitScreenPanel
