@@ -35,7 +35,7 @@ public class CameraSensor : MonoBehaviour {
 			transform.localPosition = new Vector3(offset_x, offset_y, offset_z);
 	
 		if(rot_x != 0.0f)
-			transform.eulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
+			transform.localEulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
 
 		if(fov != 0.0f)
 			sensorCam.fieldOfView = fov;

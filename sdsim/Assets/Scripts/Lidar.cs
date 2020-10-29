@@ -118,7 +118,7 @@ public class Lidar : MonoBehaviour {
             transform.localPosition = new Vector3(offset_x, offset_y, offset_z);
 
         if (rot_x != 0.0f)
-            transform.eulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
+            transform.localEulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
 
         pointArr = new LidarPointArray();
         pointArr.Init(360 / degPerSweepInc * numSweepsLevels);
