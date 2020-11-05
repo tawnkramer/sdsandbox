@@ -13,6 +13,7 @@ namespace tk
     public class TcpMenuHandler : MonoBehaviour {
 
         public SceneLoader loader;
+        public string[] scene_names;
         private tk.JsonTcpClient client;
 
         public void Init(tk.JsonTcpClient _client)
@@ -74,11 +75,10 @@ namespace tk
         {
             JSONObject scenes = new JSONObject(JSONObject.Type.ARRAY);
 
-            scenes.Add("generated_road");
-            scenes.Add("warehouse");
-            scenes.Add("sparkfun_avc");
-            scenes.Add("generated_track");
-            scenes.Add("roboracingleague_1");
+            foreach (string scene_name in scene_names)
+            {
+                scenes.Add(scene_name);
+            }
 
             JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
             json.AddField("scene_names", scenes);
@@ -96,29 +96,19 @@ namespace tk
             GlobalState.bCreateCarWithoutNetworkClient = false;
 
             string scene_name = jsonObject.GetField("scene_name").str;
-
-            if(scene_name == "generated_road")
-            {
-                loader.LoadGenerateRoadScene();
-            }
-            else if (scene_name == "warehouse")
-            {
-                loader.LoadWarehouseScene();
-            }
-            else if (scene_name == "sparkfun_avc")
-            {
-                loader.LoadAVCScene();
-            }
-            else if (scene_name == "generated_track")
-            {
-                loader.LoadGeneratedTrackScene();
-            }
-            else if (scene_name == "roboracingleague_1")
-            {
-                loader.LoadRoboRacingLeague1Scene();
-            }
+            LoadScene(scene_name);
         }
         
+        public void LoadScene(string scene_name)
+        {
+            // check wether the scene_name is in the scene_names list, if so, load it
+            if(Array.Exists(scene_names, element => element == scene_name))
+            {
+                loader.LoadScene(scene_name);
+                Debug.Log("loaded scene");
+            }
+        }
+
         void OnQuitApp(JSONObject json)
         {
             Application.Quit();

@@ -9,16 +9,16 @@ EditorBuildSettings:
     path: Assets/Scenes/menu.unity
     guid: 1ac0872dcad57c44496bb684aa1998f8
   - enabled: 1
-    path: Assets/Scenes/road_generator.unity
+    path: Assets/Scenes/generated_road.unity
     guid: 80ac5eef166784810a0ab8e6742f8a30
   - enabled: 1
     path: Assets/Scenes/warehouse.unity
     guid: 4483f94080df5d84f9e98fdae085f167
   - enabled: 1
-    path: Assets/Scenes/avc2.unity
+    path: Assets/Scenes/sparkfun_avc.unity
     guid: b362fdcb28a444fa5b719f21d5115c5a
   - enabled: 1
-    path: Assets/Scenes/small_looping_course.unity
+    path: Assets/Scenes/generated_track.unity
     guid: b003bdd73179fe046b15d779a91c20e8
   - enabled: 1
     path: Assets/Scenes/mountain_track.unity
