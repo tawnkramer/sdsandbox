@@ -203,8 +203,10 @@ public class CarSpawner : MonoBehaviour {
         int carCount = cars.Count - 1;
 
         for(int iCar = 0; iCar < carCount; iCar++)
-        {
-            if(Vector3.Distance(cars[iCar].transform.position, pos) < 1.0f)
+        {   
+            GameObject go = cars[iCar];
+            Car car = go.GetComponent<Car>();
+            if(Vector3.Distance(car.startPos, pos) < 1.0f)
                 return true;
         }
 
