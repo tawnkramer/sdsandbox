@@ -5,8 +5,8 @@ public class CameraFollow : MonoBehaviour {
 
 	public Transform target;
 
-	public float approachPosRate = 0.02f;
-	public float approachRotRate = 0.02f;
+	public float approachPosRate = 0.1f;
+	public float approachRotRate = 0.03f;
 	
 	// Update is called once per frame
 	void FixedUpdate () 

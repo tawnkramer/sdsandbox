@@ -17,8 +17,8 @@ public class CarSpawner : MonoBehaviour {
     public float distCarCols = 4.5f;
     public float distCarRows = 5f;
 
-	public Camera splitScreenCamLeft;
-	public Camera splitScreenCamRight;
+    public GameObject splitScreenCamPrefab;
+    public int maxSplitScreen = 4;
 
     public GameObject racerStatusPrefab;
     public RectTransform raceStatusPanel;
@@ -27,6 +27,7 @@ public class CarSpawner : MonoBehaviour {
     int n_columns = 2; // number of columns in the RaceStatus panel
 
 	private List<GameObject> cars = new List<GameObject>();
+    private List<GameObject> cameras = new List<GameObject>();
 
 	static public GameObject getChildGameObject(GameObject fromGameObject, string withName) {
          //Author: Isaac Dart, June-13.
@@ -59,12 +60,15 @@ public class CarSpawner : MonoBehaviour {
 
         if(toRemove != null)
         {   
+            int iSplitScreenCam = cars.IndexOf(toRemove);
+            GameObject SplitScreenCamGo = cameras[iSplitScreenCam];
+
             RemoveTimer(toRemove);
             cars.Remove(toRemove);
-            GameObject.Destroy(toRemove);
+            RemoveSplitScreenCam(SplitScreenCamGo);
 
-            if (cars.Count < 2)
-                DeactivateSplitScreen();
+            GameObject.Destroy(toRemove);
+            UpdateSplitScreenCams();
 
             Debug.Log("Removed car");
             return true;
@@ -79,14 +83,16 @@ public class CarSpawner : MonoBehaviour {
 
     public void RemoveAllCars()
     {
-        foreach(GameObject car in cars)
-        {
+        foreach (GameObject car in cars)
+        {   
+            int i = cars.IndexOf(car);
+            RemoveSplitScreenCam(cameras[i]);
+
             RemoveTimer(car);
             GameObject.Destroy(car);
         }
 
         cars.Clear();
-        DeactivateSplitScreen();
         RemoveUiReferences();
     }
 
@@ -145,40 +151,78 @@ public class CarSpawner : MonoBehaviour {
         Debug.LogError("failed to remove timer");
     }
 
-    public Camera ActivateSplitScreen()
+    public void AddSplitScreenCam()
     {
-        Camera cam = Camera.main;
-
-        if (splitScreenCamLeft != null)
+        if(cameras.Count < maxSplitScreen)
         {
-            splitScreenCamLeft.gameObject.SetActive(true);
-            cam = splitScreenCamLeft;
-        }
-
-        if (splitScreenCamRight != null)
-        {
-            splitScreenCamRight.gameObject.SetActive(true);
-            Transform camFollowRt = getChildGameObject(cars[0], "CameraFollowTm").transform;
-            CameraFollow rtCameraFollow = splitScreenCamRight.transform.GetComponent<CameraFollow>();
-            rtCameraFollow.target = camFollowRt;
-        }
-
-        return cam;
+            GameObject splitScreenCamGo = Instantiate(splitScreenCamPrefab);
+            cameras.Add(splitScreenCamGo);
+        }        
     }
 
-    public void DeactivateSplitScreen()
+    public void RemoveSplitScreenCam(GameObject splitScreenCamGo)
     {
-        Camera cam = Camera.main;
+        GameObject.Destroy(splitScreenCamGo);
+        cameras.Remove(splitScreenCamGo);
+    }
 
-        if (splitScreenCamLeft != null)
-        {
-            splitScreenCamLeft.gameObject.SetActive(false);
-            cam = splitScreenCamLeft;
+    public void UpdateSplitScreenCams()
+    {   
+        // check if the number of cameras match the number of cars
+        if ((cameras.Count != cars.Count && cars.Count <= maxSplitScreen))
+        {   
+            // remove all cameras in there
+            foreach(GameObject splitScreenCamGo in cameras)
+            {
+                GameObject.Destroy(splitScreenCamGo);
+            }
+            cameras.Clear();
+
+            // and recreate some new ones
+            for (int i = 0; i < cars.Count; i++)
+            { 
+                AddSplitScreenCam();
+            }
         }
 
-        if (splitScreenCamRight != null)
+        // Debug.Log("Number of cameras: " + cars.Count.ToString());
+
+        if (cameras.Count == 0)
         {
-            splitScreenCamRight.gameObject.SetActive(false);
+            Camera cam = Camera.main;
+            cam.enabled = true;
+            return;
+        }
+
+        // for each camera, update the rect
+        for (int i = 0; i < cameras.Count; i++)
+        {   
+            GameObject splitScreenCamGo = cameras[i];
+            GameObject car = cars[i];
+
+            // set target to the corresponding car
+            Camera splitScreenCam = splitScreenCamGo.GetComponent<Camera>();
+            CameraFollow cameraFollow = splitScreenCam.GetComponent<CameraFollow>();
+            cameraFollow.target = getChildGameObject(car, "CameraFollowTm").transform;
+
+            float x = (i%2)/2f;
+            float y = (i/2)/2f;
+
+            float w = 1;
+            if (i/2+1 <= cameras.Count/2)
+            {
+                w = 0.5f;
+            }
+
+            float h = 1;
+            if (cameras.Count > 2)
+            {
+                h = 0.5f;
+            }
+
+            GameObject go = cameras[i];
+            Camera camera = go.GetComponent<Camera>();
+            camera.rect = new Rect(x, y, w, h);
         }
     }
 
@@ -274,16 +318,10 @@ public class CarSpawner : MonoBehaviour {
         go.transform.position = startPos;
         go.transform.rotation = startRot;
         go.GetComponent<Car>().SavePosRot();
+        UpdateSplitScreenCams();
 
 		GameObject TcpClientObj = getChildGameObject(go, "TCPClient");
 
-        Camera cam = Camera.main;
-
-		// Detect that we have the second car. Doesn't really handle more than 2 right now.
-		if(cars.Count > 1)
-		{
-            cam = ActivateSplitScreen();
-		}
 
         // CarTextFacecamera(go, cam.transform);
 
@@ -304,7 +342,6 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         // Search scene to find these.
-        CameraFollow cameraFollow = cam.transform.GetComponent<CameraFollow>();
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
@@ -316,8 +353,6 @@ public class CarSpawner : MonoBehaviour {
             pid_ui = pidPanel.GetComponent<PID_UI>();
 
         // set camera target follow tm
-        if (cameraFollow != null)
-			cameraFollow.target = getChildGameObject(go, "CameraFollowTm").transform;
 
         // Set menu handler hooks
 		if(menuHandler != null)

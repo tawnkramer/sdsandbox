@@ -83,8 +83,9 @@ MonoBehaviour:
   numCarRows: 2
   distCarCols: 4.5
   distCarRows: 5
-  splitScreenCamLeft: {fileID: 0}
-  splitScreenCamRight: {fileID: 0}
+  splitScreenCamPrefab: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
+    type: 3}
+  maxSplitScreen: 4
   racerStatusPrefab: {fileID: 0}
   raceStatusPanel: {fileID: 0}
 --- !u!1 &1612042024290732
@@ -225,4 +226,4 @@ MonoBehaviour:
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
-  challenges_obj: []
+  challenges: []
