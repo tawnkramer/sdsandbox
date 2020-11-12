@@ -19,6 +19,7 @@ public class CarSpawner : MonoBehaviour {
 
     public GameObject splitScreenCamPrefab;
     public int maxSplitScreen = 4;
+    public int SplitScreenWidth = 2;
 
     public GameObject racerStatusPrefab;
     public RectTransform raceStatusPanel;
@@ -66,9 +67,7 @@ public class CarSpawner : MonoBehaviour {
             RemoveTimer(toRemove);
             cars.Remove(toRemove);
             RemoveSplitScreenCam(SplitScreenCamGo);
-
             GameObject.Destroy(toRemove);
-            UpdateSplitScreenCams();
 
             Debug.Log("Removed car");
             return true;
@@ -82,17 +81,18 @@ public class CarSpawner : MonoBehaviour {
     }
 
     public void RemoveAllCars()
-    {
+    {   
+        // Remove each car one by one
         foreach (GameObject car in cars)
         {   
             int i = cars.IndexOf(car);
-            RemoveSplitScreenCam(cameras[i]);
+            GameObject SplitScreenCamGo = cameras[i];
 
             RemoveTimer(car);
+            cars.Remove(car);
+            RemoveSplitScreenCam(SplitScreenCamGo);
             GameObject.Destroy(car);
         }
-
-        cars.Clear();
         RemoveUiReferences();
     }
 
@@ -164,6 +164,7 @@ public class CarSpawner : MonoBehaviour {
     {
         GameObject.Destroy(splitScreenCamGo);
         cameras.Remove(splitScreenCamGo);
+        UpdateSplitScreenCams();
     }
 
     public void UpdateSplitScreenCams()
@@ -185,15 +186,6 @@ public class CarSpawner : MonoBehaviour {
             }
         }
 
-        // Debug.Log("Number of cameras: " + cars.Count.ToString());
-
-        if (cameras.Count == 0)
-        {
-            Camera cam = Camera.main;
-            cam.enabled = true;
-            return;
-        }
-
         // for each camera, update the rect
         for (int i = 0; i < cameras.Count; i++)
         {   
@@ -205,20 +197,16 @@ public class CarSpawner : MonoBehaviour {
             CameraFollow cameraFollow = splitScreenCam.GetComponent<CameraFollow>();
             cameraFollow.target = getChildGameObject(car, "CameraFollowTm").transform;
 
-            float x = (i%2)/2f;
-            float y = (i/2)/2f;
+            int x_index = i%SplitScreenWidth;
+            int y_index = i/SplitScreenWidth;
+            int number_in_row = Math.Min((cameras.Count-y_index*SplitScreenWidth), SplitScreenWidth);
+            int number_of_row = 1+((cameras.Count-1)/SplitScreenWidth);
 
-            float w = 1;
-            if (i/2+1 <= cameras.Count/2)
-            {
-                w = 0.5f;
-            }
+            float w = 1/(float)(number_in_row);
+            float h = 1/(float)(number_of_row);
 
-            float h = 1;
-            if (cameras.Count > 2)
-            {
-                h = 0.5f;
-            }
+            float x = (x_index)/(float)number_in_row;
+            float y = (y_index)/(float)number_of_row;
 
             GameObject go = cameras[i];
             Camera camera = go.GetComponent<Camera>();
