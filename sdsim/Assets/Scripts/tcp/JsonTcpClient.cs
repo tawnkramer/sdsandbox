@@ -140,11 +140,12 @@ namespace tk
             lock(_locker)
             {
                 List<string> msgs = ExtractJsonFromStream();
-                if (msgs.Count > 0) {
+                foreach (string msg in msgs)
+                {
                     try
                     {
                         //Only extract and propagate the last one to avoid to overload simulator in case of burst
-                        JSONObject j = new JSONObject(msgs[msgs.Count-1]);
+                        JSONObject j = new JSONObject(msg);
 
                         string msg_type = j["msg_type"].str;
 
