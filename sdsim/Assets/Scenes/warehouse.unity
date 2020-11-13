@@ -3743,7 +3743,7 @@ PrefabInstance:
     - target: {fileID: 4160164102731652160, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4160164102731652160, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
@@ -3753,7 +3753,7 @@ PrefabInstance:
     - target: {fileID: 4160164102731652160, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_UiScaleMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4160164102731652161, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
@@ -3918,7 +3918,7 @@ PrefabInstance:
     - target: {fileID: 4225871592731027740, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.20001125
+      value: 0.2000122
       objectReference: {fileID: 0}
     - target: {fileID: 4225914500685652898, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
@@ -4120,7 +4120,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -88.69702
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4160164102731652160, guid: b4bfaf4102a71204692041cf5b06c6bb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b4bfaf4102a71204692041cf5b06c6bb, type: 3}
 --- !u!224 &672314588265769749 stripped
 RectTransform:

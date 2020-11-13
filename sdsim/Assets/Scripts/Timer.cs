@@ -10,6 +10,7 @@ public class Timer : MonoBehaviour
     public string racerName;
     public float penalties = 0.0f; //seconds
     public float currentStart = 0.0f; //seconds
+    bool freezed = false;
 
     void Awake()
     {   
@@ -40,11 +41,20 @@ public class Timer : MonoBehaviour
         currentStart = 0.0f;
         enabled_timer = false;
     }
+
     public void ResetTimer()
     {
         penalties = 0.0f;
         currentStart = GetTime();
         enabled_timer = true;
+    }
+    public void SplitTime()
+    {
+        freezed = true;
+    }
+    public void ContinueTime()
+    {
+        freezed = false;
     }
 
 
@@ -80,12 +90,12 @@ public class Timer : MonoBehaviour
         if(enabled_timer == false)
             return;
 
-        if(currentTotTimeDisp.gameObject.activeSelf)
+        if(currentTotTimeDisp.gameObject.activeSelf & !freezed)
         {
             float currentTime = GetCurrentTime();
             currentTotTimeDisp.text = currentTime.ToString("00.00");
         }
-        if(penaltiesDisp.text != penalties.ToString("00.00"))
+        if(penaltiesDisp.text != penalties.ToString("00.00") & !freezed)
         {
             penaltiesDisp.text = penalties.ToString("00.00");
         }
