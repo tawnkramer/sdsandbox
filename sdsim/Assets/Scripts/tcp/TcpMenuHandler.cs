@@ -14,6 +14,8 @@ namespace tk
 
         public SceneLoader loader;
         public string[] scene_names;
+        public GameObject ButtonGridLayout;
+        public GameObject ButtonPrefab;
         private tk.JsonTcpClient client;
 
         public void Init(tk.JsonTcpClient _client)
@@ -29,7 +31,11 @@ namespace tk
         }
 
         public void Start()
-        {
+        {   
+            foreach (string scene_name in scene_names)
+            {
+                AddButtonToMenu(scene_name);
+            }
         }
 
         public void OnDestroy()
@@ -112,6 +118,21 @@ namespace tk
         void OnQuitApp(JSONObject json)
         {
             Application.Quit();
-        }        
+        }
+
+        void AddButtonToMenu(string scene_name)
+        {   
+            GameObject go = Instantiate(ButtonPrefab);
+            go.name = scene_name;
+            go.transform.SetParent(ButtonGridLayout.transform);
+            go.transform.localScale = Vector3.one;
+
+            Button button = go.GetComponent<Button>();
+            button.onClick.AddListener(delegate {LoadScene(scene_name); });
+            
+            GameObject text_go = go.transform.GetChild(0).gameObject;
+            Text text = text_go.GetComponent<Text>();
+            text.text = scene_name;
+        }
     }
 }
