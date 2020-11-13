@@ -85,6 +85,53 @@ namespace tk
             }
         }
 
+        // Over simplified algorithm to extract json payload from TCP stream. It assumes that there are no nested JSON objects
+        List<string> ExtractJsonFromStream()
+        {
+            List<string> result = new List<string>();
+            string jsonBuffer = "";
+            string[] jsonMessages;
+
+            //Ignore request if TCP buffer list is empty
+            if (recv_packets.Count == 0) {
+                return result;
+            }
+
+            // Concat all reveiced TCP buffers to have change to extract as much as possible JSON objects
+            foreach(string str in recv_packets)
+            {
+                jsonBuffer = String.Concat (jsonBuffer, str);
+            }
+
+            recv_packets.Clear();
+
+            // Split data received on each json object delimitor 
+            jsonMessages = jsonBuffer.Split("{"[0]); 
+
+            for (int i = 0; i < jsonMessages.Length; i++) {
+                // Ignore empty parts, this is likely side effect of Split
+                if (jsonMessages[i].Length == 0)
+                {
+                    continue;
+                }
+                // Since split remove delimitor, add it back to keep JSON structure
+                string theMessage = jsonMessages[i].Insert(0, "{");
+                // If JSON message is complete, add to list of complete JSON message
+                if (theMessage[0]=='{' && theMessage.Substring(theMessage.Length - 1)[0]=='}') 
+                {
+                    result.Add(theMessage);
+                } else {
+                    if (i==(jsonMessages.Length-1)) {
+                        //last message is a partial one, push back to recv_packets
+                        recv_packets.Add (theMessage);
+                    } else {
+                        Debug.Log("Unexpected partial JSON object in the middle of the TCP buffer !, buffer = "+jsonBuffer);                    
+                    }
+                }
+                
+            }
+            return result;
+        }
 
         // Send each queued json packet to the recipient which registered
         // with our dispatcher.
@@ -92,13 +139,13 @@ namespace tk
         {
             lock(_locker)
             {
-                foreach(string str in recv_packets)
+                List<string> msgs = ExtractJsonFromStream();
+                foreach (string msg in msgs)
                 {
-                    // We have not had problems yet with message separation, but
-                    // it could be added. Here we errors in case it becomes an issue.
                     try
                     {
-                        JSONObject j = new JSONObject(str);
+                        //Only extract and propagate the last one to avoid to overload simulator in case of burst
+                        JSONObject j = new JSONObject(msg);
 
                         string msg_type = j["msg_type"].str;
 
@@ -111,9 +158,8 @@ namespace tk
                     {
                         Debug.LogError(e.ToString());
                     }
-                }
 
-                recv_packets.Clear();
+                }
             }
         }
 
