@@ -1373,7 +1373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.30000305}
+  m_AnchoredPosition: {x: 0, y: 0.30004883}
   m_SizeDelta: {x: 0, y: -10.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &702329612
@@ -2725,7 +2725,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.30000305}
+  m_AnchoredPosition: {x: 0, y: 0.30004883}
   m_SizeDelta: {x: 0, y: -10.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2057257164
@@ -2952,6 +2952,7 @@ MonoBehaviour:
   - sparkfun_avc
   - generated_track
   - roboracingleague_1
+  - waveshare
   ButtonGridLayout: {fileID: 126483964}
   ButtonPrefab: {fileID: 5466719870426124411, guid: fb93d9878115b39438221fec2f89f2ae,
     type: 3}
