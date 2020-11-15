@@ -85,7 +85,7 @@ public class TrackScript
 
         Debug.Log("loading: " + filename);
 
-        TextAsset bindata = Resources.Load(filename) as TextAsset;
+        TextAsset bindata = Resources.Load("Track/"+filename) as TextAsset;
 
 		if(bindata == null)
 			return false;

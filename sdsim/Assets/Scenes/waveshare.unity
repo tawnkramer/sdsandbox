@@ -273,6 +273,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68defb16bd226214795c8785053ffdf6, type: 3}
+--- !u!224 &333350948 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2521743496535695184, guid: b4bfaf4102a71204692041cf5b06c6bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1016801297220036667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &393719720
 GameObject:
   m_ObjectHideFlags: 0
@@ -2426,8 +2432,7 @@ PrefabInstance:
         type: 3}
       propertyPath: raceStatusPanel
       value: 
-      objectReference: {fileID: 7117942470923876633, guid: 823d0c7739d3ffc4da1466e8dd61ca67,
-        type: 3}
+      objectReference: {fileID: 333350948}
     - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: startsTm.Array.data[0]

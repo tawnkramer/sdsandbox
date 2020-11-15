@@ -155,7 +155,7 @@ public class PathManager : MonoBehaviour {
 	{
 		string filename = pathToLoad;
 
-		TextAsset bindata = Resources.Load(filename) as TextAsset;
+		TextAsset bindata = Resources.Load("Track/"+filename) as TextAsset;
 
 		if(bindata == null)
 			return;
