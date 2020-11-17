@@ -249,17 +249,18 @@ public class CarSpawner : MonoBehaviour {
     {   
 
         int iSpawn = iCar % startsTm.Length;
+        Transform spawn = startsTm[iSpawn];
+        Vector3 pos = spawn.position;
+        Quaternion rot = spawn.rotation;
+
         int iCol = (iCar / startsTm.Length) % numCarRows;
         int iRow = (iCar / startsTm.Length) / numCarRows;
 
         Vector3 offset = Vector3.zero;
-        offset += Vector3.forward * distCarRows * iRow;
-        offset += Vector3.left * distCarCols * iCol;
+        offset.z = - distCarRows * iRow;
+        offset.x = - distCarCols * iCol;
 
-        Transform spawn = startsTm[iSpawn];
-        Vector3 pos = spawn.position + offset;
-        Quaternion rot = spawn.rotation;
-        return (pos, rot);
+        return (spawn.position + rot * offset, rot);
     }
 
     public (Vector3, Quaternion) GetCarStartPosRot()
@@ -303,8 +304,7 @@ public class CarSpawner : MonoBehaviour {
         cars.Add(go);
         
         (Vector3 startPos, Quaternion startRot) = GetCarStartPosRot();
-        go.transform.position = startPos;
-        go.transform.rotation = startRot;
+        go.transform.SetPositionAndRotation(startPos, startRot);
         go.GetComponent<Car>().SavePosRot();
         UpdateSplitScreenCams();
 

@@ -1,19 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Net;
 using System.Net.Sockets;
 using System;
-using UnityEngine.UI;
-using System.Globalization;
 
 namespace tk
 {
-    
+
     public class TcpMenuHandler : MonoBehaviour {
 
         public SceneLoader loader;
         public string[] scene_names;
+        public GameObject ButtonGridLayout;
+        public GameObject ButtonPrefab;
         private tk.JsonTcpClient client;
 
         public void Init(tk.JsonTcpClient _client)
@@ -29,7 +30,11 @@ namespace tk
         }
 
         public void Start()
-        {
+        {   
+            foreach (string scene_name in scene_names)
+            {
+                AddButtonToMenu(scene_name);
+            }
         }
 
         public void OnDestroy()
@@ -112,6 +117,34 @@ namespace tk
         void OnQuitApp(JSONObject json)
         {
             Application.Quit();
-        }        
+        }
+
+        void AddButtonToMenu(string scene_name)
+        {   
+            // create a new button and add it to the grid layout
+            GameObject go = Instantiate(ButtonPrefab);
+            go.name = scene_name;
+            go.transform.SetParent(ButtonGridLayout.transform);
+            go.transform.localScale = Vector3.one;
+
+            // add a function to be called when the button is clicked
+            Button button = go.GetComponent<Button>();
+            button.onClick.AddListener(delegate {LoadScene(scene_name); });
+            
+            // modify the text to match the scene_name
+            GameObject text_go = go.transform.GetChild(0).gameObject;
+            Text text = text_go.GetComponent<Text>();
+            text.text = scene_name;
+
+            // try to load the preview image located in the Resources folder
+            Texture2D texture = Resources.Load<Texture2D>("UI/"+scene_name);
+            if (texture != null)
+            {
+                GameObject image_go = go.transform.GetChild(1).gameObject;
+                RawImage raw_image = image_go.GetComponent<RawImage>();
+                raw_image.texture = texture;
+             
+            }
+        }
     }
 }

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d0df21125b0e0947bfa5b8fb53e160e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug: 0
 --- !u!114 &8851192297964007754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   host: 127.0.0.1
-  port: 9090
+  port: 9091
   clientTemplateObj: {fileID: 3689066714662374667, guid: 4cf6249cb0357574fb5b276a96d9c2b6,
     type: 3}
   spawn_pt: {fileID: 8851192297964007755}
