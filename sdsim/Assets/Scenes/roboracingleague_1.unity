@@ -6266,81 +6266,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1001 &7201082943530616577
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 7306904206160427172}
-    m_Modifications:
-    - target: {fileID: 1367702473173472, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_Name
-      value: SplitScreenCameras
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2583f9ad305fa814c9808ce6d6479152, type: 3}
---- !u!4 &7201082943530616578 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4734072873036000, guid: 2583f9ad305fa814c9808ce6d6479152,
-    type: 3}
-  m_PrefabInstance: {fileID: 7201082943530616577}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &7201082943530616579 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 20708391671952756, guid: 2583f9ad305fa814c9808ce6d6479152,
-    type: 3}
-  m_PrefabInstance: {fileID: 7201082943530616577}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &7201082943530616580 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 20151993083218756, guid: 2583f9ad305fa814c9808ce6d6479152,
-    type: 3}
-  m_PrefabInstance: {fileID: 7201082943530616577}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7306904206160427172
 Transform:
   m_ObjectHideFlags: 0
@@ -6354,7 +6279,6 @@ Transform:
   m_Children:
   - {fileID: 750375443}
   - {fileID: 7793585166132769265}
-  - {fileID: 7201082943530616578}
   m_Father: {fileID: 3688992057152106728}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6439,12 +6363,12 @@ PrefabInstance:
         type: 3}
       propertyPath: splitScreenCamLeft
       value: 
-      objectReference: {fileID: 7201082943530616580}
+      objectReference: {fileID: 0}
     - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: splitScreenCamRight
       value: 
-      objectReference: {fileID: 7201082943530616579}
+      objectReference: {fileID: 0}
     - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: splitScreenPanel
