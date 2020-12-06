@@ -2953,7 +2953,6 @@ MonoBehaviour:
   - generated_track
   - roboracingleague_1
   - waveshare
-  - test_scene
   ButtonGridLayout: {fileID: 126483964}
   ButtonPrefab: {fileID: 5466719870426124411, guid: fb93d9878115b39438221fec2f89f2ae,
     type: 3}
