@@ -174,47 +174,34 @@ public class PathManager : MonoBehaviour
             points.Add(np);
         }
 
-        if (smoothPathIter > 0)
+        while (smoothPathIter > 0)
         {
-            List<Vector3> smoothed = new List<Vector3>(points);
-            while (smoothPathIter > 0)
-            {
-                smoothed = new List<Vector3>(Chaikin(smoothed));
-                smoothPathIter--;
-            }
-
-            foreach (Vector3 point in smoothed)
-            {
-                PathNode p = new PathNode();
-                p.pos = point;
-                path.nodes.Add(p);
-                path.centerNodes.Add(p);
-            }
+            points = Chaikin(points);
+            smoothPathIter--;
         }
-		else {
-			foreach (Vector3 point in points)
-            {
-                PathNode p = new PathNode();
-                p.pos = point;
-                path.nodes.Add(p);
-                path.centerNodes.Add(p);
-            }
-		}
+
+        foreach (Vector3 point in points)
+        {
+            PathNode p = new PathNode();
+            p.pos = point;
+            path.nodes.Add(p);
+            path.centerNodes.Add(p);
+        }
     }
 
-    public Vector3[] Chaikin(List<Vector3> pts)
+    public List<Vector3> Chaikin(List<Vector3> pts)
     {
-        Vector3[] newPts = new Vector3[(pts.Count - 2) * 2 + 2];
-        newPts[0] = pts[0];
-        newPts[newPts.Length - 1] = pts[pts.Count - 1];
+        List<Vector3> newPts = new List<Vector3>();
 
-        int j = 1;
+        newPts.Add(pts[0]);
+
         for (int i = 0; i < pts.Count - 2; i++)
         {
-            newPts[j] = pts[i] + (pts[i + 1] - pts[i]) * 0.75f;
-            newPts[j + 1] = pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f;
-            j += 2;
+            newPts.Add(pts[i] + (pts[i + 1] - pts[i]) * 0.75f);
+            newPts.Add(pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f);
         }
+
+        newPts.Add(pts[pts.Count - 1]);
         return newPts;
     }
 
