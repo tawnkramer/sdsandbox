@@ -46,10 +46,12 @@ If you are wondering how does the buttons are created at runtime, go see the [me
 
 ## Create the track
 For this part, you have two main choices, <br>
-you can either choose to use an existing GameObject or you can use the RoadBuilder to generate a track at runtime.
+you can either choose to use an existing GameObject (mesh) or you can use the RoadBuilder to generate a track at runtime.
 * ### Use an existing Prefab/object
     in that case, just drag and drop your object into the scene, maybe apply a texture or two and the job is done
 * ### Use the RoadBuilder (track generation at runtime)
+    (documentation coming) you can have a look at the [PathManager script](../advanced/path_manager.md) a path
 
 ## Add some objects, textures and else
-you can add whatever you want to the scene to make it look as you wish
+you can add whatever you want to the scene to make it look as you wish. <br>
+Ideally, the scene size shouldn't exceed 20Mb, the lower the best !

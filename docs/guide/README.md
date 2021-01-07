@@ -5,3 +5,4 @@ prior to reading the guides, have a look at [Get Started With Unity](../get_star
 
 ## guides list
 * [Create a track](create_a_track.md)
+* [Share a track](share_a_track.md)
