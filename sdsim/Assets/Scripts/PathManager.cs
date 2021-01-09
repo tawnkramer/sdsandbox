@@ -5,50 +5,43 @@ using System.Collections.Generic;
 
 public class PathManager : MonoBehaviour
 {
-
     public CarPath path;
 
-    public GameObject prefab;
 
-    public Transform startPos;
-
-    Vector3 span = Vector3.zero;
-
-    public float spanDist = 5f;
-
-    public int numSpans = 100;
-
-    public float turnInc = 1f;
-
-    public bool sameRandomPath = true;
-
-    public int randSeed = 2;
-
+    [Header("Path type")]
     public bool doMakeRandomPath = true;
-
     public bool doLoadScriptPath = false;
-
     public bool doLoadPointPath = false;
 
-    public bool doBuildRoad = false;
-
-    public bool doChangeLanes = false;
-
-    public int smoothPathIter = 0;
-
-    public bool doShowPath = false;
-
+    [Header("Path making")]
+    public Transform startPos;
     public string pathToLoad = "none";
+    public int smoothPathIter = 0;
+    public bool doChangeLanes = false;
+    public bool doBuildRoad = false;
+    public GameObject locationMarkerPrefab;
+    public int markerEveryN = 2;
+    
+    [Header("Random path parameters")]
+    public int numSpans = 100;
+    public float turnInc = 1f;
+    public float spanDist = 5f;
+    public bool sameRandomPath = true;
+    public int randSeed = 2;
 
+    [Header("Road Builder")]
     public RoadBuilder roadBuilder;
     public RoadBuilder semanticSegRoadBuilder;
-
     public LaneChangeTrainer laneChTrainer;
 
-    public GameObject locationMarkerPrefab;
+    [Header("Debug")]
+    public bool doShowPath = false;
+    public GameObject pathelem;
 
-    public int markerEveryN = 2;
+    [Header("Aux")]
     public GameObject[] challenges;
+
+    Vector3 span = Vector3.zero;
 
     void Awake()
     {
@@ -108,7 +101,7 @@ public class PathManager : MonoBehaviour
             for (int iN = 0; iN < path.nodes.Count; iN++)
             {
                 Vector3 np = path.nodes[iN].pos;
-                GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
+                GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
             }
@@ -330,7 +323,7 @@ public class PathManager : MonoBehaviour
 
         foreach (PathNode pn in path.nodes)
         {
-            GameObject go = Instantiate(prefab, pn.pos, Quaternion.identity) as GameObject;
+            GameObject go = Instantiate(pathelem, pn.pos, Quaternion.identity) as GameObject;
             go.tag = "pathNode";
         }
     }
