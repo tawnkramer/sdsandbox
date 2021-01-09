@@ -1,131 +1,130 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Globalization;
+using System.Collections.Generic;
 
-public class PathManager : MonoBehaviour {
+public class PathManager : MonoBehaviour
+{
 
-	public CarPath path;
+    public CarPath path;
 
-	public GameObject prefab;
+    public GameObject prefab;
 
-	public Transform startPos;
+    public Transform startPos;
 
-	Vector3 span = Vector3.zero;
+    Vector3 span = Vector3.zero;
 
-	public float spanDist = 5f;
+    public float spanDist = 5f;
 
-	public int numSpans = 100;
+    public int numSpans = 100;
 
-	public float turnInc = 1f;
+    public float turnInc = 1f;
 
-	public bool sameRandomPath = true;
+    public bool sameRandomPath = true;
 
-	public int randSeed = 2;
+    public int randSeed = 2;
 
-	public bool doMakeRandomPath = true;
+    public bool doMakeRandomPath = true;
 
-	public bool doLoadScriptPath = false;
+    public bool doLoadScriptPath = false;
 
-	public bool doLoadPointPath = false;
+    public bool doLoadPointPath = false;
 
-	public bool doBuildRoad = false;
+    public bool doBuildRoad = false;
 
-	public bool doChangeLanes = false;
+    public bool doChangeLanes = false;
 
-	public int smoothPathIter = 0;
+    public int smoothPathIter = 0;
 
-	public bool doShowPath = false;
+    public bool doShowPath = false;
 
     public string pathToLoad = "none";
 
-	public RoadBuilder roadBuilder;
-	public RoadBuilder semanticSegRoadBuilder;
+    public RoadBuilder roadBuilder;
+    public RoadBuilder semanticSegRoadBuilder;
 
-	public LaneChangeTrainer laneChTrainer;
+    public LaneChangeTrainer laneChTrainer;
 
-	public GameObject locationMarkerPrefab;
+    public GameObject locationMarkerPrefab;
 
-	public int markerEveryN = 2;
-	public GameObject[] challenges;
+    public int markerEveryN = 2;
+    public GameObject[] challenges;
 
-	void Awake () 
-	{
-		if(sameRandomPath)
-			Random.InitState(randSeed);
+    void Awake()
+    {
+        if (sameRandomPath)
+            Random.InitState(randSeed);
 
-		InitNewRoad();
-	}
+        InitNewRoad();
+    }
 
-	public void InitNewRoad()
-	{
-		if(doMakeRandomPath)
-		{
-			MakeRandomPath();
-		}
-		else if (doLoadScriptPath)
-		{
-			MakeScriptedPath();
-		}
-		else if(doLoadPointPath)
-		{
-			MakePointPath();
-		}
+    public void InitNewRoad()
+    {
+        if (doMakeRandomPath)
+        {
+            MakeRandomPath();
+        }
+        else if (doLoadScriptPath)
+        {
+            MakeScriptedPath();
+        }
+        else if (doLoadPointPath)
+        {
+            MakePointPath();
+        }
 
-		if(smoothPathIter > 0)
-			SmoothPath();
+        //Should we build a road mesh along the path?
+        if (doBuildRoad && roadBuilder != null)
+            roadBuilder.InitRoad(path);
 
-		//Should we build a road mesh along the path?
-		if(doBuildRoad && roadBuilder != null)
-			roadBuilder.InitRoad(path); 
+        if (doBuildRoad && semanticSegRoadBuilder != null)
+            semanticSegRoadBuilder.InitRoad(path);
 
-		if(doBuildRoad && semanticSegRoadBuilder != null)
-			semanticSegRoadBuilder.InitRoad(path);
+        if (doChangeLanes && laneChTrainer != null)
+            laneChTrainer.ModifyPath(ref path);
 
-		if(doChangeLanes && laneChTrainer != null)
-			laneChTrainer.ModifyPath(ref path);
+        foreach (GameObject challenge in challenges) // Init each challenges
+        {
+            IChallenge chal = challenge.GetComponent<IChallenge>();
+            if (chal != null)
+                chal.InitChallenge(path);
+        }
 
-		foreach(GameObject challenge in challenges) // Init each challenges
-		{	
-			IChallenge chal = challenge.GetComponent<IChallenge>();
-			if(chal != null)
-				chal.InitChallenge(path);
-		}
+        if (locationMarkerPrefab != null && path != null)
+        {
+            int iLocId = 0;
+            for (int iN = 0; iN < path.nodes.Count; iN += markerEveryN)
+            {
+                Vector3 np = path.nodes[iN].pos;
+                GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
+                go.transform.parent = this.transform;
+                go.GetComponent<LocationMarker>().id = iLocId;
+                iLocId++;
+            }
+        }
 
-		if(locationMarkerPrefab != null && path != null)
-		{
-			int iLocId = 0;
-			for(int iN = 0; iN < path.nodes.Count; iN += markerEveryN)
-			{
-				Vector3 np = path.nodes[iN].pos;
-				GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
-				go.transform.parent = this.transform;
-				go.GetComponent<LocationMarker>().id = iLocId;
-				iLocId++;
-			}
-		}
+        if (doShowPath && path != null)
+        {
+            for (int iN = 0; iN < path.nodes.Count; iN++)
+            {
+                Vector3 np = path.nodes[iN].pos;
+                GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
+                go.tag = "pathNode";
+                go.transform.parent = this.transform;
+            }
+        }
+    }
 
-		if(doShowPath && path != null)
-		{
-			for(int iN = 0; iN < path.nodes.Count; iN++)
-			{
-				Vector3 np = path.nodes[iN].pos;
-				GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
-				go.tag = "pathNode";
-				go.transform.parent = this.transform;
-			}
-		}
-	}
+    public void DestroyRoad()
+    {
+        GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
 
-	public void DestroyRoad()
-	{
-		GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
+        foreach (GameObject g in prev)
+            Destroy(g);
 
-		foreach(GameObject g in prev)
-			Destroy(g);
-
-		if(roadBuilder != null)
-			roadBuilder.DestroyRoad();
-	}
+        if (roadBuilder != null)
+            roadBuilder.DestroyRoad();
+    }
 
     public Vector3 GetPathStart()
     {
@@ -136,183 +135,203 @@ public class PathManager : MonoBehaviour {
     {
         int iN = path.nodes.Count - 1;
 
-        if(iN < 0)
+        if (iN < 0)
             return GetPathStart();
 
         return path.nodes[iN].pos;
     }
 
-	void SmoothPath()
-	{
-		while(smoothPathIter > 0)
-		{
-			path.SmoothPath();
-			smoothPathIter--;
-		}
-	}
+    void MakePointPath()
+    {
+        string filename = pathToLoad;
 
-	void MakePointPath()
-	{
-		string filename = pathToLoad;
+        TextAsset bindata = Resources.Load("Track/" + filename) as TextAsset;
 
-		TextAsset bindata = Resources.Load("Track/"+filename) as TextAsset;
+        if (bindata == null)
+            return;
 
-		if(bindata == null)
-			return;
+        string[] lines = bindata.text.Split('\n');
 
-		string[] lines = bindata.text.Split('\n');
+        Debug.Log(string.Format("found {0} path points. to load", lines.Length));
 
-		Debug.Log(string.Format("found {0} path points. to load", lines.Length));
+        path = new CarPath();
 
-		path = new CarPath();
+        Vector3 np = Vector3.zero;
 
-		Vector3 np = Vector3.zero;
+        float offsetY = -0.1f;
+        List<Vector3> points = new List<Vector3>();
 
-		float offsetY = -0.1f;
+        foreach (string line in lines)
+        {
+            string[] tokens = line.Split(',');
 
-		foreach(string line in lines)
-		{
-			string[] tokens = line.Split(',');
+            if (tokens.Length != 3)
+                continue;
+            np.x = float.Parse(tokens[0], CultureInfo.InvariantCulture.NumberFormat);
+            np.y = float.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat) + offsetY;
+            np.z = float.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat);
 
-			if (tokens.Length != 3)
-				continue;
-			np.x = float.Parse(tokens[0], CultureInfo.InvariantCulture.NumberFormat);
-			np.y = float.Parse(tokens[1], CultureInfo.InvariantCulture.NumberFormat) + offsetY;
-			np.z = float.Parse(tokens[2], CultureInfo.InvariantCulture.NumberFormat);
-			PathNode p = new PathNode();
-			p.pos = np;
-			path.nodes.Add(p);
-			path.centerNodes.Add(p);
-		}
-			
-	}
+            points.Add(np);
+        }
 
-	void MakeScriptedPath()
-	{
-		TrackScript script = new TrackScript();
+        while (smoothPathIter > 0)
+        {
+            points = Chaikin(points);
+            smoothPathIter--;
+        }
 
-		if(script.Read(pathToLoad))
-		{
-			path = new CarPath();
-			TrackParams tparams = new TrackParams();
-			tparams.numToSet = 0;
-			tparams.rotCur = Quaternion.identity;
-			tparams.lastPos = startPos.position;
+        foreach (Vector3 point in points)
+        {
+            PathNode p = new PathNode();
+            p.pos = point;
+            path.nodes.Add(p);
+            path.centerNodes.Add(p);
+        }
+    }
 
-			float dY = 0.0f;
-			float turn = 0f;
+    public List<Vector3> Chaikin(List<Vector3> pts)
+    {
+        List<Vector3> newPts = new List<Vector3>();
 
-			Vector3 s = startPos.position;
-			s.y = 0.5f;
-			span.x = 0f;
-			span.y = 0f;
-			span.z = spanDist;
-			float turnVal = 10.0f;
+        newPts.Add(pts[0]);
 
-			foreach(TrackScriptElem se in script.track)
-			{
-				if(se.state == TrackParams.State.AngleDY)
-				{
-					turnVal = se.value;
-				}
-				else if(se.state == TrackParams.State.CurveY)
-				{
-					turn = 0.0f;
-					dY = se.value * turnVal;
-				}
-				else
-				{
-					dY = 0.0f;
-					turn = 0.0f;
-				}
+        for (int i = 0; i < pts.Count - 2; i++)
+        {
+            newPts.Add(pts[i] + (pts[i + 1] - pts[i]) * 0.75f);
+            newPts.Add(pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f);
+        }
 
-				for(int i = 0; i < se.numToSet; i++)
-				{
+        newPts.Add(pts[pts.Count - 1]);
+        return newPts;
+    }
 
-					Vector3 np = s;
-					PathNode p = new PathNode();
-					p.pos = np;
-					path.nodes.Add(p);
 
-					turn = dY;
+    void MakeScriptedPath()
+    {
+        TrackScript script = new TrackScript();
 
-					Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
-					span = rot * span.normalized;
-					span *= spanDist;
-					s = s + span;
-				}
-					
-			}
-		}
-	}
+        if (script.Read(pathToLoad))
+        {
+            path = new CarPath();
+            TrackParams tparams = new TrackParams();
+            tparams.numToSet = 0;
+            tparams.rotCur = Quaternion.identity;
+            tparams.lastPos = startPos.position;
 
-	void MakeRandomPath()
-	{
-		path = new CarPath();
+            float dY = 0.0f;
+            float turn = 0f;
 
-		Vector3 s = startPos.position;
-		float turn = 0f;
-		s.y = 0.5f;
+            Vector3 s = startPos.position;
+            s.y = 0.5f;
+            span.x = 0f;
+            span.y = 0f;
+            span.z = spanDist;
+            float turnVal = 10.0f;
 
-		span.x = 0f;
-		span.y = 0f;
-		span.z = spanDist;
+            foreach (TrackScriptElem se in script.track)
+            {
+                if (se.state == TrackParams.State.AngleDY)
+                {
+                    turnVal = se.value;
+                }
+                else if (se.state == TrackParams.State.CurveY)
+                {
+                    turn = 0.0f;
+                    dY = se.value * turnVal;
+                }
+                else
+                {
+                    dY = 0.0f;
+                    turn = 0.0f;
+                }
 
-		for(int iS = 0; iS < numSpans; iS++)
-		{
-			Vector3 np = s;
-			PathNode p = new PathNode();
-			p.pos = np;
-			path.nodes.Add(p);
+                for (int i = 0; i < se.numToSet; i++)
+                {
 
-			float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
+                    Vector3 np = s;
+                    PathNode p = new PathNode();
+                    p.pos = np;
+                    path.nodes.Add(p);
 
-			turn += t;
+                    turn = dY;
 
-			Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
-			span = rot * span.normalized;
+                    Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
+                    span = rot * span.normalized;
+                    span *= spanDist;
+                    s = s + span;
+                }
 
-			if(SegmentCrossesPath( np + (span.normalized * 100.0f), 90.0f ))
-			{
-				//turn in the opposite direction if we think we are going to run over the path
-				turn *= -0.5f;
-				rot = Quaternion.Euler(0.0f, turn, 0f);
-				span = rot * span.normalized;
-			}
+            }
+        }
+    }
 
-			span *= spanDist;
+    void MakeRandomPath()
+    {
+        path = new CarPath();
 
-			s = s + span;
-		}
-	}
+        Vector3 s = startPos.position;
+        float turn = 0f;
+        s.y = 0.5f;
 
-	public bool SegmentCrossesPath(Vector3 posA, float rad)
-	{
-		foreach(PathNode pn in path.nodes)
-		{
-			float d = (posA - pn.pos).magnitude;
+        span.x = 0f;
+        span.y = 0f;
+        span.z = spanDist;
 
-			if(d < rad)
-				return true;
-		}
+        for (int iS = 0; iS < numSpans; iS++)
+        {
+            Vector3 np = s;
+            PathNode p = new PathNode();
+            p.pos = np;
+            path.nodes.Add(p);
 
-		return false;
-	}
+            float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 
-	public void SetPath(CarPath p)
-	{
-		path = p;
+            turn += t;
 
-		GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
+            Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
+            span = rot * span.normalized;
 
-		Debug.Log(string.Format("Cleaning up {0} old nodes. {1} new ones.", prev.Length, p.nodes.Count));
+            if (SegmentCrossesPath(np + (span.normalized * 100.0f), 90.0f))
+            {
+                //turn in the opposite direction if we think we are going to run over the path
+                turn *= -0.5f;
+                rot = Quaternion.Euler(0.0f, turn, 0f);
+                span = rot * span.normalized;
+            }
 
-		DestroyRoad();
+            span *= spanDist;
 
-		foreach(PathNode pn in path.nodes)
-		{
-			GameObject go = Instantiate(prefab, pn.pos, Quaternion.identity) as GameObject;
-			go.tag = "pathNode";
-		}
-	}
+            s = s + span;
+        }
+    }
+
+    public bool SegmentCrossesPath(Vector3 posA, float rad)
+    {
+        foreach (PathNode pn in path.nodes)
+        {
+            float d = (posA - pn.pos).magnitude;
+
+            if (d < rad)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void SetPath(CarPath p)
+    {
+        path = p;
+
+        GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
+
+        Debug.Log(string.Format("Cleaning up {0} old nodes. {1} new ones.", prev.Length, p.nodes.Count));
+
+        DestroyRoad();
+
+        foreach (PathNode pn in path.nodes)
+        {
+            GameObject go = Instantiate(prefab, pn.pos, Quaternion.identity) as GameObject;
+            go.tag = "pathNode";
+        }
+    }
 }
