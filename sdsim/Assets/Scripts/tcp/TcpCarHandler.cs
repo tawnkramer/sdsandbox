@@ -171,21 +171,21 @@ namespace tk
         if (pm != null)
         {
           float cte = 0.0f;
-          if (pm.path.GetCrossTrackErr(tm.position, ref cte))
+          if (pm.carPath.GetCrossTrackErr(tm.position, ref cte))
           {
             json.AddField("cte", cte);
           }
           else
           {
-            pm.path.ResetActiveSpan();
+            pm.carPath.ResetActiveSpan();
             json.AddField("cte", 0.0f);
           }
-          json.AddField("activeNode", pm.path.iActiveSpan);
-          json.AddField("totalNodes", pm.path.nodes.Count);
+          json.AddField("activeNode", pm.carPath.iActiveSpan);
+          json.AddField("totalNodes", pm.carPath.nodes.Count);
         }
 
         
-        if (pm.path.nodes.Count > 10)
+        if (pm.carPath.nodes.Count > 10)
         {
           NavMeshHit hit = new NavMeshHit();
           Vector3 position = carObj.transform.position;
@@ -193,9 +193,9 @@ namespace tk
           json.AddField("on_road", onNavMesh ? 1 : 0);
           if (onNavMesh)
           {
-            Vector3 target = pm.path.nodes[(pm.path.iActiveSpan + pm.path.nodes.Count + pm.path.nodes.Count / 3) % (pm.path.nodes.Count)].pos;
-            double currentDistance = pm.path.getDistance(position, target);
-            double distanceToLastTarget = pm.path.getDistance(position, this.lastTarget);
+            Vector3 target = pm.carPath.nodes[(pm.carPath.iActiveSpan + pm.carPath.nodes.Count + pm.carPath.nodes.Count / 3) % (pm.carPath.nodes.Count)].pos;
+            double currentDistance = pm.carPath.getDistance(position, target);
+            double distanceToLastTarget = pm.carPath.getDistance(position, this.lastTarget);
             if (this.lastTarget.x == 0 || Math.Abs(currentDistance) < 0.001 || Math.Abs(distanceToLastTarget) < 0.001 || Math.Abs(this.lastDistance)<0.001)
             {
               this.lastDistance = currentDistance;
@@ -517,7 +517,7 @@ namespace tk
         if (bResetCar)
         {
           car.RestorePosRot();
-          pm.path.ResetActiveSpan();
+          pm.carPath.ResetActiveSpan();
 
           if (carObj != null)
           {
