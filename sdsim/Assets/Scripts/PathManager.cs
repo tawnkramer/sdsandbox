@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Globalization;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ public class PathManager : MonoBehaviour
     public GameObject[] challenges;
 
     Vector3 span = Vector3.zero;
+    GameObject generated_mesh;
 
     void Awake()
     {
@@ -75,10 +77,10 @@ public class PathManager : MonoBehaviour
 
         //Should we build a road mesh along the path?
         if (doBuildRoad && roadBuilder != null)
-            roadBuilder.InitRoad(carPath);
+            generated_mesh = roadBuilder.InitRoad(carPath);
 
         if (doBuildRoad && semanticSegRoadBuilder != null)
-            semanticSegRoadBuilder.InitRoad(carPath);
+            generated_mesh = semanticSegRoadBuilder.InitRoad(carPath);
 
         if (doChangeLanes && laneChTrainer != null)
             laneChTrainer.ModifyPath(ref carPath);
@@ -366,4 +368,14 @@ public class PathManager : MonoBehaviour
             go.tag = "pathNode";
         }
     }
+
+    public void SaveRoadMesh(string savepath)
+    {
+        if (generated_mesh != null)
+        {
+            MeshFilter mf = generated_mesh.GetComponent<MeshFilter>();
+            AssetDatabase.CreateAsset(mf.mesh, savepath);
+        }
+    }
+
 }

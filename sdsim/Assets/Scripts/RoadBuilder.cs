@@ -75,12 +75,12 @@ public class RoadBuilder : MonoBehaviour
         mr.material.mainTextureScale = ms;
     }
 
-    public void InitRoad(CarPath path)
+    public GameObject InitRoad(CarPath path)
     {
         if (path == null)
         {
             Debug.LogWarning("No path in RoadBuilder::InitRoad");
-            return;
+            return null;
         }
 
         if (terToolkit != null && doFlattenAtStart)
@@ -99,7 +99,6 @@ public class RoadBuilder : MonoBehaviour
         MeshFilter mf = go.GetComponent<MeshFilter>();
         MeshCollider mc = go.GetComponent<MeshCollider>();
         Mesh mesh = new Mesh();
-        mc.sharedMesh = mesh;
         createdRoad = go;
 
         if (customRoadTexure != null)
@@ -215,7 +214,8 @@ public class RoadBuilder : MonoBehaviour
         mesh.uv = uv;
 
         mesh.RecalculateBounds();
-        mf.mesh = mesh; // once the mesh is created, asign it to the mesh collider
+        mf.mesh = mesh; 
+        mc.sharedMesh = mesh; // once the mesh is created, asign it to the mesh collider
 
         if (terToolkit != null && doErodeTerrain)
         {
@@ -243,6 +243,7 @@ public class RoadBuilder : MonoBehaviour
 
             //terToolkit.TextureTerrain(slopeStops, heightStops, textures);
         }
-        // todo: return CarPath
+
+        return go;
     }
 }
