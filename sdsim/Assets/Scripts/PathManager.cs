@@ -1,54 +1,52 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Globalization;
 using System.Collections.Generic;
+using PathCreation;
+
 
 public class PathManager : MonoBehaviour
 {
+    public CarPath carPath;
+    public PathCreator pathCreator;
 
-    public CarPath path;
+    [Header("Path type")]
+    public bool doMakeRandomPath = true;
+    public bool doLoadScriptPath = false;
+    public bool doLoadPointPath = false;
+    public bool doLoadGameObjectPath = false;
 
-    public GameObject prefab;
-
+    [Header("Path making")]
     public Transform startPos;
+    public string pathToLoad = "none";
+    public int smoothPathIter = 0;
+    public bool doChangeLanes = false;
+    public bool doBuildRoad = false;
+    public GameObject locationMarkerPrefab;
+    public int markerEveryN = 2;
 
-    Vector3 span = Vector3.zero;
-
-    public float spanDist = 5f;
-
+    [Header("Random path parameters")]
     public int numSpans = 100;
-
     public float turnInc = 1f;
-
+    public float spanDist = 5f;
     public bool sameRandomPath = true;
-
     public int randSeed = 2;
 
-    public bool doMakeRandomPath = true;
-
-    public bool doLoadScriptPath = false;
-
-    public bool doLoadPointPath = false;
-
-    public bool doBuildRoad = false;
-
-    public bool doChangeLanes = false;
-
-    public int smoothPathIter = 0;
-
-    public bool doShowPath = false;
-
-    public string pathToLoad = "none";
-
+    [Header("Road Builder")]
     public RoadBuilder roadBuilder;
     public RoadBuilder semanticSegRoadBuilder;
-
     public LaneChangeTrainer laneChTrainer;
 
-    public GameObject locationMarkerPrefab;
+    [Header("Debug")]
+    public bool doShowPath = false;
+    public GameObject pathelem;
 
-    public int markerEveryN = 2;
+    [Header("Aux")]
     public GameObject[] challenges;
+
+    Vector3 span = Vector3.zero;
+    GameObject generated_mesh;
 
     void Awake()
     {
@@ -72,30 +70,34 @@ public class PathManager : MonoBehaviour
         {
             MakePointPath();
         }
+        else if (doLoadGameObjectPath)
+        {
+            MakeGameObjectPath();
+        }
 
         //Should we build a road mesh along the path?
         if (doBuildRoad && roadBuilder != null)
-            roadBuilder.InitRoad(path);
+            generated_mesh = roadBuilder.InitRoad(carPath);
 
         if (doBuildRoad && semanticSegRoadBuilder != null)
-            semanticSegRoadBuilder.InitRoad(path);
+            generated_mesh = semanticSegRoadBuilder.InitRoad(carPath);
 
         if (doChangeLanes && laneChTrainer != null)
-            laneChTrainer.ModifyPath(ref path);
+            laneChTrainer.ModifyPath(ref carPath);
 
         foreach (GameObject challenge in challenges) // Init each challenges
         {
             IChallenge chal = challenge.GetComponent<IChallenge>();
             if (chal != null)
-                chal.InitChallenge(path);
+                chal.InitChallenge(carPath);
         }
 
-        if (locationMarkerPrefab != null && path != null)
+        if (locationMarkerPrefab != null && carPath != null)
         {
             int iLocId = 0;
-            for (int iN = 0; iN < path.nodes.Count; iN += markerEveryN)
+            for (int iN = 0; iN < carPath.nodes.Count; iN += markerEveryN)
             {
-                Vector3 np = path.nodes[iN].pos;
+                Vector3 np = carPath.nodes[iN].pos;
                 GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
                 go.transform.parent = this.transform;
                 go.GetComponent<LocationMarker>().id = iLocId;
@@ -103,12 +105,12 @@ public class PathManager : MonoBehaviour
             }
         }
 
-        if (doShowPath && path != null)
+        if (doShowPath && carPath != null)
         {
-            for (int iN = 0; iN < path.nodes.Count; iN++)
+            for (int iN = 0; iN < carPath.nodes.Count; iN++)
             {
-                Vector3 np = path.nodes[iN].pos;
-                GameObject go = Instantiate(prefab, np, Quaternion.identity) as GameObject;
+                Vector3 np = carPath.nodes[iN].pos;
+                GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
             }
@@ -133,12 +135,44 @@ public class PathManager : MonoBehaviour
 
     public Vector3 GetPathEnd()
     {
-        int iN = path.nodes.Count - 1;
+        int iN = carPath.nodes.Count - 1;
 
         if (iN < 0)
             return GetPathStart();
 
-        return path.nodes[iN].pos;
+        return carPath.nodes[iN].pos;
+    }
+
+    void MakeGameObjectPath(float precision = 0.01f)
+    {
+        carPath = new CarPath();
+
+        Vector3 np = Vector3.zero;
+        List<Vector3> points = new List<Vector3>();
+
+        for (float i = 0; i <= 1; i += precision)
+        {
+            np = pathCreator.path.GetPointAtTime(i);
+            points.Add(np);
+        }
+        points.Add(pathCreator.path.GetPointAtTime(0));
+        points.Add(pathCreator.path.GetPointAtTime(precision)); // close the loop
+
+
+        while (smoothPathIter > 0)
+        {
+            points = Chaikin(points);
+            smoothPathIter--;
+        }
+
+        foreach (Vector3 point in points)
+        {
+            PathNode p = new PathNode();
+            p.pos = point;
+            carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
+        }
+
     }
 
     void MakePointPath()
@@ -154,7 +188,7 @@ public class PathManager : MonoBehaviour
 
         Debug.Log(string.Format("found {0} path points. to load", lines.Length));
 
-        path = new CarPath();
+        carPath = new CarPath();
 
         Vector3 np = Vector3.zero;
 
@@ -184,8 +218,8 @@ public class PathManager : MonoBehaviour
         {
             PathNode p = new PathNode();
             p.pos = point;
-            path.nodes.Add(p);
-            path.centerNodes.Add(p);
+            carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
         }
     }
 
@@ -212,7 +246,7 @@ public class PathManager : MonoBehaviour
 
         if (script.Read(pathToLoad))
         {
-            path = new CarPath();
+            carPath = new CarPath();
             TrackParams tparams = new TrackParams();
             tparams.numToSet = 0;
             tparams.rotCur = Quaternion.identity;
@@ -251,7 +285,7 @@ public class PathManager : MonoBehaviour
                     Vector3 np = s;
                     PathNode p = new PathNode();
                     p.pos = np;
-                    path.nodes.Add(p);
+                    carPath.nodes.Add(p);
 
                     turn = dY;
 
@@ -267,7 +301,7 @@ public class PathManager : MonoBehaviour
 
     void MakeRandomPath()
     {
-        path = new CarPath();
+        carPath = new CarPath();
 
         Vector3 s = startPos.position;
         float turn = 0f;
@@ -282,7 +316,7 @@ public class PathManager : MonoBehaviour
             Vector3 np = s;
             PathNode p = new PathNode();
             p.pos = np;
-            path.nodes.Add(p);
+            carPath.nodes.Add(p);
 
             float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 
@@ -307,7 +341,7 @@ public class PathManager : MonoBehaviour
 
     public bool SegmentCrossesPath(Vector3 posA, float rad)
     {
-        foreach (PathNode pn in path.nodes)
+        foreach (PathNode pn in carPath.nodes)
         {
             float d = (posA - pn.pos).magnitude;
 
@@ -320,7 +354,7 @@ public class PathManager : MonoBehaviour
 
     public void SetPath(CarPath p)
     {
-        path = p;
+        carPath = p;
 
         GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
 
@@ -328,10 +362,20 @@ public class PathManager : MonoBehaviour
 
         DestroyRoad();
 
-        foreach (PathNode pn in path.nodes)
+        foreach (PathNode pn in carPath.nodes)
         {
-            GameObject go = Instantiate(prefab, pn.pos, Quaternion.identity) as GameObject;
+            GameObject go = Instantiate(pathelem, pn.pos, Quaternion.identity) as GameObject;
             go.tag = "pathNode";
         }
     }
+
+    public void SaveRoadMesh(string savepath)
+    {
+        if (generated_mesh != null)
+        {
+            MeshFilter mf = generated_mesh.GetComponent<MeshFilter>();
+            AssetDatabase.CreateAsset(mf.mesh, savepath);
+        }
+    }
+
 }

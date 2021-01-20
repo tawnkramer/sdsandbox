@@ -86,6 +86,7 @@ MonoBehaviour:
   splitScreenCamPrefab: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
     type: 3}
   maxSplitScreen: 4
+  SplitScreenWidth: 2
   racerStatusPrefab: {fileID: 0}
   raceStatusPanel: {fileID: 0}
 --- !u!1 &1612042024290732
@@ -205,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6940724510810407baa499c3bb3fc03c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
+  pathelem: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
   startPos: {fileID: 0}
   spanDist: 2
   numSpans: 1000
