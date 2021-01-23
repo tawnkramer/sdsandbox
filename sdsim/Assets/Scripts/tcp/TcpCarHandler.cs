@@ -59,6 +59,11 @@ namespace tk
       GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
       if (go != null)
         ai_text = go.GetComponent<Text>();
+
+      if (pm != null && carObj != null)
+      {
+        pm.carPath.GetClosestSpan(carObj.transform.position);
+      }
     }
 
     public void Init(tk.JsonTcpClient _client)

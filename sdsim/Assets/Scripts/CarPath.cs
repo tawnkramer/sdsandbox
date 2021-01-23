@@ -30,6 +30,23 @@ public class CarPath
         iActiveSpan = 0;
     }
 
+    public void GetClosestSpan(Vector3 carPos)
+    {
+        float minDistance = float.MaxValue;
+        int minDistanceIndex = -1;
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            float dist = Vector3.Distance(nodes[i].pos, carPos);
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                minDistanceIndex = i;
+            }
+        }
+
+        iActiveSpan = minDistanceIndex;
+    }
+
     public PathNode GetActiveNode()
     {
         if (iActiveSpan < nodes.Count)

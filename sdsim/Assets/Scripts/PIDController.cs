@@ -106,6 +106,7 @@ public class PIDController : MonoBehaviour {
 		absTotalError = 0f;
 
 		pm.carPath.ResetActiveSpan();
+		pm.carPath.GetClosestSpan(carObj.transform.position);
 		isDriving = true;
 		waitForStill = false;//true;
 
@@ -207,7 +208,7 @@ public class PIDController : MonoBehaviour {
 			return;
 		}
 
-		diffErr = err - prevErr;
+		diffErr = (err - prevErr)/Time.deltaTime;
 
 		steeringReq = (-Kp * err) - (Kd * diffErr) - (Ki * totalError);
 

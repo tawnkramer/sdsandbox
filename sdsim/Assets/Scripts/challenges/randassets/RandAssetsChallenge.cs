@@ -9,9 +9,18 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
     public float heightOffset = 0;
     public int numAssets = 10;
     public GameObject[] prefabList;
+    public GameObject parentGameObject;
+    public List<GameObject> createdObjects = new List<GameObject>();
+    public CarPath carPath;
 
     public void InitChallenge(CarPath path)
     {
+        if (path == null)
+        {
+            Debug.LogError("You need to init the Challenge with a valid CarPath");
+        }
+
+        carPath = path;
         GameObject[] randomList = new GameObject[numAssets];
         for (int i = 0; i < numAssets; i++) // pick some items from the prefab list and add them to the randomList array
         {
@@ -19,17 +28,28 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
             randomList[i] = prefabList[index];
         }
 
-        PlaceAssets(path, randomList);
+        PlaceAssets(randomList);
     }
 
-    public void PlaceAssets(CarPath path, GameObject[] assetList)
-    {
-        if (path.centerNodes != null)
+	public void ResetChallenge()
+	{
+        foreach (GameObject createdObject in createdObjects)
         {
-            foreach (GameObject asset in assetList)
+            GameObject.Destroy(createdObject);
+        }
+		createdObjects = new List<GameObject>();
+		InitChallenge(carPath);
+	}
+
+    public void PlaceAssets(GameObject[] assetList)
+    {   
+        if (carPath.centerNodes != null)
+        {
+            for(int i = 0; i < assetList.Length; i++)
             {
-                int random_index = Random.Range(0, path.centerNodes.Count);
-                PathNode random_node = path.centerNodes[random_index];
+                GameObject asset = assetList[i];
+                int random_index = Random.Range(0, carPath.centerNodes.Count);
+                PathNode random_node = carPath.centerNodes[random_index];
 
                 bool valid_pos = false;
                 int max_iter = 10;
@@ -37,14 +57,19 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
                 {
 
                     Vector3 rand_pos_offset = new Vector3(RandomMinMaxRange(minRange, maxRange), 0, RandomMinMaxRange(minRange, maxRange));
-                    Vector3 xz_coords = new Vector3(random_node.pos.x, heightOffset, random_node.pos.z); // height variation is not supported yet
-                    Vector3 new_point = rand_pos_offset + xz_coords + asset.transform.position;
+                    Vector3 xyz_coords = new Vector3(random_node.pos.x, random_node.pos.y + heightOffset, random_node.pos.z); // height variation is not supported yet
+                    Vector3 new_point = rand_pos_offset + xyz_coords + asset.transform.position;
 
                     asset.transform.RotateAround(Vector3.zero, Vector3.up, Random.Range(0, 180));
 
-                    if (IsValid(path, new_point))
+                    if (IsValid(carPath, new_point))
                     {
-                        Instantiate(asset, new_point, asset.transform.rotation);
+                        GameObject go = Instantiate(asset, new_point, asset.transform.rotation);
+                        if (parentGameObject != null)
+                        {
+                            go.transform.parent = parentGameObject.transform;
+                        }
+                        createdObjects.Add(go);
                         break;
                     }
 
