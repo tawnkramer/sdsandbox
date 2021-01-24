@@ -4,23 +4,17 @@ using UnityEngine;
 
 public class RandAssetsChallenge : MonoBehaviour, IChallenge
 {
+    public PathManager pathManager;
     public float minRange = 5;
     public float maxRange = 20;
     public float heightOffset = 0;
     public int numAssets = 10;
     public GameObject[] prefabList;
     public GameObject parentGameObject;
-    public List<GameObject> createdObjects = new List<GameObject>();
-    public CarPath carPath;
+    private List<GameObject> createdObjects = new List<GameObject>();
 
-    public void InitChallenge(CarPath path)
+    public void InitChallenge()
     {
-        if (path == null)
-        {
-            Debug.LogError("You need to init the Challenge with a valid CarPath");
-        }
-
-        carPath = path;
         GameObject[] randomList = new GameObject[numAssets];
         for (int i = 0; i < numAssets; i++) // pick some items from the prefab list and add them to the randomList array
         {
@@ -31,25 +25,25 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
         PlaceAssets(randomList);
     }
 
-	public void ResetChallenge()
-	{
+    public void ResetChallenge()
+    {
         foreach (GameObject createdObject in createdObjects)
         {
             GameObject.Destroy(createdObject);
         }
-		createdObjects = new List<GameObject>();
-		InitChallenge(carPath);
-	}
+        createdObjects = new List<GameObject>();
+        InitChallenge();
+    }
 
     public void PlaceAssets(GameObject[] assetList)
-    {   
-        if (carPath.centerNodes != null)
+    {
+        if (pathManager.carPath.centerNodes != null)
         {
-            for(int i = 0; i < assetList.Length; i++)
+            for (int i = 0; i < assetList.Length; i++)
             {
                 GameObject asset = assetList[i];
-                int random_index = Random.Range(0, carPath.centerNodes.Count);
-                PathNode random_node = carPath.centerNodes[random_index];
+                int random_index = Random.Range(0, pathManager.carPath.centerNodes.Count);
+                PathNode random_node = pathManager.carPath.centerNodes[random_index];
 
                 bool valid_pos = false;
                 int max_iter = 10;
@@ -62,13 +56,14 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
 
                     asset.transform.RotateAround(Vector3.zero, Vector3.up, Random.Range(0, 180));
 
-                    if (IsValid(carPath, new_point))
+                    if (IsValid(pathManager.carPath, new_point))
                     {
                         GameObject go = Instantiate(asset, new_point, asset.transform.rotation);
                         if (parentGameObject != null)
                         {
                             go.transform.parent = parentGameObject.transform;
                         }
+                        go.isStatic = true; // set the object to static to save some performance
                         createdObjects.Add(go);
                         break;
                     }

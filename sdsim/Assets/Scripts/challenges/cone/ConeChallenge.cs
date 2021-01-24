@@ -5,25 +5,19 @@ using UnityEngine;
 public class ConeChallenge : MonoBehaviour, IChallenge
 {
 
+    public PathManager pathManager;
     public int numRandCone = 0;
     public float coneHeightOffset = 0.0f;
     public float coneOffset = 1.0f;
     public int iConePrefab = 0;
     public GameObject[] conePrefabs;
-    public List<GameObject> createdObjects = new List<GameObject>();
-    public CarPath carPath;
+    private List<GameObject> createdObjects = new List<GameObject>();
 
-    public void InitChallenge(CarPath path)
+    public void InitChallenge()
     {
-        if (path == null)
-        {
-            Debug.LogError("You need to init the Challenge with a valid CarPath");
-        }
-
-        carPath = path;
         for (int i = 0; i < numRandCone; i++)
         {
-            RandomCone(carPath);
+            RandomCone();
         }
     }
 
@@ -34,16 +28,16 @@ public class ConeChallenge : MonoBehaviour, IChallenge
             GameObject.Destroy(createdObject);
         }
 		createdObjects = new List<GameObject>();
-        InitChallenge(carPath);
+        InitChallenge();
     }
 
-    public void RandomCone(CarPath path)
+    public void RandomCone()
     {
-        if (path.centerNodes != null)
+        if (pathManager.carPath.centerNodes != null)
         {
 
-            int random_index = Random.Range(0, path.centerNodes.Count);
-            PathNode random_node = path.centerNodes[random_index];
+            int random_index = Random.Range(0, pathManager.carPath.centerNodes.Count);
+            PathNode random_node = pathManager.carPath.centerNodes[random_index];
 
             Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
             Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z); // height variation is not supported yet

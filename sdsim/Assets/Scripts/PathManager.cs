@@ -89,7 +89,9 @@ public class PathManager : MonoBehaviour
         {
             IChallenge chal = challenge.GetComponent<IChallenge>();
             if (chal != null)
-                chal.InitChallenge(carPath);
+            {
+                chal.InitChallenge();
+            }
         }
 
         // if (locationMarkerPrefab != null && carPath != null)

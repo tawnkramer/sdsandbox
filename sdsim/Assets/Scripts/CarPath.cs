@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class PathNode
 {
     public Vector3 pos;
+    public Quaternion rotation;
     public string activity;
 }
 
@@ -137,4 +138,38 @@ public class CarPath
         return true;
     }
 
+    public (float, float, float, float, float, float) GetPathBounds()
+    {
+        float xmin, ymin, zmin;
+        xmin = ymin = zmin = float.MaxValue;
+
+        float xmax, ymax, zmax;
+        xmax = ymax = zmax = float.MinValue;
+
+        foreach (PathNode node in centerNodes)
+        {
+
+            Vector3 pos = node.pos;
+            float x = pos.x;
+            float y = pos.y;
+            float z = pos.z;
+
+            if (x < xmin)
+                xmin = x;
+            if (x > xmax)
+                xmax = x;
+
+            if (y < ymin)
+                ymin = y;
+            if (y > ymax)
+                ymax = y;
+
+            if (z < zmin)
+                zmin = z;
+            if (z > zmax)
+                zmax = z;
+
+        }
+        return (xmin, xmax, ymin, ymax, zmin, zmax);
+    }
 }
