@@ -26,9 +26,12 @@ public class CarPath
         ResetActiveSpan();
     }
 
-    public void ResetActiveSpan()
+    public void ResetActiveSpan(bool sign = true)
     {
-        iActiveSpan = 0;
+        if (sign)
+            iActiveSpan = 0;
+        else
+            iActiveSpan = nodes.Count - 2;
     }
 
     public void GetClosestSpan(Vector3 carPos)
@@ -92,11 +95,8 @@ public class CarPath
         return distance;
     }
 
-    public bool GetCrossTrackErr(Vector3 pos, ref float err)
+    public (bool, bool) GetCrossTrackErr(Vector3 pos, ref float err)
     {
-        if (iActiveSpan >= nodes.Count - 2)
-            return false;
-
         PathNode a = nodes[iActiveSpan];
         PathNode b = nodes[iActiveSpan + 1];
 
@@ -104,27 +104,12 @@ public class CarPath
         pos.y = a.pos.y;
 
         LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref b.pos);
-
-        pathSeg.Draw(Color.green);
-
         LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
-
         Vector3 closePt = pathSeg.ClosestPointOnSegmentTo(ref pos, ref segRes);
-
-        Debug.DrawLine(a.pos, closePt, Color.blue);
-
-        if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
-        {
-            iActiveSpan++;
-        }
-        else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
-        {
-            if (iActiveSpan > 0)
-                iActiveSpan--;
-        }
-
         Vector3 errVec = pathSeg.ClosestVectorTo(ref pos);
 
+        pathSeg.Draw(Color.green);
+        Debug.DrawLine(a.pos, closePt, Color.blue);
         Debug.DrawRay(closePt, errVec, Color.white);
 
         float sign = 1.0f;
@@ -135,16 +120,32 @@ public class CarPath
             sign = -1f;
 
         err = errVec.magnitude * sign;
-        return true;
+
+        if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
+        {
+            if (iActiveSpan <= nodes.Count - 2)
+                iActiveSpan++;
+            else
+                return (true, false);
+        }
+        else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
+        {
+            if (iActiveSpan > 0)
+                iActiveSpan--;
+            else
+                return (false, true);
+        }
+
+        Debug.Log(iActiveSpan);
+
+        return (false, false);
     }
 
-    public (float, float, float, float, float, float) GetPathBounds()
+    public (float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) GetPathBounds()
     {
-        float xmin, ymin, zmin;
-        xmin = ymin = zmin = float.MaxValue;
-
-        float xmax, ymax, zmax;
-        xmax = ymax = zmax = float.MinValue;
+        (float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) bounds;
+        bounds.xmin = bounds.ymin = bounds.zmin = float.MaxValue;
+        bounds.xmax = bounds.ymax = bounds.zmax = float.MinValue;
 
         foreach (PathNode node in centerNodes)
         {
@@ -154,22 +155,22 @@ public class CarPath
             float y = pos.y;
             float z = pos.z;
 
-            if (x < xmin)
-                xmin = x;
-            if (x > xmax)
-                xmax = x;
+            if (x < bounds.xmin)
+                bounds.xmin = x;
+            if (x > bounds.xmax)
+                bounds.xmax = x;
 
-            if (y < ymin)
-                ymin = y;
-            if (y > ymax)
-                ymax = y;
+            if (y < bounds.ymin)
+                bounds.ymin = y;
+            if (y > bounds.ymax)
+                bounds.ymax = y;
 
-            if (z < zmin)
-                zmin = z;
-            if (z > zmax)
-                zmax = z;
+            if (z < bounds.zmin)
+                bounds.zmin = z;
+            if (z > bounds.zmax)
+                bounds.zmax = z;
 
         }
-        return (xmin, xmax, ymin, ymax, zmin, zmax);
+        return bounds;
     }
 }

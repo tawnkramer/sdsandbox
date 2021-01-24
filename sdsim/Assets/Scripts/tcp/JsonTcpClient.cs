@@ -149,7 +149,7 @@ namespace tk
 
                         string msg_type = j["msg_type"].str;
 
-                        Debug.Log("Got: " + msg_type);
+                        // Debug.Log("Got: " + msg_type);
 
                         dispatcher.Dipatch(msg_type, j);
 
