@@ -123,7 +123,7 @@ public class CarPath
 
         if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
         {
-            if (iActiveSpan <= nodes.Count - 2)
+            if (iActiveSpan < nodes.Count - 2)
                 iActiveSpan++;
             else
                 return (true, false);
@@ -135,8 +135,6 @@ public class CarPath
             else
                 return (false, true);
         }
-
-        Debug.Log(iActiveSpan);
 
         return (false, false);
     }
