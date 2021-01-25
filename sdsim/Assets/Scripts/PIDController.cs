@@ -106,6 +106,7 @@ public class PIDController : MonoBehaviour {
 		absTotalError = 0f;
 
 		pm.carPath.ResetActiveSpan();
+		pm.carPath.GetClosestSpan(carObj.transform.position);
 		isDriving = true;
 		waitForStill = false;//true;
 
@@ -172,17 +173,29 @@ public class PIDController : MonoBehaviour {
 		float velMag = car.GetVelocity().magnitude;
 
 		Vector3 samplePos = car.GetTransform().position + (car.GetTransform().forward * velMag * Kv);
+		
 
-		if(!pm.carPath.GetCrossTrackErr(samplePos, ref err))
+		(bool, bool) cte_ret = pm.carPath.GetCrossTrackErr(samplePos, ref err);
+		if(cte_ret != (false, false)) // check wether we lapped (in one way or the other)
 		{
             if(looping)
             {
-                pm.carPath.ResetActiveSpan();
-
-				//Let logger know we looped. Sorry an event would be cleaner.
 				var foundObjects = FindObjectsOfType<Logger>();
-				foreach(var logger in foundObjects)
-					logger.lapCounter++;
+
+                if (cte_ret.Item1) // if we lapped
+				{
+					pm.carPath.ResetActiveSpan();
+					foreach(var logger in foundObjects)
+						logger.lapCounter++;
+				} 					
+					
+				else // if we unlapped
+				{
+					pm.carPath.ResetActiveSpan(false);
+					foreach(var logger in foundObjects)
+						logger.lapCounter--;
+				}
+
             }
 			else if(brakeOnEnd)
 			{
@@ -207,7 +220,7 @@ public class PIDController : MonoBehaviour {
 			return;
 		}
 
-		diffErr = err - prevErr;
+		diffErr = (err - prevErr)/Time.deltaTime;
 
 		steeringReq = (-Kp * err) - (Kd * diffErr) - (Ki * totalError);
 

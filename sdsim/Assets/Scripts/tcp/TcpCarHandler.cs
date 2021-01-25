@@ -59,6 +59,11 @@ namespace tk
       GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
       if (go != null)
         ai_text = go.GetComponent<Text>();
+
+      if (pm != null && carObj != null)
+      {
+        pm.carPath.GetClosestSpan(carObj.transform.position);
+      }
     }
 
     public void Init(tk.JsonTcpClient _client)
@@ -171,20 +176,23 @@ namespace tk
         if (pm != null)
         {
           float cte = 0.0f;
-          if (pm.carPath.GetCrossTrackErr(tm.position, ref cte))
-          {
-            json.AddField("cte", cte);
-          }
-          else
-          {
+          (bool, bool) cte_ret = pm.carPath.GetCrossTrackErr(tm.position, ref cte);
+
+          if (cte_ret.Item1 == true)
+          { 
             pm.carPath.ResetActiveSpan();
-            json.AddField("cte", 0.0f);
           }
+          else if(cte_ret.Item2 == true)
+          {
+            pm.carPath.ResetActiveSpan(false);
+          }
+
+          json.AddField("cte", cte);
           json.AddField("activeNode", pm.carPath.iActiveSpan);
           json.AddField("totalNodes", pm.carPath.nodes.Count);
         }
 
-        
+        // I don't really know what is the usage of this
         if (pm.carPath.nodes.Count > 10)
         {
           NavMeshHit hit = new NavMeshHit();

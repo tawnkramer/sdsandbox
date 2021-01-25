@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4731544362173619789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 307439738261376798}
+  - component: {fileID: 6818656474563703977}
+  m_Layer: 0
+  m_Name: LightChallenge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &307439738261376798
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731544362173619789}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4250907045257525364}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6818656474563703977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731544362173619789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d745fc5c0fb634390448d50ad7e768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightSource: {fileID: 0}
+  minLightColorRange: {r: 1, g: 1, b: 0.49803922, a: 1}
+  maxLightColorRange: {r: 1, g: 0.78431374, b: 0.78431374, a: 1}
 --- !u!1 &5042952344224196374
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,13 +89,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ff43d487d977843bc457d32fc56325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minRange: 5
+  pathManager: {fileID: 0}
+  minRange: 7
   maxRange: 20
   heightOffset: 0
-  numAssets: 10
+  numAssets: 100
   prefabList:
-  - {fileID: 100002, guid: 96e82463b7d46344295e9a965beb41f9, type: 3}
-  - {fileID: 100016, guid: 469edab27ab6d004d84af2c4a851bd7f, type: 3}
+  - {fileID: 100000, guid: 6aab193b7693b5e4c9741f1917d2987c, type: 3}
+  - {fileID: 100000, guid: 24c103dfec7905d46b0e9e82d5afd5be, type: 3}
+  parentGameObject: {fileID: 0}
 --- !u!1 &8037181034751879481
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,7 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 765b095c46c20214482d8bf7c87b3995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numRandCone: 2
+  pathManager: {fileID: 0}
+  numRandCone: 1
   coneHeightOffset: 0
   coneOffset: 5
   iConePrefab: 0
@@ -129,6 +178,7 @@ Transform:
   m_Children:
   - {fileID: 5544676033537159927}
   - {fileID: 8518913424621306448}
+  - {fileID: 307439738261376798}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class PathNode
 {
     public Vector3 pos;
+    public Quaternion rotation;
     public string activity;
 }
 
@@ -25,9 +26,29 @@ public class CarPath
         ResetActiveSpan();
     }
 
-    public void ResetActiveSpan()
+    public void ResetActiveSpan(bool sign = true)
     {
-        iActiveSpan = 0;
+        if (sign)
+            iActiveSpan = 0;
+        else
+            iActiveSpan = nodes.Count - 2;
+    }
+
+    public void GetClosestSpan(Vector3 carPos)
+    {
+        float minDistance = float.MaxValue;
+        int minDistanceIndex = -1;
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            float dist = Vector3.Distance(nodes[i].pos, carPos);
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                minDistanceIndex = i;
+            }
+        }
+
+        iActiveSpan = minDistanceIndex;
     }
 
     public PathNode GetActiveNode()
@@ -74,11 +95,8 @@ public class CarPath
         return distance;
     }
 
-    public bool GetCrossTrackErr(Vector3 pos, ref float err)
+    public (bool, bool) GetCrossTrackErr(Vector3 pos, ref float err)
     {
-        if (iActiveSpan >= nodes.Count - 2)
-            return false;
-
         PathNode a = nodes[iActiveSpan];
         PathNode b = nodes[iActiveSpan + 1];
 
@@ -86,27 +104,12 @@ public class CarPath
         pos.y = a.pos.y;
 
         LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref b.pos);
-
-        pathSeg.Draw(Color.green);
-
         LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
-
         Vector3 closePt = pathSeg.ClosestPointOnSegmentTo(ref pos, ref segRes);
-
-        Debug.DrawLine(a.pos, closePt, Color.blue);
-
-        if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
-        {
-            iActiveSpan++;
-        }
-        else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
-        {
-            if (iActiveSpan > 0)
-                iActiveSpan--;
-        }
-
         Vector3 errVec = pathSeg.ClosestVectorTo(ref pos);
 
+        pathSeg.Draw(Color.green);
+        Debug.DrawLine(a.pos, closePt, Color.blue);
         Debug.DrawRay(closePt, errVec, Color.white);
 
         float sign = 1.0f;
@@ -117,7 +120,55 @@ public class CarPath
             sign = -1f;
 
         err = errVec.magnitude * sign;
-        return true;
+
+        if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
+        {
+            if (iActiveSpan < nodes.Count - 2)
+                iActiveSpan++;
+            else
+                return (true, false);
+        }
+        else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
+        {
+            if (iActiveSpan > 0)
+                iActiveSpan--;
+            else
+                return (false, true);
+        }
+
+        return (false, false);
     }
 
+    public (float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) GetPathBounds()
+    {
+        (float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) bounds;
+        bounds.xmin = bounds.ymin = bounds.zmin = float.MaxValue;
+        bounds.xmax = bounds.ymax = bounds.zmax = float.MinValue;
+
+        foreach (PathNode node in centerNodes)
+        {
+
+            Vector3 pos = node.pos;
+            float x = pos.x;
+            float y = pos.y;
+            float z = pos.z;
+
+            if (x < bounds.xmin)
+                bounds.xmin = x;
+            if (x > bounds.xmax)
+                bounds.xmax = x;
+
+            if (y < bounds.ymin)
+                bounds.ymin = y;
+            if (y > bounds.ymax)
+                bounds.ymax = y;
+
+            if (z < bounds.zmin)
+                bounds.zmin = z;
+            if (z > bounds.zmax)
+                bounds.zmax = z;
+
+        }
+        return bounds;
+    }
 }

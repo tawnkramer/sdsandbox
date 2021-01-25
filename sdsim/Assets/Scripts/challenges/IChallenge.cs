@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IChallenge // interface to create challenges
 {
-	void InitChallenge(CarPath path);
+	void InitChallenge();
 }

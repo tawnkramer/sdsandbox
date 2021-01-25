@@ -89,27 +89,29 @@ public class PathManager : MonoBehaviour
         {
             IChallenge chal = challenge.GetComponent<IChallenge>();
             if (chal != null)
-                chal.InitChallenge(carPath);
-        }
-
-        if (locationMarkerPrefab != null && carPath != null)
-        {
-            int iLocId = 0;
-            for (int iN = 0; iN < carPath.nodes.Count; iN += markerEveryN)
             {
-                Vector3 np = carPath.nodes[iN].pos;
-                GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
-                go.transform.parent = this.transform;
-                go.GetComponent<LocationMarker>().id = iLocId;
-                iLocId++;
+                chal.InitChallenge();
             }
         }
 
+        // if (locationMarkerPrefab != null && carPath != null)
+        // {
+        //     int iLocId = 0;
+        //     for (int iN = 0; iN < carPath.nodes.Count; iN += markerEveryN)
+        //     {
+        //         Vector3 np = carPath.nodes[iN].pos;
+        //         GameObject go = Instantiate(locationMarkerPrefab, np, Quaternion.identity) as GameObject;
+        //         go.transform.parent = this.transform;
+        //         go.GetComponent<LocationMarker>().id = iLocId;
+        //         iLocId++;
+        //     }
+        // }
+
         if (doShowPath && carPath != null)
         {
-            for (int iN = 0; iN < carPath.nodes.Count; iN++)
+            for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
             {
-                Vector3 np = carPath.nodes[iN].pos;
+                Vector3 np = carPath.centerNodes[iN].pos;
                 GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
@@ -170,7 +172,6 @@ public class PathManager : MonoBehaviour
             PathNode p = new PathNode();
             p.pos = point;
             carPath.nodes.Add(p);
-            carPath.centerNodes.Add(p);
         }
 
     }
@@ -219,7 +220,6 @@ public class PathManager : MonoBehaviour
             PathNode p = new PathNode();
             p.pos = point;
             carPath.nodes.Add(p);
-            carPath.centerNodes.Add(p);
         }
     }
 

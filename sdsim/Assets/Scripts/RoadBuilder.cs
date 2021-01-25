@@ -213,6 +213,7 @@ public class RoadBuilder : MonoBehaviour
         mesh.normals = normals;
         mesh.uv = uv;
 
+        mesh.Optimize();
         mesh.RecalculateBounds();
         mf.mesh = mesh; 
         mc.sharedMesh = mesh; // once the mesh is created, asign it to the mesh collider
