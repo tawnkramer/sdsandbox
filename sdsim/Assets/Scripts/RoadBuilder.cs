@@ -136,7 +136,8 @@ public class RoadBuilder : MonoBehaviour
             normals[iN] = Vector3.up;
 
         int iNode = 0;
-
+        PathNode nodeA;
+        PathNode nodeB;
         Vector3 posA = Vector3.zero;
         Vector3 posB = Vector3.zero;
 
@@ -147,8 +148,8 @@ public class RoadBuilder : MonoBehaviour
         {
             if (iNode + 1 < path.nodes.Count)
             {
-                PathNode nodeA = path.nodes[iNode];
-                PathNode nodeB = path.nodes[iNode + 1];
+                nodeA = path.nodes[iNode];
+                nodeB = path.nodes[iNode + 1];
                 posA = nodeA.pos;
                 posB = nodeB.pos;
 
@@ -169,8 +170,11 @@ public class RoadBuilder : MonoBehaviour
             }
             else
             {
-                PathNode nodeA = path.nodes[iNode];
+                nodeA = path.nodes[iNode];
+                nodeB = path.nodes[0];
                 posA = nodeA.pos;
+                posB = nodeB.pos;
+
                 posA.y += roadHeightOffset;
             }
 
@@ -179,6 +183,7 @@ public class RoadBuilder : MonoBehaviour
 
             PathNode centerNode = new PathNode();
             centerNode.pos = (leftPos + rightPos) / 2;
+            centerNode.rotation = nodeA.rotation;
             path.centerNodes.Add(centerNode);
 
             vertices[iVert] = leftPos;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConeChallenge : MonoBehaviour, IChallenge
+public class ConeChallenge : MonoBehaviour, IWaitCarPath
 {
 
     public PathManager pathManager;
@@ -13,7 +13,7 @@ public class ConeChallenge : MonoBehaviour, IChallenge
     public GameObject[] conePrefabs;
     private List<GameObject> createdObjects = new List<GameObject>();
 
-    public void InitChallenge()
+    public void Init()
     {
         for (int i = 0; i < numRandCone; i++)
         {
@@ -28,7 +28,7 @@ public class ConeChallenge : MonoBehaviour, IChallenge
             GameObject.Destroy(createdObject);
         }
 		createdObjects = new List<GameObject>();
-        InitChallenge();
+        Init();
     }
 
     public void RandomCone()

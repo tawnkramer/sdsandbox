@@ -43,7 +43,7 @@ public class PathManager : MonoBehaviour
     public GameObject pathelem;
 
     [Header("Aux")]
-    public GameObject[] challenges;
+    public GameObject[] initAfterCarPathLoaded;
 
     Vector3 span = Vector3.zero;
     GameObject generated_mesh;
@@ -75,6 +75,11 @@ public class PathManager : MonoBehaviour
             MakeGameObjectPath();
         }
 
+        if (carPath == null)
+        {
+            return;
+        }
+
         //Should we build a road mesh along the path?
         if (doBuildRoad && roadBuilder != null)
             generated_mesh = roadBuilder.InitRoad(carPath);
@@ -85,12 +90,12 @@ public class PathManager : MonoBehaviour
         if (doChangeLanes && laneChTrainer != null)
             laneChTrainer.ModifyPath(ref carPath);
 
-        foreach (GameObject challenge in challenges) // Init each challenges
+        foreach (GameObject go in initAfterCarPathLoaded) // Init each challenges
         {
-            IChallenge chal = challenge.GetComponent<IChallenge>();
-            if (chal != null)
+            IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+            if (script != null)
             {
-                chal.InitChallenge();
+                script.Init();
             }
         }
 
@@ -107,7 +112,7 @@ public class PathManager : MonoBehaviour
         //     }
         // }
 
-        if (doShowPath && carPath != null)
+        if (doShowPath)
         {
             for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
             {
@@ -145,35 +150,43 @@ public class PathManager : MonoBehaviour
         return carPath.nodes[iN].pos;
     }
 
-    void MakeGameObjectPath(float precision = 0.01f)
+    float nfmod(float a, float b) // formula for negative and positive modulo
+    {
+        return a - b * Mathf.Floor(a / b);
+    }
+
+    void MakeGameObjectPath(float precision = 3f)
     {
         carPath = new CarPath();
 
-        Vector3 np = Vector3.zero;
         List<Vector3> points = new List<Vector3>();
+        List<Quaternion> rotations = new List<Quaternion>();
 
-        for (float i = 0; i <= 1; i += precision)
+        float stepping = 1 / (pathCreator.path.length * precision);
+        for (float i = 0; i <= 1; i += stepping)
         {
-            np = pathCreator.path.GetPointAtTime(i);
-            points.Add(np);
+            points.Add(pathCreator.path.GetPointAtTime(i));
+            rotations.Add(pathCreator.path.GetRotation(i));
         }
         points.Add(pathCreator.path.GetPointAtTime(0));
-        points.Add(pathCreator.path.GetPointAtTime(precision)); // close the loop
+        rotations.Add(pathCreator.path.GetRotationAtDistance(0)); // close the loop
 
+
+        List<Vector3> smoothed_points = new List<Vector3>(points);
 
         while (smoothPathIter > 0)
         {
-            points = Chaikin(points);
+            smoothed_points = Chaikin(smoothed_points);
             smoothPathIter--;
         }
 
-        foreach (Vector3 point in points)
+        for (int i = 0; i < points.Count; i++)
         {
             PathNode p = new PathNode();
-            p.pos = point;
+            p.pos = points[i];
+            p.rotation = rotations[i];
             carPath.nodes.Add(p);
         }
-
     }
 
     void MakePointPath()
@@ -215,10 +228,20 @@ public class PathManager : MonoBehaviour
             smoothPathIter--;
         }
 
-        foreach (Vector3 point in points)
+        Vector3 point;
+        Vector3 previous_point;
+        Vector3 next_point;
+
+        for (int i = 0; i < points.Count; i++)
         {
+            point = points[(int)nfmod(i, (points.Count - 1))];
+            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
+            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+
             PathNode p = new PathNode();
+            Quaternion rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up);
             p.pos = point;
+            p.rotation = rotation;
             carPath.nodes.Add(p);
         }
     }

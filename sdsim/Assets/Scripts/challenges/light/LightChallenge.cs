@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightChallenge : MonoBehaviour, IChallenge
+public class LightChallenge : MonoBehaviour, IWaitCarPath
 {
     public GameObject lightSource;
     public Color minLightColorRange;
     public Color maxLightColorRange;
 
-    public void InitChallenge()
+    public void Init()
     {
         Randomize();
     }
 
     public void ResetChallenge()
     {
-        InitChallenge();
+        Init();
     }
 
     public void Randomize()
