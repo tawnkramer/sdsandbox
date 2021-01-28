@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandAssetsChallenge : MonoBehaviour, IChallenge
+public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
 {
     public PathManager pathManager;
     public float minRange = 5;
@@ -13,7 +13,7 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
     public GameObject parentGameObject;
     private List<GameObject> createdObjects = new List<GameObject>();
 
-    public void InitChallenge()
+    public void Init()
     {
         GameObject[] randomList = new GameObject[numAssets];
         for (int i = 0; i < numAssets; i++) // pick some items from the prefab list and add them to the randomList array
@@ -32,7 +32,7 @@ public class RandAssetsChallenge : MonoBehaviour, IChallenge
             GameObject.Destroy(createdObject);
         }
         createdObjects = new List<GameObject>();
-        InitChallenge();
+        Init();
     }
 
     public void PlaceAssets(GameObject[] assetList)

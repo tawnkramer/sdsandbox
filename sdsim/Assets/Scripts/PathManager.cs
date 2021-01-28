@@ -22,7 +22,6 @@ public class PathManager : MonoBehaviour
     public string pathToLoad = "none";
     public int smoothPathIter = 0;
     public bool doChangeLanes = false;
-    public bool doBuildRoad = false;
     public GameObject locationMarkerPrefab;
     public int markerEveryN = 2;
 
@@ -33,17 +32,13 @@ public class PathManager : MonoBehaviour
     public bool sameRandomPath = true;
     public int randSeed = 2;
 
-    [Header("Road Builder")]
-    public RoadBuilder roadBuilder;
-    public RoadBuilder semanticSegRoadBuilder;
-    public LaneChangeTrainer laneChTrainer;
-
     [Header("Debug")]
-    public bool doShowPath = false;
+    public bool doShowNodePath = false;
+    public bool doShowCenterNodePath = false;
     public GameObject pathelem;
 
     [Header("Aux")]
-    public GameObject[] challenges;
+    public GameObject[] initAfterCarPathLoaded; // Scripts using the IWaitCarPath interface to init after loading the CarPath
 
     Vector3 span = Vector3.zero;
     GameObject generated_mesh;
@@ -53,10 +48,10 @@ public class PathManager : MonoBehaviour
         if (sameRandomPath)
             Random.InitState(randSeed);
 
-        InitNewRoad();
+        InitCarPath();
     }
 
-    public void InitNewRoad()
+    public void InitCarPath()
     {
         if (doMakeRandomPath)
         {
@@ -75,22 +70,21 @@ public class PathManager : MonoBehaviour
             MakeGameObjectPath();
         }
 
-        //Should we build a road mesh along the path?
-        if (doBuildRoad && roadBuilder != null)
-            generated_mesh = roadBuilder.InitRoad(carPath);
-
-        if (doBuildRoad && semanticSegRoadBuilder != null)
-            generated_mesh = semanticSegRoadBuilder.InitRoad(carPath);
-
-        if (doChangeLanes && laneChTrainer != null)
-            laneChTrainer.ModifyPath(ref carPath);
-
-        foreach (GameObject challenge in challenges) // Init each challenges
+        if (carPath == null) // if no carPath was created, skip the following block of code
         {
-            IChallenge chal = challenge.GetComponent<IChallenge>();
-            if (chal != null)
+            return;
+        }
+
+        foreach (GameObject go in initAfterCarPathLoaded) // Init each Object that need a carPath
+        {
+            IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+            if (script != null)
             {
-                chal.InitChallenge();
+                script.Init();
+            }
+            else
+            {
+                Debug.Log("Provided GameObject doesn't contain an IWaitCarPath script");
             }
         }
 
@@ -107,27 +101,40 @@ public class PathManager : MonoBehaviour
         //     }
         // }
 
-        if (doShowPath && carPath != null)
+        if (doShowNodePath)
+        {
+            for (int iN = 0; iN < carPath.nodes.Count; iN++)
+            {
+                Vector3 np = carPath.nodes[iN].pos;
+                Quaternion rotation = carPath.nodes[iN].rotation;
+                GameObject go = Instantiate(pathelem, np, rotation) as GameObject;
+                go.tag = "pathNode";
+                go.transform.parent = this.transform;
+            }
+        }
+        
+        if (doShowCenterNodePath)
         {
             for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
             {
                 Vector3 np = carPath.centerNodes[iN].pos;
-                GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
+                Quaternion rotation = carPath.centerNodes[iN].rotation;
+                GameObject go = Instantiate(pathelem, np, rotation) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
             }
         }
     }
 
-    public void DestroyRoad()
+    public void DestroyRoad() // old, need refactoring in RoadBuilder
     {
         GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
 
         foreach (GameObject g in prev)
             Destroy(g);
 
-        if (roadBuilder != null)
-            roadBuilder.DestroyRoad();
+        // if (roadBuilder != null)
+        //     roadBuilder.DestroyRoad();
     }
 
     public Vector3 GetPathStart()
@@ -145,35 +152,43 @@ public class PathManager : MonoBehaviour
         return carPath.nodes[iN].pos;
     }
 
-    void MakeGameObjectPath(float precision = 0.01f)
+    float nfmod(float a, float b) // formula for negative and positive modulo
+    {
+        return a - b * Mathf.Floor(a / b);
+    }
+
+    void MakeGameObjectPath(float precision = 3f)
     {
         carPath = new CarPath();
 
-        Vector3 np = Vector3.zero;
         List<Vector3> points = new List<Vector3>();
+        List<Quaternion> rotations = new List<Quaternion>();
 
-        for (float i = 0; i <= 1; i += precision)
+        float stepping = 1 / (pathCreator.path.length * precision);
+        for (float i = 0; i <= 1; i += stepping)
         {
-            np = pathCreator.path.GetPointAtTime(i);
-            points.Add(np);
+            points.Add(pathCreator.path.GetPointAtTime(i));
+            rotations.Add(pathCreator.path.GetRotation(i));
         }
         points.Add(pathCreator.path.GetPointAtTime(0));
-        points.Add(pathCreator.path.GetPointAtTime(precision)); // close the loop
+        rotations.Add(pathCreator.path.GetRotationAtDistance(0)); // close the loop
 
 
-        while (smoothPathIter > 0)
+        List<Vector3> smoothed_points = new List<Vector3>(points);
+
+        while (smoothPathIter > 0) // not working for the moment, looking forward using the same system as MakePointPath with LookAt
         {
-            points = Chaikin(points);
+            smoothed_points = Chaikin(smoothed_points);
             smoothPathIter--;
         }
 
-        foreach (Vector3 point in points)
+        for (int i = 0; i < points.Count; i++)
         {
             PathNode p = new PathNode();
-            p.pos = point;
+            p.pos = points[i];
+            p.rotation = rotations[i];
             carPath.nodes.Add(p);
         }
-
     }
 
     void MakePointPath()
@@ -215,10 +230,20 @@ public class PathManager : MonoBehaviour
             smoothPathIter--;
         }
 
-        foreach (Vector3 point in points)
+        Vector3 point;
+        Vector3 previous_point;
+        Vector3 next_point;
+
+        for (int i = 0; i < points.Count; i++)
         {
+            point = points[(int)nfmod(i, (points.Count - 1))];
+            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
+            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+
             PathNode p = new PathNode();
+            Quaternion rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up);
             p.pos = point;
+            p.rotation = rotation;
             carPath.nodes.Add(p);
         }
     }
@@ -235,7 +260,7 @@ public class PathManager : MonoBehaviour
             newPts.Add(pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f);
         }
 
-        newPts.Add(pts[pts.Count - 1]);
+        // newPts.Add(pts[pts.Count - 1]);
         return newPts;
     }
 
@@ -368,14 +393,4 @@ public class PathManager : MonoBehaviour
             go.tag = "pathNode";
         }
     }
-
-    public void SaveRoadMesh(string savepath)
-    {
-        if (generated_mesh != null)
-        {
-            MeshFilter mf = generated_mesh.GetComponent<MeshFilter>();
-            AssetDatabase.CreateAsset(mf.mesh, savepath);
-        }
-    }
-
 }

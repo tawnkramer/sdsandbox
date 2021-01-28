@@ -1,29 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public class RoadBuilder : MonoBehaviour
+public class RoadBuilder : MonoBehaviour, IWaitCarPath
 {
 
+    public PathManager pathManager;
+
+    [Header("Road building params")]
+    public bool doBuildRoad = false;
     public float roadWidth = 1.0f;
     public float roadHeightOffset = 0.0f;
     public float roadOffsetW = 0.0f;
+    public GameObject roadPrefabMesh;
+    public int iRoadTexture = 0;
+    public Texture2D[] roadTextures;
+    public float[] roadOffsets;
+    public float[] roadWidths;
+
+    [Header("Terrain params (not working)")]
     public bool doFlattenAtStart = true;
     public bool doErodeTerrain = true;
     public bool doGenerateTerrain = true;
     public bool doFlattenArroundRoad = true;
     public bool doLiftRoadToTerrain = false;
-
+    public TerrainToolkit terToolkit;
     public Terrain terrain;
 
-    public GameObject roadPrefabMesh;
-
-    public TerrainToolkit terToolkit;
-
-    public int iRoadTexture = 0;
-    public Texture2D[] roadTextures;
-    public float[] roadOffsets;
-    public float[] roadWidths;
+    [Header("Aux")]
+    public string savePath = "Assets\\generated_mesh.asset";
 
     Texture2D customRoadTexure;
     GameObject createdRoad;
@@ -36,6 +42,14 @@ public class RoadBuilder : MonoBehaviour
             //terToolkit.FastHydraulicErosion(100, 1.0f, 0.0f); //creates washouts
             //terToolkit.FullHydraulicErosion(1, 10.0f, 1.0f, .3f, 2.0f);
             terToolkit.SmoothTerrain(10, 1.0f);
+        }
+    }
+
+    public void Init()
+    {
+        if (doBuildRoad)
+        {
+            InitRoad(pathManager.carPath);
         }
     }
 
@@ -136,7 +150,8 @@ public class RoadBuilder : MonoBehaviour
             normals[iN] = Vector3.up;
 
         int iNode = 0;
-
+        PathNode nodeA;
+        PathNode nodeB;
         Vector3 posA = Vector3.zero;
         Vector3 posB = Vector3.zero;
 
@@ -147,8 +162,8 @@ public class RoadBuilder : MonoBehaviour
         {
             if (iNode + 1 < path.nodes.Count)
             {
-                PathNode nodeA = path.nodes[iNode];
-                PathNode nodeB = path.nodes[iNode + 1];
+                nodeA = path.nodes[iNode];
+                nodeB = path.nodes[iNode + 1];
                 posA = nodeA.pos;
                 posB = nodeB.pos;
 
@@ -169,8 +184,11 @@ public class RoadBuilder : MonoBehaviour
             }
             else
             {
-                PathNode nodeA = path.nodes[iNode];
+                nodeA = path.nodes[iNode];
+                nodeB = path.nodes[0];
                 posA = nodeA.pos;
+                posB = nodeB.pos;
+
                 posA.y += roadHeightOffset;
             }
 
@@ -179,6 +197,7 @@ public class RoadBuilder : MonoBehaviour
 
             PathNode centerNode = new PathNode();
             centerNode.pos = (leftPos + rightPos) / 2;
+            centerNode.rotation = nodeA.rotation;
             path.centerNodes.Add(centerNode);
 
             vertices[iVert] = leftPos;
@@ -215,7 +234,7 @@ public class RoadBuilder : MonoBehaviour
 
         mesh.Optimize();
         mesh.RecalculateBounds();
-        mf.mesh = mesh; 
+        mf.mesh = mesh;
         mc.sharedMesh = mesh; // once the mesh is created, asign it to the mesh collider
 
         if (terToolkit != null && doErodeTerrain)
@@ -246,5 +265,14 @@ public class RoadBuilder : MonoBehaviour
         }
 
         return go;
+    }
+
+    public void SaveMesh()
+    {
+        if (createdRoad != null)
+        {
+            MeshFilter mf = createdRoad.GetComponent<MeshFilter>();
+            AssetDatabase.CreateAsset(mf.mesh, savePath);
+        }
     }
 }
