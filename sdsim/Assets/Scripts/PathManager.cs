@@ -33,7 +33,8 @@ public class PathManager : MonoBehaviour
     public int randSeed = 2;
 
     [Header("Debug")]
-    public bool doShowPath = false;
+    public bool doShowNodePath = false;
+    public bool doShowCenterNodePath = false;
     public GameObject pathelem;
 
     [Header("Aux")]
@@ -100,12 +101,25 @@ public class PathManager : MonoBehaviour
         //     }
         // }
 
-        if (doShowPath)
+        if (doShowNodePath)
         {
             for (int iN = 0; iN < carPath.nodes.Count; iN++)
             {
                 Vector3 np = carPath.nodes[iN].pos;
-                GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
+                Quaternion rotation = carPath.nodes[iN].rotation;
+                GameObject go = Instantiate(pathelem, np, rotation) as GameObject;
+                go.tag = "pathNode";
+                go.transform.parent = this.transform;
+            }
+        }
+        
+        if (doShowCenterNodePath)
+        {
+            for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
+            {
+                Vector3 np = carPath.centerNodes[iN].pos;
+                Quaternion rotation = carPath.centerNodes[iN].rotation;
+                GameObject go = Instantiate(pathelem, np, rotation) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
             }
@@ -162,7 +176,7 @@ public class PathManager : MonoBehaviour
 
         List<Vector3> smoothed_points = new List<Vector3>(points);
 
-        while (smoothPathIter > 0)
+        while (smoothPathIter > 0) // not working for the moment, looking forward using the same system as MakePointPath with LookAt
         {
             smoothed_points = Chaikin(smoothed_points);
             smoothPathIter--;
