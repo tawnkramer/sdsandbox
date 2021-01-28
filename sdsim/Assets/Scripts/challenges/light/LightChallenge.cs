@@ -7,6 +7,7 @@ public class LightChallenge : MonoBehaviour, IWaitCarPath
     public GameObject lightSource;
     public Color minLightColorRange;
     public Color maxLightColorRange;
+    public float max_angle = 45;
 
     public void Init()
     {
@@ -29,7 +30,7 @@ public class LightChallenge : MonoBehaviour, IWaitCarPath
                 lightComp.color = Color.Lerp(minLightColorRange, maxLightColorRange, Random.Range(0.0f, 1.0f));
             }
 
-            lightSource.transform.localRotation = Quaternion.Euler(90 + Random.Range(-45, 45), Random.Range(0, 180), 0);
+            lightSource.transform.localRotation = Quaternion.Euler(90 + Random.Range(-max_angle, max_angle), Random.Range(0, 180), 0);
         }
     }
 }

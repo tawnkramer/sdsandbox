@@ -30,6 +30,7 @@ Transform:
   - {fileID: 4607042918075348}
   - {fileID: 4340792174750134}
   - {fileID: 4734505512134486}
+  - {fileID: 6847330343043177114}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -132,18 +133,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fff0d08bfd0e46d2abf6e21594718f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathManager: {fileID: 114576669822105592}
+  doBuildRoad: 0
   roadWidth: 5
   roadHeightOffset: -0.47
   roadOffsetW: 2.2
-  doFlattenAtStart: 0
-  doErodeTerrain: 0
-  doGenerateTerrain: 0
-  doFlattenArroundRoad: 0
-  doLiftRoadToTerrain: 0
-  terrain: {fileID: 0}
   roadPrefabMesh: {fileID: 1121773054233654, guid: da08699e1e14b469d86012dbd9ae3314,
     type: 3}
-  terToolkit: {fileID: 0}
   iRoadTexture: 0
   roadTextures:
   - {fileID: 2800000, guid: 3ba8d7480476d42a5949d182be76def3, type: 3}
@@ -163,6 +159,14 @@ MonoBehaviour:
   - 10
   - 10
   - 12
+  doFlattenAtStart: 0
+  doErodeTerrain: 0
+  doGenerateTerrain: 0
+  doFlattenArroundRoad: 0
+  doLiftRoadToTerrain: 0
+  terToolkit: {fileID: 0}
+  terrain: {fileID: 0}
+  savePath: Assets\generated_mesh.asset
 --- !u!1 &1634053867182616
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,25 +210,145 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6940724510810407baa499c3bb3fc03c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathelem: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
-  startPos: {fileID: 0}
-  spanDist: 2
-  numSpans: 1000
-  turnInc: 1
-  sameRandomPath: 0
-  randSeed: 10
+  pathCreator: {fileID: 0}
   doMakeRandomPath: 1
   doLoadScriptPath: 0
   doLoadPointPath: 0
-  doBuildRoad: 1
-  doChangeLanes: 1
-  smoothPathIter: 0
-  doShowPath: 0
+  doLoadGameObjectPath: 0
+  startPos: {fileID: 0}
   pathToLoad: sparkfun_avc
-  roadBuilder: {fileID: 114798992687500020}
-  semanticSegRoadBuilder: {fileID: 0}
-  laneChTrainer: {fileID: 0}
+  smoothPathIter: 0
+  doChangeLanes: 1
+  doBuildRoad: 1
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
-  challenges: []
+  numSpans: 1000
+  turnInc: 1
+  spanDist: 2
+  sameRandomPath: 0
+  randSeed: 10
+  doShowPath: 0
+  pathelem: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
+  initAfterCarPathLoaded:
+  - {fileID: 1612042024290732}
+--- !u!1 &8458392223600906752
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6847330343043177114}
+  - component: {fileID: 5601731098605857971}
+  - component: {fileID: 4257038249046009650}
+  - component: {fileID: 9070785757383219812}
+  - component: {fileID: 8041275786197272087}
+  m_Layer: 0
+  m_Name: RepeatObjectAlong
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &6847330343043177114
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458392223600906752}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4074926714667122}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5601731098605857971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458392223600906752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9709d87926686447ac11b06babeb6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathManager: {fileID: 114576669822105592}
+  leftWidthOffset: 5
+  rightWidthOffset: 5
+  heightOffset: 0
+  rotateYOffset: 0
+  objectScaling: 100
+  placeEvery: 5
+  generateAtRuntime: 1
+  leftside: 1
+  rightside: 1
+  mirrorRotateObject: 1
+  meshToRepeat: {fileID: 0}
+  savePath: Assets\generated_mesh.asset
+--- !u!33 &4257038249046009650
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458392223600906752}
+  m_Mesh: {fileID: 0}
+--- !u!23 &9070785757383219812
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458392223600906752}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!64 &8041275786197272087
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8458392223600906752}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}

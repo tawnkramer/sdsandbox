@@ -1,27 +1,42 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 
 
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
 {
     public PathManager pathManager; // we will use the carPath from the pathManager
-    public float widthOffset = 1f;
+
+    [Header("Offsets")]
+    public float leftWidthOffset = 1f;
+    public float rightWidthOffset = 1f;
+    public float heightOffset = 0f;
     public float rotateYOffset = 0f;
+
+    [Header("Repeating params")]
     public float objectScaling = 1f;
     public float placeEvery = 5f;
+
+    [Header("Generation params")]
+    public bool generateAtRuntime = true;
     public bool leftside = true;
     public bool rightside = true;
-    public bool mirrorRotateObject = true;
-    public GameObject goToRepeat;
-    public GameObject parentObject;
+    public bool mirrorRotateObject = true; // apply a mirror rotation to the right side
+    public Mesh meshToRepeat;
 
-    private List<CombineInstance> combineInstances = new List<CombineInstance>();
+    public string savePath = "Assets\\object_mesh.asset";
 
-    public void Init()
+    private List<CombineInstance> combineInstances;
+
+    public void Generate()
     {
-        if (pathManager != null)
+        if (pathManager != null && pathManager.carPath != null)
         {
+            combineInstances = new List<CombineInstance>();
+
             Vector3 leftScaling = Vector3.one * objectScaling;
             Vector3 rightScaling = Vector3.one * objectScaling;
             if (mirrorRotateObject)
@@ -29,16 +44,20 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
                 rightScaling.x = -rightScaling.x;
             }
 
-            Quaternion rotationOffset = Quaternion.AngleAxis(rotateYOffset, Vector3.up);
+            Quaternion leftRotationOffset = Quaternion.AngleAxis(rotateYOffset, Vector3.up);
+            Quaternion rightRotationOffset = Quaternion.AngleAxis(-rotateYOffset, Vector3.up);
 
             PathNode node = pathManager.carPath.centerNodes[0];
-            PathNode prev_node = pathManager.carPath.centerNodes[pathManager.carPath.centerNodes.Count - 1];
+            PathNode prevNode = pathManager.carPath.centerNodes[pathManager.carPath.centerNodes.Count - 1];
 
-            Vector3 left_prev_position = prev_node.pos + node.rotation * (Vector3.left * widthOffset);
-            Quaternion left_prev_rotation = prev_node.rotation;
+            Vector3 leftPrevPosition = prevNode.pos + node.rotation * (Vector3.left * leftWidthOffset);
+            Vector3 rightPrevPosition = prevNode.pos + node.rotation * (Vector3.right * rightWidthOffset);
 
-            Vector3 right_prev_position = prev_node.pos + node.rotation * (Vector3.right * widthOffset);
-            Quaternion right_prev_rotation = prev_node.rotation;
+
+            List<Vector3> leftPositions = new List<Vector3>();
+            leftPositions.Add(node.pos + node.rotation * (Vector3.left * leftWidthOffset));
+            List<Vector3> rightPositions = new List<Vector3>();
+            rightPositions.Add(node.pos + node.rotation * (Vector3.right * rightWidthOffset));
 
             for (int i = 0; i < pathManager.carPath.centerNodes.Count; i++)
             {
@@ -46,64 +65,114 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
 
                 if (leftside)
                 {
-                    float prev_distance = Vector3.Distance(left_prev_position, node.pos + node.rotation * (Vector3.left * widthOffset));
+                    float prev_distance = Vector3.Distance(leftPrevPosition, node.pos + node.rotation * (Vector3.left * leftWidthOffset));
 
                     if (prev_distance >= placeEvery)
                     {
                         float t_factor = placeEvery / prev_distance;
 
-                        Vector3 position = Vector3.Lerp(left_prev_position, node.pos + node.rotation * (Vector3.left * widthOffset), t_factor);
-                        Quaternion rotation = Quaternion.Lerp(left_prev_rotation, node.rotation, t_factor) * rotationOffset;
+                        Vector3 position = Vector3.Lerp(leftPrevPosition, node.pos + node.rotation * (Vector3.left * leftWidthOffset), t_factor);
+                        leftPositions.Add(position);
 
-                        GameObject go = Instantiate(goToRepeat);
-                        if (parentObject != null)
-                            go.transform.parent = parentObject.transform;
-                        go.transform.localScale = leftScaling;
-                        go.transform.SetPositionAndRotation(position, rotation);
-
-                        MeshRenderer[] meshRenderers = go.GetComponentsInChildren<MeshRenderer>();
-                        foreach (MeshRenderer mr in meshRenderers)
-                        {
-                            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                        }
-
-                        left_prev_position = position;
-                        left_prev_rotation = rotation;
+                        leftPrevPosition = position;
                     }
                 }
 
                 if (rightside)
                 {
-                    float prev_distance = Vector3.Distance(right_prev_position, node.pos + node.rotation * (Vector3.right * widthOffset));
+                    float prev_distance = Vector3.Distance(rightPrevPosition, node.pos + node.rotation * (Vector3.right * rightWidthOffset));
 
                     if (prev_distance >= placeEvery)
                     {
                         float t_factor = placeEvery / prev_distance;
 
-                        Vector3 position = Vector3.Lerp(right_prev_position, node.pos + node.rotation * (Vector3.right * widthOffset), t_factor);
-                        Quaternion rotation = Quaternion.Lerp(right_prev_rotation, node.rotation, t_factor) * rotationOffset;
+                        Vector3 position = Vector3.Lerp(rightPrevPosition, node.pos + node.rotation * (Vector3.right * rightWidthOffset), t_factor);
+                        rightPositions.Add(position);
 
-                        GameObject go = Instantiate(goToRepeat);
-                        if (parentObject != null)
-                            go.transform.parent = parentObject.transform;
-                        go.transform.localScale = rightScaling;
-                        go.transform.SetPositionAndRotation(position, rotation);
-
-                        MeshRenderer[] meshRenderers = go.GetComponentsInChildren<MeshRenderer>();
-                        foreach (MeshRenderer mr in meshRenderers)
-                        {
-                            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                        }
-
-                        right_prev_position = position;
-                        right_prev_rotation = rotation;
-                        prev_node = node;
+                        rightPrevPosition = position;
                     }
 
                 }
-                prev_node = node;
+                prevNode = node;
 
             }
+
+            // go through every points and try to snap the mesh on them
+            for (int i = 0; i < leftPositions.Count; i++) // left side
+            {
+
+                Vector3 position = leftPositions[i];
+                Vector3 nextPosition = leftPositions[(i + 1) % leftPositions.Count];
+
+                Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * leftRotationOffset;
+                Matrix4x4 transform = Matrix4x4.TRS((nextPosition + position) / 2 + heightOffset * Vector3.up, rot, leftScaling);
+
+                Mesh mesh = Instantiate(meshToRepeat);
+                CombineInstance comb = new CombineInstance();
+                comb.mesh = mesh;
+                comb.transform = transform;
+                combineInstances.Add(comb);
+            }
+
+            for (int i = 0; i < rightPositions.Count; i++) // right side
+            {
+
+                Vector3 position = rightPositions[i];
+                Vector3 nextPosition = rightPositions[(i + 1) % rightPositions.Count];
+
+                Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * rightRotationOffset;
+                Matrix4x4 transform = Matrix4x4.TRS((nextPosition + position) / 2 + heightOffset * Vector3.up, rot, rightScaling);
+
+                Mesh mesh = Instantiate(meshToRepeat);
+                CombineInstance comb = new CombineInstance();
+                comb.mesh = mesh;
+                comb.transform = transform;
+                combineInstances.Add(comb);
+            }
+
+
+            // combine meshes into a unique mesh
+            MeshFilter mf = GetComponent<MeshFilter>();
+            MeshRenderer mr = GetComponent<MeshRenderer>();
+            MeshCollider mc = GetComponent<MeshCollider>();
+            Mesh finalMesh = mf.sharedMesh;
+
+            if (finalMesh == null)
+            {
+                finalMesh = new Mesh();
+            }
+
+            finalMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            finalMesh.CombineMeshes(combineInstances.ToArray(), true);
+            finalMesh.Optimize();
+            finalMesh.RecalculateBounds();
+            finalMesh.RecalculateNormals();
+            finalMesh.RecalculateTangents();
+
+            mf.sharedMesh = finalMesh;
+            if (mc != null)
+            {
+                mc.sharedMesh = finalMesh;
+            }
         }
+    }
+    public void Init()
+    {
+        if (generateAtRuntime)
+        {
+            Generate();
+        }
+    }
+
+    public void SaveMesh()
+    {
+        MeshFilter mf = GetComponent<MeshFilter>();
+        Mesh mesh = mf.sharedMesh;
+        if (mesh == null)
+        {
+            Debug.LogWarning("Mesh is null, creating a new one");
+            mesh = new Mesh();
+        }
+        AssetDatabase.CreateAsset(mesh, savePath);
     }
 }

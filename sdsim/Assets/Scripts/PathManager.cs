@@ -22,7 +22,6 @@ public class PathManager : MonoBehaviour
     public string pathToLoad = "none";
     public int smoothPathIter = 0;
     public bool doChangeLanes = false;
-    public bool doBuildRoad = false;
     public GameObject locationMarkerPrefab;
     public int markerEveryN = 2;
 
@@ -33,17 +32,12 @@ public class PathManager : MonoBehaviour
     public bool sameRandomPath = true;
     public int randSeed = 2;
 
-    [Header("Road Builder")]
-    public RoadBuilder roadBuilder;
-    public RoadBuilder semanticSegRoadBuilder;
-    public LaneChangeTrainer laneChTrainer;
-
     [Header("Debug")]
     public bool doShowPath = false;
     public GameObject pathelem;
 
     [Header("Aux")]
-    public GameObject[] initAfterCarPathLoaded;
+    public GameObject[] initAfterCarPathLoaded; // Scripts using the IWaitCarPath interface to init after loading the CarPath
 
     Vector3 span = Vector3.zero;
     GameObject generated_mesh;
@@ -53,10 +47,10 @@ public class PathManager : MonoBehaviour
         if (sameRandomPath)
             Random.InitState(randSeed);
 
-        InitNewRoad();
+        InitCarPath();
     }
 
-    public void InitNewRoad()
+    public void InitCarPath()
     {
         if (doMakeRandomPath)
         {
@@ -75,27 +69,21 @@ public class PathManager : MonoBehaviour
             MakeGameObjectPath();
         }
 
-        if (carPath == null)
+        if (carPath == null) // if no carPath was created, skip the following block of code
         {
             return;
         }
 
-        //Should we build a road mesh along the path?
-        if (doBuildRoad && roadBuilder != null)
-            generated_mesh = roadBuilder.InitRoad(carPath);
-
-        if (doBuildRoad && semanticSegRoadBuilder != null)
-            generated_mesh = semanticSegRoadBuilder.InitRoad(carPath);
-
-        if (doChangeLanes && laneChTrainer != null)
-            laneChTrainer.ModifyPath(ref carPath);
-
-        foreach (GameObject go in initAfterCarPathLoaded) // Init each challenges
+        foreach (GameObject go in initAfterCarPathLoaded) // Init each Object that need a carPath
         {
             IWaitCarPath script = go.GetComponent<IWaitCarPath>();
             if (script != null)
             {
                 script.Init();
+            }
+            else
+            {
+                Debug.Log("Provided GameObject doesn't contain an IWaitCarPath script");
             }
         }
 
@@ -114,9 +102,9 @@ public class PathManager : MonoBehaviour
 
         if (doShowPath)
         {
-            for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
+            for (int iN = 0; iN < carPath.nodes.Count; iN++)
             {
-                Vector3 np = carPath.centerNodes[iN].pos;
+                Vector3 np = carPath.nodes[iN].pos;
                 GameObject go = Instantiate(pathelem, np, Quaternion.identity) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
@@ -124,15 +112,15 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    public void DestroyRoad()
+    public void DestroyRoad() // old, need refactoring in RoadBuilder
     {
         GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
 
         foreach (GameObject g in prev)
             Destroy(g);
 
-        if (roadBuilder != null)
-            roadBuilder.DestroyRoad();
+        // if (roadBuilder != null)
+        //     roadBuilder.DestroyRoad();
     }
 
     public Vector3 GetPathStart()
@@ -258,7 +246,7 @@ public class PathManager : MonoBehaviour
             newPts.Add(pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f);
         }
 
-        newPts.Add(pts[pts.Count - 1]);
+        // newPts.Add(pts[pts.Count - 1]);
         return newPts;
     }
 
@@ -391,14 +379,4 @@ public class PathManager : MonoBehaviour
             go.tag = "pathNode";
         }
     }
-
-    public void SaveRoadMesh(string savepath)
-    {
-        if (generated_mesh != null)
-        {
-            MeshFilter mf = generated_mesh.GetComponent<MeshFilter>();
-            AssetDatabase.CreateAsset(mf.mesh, savepath);
-        }
-    }
-
 }
