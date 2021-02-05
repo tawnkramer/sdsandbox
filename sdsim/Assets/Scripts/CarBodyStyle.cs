@@ -26,7 +26,7 @@ public class CarBodyStyle : MonoBehaviour
             {
                 mat_idx = 0;
             }
-            Debug.Log("mat name: " + materials[mat_idx].name);
+            // Debug.Log("mat name: " + materials[mat_idx].name);
             materials[mat_idx].SetColor("_Color", col);
         }
     }
@@ -39,7 +39,7 @@ public class CarBodyStyle : MonoBehaviour
         // search for the material requested name
         for (int idx = 0; idx < materials.Length; idx++)
         {
-            Debug.Log(materials[idx].name + " " + name);
+            // Debug.Log(materials[idx].name + " " + name);
             if (materials[idx].name == name + " (Instance)")
                 return idx;
         }

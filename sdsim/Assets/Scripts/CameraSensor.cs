@@ -12,6 +12,7 @@ public class CameraSensor : MonoBehaviour {
 	public string img_enc = "JPG"; //accepts JPG, PNG, TGA
 	Texture2D tex;
 	RenderTexture ren;
+	Rect ImageRect;
 
 	public void SetConfig(float fov, float offset_x, float offset_y, float offset_z, float rot_x, int img_w, int img_h, int img_d, string _img_enc)
 	{
@@ -45,17 +46,15 @@ public class CameraSensor : MonoBehaviour {
 	{
 		tex = new Texture2D(width, height, TextureFormat.RGB24, false);
 		ren = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+		ImageRect = new Rect(0, 0, width, height);
 		sensorCam.targetTexture = ren;
 	}
 
-	Texture2D RTImage(Camera cam) 
+	Texture2D RTImage() 
 	{
-		RenderTexture currentRT = RenderTexture.active;
-		RenderTexture.active = cam.targetTexture;
-		cam.Render();
-		tex.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
+		RenderTexture.active = sensorCam.targetTexture;
+		tex.ReadPixels(ImageRect, 0, 0);
 		tex.Apply();
-		RenderTexture.active = currentRT;
 
 		if(depth == 1)
 		{
@@ -74,7 +73,7 @@ public class CameraSensor : MonoBehaviour {
 
 	public Texture2D GetImage()
 	{
-		return RTImage(sensorCam);
+		return RTImage();
 	}
 
 	public byte[] GetImageBytes()

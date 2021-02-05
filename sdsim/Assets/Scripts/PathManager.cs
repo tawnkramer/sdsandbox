@@ -112,7 +112,7 @@ public class PathManager : MonoBehaviour
                 go.transform.parent = this.transform;
             }
         }
-        
+
         if (doShowCenterNodePath)
         {
             for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
@@ -162,31 +162,34 @@ public class PathManager : MonoBehaviour
         carPath = new CarPath();
 
         List<Vector3> points = new List<Vector3>();
-        List<Quaternion> rotations = new List<Quaternion>();
 
         float stepping = 1 / (pathCreator.path.length * precision);
         for (float i = 0; i <= 1; i += stepping)
         {
             points.Add(pathCreator.path.GetPointAtTime(i));
-            rotations.Add(pathCreator.path.GetRotation(i));
         }
         points.Add(pathCreator.path.GetPointAtTime(0));
-        rotations.Add(pathCreator.path.GetRotationAtDistance(0)); // close the loop
 
-
-        List<Vector3> smoothed_points = new List<Vector3>(points);
 
         while (smoothPathIter > 0) // not working for the moment, looking forward using the same system as MakePointPath with LookAt
         {
-            smoothed_points = Chaikin(smoothed_points);
+            points = Chaikin(points);
             smoothPathIter--;
         }
 
+        Vector3 point;
+        Vector3 previous_point;
+        Vector3 next_point;
+
         for (int i = 0; i < points.Count; i++)
         {
+            point = points[(int)nfmod(i, (points.Count - 1))];
+            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
+            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+
             PathNode p = new PathNode();
-            p.pos = points[i];
-            p.rotation = rotations[i];
+            p.pos = point;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
         }
     }
@@ -241,9 +244,8 @@ public class PathManager : MonoBehaviour
             next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
 
             PathNode p = new PathNode();
-            Quaternion rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up);
             p.pos = point;
-            p.rotation = rotation;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
         }
     }

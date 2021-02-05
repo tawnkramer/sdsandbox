@@ -266,24 +266,24 @@ MonoBehaviour:
       - {x: 5.5581045, y: 0, z: -6.3432007}
       - {x: 1.7812501, y: 0, z: -6.260709}
       - {x: -1.2007192, y: 0, z: -6.195578}
-      - {x: -0.34252715, y: 0, z: -9.098221}
+      - {x: -0.5028293, y: 0, z: -7.9760585}
       - {x: -3.1308923, y: 0, z: -8.924455}
-      - {x: -9.324757, y: 0, z: -8.538465}
-      - {x: -15.341085, y: 0, z: -7.505597}
-      - {x: -13.220626, y: 0, z: -1.6986542}
-      - {x: -12.283457, y: 0, z: 0.8678129}
-      - {x: -10.356784, y: 0, z: -1.2839992}
-      - {x: -7.766938, y: 0, z: -2.1690764}
-      - {x: -5.0843534, y: 0, z: -3.0858471}
-      - {x: -5.8291836, y: 0, z: -5.4439487}
-      - {x: -3.0017378, y: 0, z: -5.240844}
-      - {x: -0.991081, y: 0, z: -5.096411}
-      - {x: -0.27250075, y: 0, z: -4.5860286}
-      - {x: 0.03987415, y: 0, z: -2.5945382}
-      - {x: 0.35494703, y: 0, z: -0.5858474}
-      - {x: -0.41654313, y: 0, z: -0.30665958}
+      - {x: -9.508133, y: 0, z: -11.225827}
+      - {x: -11.48844, y: 0, z: -16.202213}
+      - {x: -16.431479, y: 0, z: -11.561967}
+      - {x: -19.430359, y: 0, z: -8.746786}
+      - {x: -19.337948, y: 0, z: -4.2529926}
+      - {x: -15.343926, y: 0, z: -3.4077442}
+      - {x: -13.395126, y: 0, z: -2.9953227}
+      - {x: -15.158307, y: 0, z: -6.118844}
+      - {x: -13.286074, y: 0, z: -6.8386273}
+      - {x: -7.9059377, y: 0, z: -8.90703}
+      - {x: -5.7851806, y: 0, z: -8.052044}
+      - {x: -2.251486, y: 0, z: -3.4952204}
+      - {x: -0.9081098, y: 0, z: -1.7628894}
+      - {x: -0.6767595, y: 0, z: -0.8761171}
       - {x: -2.0634372, y: 0, z: 0.8857504}
-      - {x: -3.6842866, y: 0, z: 2.059303}
+      - {x: -3.2814832, y: 0, z: 2.43336}
       - {x: -4.223549, y: 0, z: 0.79517287}
       - {x: -5.963705, y: 0, z: 1.7832228}
       - {x: -9.051548, y: 0, z: 3.536481}
@@ -294,8 +294,8 @@ MonoBehaviour:
       autoControlLength: 0.5
       boundsUpToDate: 0
       bounds:
-        m_Center: {x: 1.5608759, y: -0.0042533353, z: 2.000152}
-        m_Extent: {x: 15.215493, y: 0.0063195415, z: 12.082783}
+        m_Center: {x: -0.87619877, y: -0.076295055, z: 0.30464697}
+        m_Extent: {x: 17.652569, y: 0.29934722, z: 13.778288}
       perAnchorNormalsAngle:
       - 0
       - 0
@@ -863,6 +863,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 4300000, guid: 739319a3c52eb9f4995290dcd8efe9de, type: 2}
+    - target: {fileID: 8041275786197272087, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: c0e12c099c364af4e9e311a43d0f12c4,
+        type: 2}
     - target: {fileID: 8458392223600906752, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: m_IsActive
@@ -1184,12 +1190,12 @@ PrefabInstance:
     - target: {fileID: 6818656474563703977, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
       propertyPath: maxLightColorRange.g
-      value: 0.78431374
+      value: 0.8627451
       objectReference: {fileID: 0}
     - target: {fileID: 6818656474563703977, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
       propertyPath: maxLightColorRange.b
-      value: 0.78431374
+      value: 0.8627451
       objectReference: {fileID: 0}
     - target: {fileID: 6818656474563703977, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
@@ -1600,6 +1606,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226137143079575908, guid: b4bfaf4102a71204692041cf5b06c6bb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5.0000153
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226254791171217224, guid: b4bfaf4102a71204692041cf5b06c6bb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4226500186136556145, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
