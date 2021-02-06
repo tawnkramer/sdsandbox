@@ -33,7 +33,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
 
     public void RandomCone()
     {
-        if (pathManager.carPath.centerNodes != null)
+        if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count> 0)
         {
 
             int random_index = Random.Range(0, pathManager.carPath.centerNodes.Count);

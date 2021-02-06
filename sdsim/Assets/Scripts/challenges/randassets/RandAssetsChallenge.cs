@@ -37,7 +37,7 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
 
     public void PlaceAssets(GameObject[] assetList)
     {
-        if (pathManager.carPath.centerNodes != null)
+        if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count > 0)
         {
             for (int i = 0; i < assetList.Length; i++)
             {

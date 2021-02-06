@@ -17,6 +17,7 @@ public class CarSpawner : MonoBehaviour {
     public float distCarCols = 4.5f;
     public float distCarRows = 5f;
 
+    public GameObject mainCamera;
     public GameObject splitScreenCamPrefab;
     public int maxSplitScreen = 4;
     public int SplitScreenWidth = 2;
@@ -138,7 +139,7 @@ public class CarSpawner : MonoBehaviour {
                 RaceStatus rs = child.GetComponent<RaceStatus>();
                 if(rs.timer == timer)
                 {   
-                    child.transform.parent = null; // detach from parent
+                    child.transform.SetParent(null); // detach from parent
                     Destroy(child.gameObject); // destroy child
                     UpdateRaceStatusPannel(); // update the UI with the new child count
                     Debug.Log("removed timer");
@@ -211,6 +212,15 @@ public class CarSpawner : MonoBehaviour {
             GameObject go = cameras[i];
             Camera camera = go.GetComponent<Camera>();
             camera.rect = new Rect(x, y, w, h);
+        }
+
+        if (cameras.Count == 0 && mainCamera != null)
+        {
+            mainCamera.SetActive(true);
+        }
+        else if (mainCamera != null)
+        {
+            mainCamera.SetActive(false); // make sure we are disabling main camera to avoid background rendering
         }
     }
 

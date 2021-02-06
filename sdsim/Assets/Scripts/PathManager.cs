@@ -77,15 +77,23 @@ public class PathManager : MonoBehaviour
 
         foreach (GameObject go in initAfterCarPathLoaded) // Init each Object that need a carPath
         {
-            IWaitCarPath script = go.GetComponent<IWaitCarPath>();
-            if (script != null)
+            try
             {
-                script.Init();
+                IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+                if (script != null)
+                {
+                    script.Init();
+                }
+                else
+                {
+                    Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
+                }
             }
-            else
+            catch (System.Exception)
             {
-                Debug.Log("Provided GameObject doesn't contain an IWaitCarPath script");
+                Debug.LogError("Could not initialize: " + go.name);
             }
+
         }
 
         // if (locationMarkerPrefab != null && carPath != null)
