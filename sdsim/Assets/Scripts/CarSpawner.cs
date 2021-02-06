@@ -121,6 +121,7 @@ public class CarSpawner : MonoBehaviour {
         RaceStatus rs = go.GetComponent<RaceStatus>();
         rs.Init(t, client);
         go.transform.SetParent(raceStatusPanel.transform);
+        go.transform.GetComponent<RectTransform>().localScale = raceStatusPanel.transform.localScale;
         
         UpdateRaceStatusPannel(); // update the UI with the new child count
         Debug.Log("Added timer");
