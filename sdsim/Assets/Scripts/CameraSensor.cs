@@ -46,15 +46,17 @@ public class CameraSensor : MonoBehaviour {
 	{
 		tex = new Texture2D(width, height, TextureFormat.RGB24, false);
 		ren = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
-		ImageRect = new Rect(0, 0, width, height);
 		sensorCam.targetTexture = ren;
 	}
 
 	Texture2D RTImage() 
 	{
+		var currentRT = RenderTexture.active;
 		RenderTexture.active = sensorCam.targetTexture;
-		tex.ReadPixels(ImageRect, 0, 0);
-		tex.Apply();
+
+		sensorCam.Render();
+
+		tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
 
 		if(depth == 1)
 		{
@@ -65,8 +67,10 @@ public class CameraSensor : MonoBehaviour {
 				byte gray = (byte)(0.2126f * bytes[i+0] + 0.7152f * bytes[i+1] + 0.0722f * bytes[i+2]);
 				bytes[i+2] = bytes[i+1] = bytes[i+0] = gray;
 			}
-			tex.Apply();
 		}
+
+		tex.Apply();
+		RenderTexture.active = currentRT;
 
 		return tex;
 	}

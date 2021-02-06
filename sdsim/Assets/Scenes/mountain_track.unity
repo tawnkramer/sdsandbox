@@ -122,6 +122,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: a1489e92915d3db43a59718ee906a967, type: 2}
+--- !u!1 &58549287 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4731544362173619789, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 4267542151564372325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &63945399
 GameObject:
   m_ObjectHideFlags: 0
@@ -2683,6 +2689,12 @@ Transform:
   m_Father: {fileID: 6941074259072417989}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 29.769001, y: -21.731, z: 12.665001}
+--- !u!1 &1176050915 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5042952344224196374, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 4267542151564372325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1176491097
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,6 +3255,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480014176}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1482443326 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8037181034751879481, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 4267542151564372325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1484115259
 GameObject:
   m_ObjectHideFlags: 0
@@ -5080,7 +5098,7 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: initAfterCarPathLoaded.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -5134,6 +5152,27 @@ PrefabInstance:
       propertyPath: startPos
       value: 
       objectReference: {fileID: 1356398672}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[1]
+      value: 
+      objectReference: {fileID: 1482443326}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[2]
+      value: 
+      objectReference: {fileID: 1176050915}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[3]
+      value: 
+      objectReference: {fileID: 58549287}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[4]
+      value: 
+      objectReference: {fileID: 4359574241671133018, guid: 823d0c7739d3ffc4da1466e8dd61ca67,
+        type: 3}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: conePrefabs.Array.size
