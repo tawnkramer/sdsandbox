@@ -12,7 +12,7 @@ public static class GlobalState
     // should we create a car even though we don't have a network client?
     public static bool bCreateCarWithoutNetworkClient = true;
     public static string log_path = "default";
-    public static bool generateTrees = false;
-    public static bool generateRandomCones = false;
-    public static bool randomLight = false;
+    public static bool generateTrees = true;
+    public static bool generateRandomCones = true;
+    public static bool randomLight = true;
 }

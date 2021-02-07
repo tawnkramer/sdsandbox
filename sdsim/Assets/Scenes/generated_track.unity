@@ -300,6 +300,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 319193529}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &319193531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 162570, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6,
+    type: 3}
+  m_PrefabInstance: {fileID: 319193529}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &333761561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2401,6 +2407,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
         type: 3}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 319193531}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: challenges_obj.Array.size

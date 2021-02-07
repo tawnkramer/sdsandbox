@@ -199,6 +199,7 @@ public class PathManager : MonoBehaviour
             p.pos = point;
             p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
         }
     }
 
@@ -255,6 +256,7 @@ public class PathManager : MonoBehaviour
             p.pos = point;
             p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
         }
     }
 
@@ -321,6 +323,7 @@ public class PathManager : MonoBehaviour
                     PathNode p = new PathNode();
                     p.pos = np;
                     carPath.nodes.Add(p);
+                    carPath.centerNodes.Add(p);
 
                     turn = dY;
 
@@ -352,6 +355,7 @@ public class PathManager : MonoBehaviour
             PathNode p = new PathNode();
             p.pos = np;
             carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
 
             float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 

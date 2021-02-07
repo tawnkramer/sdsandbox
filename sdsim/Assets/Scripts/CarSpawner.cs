@@ -340,6 +340,7 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         // Search scene to find these.
+        MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
         PID_UI pid_ui = null;
@@ -349,9 +350,29 @@ public class CarSpawner : MonoBehaviour {
         if (pidPanel)
             pid_ui = pidPanel.GetComponent<PID_UI>();
 
-        if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
-        {
-            panelMenu.SetActive(false);
+        // set camera target follow tm
+
+        // Set menu handler hooks
+		if(menuHandler != null)
+		{
+			menuHandler.PIDContoller = getChildGameObject(go, "PIDController");
+			menuHandler.Logger = getChildGameObject(go, "Logger");
+			menuHandler.NetworkSteering = getChildGameObject(go, "TCPClient");
+			menuHandler.carJSControl = getChildGameObject(go, "JoyStickCarContoller");
+			menuHandler.trainingManager = getChildGameObject(go, "TrainingManager").GetComponent<TrainingManager>();
+            menuHandler.trainingManager.carObj = go;
+
+            if (EnableTrainingManager)
+            {
+                menuHandler.trainingManager.gameObject.SetActive(true);
+
+                getChildGameObject(go, "OverheadViewSphere").SetActive(true);
+            }
+
+            if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
+            {
+                panelMenu.SetActive(false);
+            }
         }
 
         // Set the PID ui hooks

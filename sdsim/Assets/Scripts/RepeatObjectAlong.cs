@@ -37,6 +37,23 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
     {
         if (pathManager != null && pathManager.carPath != null)
         {
+
+            if (xOffset.Length != meshesToRepeat.Length)
+            {
+                xOffset = new float[meshesToRepeat.Length];
+            }
+
+            if (yOffset.Length != meshesToRepeat.Length)
+            {
+                yOffset = new float[meshesToRepeat.Length];
+            }
+
+            if (rotateYOffset.Length != meshesToRepeat.Length)
+            {
+                rotateYOffset = new float[meshesToRepeat.Length];
+            }
+
+
             combineInstances = new List<CombineInstance>();
 
             Vector3 leftScaling = Vector3.one * objectScaling;
@@ -60,10 +77,10 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
                 Vector3 leftPrevPosition = prevNode.pos + node.rotation * (Vector3.left * leftWidthOffset) + node.rotation * (Vector3.forward * xOffset[iM]) + yOffset[iM] * Vector3.up;
                 Vector3 rightPrevPosition = prevNode.pos + node.rotation * (Vector3.right * rightWidthOffset) + node.rotation * (Vector3.forward * xOffset[iM]) + yOffset[iM] * Vector3.up;
 
-                for (int i = 0; i < pathManager.carPath.centerNodes.Count; i++)
+                for (int i = 0; i < pathManager.carPath.centerNodes.Count + 2; i++)
                 {
 
-                    node = pathManager.carPath.centerNodes[i];
+                    node = pathManager.carPath.centerNodes[i % pathManager.carPath.centerNodes.Count];
 
                     if (leftside)
                     {

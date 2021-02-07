@@ -158,6 +158,8 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
         Vector3 vLength = Vector3.one;
         Vector3 vWidth = Vector3.one;
 
+        path.centerNodes = new List<PathNode>();
+
         for (int iVert = 0; iVert < numVerts; iVert += 2)
         {
             if (iNode + 1 < path.nodes.Count)

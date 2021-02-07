@@ -2099,6 +2099,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3439346031387469317}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3439346031387469319 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 162570, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3439346031387469317}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &3594569584571249425
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2443,6 +2449,11 @@ PrefabInstance:
       propertyPath: numCarRows
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114310221196961066, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 3439346031387469319}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: challenges_obj.Array.size
