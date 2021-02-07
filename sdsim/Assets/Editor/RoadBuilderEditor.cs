@@ -10,10 +10,11 @@ public class RoadBuilderEditor : Editor
         DrawDefaultInspector();
 
         RoadBuilder roadBuilder = (RoadBuilder)target;
-        
-        if (GUILayout.Button("Save Mesh"))
+
+        if (GUILayout.Button("Save Mesh") && roadBuilder.createdRoad != null)
         {
-            roadBuilder.SaveMesh();
+            MeshFilter mf = roadBuilder.createdRoad.GetComponent<MeshFilter>();
+            AssetDatabase.CreateAsset(mf.mesh, roadBuilder.savePath);
         }
     }
 }

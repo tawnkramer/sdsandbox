@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 
 
 [RequireComponent(typeof(MeshFilter))]
@@ -217,17 +216,5 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
         {
             Generate();
         }
-    }
-
-    public void SaveMesh()
-    {
-        MeshFilter mf = GetComponent<MeshFilter>();
-        Mesh mesh = mf.sharedMesh;
-        if (mesh == null)
-        {
-            Debug.LogWarning("Mesh is null, creating a new one");
-            mesh = new Mesh();
-        }
-        AssetDatabase.CreateAsset(mesh, savePath);
     }
 }

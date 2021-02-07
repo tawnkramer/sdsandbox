@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 public class RoadBuilder : MonoBehaviour, IWaitCarPath
 {
@@ -32,7 +31,7 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
     public string savePath = "Assets\\generated_mesh.asset";
 
     Texture2D customRoadTexure;
-    GameObject createdRoad;
+    public GameObject createdRoad;
 
     void Start()
     {
@@ -267,14 +266,5 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
         }
 
         return go;
-    }
-
-    public void SaveMesh()
-    {
-        if (createdRoad != null)
-        {
-            MeshFilter mf = createdRoad.GetComponent<MeshFilter>();
-            AssetDatabase.CreateAsset(mf.mesh, savePath);
-        }
     }
 }

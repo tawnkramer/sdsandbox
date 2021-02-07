@@ -18,7 +18,14 @@ public class RepeatObjectAlongEditor : Editor
 
         if (GUILayout.Button("Save Mesh"))
         {
-            repeatObjectAlong.SaveMesh();
+            MeshFilter mf = repeatObjectAlong.GetComponent<MeshFilter>();
+            Mesh mesh = mf.sharedMesh;
+            if (mesh == null)
+            {
+                Debug.LogWarning("Mesh is null, creating a new one");
+                mesh = new Mesh();
+            }
+            AssetDatabase.CreateAsset(mesh, repeatObjectAlong.savePath);
         }
     }
 }
