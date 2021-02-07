@@ -21,7 +21,7 @@ public class MenuHandler : MonoBehaviour {
         Application.runInBackground = true;
 
         //Set desired frame rate as high as possible.
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = GlobalState.fps;
 
         //auto link
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();

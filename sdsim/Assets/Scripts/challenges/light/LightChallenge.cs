@@ -11,6 +11,7 @@ public class LightChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
+        if (!GlobalState.randomLight) { return; }
         Randomize();
     }
 
@@ -25,7 +26,7 @@ public class LightChallenge : MonoBehaviour, IWaitCarPath
         {
             Light lightComp = lightSource.GetComponent<Light>();
             if (lightComp != null)
-            {    
+            {
                 // calculate the interpolation between the two colors for a random T
                 lightComp.color = Color.Lerp(minLightColorRange, maxLightColorRange, Random.Range(0.0f, 1.0f));
             }

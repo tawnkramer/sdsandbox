@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/waveshare.unity
     guid: c5d126de1fd7ec9468c8765592f5f783
+  - enabled: 1
+    path: Assets/Scenes/test_scene.unity
+    guid: cd20c35b3c290204e90d69a2ba5b094d
   m_configObjects: {}

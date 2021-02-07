@@ -19,7 +19,6 @@ public class CarSpawner : MonoBehaviour {
 
     public GameObject mainCamera;
     public GameObject splitScreenCamPrefab;
-    public int maxSplitScreen = 4;
     public int SplitScreenWidth = 2;
 
     public GameObject racerStatusPrefab;
@@ -155,7 +154,7 @@ public class CarSpawner : MonoBehaviour {
 
     public void AddSplitScreenCam()
     {
-        if(cameras.Count < maxSplitScreen)
+        if(cameras.Count < GlobalState.maxSplitScreen)
         {
             GameObject splitScreenCamGo = Instantiate(splitScreenCamPrefab);
             cameras.Add(splitScreenCamGo);
@@ -172,7 +171,7 @@ public class CarSpawner : MonoBehaviour {
     public void UpdateSplitScreenCams()
     {   
         // check if the number of cameras match the number of cars
-        if ((cameras.Count != cars.Count && cars.Count <= maxSplitScreen))
+        if ((cameras.Count != cars.Count && cars.Count <= GlobalState.maxSplitScreen))
         {   
             // remove all cameras in there
             foreach(GameObject splitScreenCamGo in cameras)
@@ -341,7 +340,6 @@ public class CarSpawner : MonoBehaviour {
 
         ///////////////////////////////////////////////
         // Search scene to find these.
-        MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
         PID_UI pid_ui = null;
@@ -351,30 +349,9 @@ public class CarSpawner : MonoBehaviour {
         if (pidPanel)
             pid_ui = pidPanel.GetComponent<PID_UI>();
 
-        // set camera target follow tm
-
-        // Set menu handler hooks
-		if(menuHandler != null)
-		{
-			menuHandler.PIDContoller = getChildGameObject(go, "PIDController");
-			menuHandler.Logger = getChildGameObject(go, "Logger");
-			menuHandler.NetworkSteering = getChildGameObject(go, "TCPClient");
-			menuHandler.carJSControl = getChildGameObject(go, "JoyStickCarContoller");
-			menuHandler.trainingManager = getChildGameObject(go, "TrainingManager").GetComponent<TrainingManager>();
-            menuHandler.trainingManager.carObj = go;
-
-            if (EnableTrainingManager)
-            {
-                menuHandler.trainingManager.gameObject.SetActive(true);
-
-                getChildGameObject(go, "OverheadViewSphere").SetActive(true);
-            }
-
-            if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
-            {
-                panelMenu.SetActive(false);
-            }
-
+        if (GlobalState.bAutoHideSceneMenu && panelMenu != null)
+        {
+            panelMenu.SetActive(false);
         }
 
         // Set the PID ui hooks

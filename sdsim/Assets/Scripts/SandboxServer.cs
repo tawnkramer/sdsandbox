@@ -9,8 +9,8 @@ using System;
 [RequireComponent(typeof(tk.TcpServer))]
 public class SandboxServer : MonoBehaviour
 {
-    public string host = "0.0.0.0";
-    public int port = 9090;
+    public string host;
+    public int port;
 
     tk.TcpServer _server = null;
 
@@ -30,6 +30,11 @@ public class SandboxServer : MonoBehaviour
             else if (args[i] == "--port")
             {
                 port = int.Parse(args[i + 1]);
+            }
+            else
+            {
+                host = GlobalState.host;
+                port = GlobalState.port;
             }
         }
     }
@@ -122,7 +127,7 @@ public class SandboxServer : MonoBehaviour
             InitClient(client);
         }
 
-        if(GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
+        if (GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 

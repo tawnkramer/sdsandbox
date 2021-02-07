@@ -15,6 +15,12 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
+        if (!GlobalState.generateRandomCones) { return; }
+        Generate();
+    }
+
+    public void Generate()
+    {
         for (int i = 0; i < numRandCone; i++)
         {
             RandomCone();
@@ -27,13 +33,13 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
         {
             GameObject.Destroy(createdObject);
         }
-		createdObjects = new List<GameObject>();
-        Init();
+        createdObjects = new List<GameObject>();
+        Generate();
     }
 
     public void RandomCone()
     {
-        if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count> 0)
+        if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count > 0)
         {
 
             int random_index = Random.Range(0, pathManager.carPath.centerNodes.Count);
@@ -42,7 +48,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
             Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
             Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z); // height variation is not supported yet
             GameObject go = Instantiate(conePrefabs[iConePrefab], xz_coords + rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
-			createdObjects.Add(go);
+            createdObjects.Add(go);
         }
     }
 }
