@@ -375,7 +375,7 @@ PrefabInstance:
     - target: {fileID: 224389105264718766, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.8000488
+      value: 0.7998047
       objectReference: {fileID: 0}
     - target: {fileID: 224389105264718766, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -465,7 +465,7 @@ PrefabInstance:
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.15000534
+      value: 0.15000916
       objectReference: {fileID: 0}
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -524,7 +524,7 @@ PrefabInstance:
     - target: {fileID: 224280005622024586, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.9000015
+      value: 0.8999939
       objectReference: {fileID: 0}
     - target: {fileID: 224494488356718942, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
@@ -650,26 +650,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PIDPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 114004372304906892, guid: e9fff5699d2384074977a12cf04b4db8,
+    - target: {fileID: 114577809269408254, guid: e9fff5699d2384074977a12cf04b4db8,
         type: 3}
-      propertyPath: m_Text
-      value: 'Steer Max: 7'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114333044586679056, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Diff: 60'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114390039734892222, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Prop: 10'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114508305361058362, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Max Speed: 5'
-      objectReference: {fileID: 0}
+      propertyPath: SpeedSlider
+      value: 
+      objectReference: {fileID: 4048276808923568636}
     - target: {fileID: 224372064716631678, guid: e9fff5699d2384074977a12cf04b4db8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -783,6 +768,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4160164102077699202}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4048276808923568636 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114139728902294910, guid: e9fff5699d2384074977a12cf04b4db8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4160164102077699202}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4160164102475705784
 PrefabInstance:
   m_ObjectHideFlags: 0

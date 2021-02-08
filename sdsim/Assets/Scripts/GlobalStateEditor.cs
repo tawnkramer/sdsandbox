@@ -55,6 +55,8 @@ public class GlobalStateEditor : MonoBehaviour
         int width = (int)(rect.width * Screen.width);
         int height = (int)(rect.height * Screen.height);
 
+        int LabelXOffset = 100;
+
         int scrollHeight = 160;
         int scrollWidth = 200;
 
@@ -62,20 +64,23 @@ public class GlobalStateEditor : MonoBehaviour
         GUI.BeginGroup(new Rect(pixXOffset, pixYOffset, width, height));
         scrollPosition = GUI.BeginScrollView(new Rect(0, 0, width, height), scrollPosition, new Rect(0, 0, scrollWidth, scrollHeight), false, false);
 
-        string portString = GUI.TextField(new Rect(0, 0, width, 20), port.ToString());
+        GUI.Label(new Rect(0, 0, LabelXOffset, 20), "port");
+        string portString = GUI.TextField(new Rect(LabelXOffset, 0, width, 20), port.ToString());
         int tmp_port = port;
         int.TryParse(portString, out tmp_port);
         if (tmp_port != port)
             port = tmp_port;
 
-        string fpsString = GUI.TextField(new Rect(0, 20, width, 20), fps.ToString());
+        GUI.Label(new Rect(0, 20, LabelXOffset, 20), "fps limit");
+        string fpsString = GUI.TextField(new Rect(LabelXOffset, 20, width, 20), fps.ToString());
         int tmp_fps = fps;
         int.TryParse(fpsString, out tmp_fps);
         if (tmp_fps != fps)
             fps = tmp_fps;
-        
-        
-        string maxspString = GUI.TextField(new Rect(0, 40, width, 20), maxSplitScreen.ToString());
+
+
+        GUI.Label(new Rect(0, 40, LabelXOffset, 20), "Max SplitScreen");
+        string maxspString = GUI.TextField(new Rect(LabelXOffset, 40, width, 20), maxSplitScreen.ToString());
         int tmp_maxsp = maxSplitScreen;
         int.TryParse(maxspString, out tmp_maxsp);
         if (tmp_maxsp != maxSplitScreen)
@@ -99,30 +104,22 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("bCreateCarWithoutNetworkClient", bCreateCarWithoutNetworkClient ? 1 : 0);
-        PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
-        PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
-        PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
+        PlayerPrefs.SetInt("generate Trees", generateTrees ? 1 : 0);
+        PlayerPrefs.SetInt("generate Random Cones", generateRandomCones ? 1 : 0);
+        PlayerPrefs.SetInt("random Light", randomLight ? 1 : 0);
 
         PlayerPrefs.Save();
     }
 
     void LoadPlayerPrefs()
     {
-        // ckecks wether the key exists, load it if it exists, else do nothing
-        if (PlayerPrefs.HasKey("port"))
-            port = PlayerPrefs.GetInt("port");
-        if (PlayerPrefs.HasKey("fps"))
-            fps = PlayerPrefs.GetInt("fps");
-        if (PlayerPrefs.HasKey("maxSplitScreen"))
-            maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen");
-        if (PlayerPrefs.HasKey("bCreateCarWithoutNetworkClient"))
-            bCreateCarWithoutNetworkClient = PlayerPrefs.GetInt("bCreateCarWithoutNetworkClient") == 1 ? true : false;
-        if (PlayerPrefs.HasKey("generateTrees"))
-            generateTrees = PlayerPrefs.GetInt("generateTrees") == 1 ? true : false;
-        if (PlayerPrefs.HasKey("generateRandomCones"))
-            generateRandomCones = PlayerPrefs.GetInt("generateRandomCones") == 1 ? true : false;
-        if (PlayerPrefs.HasKey("randomLight"))
-            randomLight = PlayerPrefs.GetInt("randomLight") == 1 ? true : false;
+        port = PlayerPrefs.GetInt("port", port);
+        fps = PlayerPrefs.GetInt("fps", fps);
+        maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
+        bCreateCarWithoutNetworkClient = PlayerPrefs.GetInt("bCreateCarWithoutNetworkClient", 1) == 1 ? true : false;
+        generateTrees = PlayerPrefs.GetInt("generateTrees", 1) == 1 ? true : false;
+        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", 0) == 1 ? true : false;
+        randomLight = PlayerPrefs.GetInt("randomLight", 1) == 1 ? true : false;
 
     }
 

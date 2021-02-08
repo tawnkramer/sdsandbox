@@ -370,7 +370,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Prop
+  m_Text: 'Prop: 10'
 --- !u!1 &1204107992615082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,6 +1138,9 @@ MonoBehaviour:
   P_Term: {fileID: 114390039734892222}
   D_Term: {fileID: 114333044586679056}
   steerMax: {fileID: 114004372304906892}
+  SpeedSlider: {fileID: 0}
+  PropSlider: {fileID: 114237907681128262}
+  DiffSlider: {fileID: 114652643421213488}
   steerMaxSlider: {fileID: 114801902883918354}
 --- !u!1 &1383680384300426
 GameObject:
@@ -1351,7 +1354,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Max Speed
+  m_Text: 'Max Speed: 5'
 --- !u!1 &1432208190550380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1865,7 +1868,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Steer Max:'
+  m_Text: 'Steer Max: 7'
 --- !u!1 &1602589773442784
 GameObject:
   m_ObjectHideFlags: 0
@@ -2197,7 +2200,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Diff:'
+  m_Text: 'Diff: 60'
 --- !u!1 &1787085824876266
 GameObject:
   m_ObjectHideFlags: 0
