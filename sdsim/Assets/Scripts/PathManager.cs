@@ -39,6 +39,7 @@ public class PathManager : MonoBehaviour
 
     [Header("Aux")]
     public GameObject[] initAfterCarPathLoaded; // Scripts using the IWaitCarPath interface to init after loading the CarPath
+    public GameObject[] challenges; // Challenges using the IWaitCarPath interface to init after loading the CarPath or on private API call
 
     Vector3 span = Vector3.zero;
     GameObject generated_mesh;
@@ -75,26 +76,8 @@ public class PathManager : MonoBehaviour
             return;
         }
 
-        foreach (GameObject go in initAfterCarPathLoaded) // Init each Object that need a carPath
-        {
-            try
-            {
-                IWaitCarPath script = go.GetComponent<IWaitCarPath>();
-                if (script != null)
-                {
-                    script.Init();
-                }
-                else
-                {
-                    Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
-                }
-            }
-            catch (System.Exception)
-            {
-                Debug.LogError("Could not initialize: " + go.name);
-            }
-
-        }
+        InitAfterCarPathLoaded(initAfterCarPathLoaded);
+        InitAfterCarPathLoaded(challenges);
 
         // if (locationMarkerPrefab != null && carPath != null)
         // {
@@ -130,6 +113,31 @@ public class PathManager : MonoBehaviour
                 GameObject go = Instantiate(pathelem, np, rotation) as GameObject;
                 go.tag = "pathNode";
                 go.transform.parent = this.transform;
+            }
+        }
+    }
+
+    public void InitAfterCarPathLoaded(GameObject[] scriptList)
+    {
+        if (carPath == null) { Debug.LogError("No carPath loaded"); return; }
+
+        foreach (GameObject go in scriptList) // Init each Object that need a carPath
+        {
+            try
+            {
+                IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+                if (script != null)
+                {
+                    script.Init();
+                }
+                else
+                {
+                    Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
+                }
+            }
+            catch (System.Exception)
+            {
+                Debug.LogError("Could not initialize: " + go.name);
             }
         }
     }

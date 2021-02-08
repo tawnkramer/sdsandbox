@@ -1063,7 +1063,12 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: initAfterCarPathLoaded.Array.size
-      value: 5
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -1139,6 +1144,21 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: initAfterCarPathLoaded.Array.data[4]
+      value: 
+      objectReference: {fileID: 111775975}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[0]
+      value: 
+      objectReference: {fileID: 962441855}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[1]
+      value: 
+      objectReference: {fileID: 1593406209}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[2]
       value: 
       objectReference: {fileID: 111775975}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,

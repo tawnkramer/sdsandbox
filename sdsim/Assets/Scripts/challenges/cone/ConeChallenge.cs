@@ -21,6 +21,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
 
     public void Generate()
     {
+        Random.InitState(GlobalState.RandomSeed);
         for (int i = 0; i < numRandCone; i++)
         {
             RandomCone();

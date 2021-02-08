@@ -21,6 +21,7 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
 
     public void Generate()
     {
+        Random.InitState(GlobalState.RandomSeed);
         GameObject[] randomList = new GameObject[numAssets];
         for (int i = 0; i < numAssets; i++) // pick some items from the prefab list and add them to the randomList array
         {

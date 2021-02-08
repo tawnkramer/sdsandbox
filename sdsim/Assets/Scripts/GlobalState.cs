@@ -1,7 +1,4 @@
-﻿using System;
-
-[Serializable]
-public static class GlobalState
+﻿public static class GlobalState
 {
     public static string host = "127.0.0.1";
     public static int port = 9091;
@@ -15,4 +12,7 @@ public static class GlobalState
     public static bool generateTrees = true;
     public static bool generateRandomCones = true;
     public static bool randomLight = true;
+    public static string privateKey = "";
+    public static bool doGenerateRandomSeed = true;
+    public static int RandomSeed = 0;
 }

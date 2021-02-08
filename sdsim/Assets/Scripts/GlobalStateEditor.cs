@@ -41,7 +41,13 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.randomLight; }
         set { GlobalState.randomLight = value; }
     }
+    public string privateKey
+    {
+        get { return GlobalState.privateKey; }
+        set { GlobalState.privateKey = value; }
+    }
 
+    private bool doShowPrivateKey = false;
     void Awake()
     {
         LoadPlayerPrefs();
@@ -57,7 +63,7 @@ public class GlobalStateEditor : MonoBehaviour
 
         int LabelXOffset = 100;
 
-        int scrollHeight = 160;
+        int scrollHeight = 220;
         int scrollWidth = 200;
 
 
@@ -91,8 +97,17 @@ public class GlobalStateEditor : MonoBehaviour
         generateRandomCones = GUI.Toggle(new Rect(0, 100, width, 20), generateRandomCones, "generateRandomCones");
         randomLight = GUI.Toggle(new Rect(0, 120, width, 20), randomLight, "randomLight");
 
-        bool doSave = GUI.Button(new Rect(0, 160, width, 20), "Save");
+        bool doSave = GUI.Button(new Rect(0, 140, width, 20), "Save");
         if (doSave) { SaveToPlayerPrefs(); }
+
+
+        doShowPrivateKey = GUI.Toggle(new Rect(0, 180, width, 20), doShowPrivateKey, "doShowPrivateKey");
+        if (doShowPrivateKey)
+        {
+            GUI.Label(new Rect(0, 200, LabelXOffset + width, 20), string.Format("Private API Key: {0}", privateKey));
+            bool doRandomize = GUI.Button(new Rect(0, 220, width, 20), "Randomize private key");
+            if (doRandomize) { RandomizePrivateKey(); }
+        }
 
         GUI.EndScrollView();
         GUI.EndGroup();
@@ -106,7 +121,8 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("bCreateCarWithoutNetworkClient", bCreateCarWithoutNetworkClient ? 1 : 0);
         PlayerPrefs.SetInt("generate Trees", generateTrees ? 1 : 0);
         PlayerPrefs.SetInt("generate Random Cones", generateRandomCones ? 1 : 0);
-        PlayerPrefs.SetInt("random Light", randomLight ? 1 : 0);
+        PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
+        PlayerPrefs.SetString("privateKey", privateKey);
 
         PlayerPrefs.Save();
     }
@@ -120,8 +136,13 @@ public class GlobalStateEditor : MonoBehaviour
         generateTrees = PlayerPrefs.GetInt("generateTrees", 1) == 1 ? true : false;
         generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", 0) == 1 ? true : false;
         randomLight = PlayerPrefs.GetInt("randomLight", 1) == 1 ? true : false;
-
+        privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
     }
 
-
+    void RandomizePrivateKey()
+    {
+        privateKey = Random.Range(10000000, 99999999).ToString();
+        PlayerPrefs.SetString("privateKey", privateKey);
+        PlayerPrefs.Save();
+    }
 }

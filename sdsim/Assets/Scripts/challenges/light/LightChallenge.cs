@@ -22,6 +22,7 @@ public class LightChallenge : MonoBehaviour, IWaitCarPath
 
     public void Randomize()
     {
+        Random.InitState(GlobalState.RandomSeed);
         if (lightSource != null)
         {
             Light lightComp = lightSource.GetComponent<Light>();
