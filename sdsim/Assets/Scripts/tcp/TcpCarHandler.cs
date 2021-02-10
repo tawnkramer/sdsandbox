@@ -561,10 +561,30 @@ namespace tk
                 int new_seed;
                 int.TryParse(json.GetField("seed").str, out new_seed);
 
-                GlobalState.RandomSeed = new_seed;
-                pm.InitAfterCarPathLoaded(pm.challenges);
+                GlobalState.seed = new_seed;
+                UnityMainThreadDispatcher.Instance().Enqueue(savePlayerPrefsInt("seed", GlobalState.seed));
+                UnityMainThreadDispatcher.Instance().Enqueue(pm.InitAfterCarPathLoaded(pm.challenges));
             }
-            else { Debug.LogWarning("You sent a wrong private key"); }
+            else
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(sendErrorMessage("private_key_error","private_key doesn't correspond, please ensure you entered the right one"));
+            }
+        }
+
+        IEnumerator sendErrorMessage(string msgType, string errorMessage)
+        {
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", msgType);
+            json.AddField("error_message", errorMessage);
+            client.SendMsg(json);
+            yield return null;
+        }
+
+        IEnumerator savePlayerPrefsInt(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+            PlayerPrefs.Save();
+            yield return null;
         }
     }
 }

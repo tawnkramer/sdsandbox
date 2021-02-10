@@ -15,13 +15,18 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
-        if (!GlobalState.generateRandomCones) { return; }
+        if (GlobalState.generateRandomCones == false) { return; }
+        foreach (GameObject createdObject in createdObjects)
+        {
+            GameObject.Destroy(createdObject);
+        }
+        createdObjects = new List<GameObject>();
         Generate();
     }
 
     public void Generate()
     {
-        Random.InitState(GlobalState.RandomSeed);
+        if (GlobalState.useSeed) { Random.InitState(GlobalState.seed); };
         for (int i = 0; i < numRandCone; i++)
         {
             RandomCone();

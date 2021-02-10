@@ -5,7 +5,7 @@ Set and update the seed used for generation, sending this with the right private
 ```json
 {
     "msg_type": "set_random_seed",
-    "private_key":00000000,
-    "seed":0, 
+    "private_key":"00000000",
+    "seed":"0", 
 }
 ```

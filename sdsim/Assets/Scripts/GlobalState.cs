@@ -13,6 +13,6 @@
     public static bool generateRandomCones = true;
     public static bool randomLight = true;
     public static string privateKey = "";
-    public static bool doGenerateRandomSeed = true;
-    public static int RandomSeed = 0;
+    public static bool useSeed = true;
+    public static int seed = 20432814;
 }

@@ -76,8 +76,9 @@ public class PathManager : MonoBehaviour
             return;
         }
 
-        InitAfterCarPathLoaded(initAfterCarPathLoaded);
-        InitAfterCarPathLoaded(challenges);
+        // execute in the next update loop
+        UnityMainThreadDispatcher.Instance().Enqueue(InitAfterCarPathLoaded(initAfterCarPathLoaded));
+        UnityMainThreadDispatcher.Instance().Enqueue(InitAfterCarPathLoaded(challenges));
 
         // if (locationMarkerPrefab != null && carPath != null)
         // {
@@ -117,29 +118,36 @@ public class PathManager : MonoBehaviour
         }
     }
 
-    public void InitAfterCarPathLoaded(GameObject[] scriptList)
+    public IEnumerator InitAfterCarPathLoaded(GameObject[] scriptList)
     {
-        if (carPath == null) { Debug.LogError("No carPath loaded"); return; }
-
-        foreach (GameObject go in scriptList) // Init each Object that need a carPath
+        if (carPath != null)
         {
-            try
+            foreach (GameObject go in scriptList) // Init each Object that need a carPath
             {
-                IWaitCarPath script = go.GetComponent<IWaitCarPath>();
-                if (script != null)
+                try
                 {
-                    script.Init();
+                    IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+                    if (script != null)
+                    {
+                        script.Init();
+                    }
+                    else
+                    {
+                        Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
+                    }
                 }
-                else
+                catch (System.Exception)
                 {
-                    Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
+                    Debug.LogError("Could not initialize: " + go.name);
                 }
-            }
-            catch (System.Exception)
-            {
-                Debug.LogError("Could not initialize: " + go.name);
             }
         }
+
+        else
+        {
+            Debug.LogError("No carPath loaded"); yield return null;
+        }
+        yield return null;
     }
 
     public void DestroyRoad() // old, need refactoring in RoadBuilder

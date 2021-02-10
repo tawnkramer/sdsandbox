@@ -21,11 +21,6 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.maxSplitScreen; }
         set { GlobalState.maxSplitScreen = value; }
     }
-    public bool bCreateCarWithoutNetworkClient
-    {
-        get { return GlobalState.bCreateCarWithoutNetworkClient; }
-        set { GlobalState.bCreateCarWithoutNetworkClient = value; GlobalState.bAutoHideSceneMenu = !value; }
-    }
     public bool generateTrees
     {
         get { return GlobalState.generateTrees; }
@@ -41,13 +36,23 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.randomLight; }
         set { GlobalState.randomLight = value; }
     }
+    public bool useSeed
+    {
+        get { return GlobalState.useSeed; }
+        set { GlobalState.useSeed = value; }
+    }
+    public int seed
+    {
+        get { return GlobalState.seed; }
+        set { GlobalState.seed = value; }
+    }
     public string privateKey
     {
         get { return GlobalState.privateKey; }
         set { GlobalState.privateKey = value; }
     }
 
-    private bool doShowPrivateKey = false;
+    private bool showPrivateKey = false;
     void Awake()
     {
         LoadPlayerPrefs();
@@ -66,48 +71,77 @@ public class GlobalStateEditor : MonoBehaviour
         int scrollHeight = 220;
         int scrollWidth = 200;
 
+        int YOffset = 0;
+        int Ysteps = 20;
+
 
         GUI.BeginGroup(new Rect(pixXOffset, pixYOffset, width, height));
         scrollPosition = GUI.BeginScrollView(new Rect(0, 0, width, height), scrollPosition, new Rect(0, 0, scrollWidth, scrollHeight), false, false);
 
-        GUI.Label(new Rect(0, 0, LabelXOffset, 20), "port");
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "port");
+        YOffset += Ysteps;
         string portString = GUI.TextField(new Rect(LabelXOffset, 0, width, 20), port.ToString());
         int tmp_port = port;
         int.TryParse(portString, out tmp_port);
         if (tmp_port != port)
             port = tmp_port;
 
-        GUI.Label(new Rect(0, 20, LabelXOffset, 20), "fps limit");
-        string fpsString = GUI.TextField(new Rect(LabelXOffset, 20, width, 20), fps.ToString());
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "fps limit");
+        string fpsString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), fps.ToString());
+        YOffset += Ysteps;
         int tmp_fps = fps;
         int.TryParse(fpsString, out tmp_fps);
         if (tmp_fps != fps)
             fps = tmp_fps;
 
 
-        GUI.Label(new Rect(0, 40, LabelXOffset, 20), "Max SplitScreen");
-        string maxspString = GUI.TextField(new Rect(LabelXOffset, 40, width, 20), maxSplitScreen.ToString());
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Max SplitScreen");
+        string maxspString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), maxSplitScreen.ToString());
+        YOffset += Ysteps;
         int tmp_maxsp = maxSplitScreen;
         int.TryParse(maxspString, out tmp_maxsp);
         if (tmp_maxsp != maxSplitScreen)
             maxSplitScreen = tmp_maxsp;
 
-        bCreateCarWithoutNetworkClient = GUI.Toggle(new Rect(0, 60, width, 20), bCreateCarWithoutNetworkClient, "bCreateCarWithoutNetworkClient");
-        generateTrees = GUI.Toggle(new Rect(0, 80, width, 20), generateTrees, "generateTrees");
-        generateRandomCones = GUI.Toggle(new Rect(0, 100, width, 20), generateRandomCones, "generateRandomCones");
-        randomLight = GUI.Toggle(new Rect(0, 120, width, 20), randomLight, "randomLight");
+        generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
+        YOffset += Ysteps;
+        generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
+        YOffset += Ysteps;
+        randomLight = GUI.Toggle(new Rect(0, YOffset, width, 20), randomLight, "randomLight");
+        YOffset += Ysteps;
 
-        bool doSave = GUI.Button(new Rect(0, 140, width, 20), "Save");
-        if (doSave) { SaveToPlayerPrefs(); }
-
-
-        doShowPrivateKey = GUI.Toggle(new Rect(0, 180, width, 20), doShowPrivateKey, "doShowPrivateKey");
-        if (doShowPrivateKey)
+        useSeed = GUI.Toggle(new Rect(0, YOffset, width, 20), useSeed, "useSeed");
+        YOffset += Ysteps;
+        if (useSeed)
         {
-            GUI.Label(new Rect(0, 200, LabelXOffset + width, 20), string.Format("Private API Key: {0}", privateKey));
-            bool doRandomize = GUI.Button(new Rect(0, 220, width, 20), "Randomize private key");
+            GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Seed");
+            string seedString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), seed.ToString());
+            YOffset += Ysteps;
+            int tmp_seed = seed;
+            int.TryParse(seedString, out tmp_seed);
+            if (tmp_seed != seed)
+                seed = tmp_seed;
+        }
+
+        YOffset += Ysteps;
+        bool doSave = GUI.Button(new Rect(0, YOffset, width, 20), "Save");
+        YOffset += Ysteps;
+
+        YOffset += Ysteps;
+        showPrivateKey = GUI.Toggle(new Rect(0, YOffset, width, 20), showPrivateKey, "showPrivateKey");
+        YOffset += Ysteps;
+        if (showPrivateKey)
+        {
+            GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Private API Key");
+            privateKey = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), privateKey);
+            YOffset += Ysteps;
+
+            bool doRandomize = GUI.Button(new Rect(0, YOffset, width, 20), "Randomize private key");
+            YOffset += Ysteps;
             if (doRandomize) { RandomizePrivateKey(); }
         }
+
+        if (doSave) { SaveToPlayerPrefs(); }
 
         GUI.EndScrollView();
         GUI.EndGroup();
@@ -118,10 +152,10 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("port", port);
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
-        PlayerPrefs.SetInt("bCreateCarWithoutNetworkClient", bCreateCarWithoutNetworkClient ? 1 : 0);
-        PlayerPrefs.SetInt("generate Trees", generateTrees ? 1 : 0);
-        PlayerPrefs.SetInt("generate Random Cones", generateRandomCones ? 1 : 0);
+        PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
+        PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
+        PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
 
         PlayerPrefs.Save();
@@ -132,10 +166,10 @@ public class GlobalStateEditor : MonoBehaviour
         port = PlayerPrefs.GetInt("port", port);
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
-        bCreateCarWithoutNetworkClient = PlayerPrefs.GetInt("bCreateCarWithoutNetworkClient", 1) == 1 ? true : false;
-        generateTrees = PlayerPrefs.GetInt("generateTrees", 1) == 1 ? true : false;
-        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", 0) == 1 ? true : false;
-        randomLight = PlayerPrefs.GetInt("randomLight", 1) == 1 ? true : false;
+        generateTrees = PlayerPrefs.GetInt("generateTrees") == 1 ? true : false;
+        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones") == 1 ? true : false;
+        randomLight = PlayerPrefs.GetInt("randomLight") == 1 ? true : false;
+        useSeed = PlayerPrefs.GetInt("useSeed") == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
     }
 
