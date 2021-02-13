@@ -136,9 +136,9 @@ public class PathManager : MonoBehaviour
                         Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
                     }
                 }
-                catch (System.Exception)
+                catch (System.Exception e)
                 {
-                    Debug.LogError("Could not initialize: " + go.name);
+                    Debug.LogError(string.Format("Could not initialize: {0}, Exception: {1}", go.name, e));
                 }
             }
         }

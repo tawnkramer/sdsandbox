@@ -15,7 +15,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
-        if (GlobalState.generateRandomCones == false) { return; }
+        if (!GlobalState.generateRandomCones) { return; }
         foreach (GameObject createdObject in createdObjects)
         {
             GameObject.Destroy(createdObject);

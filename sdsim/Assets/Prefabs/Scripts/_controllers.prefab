@@ -84,9 +84,9 @@ MonoBehaviour:
   numCarRows: 2
   distCarCols: 4.5
   distCarRows: 5
+  mainCamera: {fileID: 0}
   splitScreenCamPrefab: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
     type: 3}
-  maxSplitScreen: 4
   SplitScreenWidth: 2
   racerStatusPrefab: {fileID: 0}
   raceStatusPanel: {fileID: 0}
@@ -167,6 +167,7 @@ MonoBehaviour:
   terToolkit: {fileID: 0}
   terrain: {fileID: 0}
   savePath: Assets\generated_mesh.asset
+  createdRoad: {fileID: 0}
 --- !u!1 &1634053867182616
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,7 +220,6 @@ MonoBehaviour:
   pathToLoad: sparkfun_avc
   smoothPathIter: 0
   doChangeLanes: 1
-  doBuildRoad: 1
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
@@ -228,10 +228,12 @@ MonoBehaviour:
   spanDist: 2
   sameRandomPath: 0
   randSeed: 10
-  doShowPath: 0
+  doShowNodePath: 0
+  doShowCenterNodePath: 0
   pathelem: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
   initAfterCarPathLoaded:
   - {fileID: 1612042024290732}
+  challenges: []
 --- !u!1 &8458392223600906752
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,17 +281,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathManager: {fileID: 114576669822105592}
+  meshesToRepeat: []
   leftWidthOffset: 5
   rightWidthOffset: 5
-  heightOffset: 0
-  rotateYOffset: 0
+  yOffset: []
+  xOffset: []
+  rotateYOffset: []
   objectScaling: 100
   placeEvery: 5
   generateAtRuntime: 1
   leftside: 1
   rightside: 1
   mirrorRotateObject: 1
-  meshToRepeat: {fileID: 0}
   savePath: Assets\generated_mesh.asset
 --- !u!33 &4257038249046009650
 MeshFilter:

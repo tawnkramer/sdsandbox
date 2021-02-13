@@ -15,7 +15,7 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
-        if (GlobalState.generateTrees == false) { return; }
+        if (!GlobalState.generateTrees) { return; }
         foreach (GameObject createdObject in createdObjects)
         {
             GameObject.Destroy(createdObject);

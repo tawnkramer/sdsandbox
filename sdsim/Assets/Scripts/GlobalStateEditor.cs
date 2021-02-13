@@ -36,6 +36,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.randomLight; }
         set { GlobalState.randomLight = value; }
     }
+    public bool raceCameras
+    {
+        get { return GlobalState.raceCameras; }
+        set { GlobalState.raceCameras = value; }
+    }    
     public bool useSeed
     {
         get { return GlobalState.useSeed; }
@@ -109,6 +114,8 @@ public class GlobalStateEditor : MonoBehaviour
         YOffset += Ysteps;
         randomLight = GUI.Toggle(new Rect(0, YOffset, width, 20), randomLight, "randomLight");
         YOffset += Ysteps;
+        raceCameras = GUI.Toggle(new Rect(0, YOffset, width, 20), raceCameras, "raceCameras");
+        YOffset += Ysteps;
 
         useSeed = GUI.Toggle(new Rect(0, YOffset, width, 20), useSeed, "useSeed");
         YOffset += Ysteps;
@@ -155,6 +162,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
         PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
+        PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
 
@@ -169,6 +177,7 @@ public class GlobalStateEditor : MonoBehaviour
         generateTrees = PlayerPrefs.GetInt("generateTrees") == 1 ? true : false;
         generateRandomCones = PlayerPrefs.GetInt("generateRandomCones") == 1 ? true : false;
         randomLight = PlayerPrefs.GetInt("randomLight") == 1 ? true : false;
+        raceCameras = PlayerPrefs.GetInt("raceCameras") == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed") == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
     }
