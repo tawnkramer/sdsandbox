@@ -7,6 +7,7 @@ public class RaceCamera : MonoBehaviour
     RaceCameras raceCameras;
     public CameraTrigger cameraTrigger;
     public Camera camera;
+    public int index;
 
     void Awake()
     {
@@ -33,10 +34,9 @@ public class RaceCamera : MonoBehaviour
         camera.transform.rotation = Quaternion.LookRotation(lookAt - position, Vector3.up);
     }
 
-    public void ChangeCamera(Collider col)
+    public void CameraTriggered(Collider col)
     {
-        raceCameras.EnableCameras(false);
-        camera.enabled = true;
+        raceCameras.CameraTriggered(col, camera, index);
     }
 
 }

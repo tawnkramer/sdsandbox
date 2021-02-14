@@ -2552,6 +2552,21 @@ PrefabInstance:
       propertyPath: iConePrefab
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3155280883320326495, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: distanceBetweenCameras
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3155280883320326495, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: roadWidth
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3155280883320326495, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: cameraHeight
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89b891dc9d0fe46ffba6fbc78477652f, type: 3}
 --- !u!4 &8263689991204401285 stripped

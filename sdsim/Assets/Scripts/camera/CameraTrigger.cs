@@ -27,6 +27,6 @@ public class CameraTrigger : MonoBehaviour
         {
             raceCamera = transform.GetComponentInParent<RaceCamera>();
         }
-        raceCamera.ChangeCamera(col);
+        raceCamera.CameraTriggered(col);
     }
 }

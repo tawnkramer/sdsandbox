@@ -24,6 +24,7 @@ public class PathManager : MonoBehaviour
     public bool doChangeLanes = false;
     public GameObject locationMarkerPrefab;
     public int markerEveryN = 2;
+    public bool invertNodes = false;
 
     [Header("Random path parameters")]
     public int numSpans = 100;
@@ -74,6 +75,48 @@ public class PathManager : MonoBehaviour
         if (carPath == null) // if no carPath was created, skip the following block of code
         {
             return;
+        }
+
+        if (invertNodes)
+        {
+            CarPath new_carPath = new CarPath();
+            for (int i = carPath.nodes.Count - 1; i > 0; i--)
+            {
+                PathNode node = carPath.nodes[i];
+                new_carPath.nodes.Add(node);
+                new_carPath.centerNodes.Add(node);
+            }
+            carPath = new_carPath;
+        }
+
+        if (startPos != null)
+        {
+            // Get the closest point to the start and make it index 0 of carPath
+            int startIndex = 0;
+            float closest = float.MaxValue;
+            for (int i = 0; i < carPath.nodes.Count; i++)
+            {
+                PathNode node = carPath.nodes[i];
+                float distance = Vector3.Distance(node.pos, startPos.position);
+                if (distance < closest)
+                {
+                    closest = distance;
+                    startIndex = i;
+                }
+            }
+
+            if (startIndex != 0)
+            {
+                CarPath new_carPath = new CarPath();
+                for (int i = startIndex; i < carPath.nodes.Count + startIndex; i++)
+                {
+                    PathNode node = carPath.nodes[i % carPath.nodes.Count];
+                    new_carPath.nodes.Add(node);
+                    new_carPath.centerNodes.Add(node);
+
+                }
+                carPath = new_carPath;
+            }
         }
 
         // execute in the next update loop
@@ -264,9 +307,9 @@ public class PathManager : MonoBehaviour
 
         for (int i = 0; i < points.Count; i++)
         {
-            point = points[(int)nfmod(i, (points.Count - 1))];
-            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
-            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+            point = points[(int)nfmod(i, (points.Count))];
+            previous_point = points[(int)nfmod(i - 1, (points.Count))];
+            next_point = points[(int)nfmod(i + 1, (points.Count))];
 
             PathNode p = new PathNode();
             p.pos = point;

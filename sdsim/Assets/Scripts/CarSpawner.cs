@@ -20,6 +20,7 @@ public class CarSpawner : MonoBehaviour {
     public GameObject mainCamera;
     public GameObject splitScreenCamPrefab;
     public int SplitScreenWidth = 2;
+    public RaceCameras raceCameras;
 
     public GameObject racerStatusPrefab;
     public RectTransform raceStatusPanel;
@@ -62,11 +63,25 @@ public class CarSpawner : MonoBehaviour {
         if(toRemove != null)
         {   
             int iSplitScreenCam = cars.IndexOf(toRemove);
-            GameObject SplitScreenCamGo = cameras[iSplitScreenCam];
+            
+
+            int carID = toRemove.GetInstanceID();
+            if (raceCameras != null)
+            {
+                if (raceCameras.carProgress.ContainsKey(carID))
+                {
+                    raceCameras.carProgress.Remove(carID);
+                }
+            }
+
+            if (cameras.Count > iSplitScreenCam)
+            {
+                GameObject SplitScreenCamGo = cameras[iSplitScreenCam];
+                RemoveSplitScreenCam(SplitScreenCamGo);
+            }
 
             RemoveTimer(toRemove);
             cars.Remove(toRemove);
-            RemoveSplitScreenCam(SplitScreenCamGo);
             GameObject.Destroy(toRemove);
 
             Debug.Log("Removed car");
@@ -86,11 +101,24 @@ public class CarSpawner : MonoBehaviour {
         foreach (GameObject car in cars)
         {   
             int i = cars.IndexOf(car);
-            GameObject SplitScreenCamGo = cameras[i];
+
+            int carID = car.GetInstanceID();
+            if (raceCameras != null)
+            {
+                if (raceCameras.carProgress.ContainsKey(carID))
+                {
+                    raceCameras.carProgress.Remove(carID);
+                }
+            }
+
+            if (cameras.Count > i)
+            {
+                GameObject SplitScreenCamGo = cameras[i];
+                RemoveSplitScreenCam(SplitScreenCamGo);
+            }
 
             RemoveTimer(car);
             cars.Remove(car);
-            RemoveSplitScreenCam(SplitScreenCamGo);
             GameObject.Destroy(car);
         }
         RemoveUiReferences();
@@ -154,7 +182,7 @@ public class CarSpawner : MonoBehaviour {
 
     public void AddSplitScreenCam()
     {
-        if(cameras.Count < GlobalState.maxSplitScreen)
+        if(cameras.Count < GlobalState.maxSplitScreen && !GlobalState.raceCameras)
         {
             GameObject splitScreenCamGo = Instantiate(splitScreenCamPrefab);
             cameras.Add(splitScreenCamGo);
@@ -171,7 +199,7 @@ public class CarSpawner : MonoBehaviour {
     public void UpdateSplitScreenCams()
     {   
         // check if the number of cameras match the number of cars
-        if ((cameras.Count != cars.Count && cars.Count <= GlobalState.maxSplitScreen))
+        if ((cameras.Count != cars.Count && cars.Count <= GlobalState.maxSplitScreen) && !GlobalState.raceCameras)
         {   
             // remove all cameras in there
             foreach(GameObject splitScreenCamGo in cameras)
@@ -214,7 +242,7 @@ public class CarSpawner : MonoBehaviour {
             camera.rect = new Rect(x, y, w, h);
         }
 
-        if (cameras.Count == 0 && mainCamera != null)
+        if (cameras.Count == 0 && mainCamera != null && !GlobalState.raceCameras)
         {
             mainCamera.SetActive(true);
         }

@@ -31,6 +31,7 @@ Transform:
   - {fileID: 4340792174750134}
   - {fileID: 4734505512134486}
   - {fileID: 6847330343043177114}
+  - {fileID: 3155280883320326492}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -88,6 +89,7 @@ MonoBehaviour:
   splitScreenCamPrefab: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
     type: 3}
   SplitScreenWidth: 2
+  raceCameras: {fileID: 3155280883320326495}
   racerStatusPrefab: {fileID: 0}
   raceStatusPanel: {fileID: 0}
 --- !u!1 &1612042024290732
@@ -223,6 +225,7 @@ MonoBehaviour:
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
+  invertNodes: 0
   numSpans: 1000
   turnInc: 1
   spanDist: 2
@@ -233,6 +236,7 @@ MonoBehaviour:
   pathelem: {fileID: 185546, guid: 9066123a5f512497c89d7f45ac20f17c, type: 3}
   initAfterCarPathLoaded:
   - {fileID: 1612042024290732}
+  - {fileID: 3155280883320326493}
   challenges: []
 --- !u!1 &8458392223600906752
 GameObject:
@@ -355,3 +359,101 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!1001 &1440377015984622498
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4074926714667122}
+    m_Modifications:
+    - target: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: pathManager
+      value: 
+      objectReference: {fileID: 114576669822105592}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.6199996
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064511, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: m_Name
+      value: Race Cameras
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 436d25813b67c5248895bd906ed52f84, type: 3}
+--- !u!1 &3155280883320326493 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4050126385724064511, guid: 436d25813b67c5248895bd906ed52f84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1440377015984622498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3155280883320326492 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1440377015984622498}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3155280883320326495 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1440377015984622498}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155280883320326493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a55b4ccad22db364ab233f3090ff4a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
