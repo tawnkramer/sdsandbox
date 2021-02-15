@@ -2468,7 +2468,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -243, y: 198.25}
+  m_AnchoredPosition: {x: -242.99976, y: 198.25}
   m_SizeDelta: {x: 300, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1557385998
@@ -2742,8 +2742,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1787907216}
   m_HandleRect: {fileID: 1787907214}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.83333325
+  m_Value: 0.00000025494907
+  m_Size: 0.83333343
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3277,9 +3277,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'SDSandbox v 21.02.13
-
-'
+  m_Text: SDSandbox v 21.02.20
 --- !u!222 &2080155096
 CanvasRenderer:
   m_ObjectHideFlags: 0

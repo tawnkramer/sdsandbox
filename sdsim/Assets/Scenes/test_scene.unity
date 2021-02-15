@@ -626,7 +626,7 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: pathToLoad
-      value: thunderhill
+      value: racePi2
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -648,11 +648,11 @@ PrefabInstance:
         type: 3}
       propertyPath: pathCreator
       value: 
-      objectReference: {fileID: 1469522054}
+      objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doLoadGameObjectPath
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -697,7 +697,7 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doLoadScriptPath
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -709,6 +709,11 @@ PrefabInstance:
       propertyPath: initAfterCarPathLoaded.Array.data[5]
       value: 
       objectReference: {fileID: 350381821}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: startPos
+      value: 
+      objectReference: {fileID: 8366951266737620016}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: conePrefabs.Array.size

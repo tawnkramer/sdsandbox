@@ -3,8 +3,8 @@
 This script is usefull to load circuit path located in "Assets/Resources/Track/"
 This path can then be transferred to the RoadBuilder script to generate the road according to it.
 
-from there, you have two major options:
-* ## Point path
+from there, you have three major options:
+* ## Point Path
     This method is pretty basic, some XYZ points are stored in a .txt file, at runtime those points are loaded and that's basically it. <br>
     Those points can be obtained by driving a car and fetching some XYZ data and then storing them into a .txt file. <br>
     here is an extract of a point path:
@@ -27,8 +27,9 @@ from there, you have two major options:
     41.83722,0.7395042,87.34274
     40.84626,0.7394902,89.08534
     ```
+    <img src="../assets/path_manager/pointPathPM.png">
 
-* ## Script path
+* ## Script Path
     The script path is more compact than the point path method. <br>
     It's quite hard to make one, so you basically need to trial and error and shape the circuit segment by segment whereas with the point path you can easily drive a car and fetch the XYZ position of the car. <br>
     here is an example of a script path:
@@ -53,6 +54,13 @@ from there, you have two major options:
     R 1
     S 11
     ```
+    <img src="../assets/path_manager/scriptPathPM.png">
+
+* ## Game Object Path (PathCreator)
+    this method allows you to creat/modify a path directly in the editor. <br>
+    make sure you selected "Closed Path".
+    <img src="../assets/path_manager/pathCreator.png">
+    <img src="../assets/path_manager/pathCreatorPM.png">
 
 ## debugging
 for debugging purposes you can enable the "Do Show Path" property in the Hierarchy tab to show the loaded path, some green cubes will then be showed at runtime, it should looks like that: <br>
