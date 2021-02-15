@@ -174,11 +174,11 @@ public class GlobalStateEditor : MonoBehaviour
         port = PlayerPrefs.GetInt("port", port);
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
-        generateTrees = PlayerPrefs.GetInt("generateTrees") == 1 ? true : false;
-        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones") == 1 ? true : false;
-        randomLight = PlayerPrefs.GetInt("randomLight") == 1 ? true : false;
-        raceCameras = PlayerPrefs.GetInt("raceCameras") == 1 ? true : false;
-        useSeed = PlayerPrefs.GetInt("useSeed") == 1 ? true : false;
+        generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees? 1 : 0) == 1 ? true : false;
+        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones? 1 : 0) == 1 ? true : false;
+        randomLight = PlayerPrefs.GetInt("randomLight", randomLight? 1 : 0) == 1 ? true : false;
+        raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
+        useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
     }
 

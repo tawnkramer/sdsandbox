@@ -12,8 +12,8 @@
     public static bool generateTrees = true;
     public static bool generateRandomCones = true;
     public static bool randomLight = true;
-    public static bool raceCameras = true;
+    public static bool raceCameras = false;
     public static string privateKey = "";
-    public static bool useSeed = true;
+    public static bool useSeed = false;
     public static int seed = 20432814;
 }
