@@ -67,18 +67,25 @@ public class RaceCameras : MonoBehaviour, IWaitCarPath
             float sign = Mathf.Sign(deltaAngles[nodeIndex]);
             PathNode node = pathManager.carPath.centerNodes[nodeIndexes[i]];
             PathNode midNode = pathManager.carPath.centerNodes[nodeIndex];
+            Vector3 nodepos = node.pos + node.rotation * (laneXOffset * Vector3.right);
+            Vector3 midNodepos = midNode.pos + midNode.rotation * (laneXOffset * Vector3.right);
+
 
             GameObject goRaceCamChild = new GameObject(string.Format("RaceCamera {0}", i));
             goRaceCamChild.transform.SetParent(transform);
             RaceCamera cmp = goRaceCamChild.AddComponent<RaceCamera>();
-            cmp.SetCameraTrigger(node.pos + node.rotation * (laneXOffset * Vector3.right), node.rotation * Quaternion.AngleAxis(90, Vector3.up), new Vector3(0.1f, roadHeight, roadWidth));
-            cmp.SetCam(midNode.pos + midNode.rotation * (6f * sign * Vector3.right) + (cameraHeight * Vector3.up), midNode.pos);
+            cmp.SetCameraTrigger(nodepos, node.rotation * Quaternion.AngleAxis(90, Vector3.up), new Vector3(0.1f, roadHeight, roadWidth));
+            cmp.SetCam(midNodepos + midNode.rotation * (6f * sign * Vector3.right) + (cameraHeight * Vector3.up), midNodepos);
             cmp.index = i;
             raceCameras.Add(cmp);
         }
 
         // Enable first camera
         raceCameras[0].camera.enabled = true;
+
+        float coverage = GetCoverage(raceCameras.ToArray(), pathManager.carPath.centerNodes.ToArray(), nodeIndexes.ToArray());
+        Debug.Log(string.Format("Race cameras coverage: {0}%", coverage));
+
     }
 
     public void EnableCameras(bool enabled)
@@ -118,24 +125,54 @@ public class RaceCameras : MonoBehaviour, IWaitCarPath
         }
         else
         {
-            Debug.Log("Adding car key");
             carProgress.Add(carID, index);
         }
 
     }
 
-    public float GetCoverage()
+    public float GetCoverage(RaceCamera[] raceCams, PathNode[] nodes, int[] nodeIndexes)
     {
-        if (raceCameras.Count > 0)
+        if (raceCams.Length == nodeIndexes.Length)
         {
-            // TODO
-            return 1f;
+            int count = 0;
 
+            for (int i = 0; i < nodeIndexes.Length; i++)
+            {
+                int from = nodeIndexes[i];
+                int to = nodeIndexes[(i + 1) % nodeIndexes.Length];
+                if (i + 1 >= nodeIndexes.Length) { to += nodes.Length; }
+
+
+                for (int j = from; j < to; j++)
+                {
+                    PathNode node = nodes[j % nodes.Length];
+
+                    bool isSeenByCamera = IsSeenByCamera(raceCams[i].camera, node.pos + node.rotation * (laneXOffset * Vector3.right));
+                    if (isSeenByCamera) { count++; }
+                }
+
+
+            }
+
+            return ((float)count / (float)nodes.Length) * 100.0f; // get coverage percentage
         }
 
         else
         {
+            Debug.LogWarning("No race camera found"); // no cameras found
             return 0f;
         }
+    }
+
+    bool IsSeenByCamera(Camera camera, Vector3 position)
+    {
+        // check whether the object is visible by the camera
+        Vector3 viewPos = camera.WorldToViewportPoint(position);
+        if (viewPos.x >= 0 && viewPos.x <= 1 && viewPos.y >= 0 && viewPos.y <= 1 && viewPos.z > 0)
+        {
+            return true;
+        }
+        else
+            return false;
     }
 }
