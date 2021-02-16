@@ -64,10 +64,9 @@ public class CarSpawner : MonoBehaviour {
         {   
             int iSplitScreenCam = cars.IndexOf(toRemove);
             
-
-            int carID = toRemove.GetInstanceID() - 4; // noticed that there was an offset of -4 between the rigidbody instance ID and the car instance ID
             if (raceCameras != null)
             {
+                int carID = toRemove.GetInstanceID() - 4;
                 if (raceCameras.carProgress.ContainsKey(carID))
                 {
                     raceCameras.carProgress.Remove(carID);
@@ -102,9 +101,9 @@ public class CarSpawner : MonoBehaviour {
         {   
             int i = cars.IndexOf(car);
 
-            int carID = car.GetInstanceID() - 4; // noticed that there was an offset of -4 between the rigidbody instance ID and the car instance ID
             if (raceCameras != null)
             {
+                int carID = car.GetInstanceID() - 4;
                 if (raceCameras.carProgress.ContainsKey(carID))
                 {
                     raceCameras.carProgress.Remove(carID);

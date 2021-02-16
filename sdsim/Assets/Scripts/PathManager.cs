@@ -21,9 +21,9 @@ public class PathManager : MonoBehaviour
     public Transform startPos;
     public string pathToLoad = "none";
     public int smoothPathIter = 0;
-    public bool doChangeLanes = false;
     public GameObject locationMarkerPrefab;
     public int markerEveryN = 2;
+    public bool doChangeLanes = false;
     public bool invertNodes = false;
 
     [Header("Random path parameters")]
@@ -80,7 +80,7 @@ public class PathManager : MonoBehaviour
         if (invertNodes)
         {
             CarPath new_carPath = new CarPath();
-            for (int i = carPath.nodes.Count - 1; i > 0; i--)
+            for (int i = carPath.nodes.Count - 1; i >= 0; i--)
             {
                 PathNode node = carPath.nodes[i];
                 new_carPath.nodes.Add(node);
@@ -110,11 +110,17 @@ public class PathManager : MonoBehaviour
                 CarPath new_carPath = new CarPath();
                 for (int i = startIndex; i < carPath.nodes.Count + startIndex; i++)
                 {
+                    if (i % carPath.nodes.Count == 0) { continue; } // avoid two consecutive values to be the same
+
                     PathNode node = carPath.nodes[i % carPath.nodes.Count];
                     new_carPath.nodes.Add(node);
                     new_carPath.centerNodes.Add(node);
 
                 }
+                // close the loop
+                new_carPath.nodes.Add(new_carPath.nodes[0]);
+                new_carPath.centerNodes.Add(new_carPath.nodes[0]);
+
                 carPath = new_carPath;
             }
         }

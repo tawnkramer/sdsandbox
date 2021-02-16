@@ -84,7 +84,6 @@ namespace tk
             client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
             client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
             client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
-            client.dispatcher.Register("set_random_seed", new tk.Delegates.OnMsgRecv(OnSetRandomSeed));
         }
 
         public void Start()
@@ -552,39 +551,6 @@ namespace tk
                     ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
 
             }
-        }
-        void OnSetRandomSeed(JSONObject json)
-        {
-            string private_key = json.GetField("private_key").str;
-            if (private_key == GlobalState.privateKey)
-            {
-                int new_seed;
-                int.TryParse(json.GetField("seed").str, out new_seed);
-
-                GlobalState.seed = new_seed;
-                UnityMainThreadDispatcher.Instance().Enqueue(savePlayerPrefsInt("seed", GlobalState.seed));
-                UnityMainThreadDispatcher.Instance().Enqueue(pm.InitAfterCarPathLoaded(pm.challenges));
-            }
-            else
-            {
-                UnityMainThreadDispatcher.Instance().Enqueue(sendErrorMessage("private_key_error","private_key doesn't correspond, please ensure you entered the right one"));
-            }
-        }
-
-        IEnumerator sendErrorMessage(string msgType, string errorMessage)
-        {
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", msgType);
-            json.AddField("error_message", errorMessage);
-            client.SendMsg(json);
-            yield return null;
-        }
-
-        IEnumerator savePlayerPrefsInt(string key, int value)
-        {
-            PlayerPrefs.SetInt(key, value);
-            PlayerPrefs.Save();
-            yield return null;
         }
     }
 }

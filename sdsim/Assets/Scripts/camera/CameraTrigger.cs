@@ -7,6 +7,7 @@ public class CameraTrigger : MonoBehaviour
 {
     RaceCamera raceCamera;
     BoxCollider boxCollider;
+    string target = "body";
 
     void Awake()
     {
@@ -23,10 +24,8 @@ public class CameraTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (raceCamera == null)
-        {
-            raceCamera = transform.GetComponentInParent<RaceCamera>();
-        }
+        if (col.gameObject.name != target) { return; }
+        if (raceCamera == null) { raceCamera = transform.GetComponentInParent<RaceCamera>(); }
         raceCamera.CameraTriggered(col);
     }
 }

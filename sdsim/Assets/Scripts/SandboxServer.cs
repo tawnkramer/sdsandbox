@@ -17,6 +17,7 @@ public class SandboxServer : MonoBehaviour
     public GameObject clientTemplateObj = null;
     public Transform spawn_pt;
     public bool spawnCarswClients = true;
+    public bool privateAPI = false;
 
     public void CheckCommandLineConnectArgs()
     {
@@ -33,8 +34,16 @@ public class SandboxServer : MonoBehaviour
             }
             else
             {
-                host = GlobalState.host;
-                port = GlobalState.port;
+                if (privateAPI)
+                {
+                    host = GlobalState.host;
+                    port = GlobalState.portPrivateAPI;
+                }
+                else
+                {
+                    host = GlobalState.host;
+                    port = GlobalState.port;
+                }
             }
         }
     }
@@ -85,29 +94,42 @@ public class SandboxServer : MonoBehaviour
 
     private void InitClient(tk.TcpClient client)
     {
-        if (spawnCarswClients)
+        if (privateAPI) // private API client server
         {
-            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
-
-            if (spawner)
+            PrivateAPI privateAPIHandler = GameObject.FindObjectOfType<PrivateAPI>();
+            if (privateAPIHandler != null)
             {
                 if (_server.debug)
-                    Debug.Log("spawning car.");
+                    Debug.Log("init private API handler.");
 
-                spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>());
+                privateAPIHandler.Init(client.gameObject.GetComponent<tk.JsonTcpClient>());
             }
         }
-        else
+
+        else // normal client server
         {
-            //we are in the front end.
-            tk.TcpMenuHandler handler = GameObject.FindObjectOfType<TcpMenuHandler>();
-
-            if (handler)
+            if (spawnCarswClients) // we are on in a track scene
             {
-                if (_server.debug)
-                    Debug.Log("init menu handler.");
+                CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+                if (spawner != null)
+                {
+                    if (_server.debug)
+                        Debug.Log("spawning car.");
 
-                handler.Init(client.gameObject.GetComponent<tk.JsonTcpClient>());
+                    spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>());
+                }
+            }
+            else //we are in the menu
+            {
+
+                tk.TcpMenuHandler handler = GameObject.FindObjectOfType<TcpMenuHandler>();
+                if (handler != null)
+                {
+                    if (_server.debug)
+                        Debug.Log("init menu handler.");
+
+                    handler.Init(client.gameObject.GetComponent<tk.JsonTcpClient>());
+                }
             }
         }
     }
@@ -143,13 +165,17 @@ public class SandboxServer : MonoBehaviour
 
     public void OnClientDisconnected(tk.TcpClient client)
     {
-        CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
-
-        if (spawner)
+        if (privateAPI)
         {
-            spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
         }
-
+        else
+        {
+            CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
+            if (spawner)
+            {
+                spawner.RemoveCar(client.gameObject.GetComponent<tk.JsonTcpClient>());
+            }
+        }
         GameObject.Destroy(client.gameObject);
     }
 }

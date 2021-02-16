@@ -1,12 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColCone : MonoBehaviour
+public class startingLine : MonoBehaviour
 {
     public int index = 0;
     string target = "body";
-    float penalty = 1;
     PrivateAPI privateAPI;
 
     void Start()
@@ -23,13 +22,6 @@ public class ColCone : MonoBehaviour
         string carName = parent.name;
 
         if (privateAPI == null) { return; }
-        privateAPI.CollisionWithCone(carName, index, Time.realtimeSinceStartup);
-
-        Timer[] status = parent.gameObject.GetComponentsInChildren<Timer>();
-        foreach (Timer t in status)
-        {
-            Debug.Log("Collision with penalty cone");
-            t.OnCollideCone(penalty);
-        }
+        privateAPI.CollisionWithStatingLine(carName, index, Time.realtimeSinceStartup);
     }
 }

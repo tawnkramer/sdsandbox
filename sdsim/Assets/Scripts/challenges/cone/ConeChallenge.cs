@@ -29,7 +29,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
         if (GlobalState.useSeed) { Random.InitState(GlobalState.seed); };
         for (int i = 0; i < numRandCone; i++)
         {
-            RandomCone();
+            RandomCone(i);
         }
     }
 
@@ -43,7 +43,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
         Generate();
     }
 
-    public void RandomCone()
+    public void RandomCone(int index)
     {
         if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count > 0)
         {
@@ -54,6 +54,8 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
             Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
             Vector3 xz_coords = new Vector3(random_node.pos.x, coneHeightOffset, random_node.pos.z); // height variation is not supported yet
             GameObject go = Instantiate(conePrefabs[iConePrefab], xz_coords + rand_pos_offset, conePrefabs[iConePrefab].transform.rotation);
+            ColCone col = go.GetComponentInChildren<ColCone>();
+            if (col != null) { col.index = index; }
             createdObjects.Add(go);
         }
     }

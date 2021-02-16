@@ -221,10 +221,10 @@ MonoBehaviour:
   startPos: {fileID: 0}
   pathToLoad: sparkfun_avc
   smoothPathIter: 0
-  doChangeLanes: 1
   locationMarkerPrefab: {fileID: 1174132978357030, guid: d4546516a668c43b3a911826abd5f2c0,
     type: 3}
   markerEveryN: 4
+  doChangeLanes: 1
   invertNodes: 0
   numSpans: 1000
   turnInc: 1
