@@ -11,6 +11,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.port; }
         set { GlobalState.port = value; }
     }
+    public int portPrivateAPI
+    {
+        get { return GlobalState.portPrivateAPI; }
+        set { GlobalState.portPrivateAPI = value; }
+    }
     public int fps
     {
         get { return GlobalState.fps; }
@@ -84,29 +89,37 @@ public class GlobalStateEditor : MonoBehaviour
         scrollPosition = GUI.BeginScrollView(new Rect(0, 0, width, height), scrollPosition, new Rect(0, 0, scrollWidth, scrollHeight), false, false);
 
         GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "port");
-        YOffset += Ysteps;
-        string portString = GUI.TextField(new Rect(LabelXOffset, 0, width, 20), port.ToString());
+        string portString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), port.ToString());
         int tmp_port = port;
         int.TryParse(portString, out tmp_port);
         if (tmp_port != port)
             port = tmp_port;
+        YOffset += Ysteps;
+
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "portPrivateAPI");
+        string portPrivateAPIString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), portPrivateAPI.ToString());
+        int tmp_portPrivateAPI = portPrivateAPI;
+        int.TryParse(portPrivateAPIString, out tmp_portPrivateAPI);
+        if (tmp_portPrivateAPI != portPrivateAPI)
+            portPrivateAPI = tmp_portPrivateAPI;
+        YOffset += Ysteps;
 
         GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "fps limit");
         string fpsString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), fps.ToString());
-        YOffset += Ysteps;
         int tmp_fps = fps;
         int.TryParse(fpsString, out tmp_fps);
         if (tmp_fps != fps)
             fps = tmp_fps;
+        YOffset += Ysteps;
 
 
         GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Max SplitScreen");
         string maxspString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), maxSplitScreen.ToString());
-        YOffset += Ysteps;
         int tmp_maxsp = maxSplitScreen;
         int.TryParse(maxspString, out tmp_maxsp);
         if (tmp_maxsp != maxSplitScreen)
             maxSplitScreen = tmp_maxsp;
+        YOffset += Ysteps;
 
         generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
         YOffset += Ysteps;

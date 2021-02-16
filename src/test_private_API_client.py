@@ -1,4 +1,3 @@
-import random
 import json
 import time
 import logging
