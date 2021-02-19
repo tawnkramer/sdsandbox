@@ -2637,6 +2637,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8759223901800814790, guid: 823d0c7739d3ffc4da1466e8dd61ca67,
         type: 3}
+    - target: {fileID: 3155280883320326495, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: distanceBetweenCameras
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89b891dc9d0fe46ffba6fbc78477652f, type: 3}
 --- !u!4 &8985904831852787701

@@ -44,6 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathManager: {fileID: 0}
-  distanceBetweenCameras: 40
+  distanceBetweenCameras: 30
   roadWidth: 10
+  roadHeight: 1
   cameraHeight: 10
+  laneXOffset: 0
+  startIndexOffset: 0

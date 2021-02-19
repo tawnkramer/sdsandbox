@@ -170,6 +170,7 @@ public class GlobalStateEditor : MonoBehaviour
     void SaveToPlayerPrefs()
     {
         PlayerPrefs.SetInt("port", port);
+        PlayerPrefs.SetInt("portPrivateAPI", portPrivateAPI);
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
@@ -185,6 +186,7 @@ public class GlobalStateEditor : MonoBehaviour
     void LoadPlayerPrefs()
     {
         port = PlayerPrefs.GetInt("port", port);
+        portPrivateAPI = PlayerPrefs.GetInt("portPrivateAPI", portPrivateAPI);
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
         generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees? 1 : 0) == 1 ? true : false;

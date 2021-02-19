@@ -250,15 +250,11 @@ public class PathManager : MonoBehaviour
             smoothPathIter--;
         }
 
-        Vector3 point;
-        Vector3 previous_point;
-        Vector3 next_point;
-
         for (int i = 0; i < points.Count; i++)
         {
-            point = points[(int)nfmod(i, (points.Count - 1))];
-            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
-            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+            Vector3 point = points[(int)nfmod(i, (points.Count - 1))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
 
             PathNode p = new PathNode();
             p.pos = point;
@@ -307,15 +303,11 @@ public class PathManager : MonoBehaviour
             smoothPathIter--;
         }
 
-        Vector3 point;
-        Vector3 previous_point;
-        Vector3 next_point;
-
         for (int i = 0; i < points.Count; i++)
         {
-            point = points[(int)nfmod(i, (points.Count))];
-            previous_point = points[(int)nfmod(i - 1, (points.Count))];
-            next_point = points[(int)nfmod(i + 1, (points.Count))];
+            Vector3 point = points[(int)nfmod(i, (points.Count))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
 
             PathNode p = new PathNode();
             p.pos = point;
@@ -364,6 +356,8 @@ public class PathManager : MonoBehaviour
             span.z = spanDist;
             float turnVal = 10.0f;
 
+            List<Vector3> points = new List<Vector3>();
+
             foreach (TrackScriptElem se in script.track)
             {
                 if (se.state == TrackParams.State.AngleDY)
@@ -387,8 +381,7 @@ public class PathManager : MonoBehaviour
                     Vector3 np = s;
                     PathNode p = new PathNode();
                     p.pos = np;
-                    carPath.nodes.Add(p);
-                    carPath.centerNodes.Add(p);
+                    points.Add(np);
 
                     turn = dY;
 
@@ -399,6 +392,21 @@ public class PathManager : MonoBehaviour
                 }
 
             }
+
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                Vector3 point = points[(int)nfmod(i, (points.Count))];
+                Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+                Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
+
+                PathNode p = new PathNode();
+                p.pos = point;
+                p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
+                carPath.nodes.Add(p);
+                carPath.centerNodes.Add(p);
+            }
+
         }
     }
 
@@ -414,13 +422,12 @@ public class PathManager : MonoBehaviour
         span.y = 0f;
         span.z = spanDist;
 
+        List<Vector3> points = new List<Vector3>();
+
         for (int iS = 0; iS < numSpans; iS++)
         {
             Vector3 np = s;
-            PathNode p = new PathNode();
-            p.pos = np;
-            carPath.nodes.Add(p);
-            carPath.centerNodes.Add(p);
+            points.Add(np);
 
             float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 
@@ -429,7 +436,7 @@ public class PathManager : MonoBehaviour
             Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
             span = rot * span.normalized;
 
-            if (SegmentCrossesPath(np + (span.normalized * 100.0f), 90.0f))
+            if (SegmentCrossesPath(np + (span.normalized * 100.0f), 90.0f, points.ToArray()))
             {
                 //turn in the opposite direction if we think we are going to run over the path
                 turn *= -0.5f;
@@ -441,13 +448,27 @@ public class PathManager : MonoBehaviour
 
             s = s + span;
         }
+
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector3 point = points[(int)nfmod(i, (points.Count))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
+
+            PathNode p = new PathNode();
+            p.pos = point;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
+            carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
+        }
+
     }
 
-    public bool SegmentCrossesPath(Vector3 posA, float rad)
+    public bool SegmentCrossesPath(Vector3 posA, float rad, Vector3[] posN)
     {
-        foreach (PathNode pn in carPath.nodes)
+        foreach (Vector3 pn in posN)
         {
-            float d = (posA - pn.pos).magnitude;
+            float d = (posA - pn).magnitude;
 
             if (d < rad)
                 return true;
