@@ -49,7 +49,7 @@ public class ConeChallenge : MonoBehaviour, IWaitCarPath
         if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count > 0)
         {
 
-            int random_index = Random.Range(nodesAfterStart, pathManager.carPath.centerNodes.Count);
+            int random_index = Random.Range(nodesAfterStart, pathManager.carPath.centerNodes.Count - nodesAfterStart);
             PathNode random_node = pathManager.carPath.centerNodes[random_index];
 
             Vector3 rand_pos_offset = new Vector3(Random.Range(-coneOffset, coneOffset), 0, Random.Range(-coneOffset, coneOffset));
