@@ -73,15 +73,15 @@ public class CarSpawner : MonoBehaviour {
                 }
             }
 
+            RemoveTimer(toRemove);
+            cars.Remove(toRemove);
+            GameObject.Destroy(toRemove);
+
             if (cameras.Count > iSplitScreenCam)
             {
                 GameObject SplitScreenCamGo = cameras[iSplitScreenCam];
                 RemoveSplitScreenCam(SplitScreenCamGo);
             }
-
-            RemoveTimer(toRemove);
-            cars.Remove(toRemove);
-            GameObject.Destroy(toRemove);
 
             Debug.Log("Removed car");
             return true;
@@ -110,15 +110,15 @@ public class CarSpawner : MonoBehaviour {
                 }
             }
 
+            RemoveTimer(car);
+            cars.Remove(car);
+            GameObject.Destroy(car);
+            
             if (cameras.Count > i)
             {
                 GameObject SplitScreenCamGo = cameras[i];
                 RemoveSplitScreenCam(SplitScreenCamGo);
             }
-
-            RemoveTimer(car);
-            cars.Remove(car);
-            GameObject.Destroy(car);
         }
         RemoveUiReferences();
     }
@@ -193,6 +193,7 @@ public class CarSpawner : MonoBehaviour {
         GameObject.Destroy(splitScreenCamGo);
         cameras.Remove(splitScreenCamGo);
         UpdateSplitScreenCams();
+        Debug.Log("removed split screen camera");
     }
 
     public void UpdateSplitScreenCams()
