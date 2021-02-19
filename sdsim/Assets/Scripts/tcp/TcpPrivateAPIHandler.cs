@@ -74,26 +74,28 @@ namespace tk
 
         public IEnumerator SendCollisionWithStartingLine(string name, int startingLineIndex, float timeStamp)
         {
-            if (!isVerified) { yield return null; }
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "collision_with_starting_line");
-            json.AddField("car_name", name);
-            json.AddField("starting_line_index", startingLineIndex);
-            json.AddField("timeStamp", timeStamp);
-            client.SendMsg(json);
+            if (isVerified)
+            {
+                JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+                json.AddField("msg_type", "collision_with_starting_line");
+                json.AddField("car_name", name);
+                json.AddField("starting_line_index", startingLineIndex);
+                json.AddField("timeStamp", timeStamp);
+                client.SendMsg(json);
+            }
             yield return null;
         }
         public IEnumerator SendCollisionWithCone(string name, int coneIndex, float timeStamp)
         {
-            if (!isVerified) { yield return null; }
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "collision_with_cone");
-            json.AddField("car_name", name);
-            json.AddField("cone_index", coneIndex);
-            json.AddField("timeStamp", timeStamp);
-            client.SendMsg(json);
+            if (isVerified)
+            {
+                JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+                json.AddField("msg_type", "collision_with_cone");
+                json.AddField("car_name", name);
+                json.AddField("cone_index", coneIndex);
+                json.AddField("timeStamp", timeStamp);
+                client.SendMsg(json);
+            }
             yield return null;
         }
         IEnumerator sendErrorMessage(string msgType, string errorMessage)
