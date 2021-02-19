@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4160164102731652190}
   - component: {fileID: 4160164102731652191}
+  - component: {fileID: 3464843757899550447}
   - component: {fileID: 4160164102731652161}
   m_Layer: 5
   m_Name: RaceCanvas
@@ -66,6 +67,28 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &3464843757899550447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4160164102731652162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1920, y: 1127}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0.25
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
 --- !u!114 &4160164102731652161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,12 +375,12 @@ PrefabInstance:
     - target: {fileID: 224389105264718766, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.8000488
+      value: 0.7998047
       objectReference: {fileID: 0}
     - target: {fileID: 224389105264718766, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.6999512
+      value: 0.7001953
       objectReference: {fileID: 0}
     - target: {fileID: 224389105264718766, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -402,7 +425,7 @@ PrefabInstance:
     - target: {fileID: 224395337476948522, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.3618393
+      value: -0.36184692
       objectReference: {fileID: 0}
     - target: {fileID: 224395337476948522, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -442,7 +465,7 @@ PrefabInstance:
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.15000534
+      value: 0.15000916
       objectReference: {fileID: 0}
     - target: {fileID: 224608411799590262, guid: 92b6ac8f46d10408e810d7e666e3dfdd,
         type: 3}
@@ -480,11 +503,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114096739988329910, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
-      propertyPath: m_FontData.m_BestFit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114096739988329910, guid: b1c5b8d5613adf648a0511a9824ade2d,
-        type: 3}
       propertyPath: m_FontData.m_MinSize
       value: 10
       objectReference: {fileID: 0}
@@ -501,12 +519,12 @@ PrefabInstance:
     - target: {fileID: 224280005622024586, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.3000183
+      value: -1.3000488
       objectReference: {fileID: 0}
     - target: {fileID: 224280005622024586, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.9000015
+      value: 0.8999939
       objectReference: {fileID: 0}
     - target: {fileID: 224494488356718942, guid: b1c5b8d5613adf648a0511a9824ade2d,
         type: 3}
@@ -632,26 +650,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PIDPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 114004372304906892, guid: e9fff5699d2384074977a12cf04b4db8,
+    - target: {fileID: 114577809269408254, guid: e9fff5699d2384074977a12cf04b4db8,
         type: 3}
-      propertyPath: m_Text
-      value: 'Steer Max: 7'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114333044586679056, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Diff: 60'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114390039734892222, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Prop: 10'
-      objectReference: {fileID: 0}
-    - target: {fileID: 114508305361058362, guid: e9fff5699d2384074977a12cf04b4db8,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Max Speed: 5'
-      objectReference: {fileID: 0}
+      propertyPath: SpeedSlider
+      value: 
+      objectReference: {fileID: 4048276808923568636}
     - target: {fileID: 224372064716631678, guid: e9fff5699d2384074977a12cf04b4db8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -765,6 +768,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4160164102077699202}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4048276808923568636 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114139728902294910, guid: e9fff5699d2384074977a12cf04b4db8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4160164102077699202}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4160164102475705784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -899,7 +914,7 @@ PrefabInstance:
     - target: {fileID: 224501983197500574, guid: 74a5e5f01dbed34429e74e845bc3b9af,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.0999985
+      value: 1.1000061
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74a5e5f01dbed34429e74e845bc3b9af, type: 3}
@@ -1052,7 +1067,7 @@ PrefabInstance:
     - target: {fileID: 224852417293375932, guid: 0eae2b67074794fe697e7dd14e8aa706,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.70000076
+      value: 0.69999695
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0eae2b67074794fe697e7dd14e8aa706, type: 3}

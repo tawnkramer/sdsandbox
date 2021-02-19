@@ -55,8 +55,9 @@ public class Car : MonoBehaviour, ICar {
 		requestSteering = 0f;
 
 		SavePosRot();
-
-        maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);       
+		
+		// had to disable this because PID max steering was affecting the global max_steering
+        // maxSteer = PlayerPrefs.GetFloat("max_steer", 16.0f);
 	}
 
 	public void SavePosRot()
@@ -80,9 +81,9 @@ public class Car : MonoBehaviour, ICar {
     public void SetMaxSteering(float val)
     {
         maxSteer = val;
-
-        PlayerPrefs.SetFloat("max_steer", maxSteer);
-        PlayerPrefs.Save();
+		// had to disable this because PID max steering was affecting the global max_steering
+        // PlayerPrefs.SetFloat("max_steer", maxSteer);
+        // PlayerPrefs.Save();
     }
 
     public float GetMaxSteering()

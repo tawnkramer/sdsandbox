@@ -19,6 +19,7 @@ public class CarConfig : MonoBehaviour
             car_name_base.SetActive(true);
             car_name_text.text = car_name;
             car_name_text.fontSize = font_size;
+            transform.name = car_name; // rename the gameobject name
         }
         
         if(timer != null)

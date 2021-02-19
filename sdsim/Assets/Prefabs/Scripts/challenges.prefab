@@ -45,7 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightSource: {fileID: 0}
   minLightColorRange: {r: 1, g: 1, b: 0.49803922, a: 1}
-  maxLightColorRange: {r: 1, g: 0.78431374, b: 0.78431374, a: 1}
+  maxLightColorRange: {r: 1, g: 0.8627451, b: 0.8627451, a: 1}
+  max_angle: 45
 --- !u!1 &5042952344224196374
 GameObject:
   m_ObjectHideFlags: 0

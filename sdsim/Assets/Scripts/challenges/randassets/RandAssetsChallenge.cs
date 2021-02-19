@@ -15,6 +15,18 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
 
     public void Init()
     {
+        if (!GlobalState.generateTrees) { return; }
+        foreach (GameObject createdObject in createdObjects)
+        {
+            GameObject.Destroy(createdObject);
+        }
+        createdObjects = new List<GameObject>();
+        Generate();
+    }
+
+    public void Generate()
+    {
+        if (GlobalState.useSeed) { Random.InitState(GlobalState.seed); };
         GameObject[] randomList = new GameObject[numAssets];
         for (int i = 0; i < numAssets; i++) // pick some items from the prefab list and add them to the randomList array
         {
@@ -32,12 +44,12 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
             GameObject.Destroy(createdObject);
         }
         createdObjects = new List<GameObject>();
-        Init();
+        Generate();
     }
 
     public void PlaceAssets(GameObject[] assetList)
     {
-        if (pathManager.carPath.centerNodes != null)
+        if (pathManager.carPath.centerNodes != null && pathManager.carPath.centerNodes.Count > 0)
         {
             for (int i = 0; i < assetList.Length; i++)
             {

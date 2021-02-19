@@ -21,9 +21,10 @@ public class PathManager : MonoBehaviour
     public Transform startPos;
     public string pathToLoad = "none";
     public int smoothPathIter = 0;
-    public bool doChangeLanes = false;
     public GameObject locationMarkerPrefab;
     public int markerEveryN = 2;
+    public bool doChangeLanes = false;
+    public bool invertNodes = false;
 
     [Header("Random path parameters")]
     public int numSpans = 100;
@@ -39,6 +40,7 @@ public class PathManager : MonoBehaviour
 
     [Header("Aux")]
     public GameObject[] initAfterCarPathLoaded; // Scripts using the IWaitCarPath interface to init after loading the CarPath
+    public GameObject[] challenges; // Challenges using the IWaitCarPath interface to init after loading the CarPath or on private API call
 
     Vector3 span = Vector3.zero;
     GameObject generated_mesh;
@@ -75,18 +77,57 @@ public class PathManager : MonoBehaviour
             return;
         }
 
-        foreach (GameObject go in initAfterCarPathLoaded) // Init each Object that need a carPath
+        if (invertNodes)
         {
-            IWaitCarPath script = go.GetComponent<IWaitCarPath>();
-            if (script != null)
+            CarPath new_carPath = new CarPath();
+            for (int i = carPath.nodes.Count - 1; i >= 0; i--)
             {
-                script.Init();
+                PathNode node = carPath.nodes[i];
+                new_carPath.nodes.Add(node);
+                new_carPath.centerNodes.Add(node);
             }
-            else
+            carPath = new_carPath;
+        }
+
+        if (startPos != null)
+        {
+            // Get the closest point to the start and make it index 0 of carPath
+            int startIndex = 0;
+            float closest = float.MaxValue;
+            for (int i = 0; i < carPath.nodes.Count; i++)
             {
-                Debug.Log("Provided GameObject doesn't contain an IWaitCarPath script");
+                PathNode node = carPath.nodes[i];
+                float distance = Vector3.Distance(node.pos, startPos.position);
+                if (distance < closest)
+                {
+                    closest = distance;
+                    startIndex = i;
+                }
+            }
+
+            if (startIndex != 0)
+            {
+                CarPath new_carPath = new CarPath();
+                for (int i = startIndex; i < carPath.nodes.Count + startIndex; i++)
+                {
+                    if (i % carPath.nodes.Count == 0) { continue; } // avoid two consecutive values to be the same
+
+                    PathNode node = carPath.nodes[i % carPath.nodes.Count];
+                    new_carPath.nodes.Add(node);
+                    new_carPath.centerNodes.Add(node);
+
+                }
+                // close the loop
+                new_carPath.nodes.Add(new_carPath.nodes[0]);
+                new_carPath.centerNodes.Add(new_carPath.nodes[0]);
+
+                carPath = new_carPath;
             }
         }
+
+        // execute in the next update loop
+        UnityMainThreadDispatcher.Instance().Enqueue(InitAfterCarPathLoaded(initAfterCarPathLoaded));
+        UnityMainThreadDispatcher.Instance().Enqueue(InitAfterCarPathLoaded(challenges));
 
         // if (locationMarkerPrefab != null && carPath != null)
         // {
@@ -112,7 +153,7 @@ public class PathManager : MonoBehaviour
                 go.transform.parent = this.transform;
             }
         }
-        
+
         if (doShowCenterNodePath)
         {
             for (int iN = 0; iN < carPath.centerNodes.Count; iN++)
@@ -124,6 +165,38 @@ public class PathManager : MonoBehaviour
                 go.transform.parent = this.transform;
             }
         }
+    }
+
+    public IEnumerator InitAfterCarPathLoaded(GameObject[] scriptList)
+    {
+        if (carPath != null)
+        {
+            foreach (GameObject go in scriptList) // Init each Object that need a carPath
+            {
+                try
+                {
+                    IWaitCarPath script = go.GetComponent<IWaitCarPath>();
+                    if (script != null)
+                    {
+                        script.Init();
+                    }
+                    else
+                    {
+                        Debug.LogError("Provided GameObject doesn't contain an IWaitCarPath script");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(string.Format("Could not initialize: {0}, Exception: {1}", go.name, e));
+                }
+            }
+        }
+
+        else
+        {
+            Debug.LogError("No carPath loaded"); yield return null;
+        }
+        yield return null;
     }
 
     public void DestroyRoad() // old, need refactoring in RoadBuilder
@@ -162,32 +235,32 @@ public class PathManager : MonoBehaviour
         carPath = new CarPath();
 
         List<Vector3> points = new List<Vector3>();
-        List<Quaternion> rotations = new List<Quaternion>();
 
         float stepping = 1 / (pathCreator.path.length * precision);
         for (float i = 0; i <= 1; i += stepping)
         {
             points.Add(pathCreator.path.GetPointAtTime(i));
-            rotations.Add(pathCreator.path.GetRotation(i));
         }
         points.Add(pathCreator.path.GetPointAtTime(0));
-        rotations.Add(pathCreator.path.GetRotationAtDistance(0)); // close the loop
 
-
-        List<Vector3> smoothed_points = new List<Vector3>(points);
 
         while (smoothPathIter > 0) // not working for the moment, looking forward using the same system as MakePointPath with LookAt
         {
-            smoothed_points = Chaikin(smoothed_points);
+            points = Chaikin(points);
             smoothPathIter--;
         }
 
         for (int i = 0; i < points.Count; i++)
         {
+            Vector3 point = points[(int)nfmod(i, (points.Count - 1))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+
             PathNode p = new PathNode();
-            p.pos = points[i];
-            p.rotation = rotations[i];
+            p.pos = point;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
         }
     }
 
@@ -230,21 +303,17 @@ public class PathManager : MonoBehaviour
             smoothPathIter--;
         }
 
-        Vector3 point;
-        Vector3 previous_point;
-        Vector3 next_point;
-
         for (int i = 0; i < points.Count; i++)
         {
-            point = points[(int)nfmod(i, (points.Count - 1))];
-            previous_point = points[(int)nfmod(i - 1, (points.Count - 1))];
-            next_point = points[(int)nfmod(i + 1, (points.Count - 1))];
+            Vector3 point = points[(int)nfmod(i, (points.Count))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
 
             PathNode p = new PathNode();
-            Quaternion rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up);
             p.pos = point;
-            p.rotation = rotation;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
             carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
         }
     }
 
@@ -287,6 +356,8 @@ public class PathManager : MonoBehaviour
             span.z = spanDist;
             float turnVal = 10.0f;
 
+            List<Vector3> points = new List<Vector3>();
+
             foreach (TrackScriptElem se in script.track)
             {
                 if (se.state == TrackParams.State.AngleDY)
@@ -310,7 +381,7 @@ public class PathManager : MonoBehaviour
                     Vector3 np = s;
                     PathNode p = new PathNode();
                     p.pos = np;
-                    carPath.nodes.Add(p);
+                    points.Add(np);
 
                     turn = dY;
 
@@ -321,6 +392,21 @@ public class PathManager : MonoBehaviour
                 }
 
             }
+
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                Vector3 point = points[(int)nfmod(i, (points.Count))];
+                Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+                Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
+
+                PathNode p = new PathNode();
+                p.pos = point;
+                p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
+                carPath.nodes.Add(p);
+                carPath.centerNodes.Add(p);
+            }
+
         }
     }
 
@@ -336,12 +422,12 @@ public class PathManager : MonoBehaviour
         span.y = 0f;
         span.z = spanDist;
 
+        List<Vector3> points = new List<Vector3>();
+
         for (int iS = 0; iS < numSpans; iS++)
         {
             Vector3 np = s;
-            PathNode p = new PathNode();
-            p.pos = np;
-            carPath.nodes.Add(p);
+            points.Add(np);
 
             float t = UnityEngine.Random.Range(-1.0f * turnInc, turnInc);
 
@@ -350,7 +436,7 @@ public class PathManager : MonoBehaviour
             Quaternion rot = Quaternion.Euler(0.0f, turn, 0f);
             span = rot * span.normalized;
 
-            if (SegmentCrossesPath(np + (span.normalized * 100.0f), 90.0f))
+            if (SegmentCrossesPath(np + (span.normalized * 100.0f), 90.0f, points.ToArray()))
             {
                 //turn in the opposite direction if we think we are going to run over the path
                 turn *= -0.5f;
@@ -362,13 +448,27 @@ public class PathManager : MonoBehaviour
 
             s = s + span;
         }
+
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector3 point = points[(int)nfmod(i, (points.Count))];
+            Vector3 previous_point = points[(int)nfmod(i - 1, (points.Count))];
+            Vector3 next_point = points[(int)nfmod(i + 1, (points.Count))];
+
+            PathNode p = new PathNode();
+            p.pos = point;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
+            carPath.nodes.Add(p);
+            carPath.centerNodes.Add(p);
+        }
+
     }
 
-    public bool SegmentCrossesPath(Vector3 posA, float rad)
+    public bool SegmentCrossesPath(Vector3 posA, float rad, Vector3[] posN)
     {
-        foreach (PathNode pn in carPath.nodes)
+        foreach (Vector3 pn in posN)
         {
-            float d = (posA - pn.pos).magnitude;
+            float d = (posA - pn).magnitude;
 
             if (d < rad)
                 return true;

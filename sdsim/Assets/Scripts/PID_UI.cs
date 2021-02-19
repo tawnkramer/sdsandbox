@@ -12,6 +12,9 @@ public class PID_UI : MonoBehaviour {
 	public Text P_Term;
 	public Text D_Term;
 	public Text steerMax;
+    public Slider SpeedSlider;
+    public Slider PropSlider;
+    public Slider DiffSlider;
     public Slider steerMaxSlider;
 
 	void Start()
@@ -32,6 +35,10 @@ public class PID_UI : MonoBehaviour {
             steerMaxSlider.value = pid.car.GetMaxSteering();
             OnSteerMaxChanged(steerMaxSlider.value);
         }
+
+		SpeedSlider.value = pid.maxSpeed;
+		PropSlider.value = pid.Kp;
+		DiffSlider.value = pid.Kd;
     }
 
 	public void OnMaxSpeedChanged(float val)

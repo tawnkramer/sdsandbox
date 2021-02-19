@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/waveshare.unity
     guid: c5d126de1fd7ec9468c8765592f5f783
+  - enabled: 1
+    path: Assets/Scenes/mini_monaco.unity
+    guid: 66f33ad92e768c045a184401f8a0fd4c
+  - enabled: 1
+    path: Assets/Scenes/warren.unity
+    guid: a65aa29f80d4f97458c095f4838a8d36
   m_configObjects: {}

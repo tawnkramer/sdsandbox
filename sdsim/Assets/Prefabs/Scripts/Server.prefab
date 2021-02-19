@@ -64,6 +64,7 @@ MonoBehaviour:
     type: 3}
   spawn_pt: {fileID: 8851192297964007755}
   spawnCarswClients: 1
+  privateAPI: 0
 --- !u!114 &8851192297964007756
 MonoBehaviour:
   m_ObjectHideFlags: 0

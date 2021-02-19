@@ -40,6 +40,7 @@ public class Timer : MonoBehaviour
         penalties = 0.0f;
         currentStart = 0.0f;
         enabled_timer = false;
+        freezed = false;
     }
 
     public void ResetTimer()
