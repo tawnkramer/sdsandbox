@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 394460222}
   - component: {fileID: 394460220}
   - component: {fileID: 394460219}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: starting_line
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -7317,7 +7317,8 @@ MonoBehaviour:
   gizmoSize: 0.1
   noise: 0.2
   DisplayDebugInScene: 0
-  layerMaskNames: []
+  layerMaskNames:
+  - Ignore Lidar
 --- !u!1 &4418113327157127860
 GameObject:
   m_ObjectHideFlags: 0
