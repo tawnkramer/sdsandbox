@@ -45,7 +45,7 @@ public class GlobalStateEditor : MonoBehaviour
     {
         get { return GlobalState.raceCameras; }
         set { GlobalState.raceCameras = value; }
-    }    
+    }
     public bool useSeed
     {
         get { return GlobalState.useSeed; }
@@ -60,6 +60,12 @@ public class GlobalStateEditor : MonoBehaviour
     {
         get { return GlobalState.privateKey; }
         set { GlobalState.privateKey = value; }
+    }
+
+    public string additionnalContentPath
+    {
+        get { return GlobalState.additionnalContentPath; }
+        set { GlobalState.additionnalContentPath = value; }
     }
 
     private bool showPrivateKey = false;
@@ -121,6 +127,10 @@ public class GlobalStateEditor : MonoBehaviour
             maxSplitScreen = tmp_maxsp;
         YOffset += Ysteps;
 
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Content Path");
+        additionnalContentPath = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), additionnalContentPath);
+        YOffset += Ysteps;
+
         generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
         YOffset += Ysteps;
         generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
@@ -179,6 +189,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
+        PlayerPrefs.SetString("additionnalContentPath", additionnalContentPath);
 
         PlayerPrefs.Save();
     }
@@ -189,12 +200,13 @@ public class GlobalStateEditor : MonoBehaviour
         portPrivateAPI = PlayerPrefs.GetInt("portPrivateAPI", portPrivateAPI);
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
-        generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees? 1 : 0) == 1 ? true : false;
-        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones? 1 : 0) == 1 ? true : false;
-        randomLight = PlayerPrefs.GetInt("randomLight", randomLight? 1 : 0) == 1 ? true : false;
+        generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees ? 1 : 0) == 1 ? true : false;
+        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones ? 1 : 0) == 1 ? true : false;
+        randomLight = PlayerPrefs.GetInt("randomLight", randomLight ? 1 : 0) == 1 ? true : false;
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
+        additionnalContentPath = PlayerPrefs.GetString("additionnalContentPath", additionnalContentPath);
     }
 
     void RandomizePrivateKey()
