@@ -136,17 +136,22 @@ namespace tk
             Application.Quit();
         }
 
-        void AddButtonToMenu(string scene_name)
+        void AddButtonToMenu(string scene_path)
         {
+            string[] split_scene_name = scene_path.Split('/');
+            split_scene_name = split_scene_name[split_scene_name.Length - 1].Split('.'); 
+            string scene_name = split_scene_name[0]; // get the scene name (last part of the path and remove the .unity extension)
+         
             // create a new button and add it to the grid layout
             GameObject go = Instantiate(ButtonPrefab);
+   
             go.name = scene_name;
             go.transform.SetParent(ButtonGridLayout.transform);
             go.transform.localScale = Vector3.one;
 
             // add a function to be called when the button is clicked
             Button button = go.GetComponent<Button>();
-            button.onClick.AddListener(delegate { LoadScene(scene_name); });
+            button.onClick.AddListener(delegate { LoadScene(scene_path); });
 
             // modify the text to match the scene_name
             GameObject text_go = go.transform.GetChild(0).gameObject;

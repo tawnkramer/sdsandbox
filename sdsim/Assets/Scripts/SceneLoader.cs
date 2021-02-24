@@ -7,8 +7,6 @@ using SimpleFileBrowser;
 public class SceneLoader : MonoBehaviour
 {
 
-    public AssetBundle bundleScenes;
-
     public void LoadMenuScene()
     {
         SceneManager.LoadSceneAsync("menu");
@@ -42,20 +40,26 @@ public class SceneLoader : MonoBehaviour
         GlobalState.log_path = path;
     }
 
-    public string[] LoadScenePathsFromFile(string path)
+    public string[] LoadScenePathsFromFile(string directoryPath)
     {
-        bundleScenes = AssetBundle.LoadFromFile(path);
+        List<string> scenePaths = new List<string>();
 
-        if (bundleScenes != null)
+        // search in the directory
+        string[] paths = System.IO.Directory.GetFiles(directoryPath, "*", System.IO.SearchOption.AllDirectories);
+        foreach (string path in paths)
         {
-            string[] scenePaths = bundleScenes.GetAllScenePaths();
-            GlobalState.bundleScenes = bundleScenes;
-            return scenePaths;
+            string extension = System.IO.Path.GetExtension(path);
+            if (extension != "") { continue; } // get only bundle Assets (no file extension)
+
+            AssetBundle bundle = AssetBundle.LoadFromFile(path);
+
+            if (GlobalState.bundleScenes != null)
+            {
+                scenePaths.AddRange(bundle.GetAllScenePaths());
+                GlobalState.bundleScenes.Add(bundle);
+            }
+
         }
-        else
-        {
-            Debug.Log("Didn't find asset bundle for the given path");
-            return null;
-        }
+        return scenePaths.ToArray();
     }
 }

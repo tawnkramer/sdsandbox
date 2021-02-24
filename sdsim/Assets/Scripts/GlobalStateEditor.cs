@@ -206,7 +206,7 @@ public class GlobalStateEditor : MonoBehaviour
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
-        additionnalContentPath = PlayerPrefs.GetString("additionnalContentPath", additionnalContentPath);
+        additionnalContentPath = Application.streamingAssetsPath;
     }
 
     void RandomizePrivateKey()

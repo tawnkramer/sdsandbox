@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+
 
 public static class GlobalState
 {
@@ -21,5 +23,5 @@ public static class GlobalState
     public static int seed = 20432814;
     public static string additionnalContentPath = "";
     public static string[] sceneNames;
-    public static AssetBundle bundleScenes;
+    public static List<AssetBundle> bundleScenes = new List<AssetBundle>();
 }
