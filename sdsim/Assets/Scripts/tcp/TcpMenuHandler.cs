@@ -12,13 +12,12 @@ namespace tk
     public class TcpMenuHandler : MonoBehaviour
     {
 
+        public List<string> scene_names = new List<string>();
         public SceneLoader loader;
-        public string[] scene_names;
         public GameObject ButtonGridLayout;
         public GameObject ButtonPrefab;
         private tk.JsonTcpClient client;
         private string[] bundleAssetScenePaths;
-        private string[] sceneNames;
 
         public void Init(tk.JsonTcpClient _client)
         {
@@ -36,16 +35,19 @@ namespace tk
         {
             if (GlobalState.sceneNames == null)
             {
-                bundleAssetScenePaths = loader.LoadScenePathsFromFile(GlobalState.additionnalContentPath);
-                if (bundleAssetScenePaths != null) // Add those paths to the scene names
+                try
                 {
-                    List<string> list = new List<string>();
-                    list.AddRange(scene_names);
-                    list.AddRange(bundleAssetScenePaths);
-                    scene_names = list.ToArray();
-                }
+                    bundleAssetScenePaths = loader.LoadScenePathsFromFile(GlobalState.additionnalContentPath);
+                    if (bundleAssetScenePaths != null) // Add those paths to the scene names
+                    {
+                        scene_names.AddRange(bundleAssetScenePaths);
+                    }
 
-                GlobalState.sceneNames = scene_names;
+                }
+                catch (Exception e) { Debug.LogError(e.ToString());}
+
+                GlobalState.sceneNames = scene_names.ToArray();
+
             }
 
             foreach (string scene_name in GlobalState.sceneNames)
@@ -139,12 +141,12 @@ namespace tk
         void AddButtonToMenu(string scene_path)
         {
             string[] split_scene_name = scene_path.Split('/');
-            split_scene_name = split_scene_name[split_scene_name.Length - 1].Split('.'); 
+            split_scene_name = split_scene_name[split_scene_name.Length - 1].Split('.');
             string scene_name = split_scene_name[0]; // get the scene name (last part of the path and remove the .unity extension)
-         
+
             // create a new button and add it to the grid layout
             GameObject go = Instantiate(ButtonPrefab);
-   
+
             go.name = scene_name;
             go.transform.SetParent(ButtonGridLayout.transform);
             go.transform.localScale = Vector3.one;
