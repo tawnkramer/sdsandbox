@@ -459,7 +459,7 @@ namespace tk
             float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
             float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
 
-            int degPerSweepInc = int.Parse(json.GetField("degPerSweepInc").str);
+            float degPerSweepInc = float.Parse(json.GetField("degPerSweepInc").str, CultureInfo.InvariantCulture.NumberFormat);
             float degAngDown = float.Parse(json.GetField("degAngDown").str, CultureInfo.InvariantCulture.NumberFormat);
             float degAngDelta = float.Parse(json.GetField("degAngDelta").str, CultureInfo.InvariantCulture.NumberFormat);
             float maxRange = float.Parse(json.GetField("maxRange").str, CultureInfo.InvariantCulture.NumberFormat);
@@ -472,7 +472,7 @@ namespace tk
         }
 
         IEnumerator SetLidarConfig(float offset_x, float offset_y, float offset_z, float rot_x,
-            int degPerSweepInc, float degAngDown, float degAngDelta, float maxRange, float noise, int numSweepsLevels)
+            float degPerSweepInc, float degAngDown, float degAngDelta, float maxRange, float noise, int numSweepsLevels)
         {
             if (lidar != null)
             {
