@@ -46,6 +46,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.raceCameras; }
         set { GlobalState.raceCameras = value; }
     }
+    public bool drawLidar
+    {
+        get { return GlobalState.drawLidar; }
+        set { GlobalState.drawLidar = value; }
+    }
     public bool useSeed
     {
         get { return GlobalState.useSeed; }
@@ -139,6 +144,8 @@ public class GlobalStateEditor : MonoBehaviour
         YOffset += Ysteps;
         raceCameras = GUI.Toggle(new Rect(0, YOffset, width, 20), raceCameras, "raceCameras");
         YOffset += Ysteps;
+        drawLidar = GUI.Toggle(new Rect(0, YOffset, width, 20), drawLidar, "drawLidar");
+        YOffset += Ysteps;
 
         useSeed = GUI.Toggle(new Rect(0, YOffset, width, 20), useSeed, "useSeed");
         YOffset += Ysteps;
@@ -187,6 +194,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
         PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
+        PlayerPrefs.SetInt("drawLidar", drawLidar ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
         PlayerPrefs.SetString("additionnalContentPath", additionnalContentPath);
@@ -204,6 +212,7 @@ public class GlobalStateEditor : MonoBehaviour
         generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones ? 1 : 0) == 1 ? true : false;
         randomLight = PlayerPrefs.GetInt("randomLight", randomLight ? 1 : 0) == 1 ? true : false;
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
+        drawLidar = PlayerPrefs.GetInt("drawLidar", drawLidar ? 1 : 0) == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
         additionnalContentPath = Application.streamingAssetsPath;

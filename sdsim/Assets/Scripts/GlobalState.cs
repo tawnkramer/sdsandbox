@@ -24,4 +24,5 @@ public static class GlobalState
     public static string additionnalContentPath = "";
     public static string[] sceneNames;
     public static List<AssetBundle> bundleScenes = new List<AssetBundle>();
+    public static bool drawLidar = true;
 }

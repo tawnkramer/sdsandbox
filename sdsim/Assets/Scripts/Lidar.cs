@@ -18,7 +18,7 @@ public class LidarPoint
         x = p.x;
         y = p.y;
         z = p.z;
-		d = distance;
+        d = distance;
         rx = _rx;
         ry = _ry;
     }
@@ -56,7 +56,7 @@ public class Lidar : MonoBehaviour
 {
 
 
-    LidarPointArray pointArr;
+    public LidarPointArray pointArr;
 
     //as the ray sweeps around, how many degrees does it advance per sample
     public float degPerSweepInc = 2f;
@@ -131,12 +131,8 @@ public class Lidar : MonoBehaviour
         {
             JSONObject vec = JSONObject.Create();
             try
-            {	
-                // vec.AddField("x", p.x);
-                // vec.AddField("y", p.y);
-                // vec.AddField("z", p.z);
-
-				vec.AddField("distance", p.d);
+            {
+                vec.AddField("d", (float)Math.Round(p.d, 2));
                 vec.AddField("rx", p.rx);
                 vec.AddField("ry", p.ry);
                 json.Add(vec);
@@ -159,15 +155,11 @@ public class Lidar : MonoBehaviour
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-        //pointing a bit down.
-        Quaternion rotDown = Quaternion.AngleAxis(degAngDown, transform.right);
-		ray.direction = rotDown * ray.direction;
+        // Vertical rotation
+        Quaternion rotUp = Quaternion.AngleAxis(degAngDelta, transform.right);
 
-		// Vertical rotation
-		Quaternion rotUp = Quaternion.AngleAxis(degAngDelta, transform.right);
-
-		// Horizontal rotation
-		Quaternion rotSide = Quaternion.AngleAxis(degPerSweepInc, transform.up);
+        // Horizontal rotation
+        Quaternion rotSide = Quaternion.AngleAxis(degPerSweepInc, transform.up);
 
         //Sample the output texture to create rays.
         int iP = 0;
@@ -176,8 +168,9 @@ public class Lidar : MonoBehaviour
 
         for (int iS = 0; iS < numSweepsLevels; iS++)
         {
-			// reset the orientation of the ray
-			ray.direction = rotDown * transform.forward;
+            // reset the orientation of the ray
+            Quaternion rotDown = Quaternion.AngleAxis(degAngDown + iS * degAngDelta, transform.right);
+            ray.direction = rotDown * transform.forward;
             rx = 0.0f;
 
             for (int iA = 0; iA < numSweep; iA++)
@@ -186,13 +179,13 @@ public class Lidar : MonoBehaviour
                 {
                     //sample that ray at the depth given by the pixel.
                     Vector3 pos = hit.point - transform.position;
-					float distance = hit.distance;
+                    float distance = hit.distance;
 
                     //shouldn't hit this unless user is messing around in the interface with things running.
                     if (iP >= pointArr.points.Length)
                         break;
 
-					// add some noise to the point position
+                    // add some noise to the point position
                     float noiseX = Mathf.PerlinNoise(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
                     float noiseY = Mathf.PerlinNoise(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
                     float noiseZ = Mathf.PerlinNoise(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
@@ -219,15 +212,10 @@ public class Lidar : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-
-        LidarPointArray arr = GetOutput();
-
-        if (arr == null)
-            return;
+        pointArr = GetOutput(); // not really efficient but won't be called in the app, just for visualization purpose
 
         Vector3 pos = Vector3.zero;
-
-        foreach (LidarPoint p in arr.points)
+        foreach (LidarPoint p in pointArr.points)
         {
             if (p == null)
                 continue;
@@ -240,64 +228,5 @@ public class Lidar : MonoBehaviour
             pos += transform.position;
             Gizmos.DrawSphere(pos, gizmoSize);
         }
-    }
-
-    static Material lineMaterial;
-    static void CreateLineMaterial()
-    {
-        if (!lineMaterial)
-        {
-            // Unity has a built-in shader that is useful for drawing
-            // simple colored things.
-            Shader shader = Shader.Find("Hidden/Internal-Colored");
-            lineMaterial = new Material(shader);
-            lineMaterial.hideFlags = HideFlags.HideAndDontSave;
-            // Turn on alpha blending
-            lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            // Turn backface culling off
-            lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-            // Turn off depth writes
-            lineMaterial.SetInt("_ZWrite", 0);
-        }
-    }
-
-    // Will be called after all regular rendering is done
-    public void OnRenderObject()
-    {
-
-        if (DisplayDebugInScene == false)
-            return;
-
-        CreateLineMaterial();
-        // Apply the line material
-        lineMaterial.SetPass(0);
-
-        GL.PushMatrix();
-        // Set transformation matrix for drawing to
-        // match our transform
-        //GL.MultMatrix (transform.localToWorldMatrix);
-        GL.MultMatrix(Matrix4x4.identity);
-        // Draw lines
-        GL.Begin(GL.LINES);
-
-        LidarPointArray arr = GetOutput();
-
-        if (arr == null)
-            return;
-
-        foreach (LidarPoint p in arr.points)
-        {
-            if (p == null)
-                continue;
-
-            //red
-            GL.Color(new Color(1, 0, 0, 0.8F));
-            GL.Vertex3(p.x, p.y, p.z);
-            GL.Vertex3(p.x, p.y + gizmoSize, p.z);
-        }
-
-        GL.End();
-        GL.PopMatrix();
     }
 }
