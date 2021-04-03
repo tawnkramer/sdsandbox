@@ -74,6 +74,7 @@ namespace tk
                 return;
 
             client.dispatchInMainThread = false; //too slow to wait.
+            client.dispatcher.Register("get_protocol_version", new tk.Delegates.OnMsgRecv(OnProtocolVersion));
             client.dispatcher.Register("control", new tk.Delegates.OnMsgRecv(OnControlsRecv));
             client.dispatcher.Register("exit_scene", new tk.Delegates.OnMsgRecv(OnExitSceneRecv));
             client.dispatcher.Register("reset_car", new tk.Delegates.OnMsgRecv(OnResetCarRecv));
@@ -84,6 +85,7 @@ namespace tk
             client.dispatcher.Register("cam_config", new tk.Delegates.OnMsgRecv(OnCamConfig));
             client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
             client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
+            client.dispatcher.Register("set_position", new tk.Delegates.OnMsgRecv(OnSetPosition));
         }
 
         public void Start()
@@ -106,6 +108,15 @@ namespace tk
         void Disconnect()
         {
             client.Disconnect();
+        }
+
+        void OnProtocolVersion(JSONObject msg)
+        {
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "protocol_version");
+            json.AddField("version", "2");
+
+            client.SendMsg(json);
         }
 
         void SendTelemetry()
@@ -160,10 +171,31 @@ namespace tk
             json.AddField("gyro_w", gyro.w);
 
 
-            // not intended to use in races, just to train 
-            if (extendedTelemetry)
+            Transform tm = car.GetTransform();
+            if (pm != null)
             {
-                Transform tm = car.GetTransform();
+                float cte = 0.0f;
+                (bool, bool) cte_ret = pm.carPath.GetCrossTrackErr(tm.position, ref cte);
+
+                if (cte_ret.Item1 == true)
+                {
+                    pm.carPath.ResetActiveSpan();
+                }
+                else if (cte_ret.Item2 == true)
+                {
+                    pm.carPath.ResetActiveSpan(false);
+                }
+
+                if (GlobalState.extendedTelemetry) { json.AddField("cte", cte); }
+
+                // need to refactor this to be relative to the car
+                json.AddField("activeNode", pm.carPath.iActiveSpan);
+                json.AddField("totalNodes", pm.carPath.nodes.Count);
+            }
+
+            // not intended to use in races, just to train 
+            if (GlobalState.extendedTelemetry)
+            {
                 json.AddField("pos_x", tm.position.x);
                 json.AddField("pos_y", tm.position.y);
                 json.AddField("pos_z", tm.position.z);
@@ -173,24 +205,7 @@ namespace tk
                 json.AddField("vel_y", velocity.y);
                 json.AddField("vel_z", velocity.z);
 
-                if (pm != null)
-                {
-                    float cte = 0.0f;
-                    (bool, bool) cte_ret = pm.carPath.GetCrossTrackErr(tm.position, ref cte);
 
-                    if (cte_ret.Item1 == true)
-                    {
-                        pm.carPath.ResetActiveSpan();
-                    }
-                    else if (cte_ret.Item2 == true)
-                    {
-                        pm.carPath.ResetActiveSpan(false);
-                    }
-
-                    json.AddField("cte", cte);
-                    json.AddField("activeNode", pm.carPath.iActiveSpan);
-                    json.AddField("totalNodes", pm.carPath.nodes.Count);
-                }
 
                 // I don't really know what is the usage of this
                 if (pm.carPath.nodes.Count > 10)
@@ -452,6 +467,23 @@ namespace tk
             yield return null;
         }
 
+        void OnSetPosition(JSONObject json)
+        {
+            if (GlobalState.extendedTelemetry)
+            {
+                float pos_x = float.Parse(json.GetField("pos_x").str, CultureInfo.InvariantCulture.NumberFormat);
+                float pos_y = float.Parse(json.GetField("pos_y").str, CultureInfo.InvariantCulture.NumberFormat);
+                float pos_z = float.Parse(json.GetField("pos_z").str, CultureInfo.InvariantCulture.NumberFormat);
+                UnityMainThreadDispatcher.Instance().Enqueue(setCarPosition(pos_x, pos_y, pos_z));
+            }
+        }
+
+        IEnumerator setCarPosition(float pos_x, float pos_y, float pos_z)
+        {
+            carObj.transform.position = new Vector3(pos_x, pos_y, pos_z);
+            yield return null;
+        }
+
         void OnLidarConfig(JSONObject json)
         {
             float offset_x = float.Parse(json.GetField("offset_x").str, CultureInfo.InvariantCulture.NumberFormat);
@@ -504,6 +536,16 @@ namespace tk
                 Debug.Log("setting mode to asynchronous");
                 asynchronous = true;
             }
+        }
+
+        public IEnumerator SendCollisionWithStartingLine(int startingLineIndex, float timeStamp)
+        {
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "collision_with_starting_line");
+            json.AddField("starting_line_index", startingLineIndex);
+            json.AddField("timeStamp", timeStamp);
+            client.SendMsg(json);
+            yield return null;
         }
 
         void OnQuitApp(JSONObject json)

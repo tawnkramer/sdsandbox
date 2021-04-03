@@ -31,6 +31,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.generateTrees; }
         set { GlobalState.generateTrees = value; }
     }
+    public bool extendedTelemetry
+    {
+        get { return GlobalState.extendedTelemetry; }
+        set { GlobalState.extendedTelemetry = value; }
+    }
     public bool generateRandomCones
     {
         get { return GlobalState.generateRandomCones; }
@@ -132,11 +137,9 @@ public class GlobalStateEditor : MonoBehaviour
             maxSplitScreen = tmp_maxsp;
         YOffset += Ysteps;
 
-        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Content Path");
-        additionnalContentPath = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), additionnalContentPath);
-        YOffset += Ysteps;
-
         generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
+        YOffset += Ysteps;
+        extendedTelemetry = GUI.Toggle(new Rect(0, YOffset, width, 20), extendedTelemetry, "extendedTelemetry");
         YOffset += Ysteps;
         generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
         YOffset += Ysteps;
@@ -191,13 +194,13 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
+        PlayerPrefs.SetInt("extendedTelemetry", extendedTelemetry ? 1 : 0);
         PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
         PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
         PlayerPrefs.SetInt("drawLidar", drawLidar ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
-        PlayerPrefs.SetString("additionnalContentPath", additionnalContentPath);
 
         PlayerPrefs.Save();
     }
@@ -209,6 +212,7 @@ public class GlobalStateEditor : MonoBehaviour
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
         generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees ? 1 : 0) == 1 ? true : false;
+        extendedTelemetry = PlayerPrefs.GetInt("extendedTelemetry", extendedTelemetry ? 1 : 0) == 1 ? true : false;
         generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones ? 1 : 0) == 1 ? true : false;
         randomLight = PlayerPrefs.GetInt("randomLight", randomLight ? 1 : 0) == 1 ? true : false;
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;

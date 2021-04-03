@@ -8,10 +8,6 @@ public class DrawLidar : MonoBehaviour
     public GameObject car;
     static Material lineMaterial;
 
-    void Start()
-    {
-    }
-
     void OnPostRender()
     {
         if (GlobalState.drawLidar == true)
@@ -19,7 +15,7 @@ public class DrawLidar : MonoBehaviour
             if (car == null) { return; }
             if (lidar == null)
             {
-                // search for lidar if not already attached
+                lidar = car.GetComponentInChildren<Lidar>();
                 return;
             }
             else if (lidar.enabled == false) { return; }
