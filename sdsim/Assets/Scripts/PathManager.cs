@@ -258,7 +258,7 @@ public class PathManager : MonoBehaviour
 
             PathNode p = new PathNode();
             p.pos = point;
-            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up); ;
+            p.rotation = Quaternion.LookRotation(next_point - previous_point, Vector3.up);
             carPath.nodes.Add(p);
             carPath.centerNodes.Add(p);
         }

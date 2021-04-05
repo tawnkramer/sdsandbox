@@ -6,6 +6,7 @@ using System.Globalization;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.ImageEffects;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 namespace tk
 {
@@ -86,6 +87,7 @@ namespace tk
             client.dispatcher.Register("cam_config_b", new tk.Delegates.OnMsgRecv(OnCamConfigB));
             client.dispatcher.Register("lidar_config", new tk.Delegates.OnMsgRecv(OnLidarConfig));
             client.dispatcher.Register("set_position", new tk.Delegates.OnMsgRecv(OnSetPosition));
+            client.dispatcher.Register("node_position", new tk.Delegates.OnMsgRecv(OnNodePositionRecv));
         }
 
         public void Start()
@@ -474,13 +476,28 @@ namespace tk
                 float pos_x = float.Parse(json.GetField("pos_x").str, CultureInfo.InvariantCulture.NumberFormat);
                 float pos_y = float.Parse(json.GetField("pos_y").str, CultureInfo.InvariantCulture.NumberFormat);
                 float pos_z = float.Parse(json.GetField("pos_z").str, CultureInfo.InvariantCulture.NumberFormat);
-                UnityMainThreadDispatcher.Instance().Enqueue(setCarPosition(pos_x, pos_y, pos_z));
+                Quaternion rot = Quaternion.identity;
+                if (json.GetField("Qx") != null && json.GetField("Qy") != null && json.GetField("Qz") != null && json.GetField("Qw") != null)
+                {
+                    float qx = float.Parse(json.GetField("Qx").str, CultureInfo.InvariantCulture.NumberFormat);
+                    float qy = float.Parse(json.GetField("Qy").str, CultureInfo.InvariantCulture.NumberFormat);
+                    float qz = float.Parse(json.GetField("Qz").str, CultureInfo.InvariantCulture.NumberFormat);
+                    float qw = float.Parse(json.GetField("Qw").str, CultureInfo.InvariantCulture.NumberFormat);
+
+                    rot.x = qx;
+                    rot.y = qy;
+                    rot.z = qz;
+                    rot.w = qw;
+                }
+
+                UnityMainThreadDispatcher.Instance().Enqueue(setCarPosition(pos_x, pos_y, pos_z, rot));
             }
         }
 
-        IEnumerator setCarPosition(float pos_x, float pos_y, float pos_z)
+        IEnumerator setCarPosition(float pos_x, float pos_y, float pos_z, Quaternion rot)
         {
             carObj.transform.position = new Vector3(pos_x, pos_y, pos_z);
+            carObj.transform.rotation = rot;
             yield return null;
         }
 
@@ -544,6 +561,33 @@ namespace tk
             json.AddField("msg_type", "collision_with_starting_line");
             json.AddField("starting_line_index", startingLineIndex);
             json.AddField("timeStamp", timeStamp);
+            client.SendMsg(json);
+            yield return null;
+        }
+
+        public void OnNodePositionRecv(JSONObject json)
+        {
+            int index = int.Parse(json.GetField("index").str);
+            if (pm != null && index >= 0 && index < pm.carPath.nodes.Count)
+            {
+                PathNode node = pm.carPath.nodes[index];
+                UnityMainThreadDispatcher.Instance().Enqueue(SendNodePosition(index, node));
+            }
+        }
+
+        public IEnumerator SendNodePosition(int index, PathNode node)
+        {
+
+            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+            json.AddField("msg_type", "node_position");
+            json.AddField("index", index);
+            json.AddField("pos_x", node.pos.x);
+            json.AddField("pos_y", node.pos.y);
+            json.AddField("pos_z", node.pos.z);
+            json.AddField("Qx", node.rotation.x);
+            json.AddField("Qy", node.rotation.y);
+            json.AddField("Qz", node.rotation.z);
+            json.AddField("Qw", node.rotation.w);
             client.SendMsg(json);
             yield return null;
         }
