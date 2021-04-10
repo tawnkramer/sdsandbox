@@ -83,6 +83,7 @@ public class PathManager : MonoBehaviour
             for (int i = carPath.nodes.Count - 1; i >= 0; i--)
             {
                 PathNode node = carPath.nodes[i];
+                node.rotation = node.rotation * Quaternion.AngleAxis(180, Vector3.up);
                 new_carPath.nodes.Add(node);
                 new_carPath.centerNodes.Add(node);
             }
