@@ -202,11 +202,16 @@ namespace tk
                 json.AddField("pos_y", tm.position.y);
                 json.AddField("pos_z", tm.position.z);
 
+                Vector3 eulerAngles = tm.rotation.eulerAngles;
+                json.AddField("pitch", eulerAngles.x);
+                json.AddField("yaw", eulerAngles.y);
+                json.AddField("roll", eulerAngles.z);
+
+
                 Vector3 velocity = car.GetVelocity();
                 json.AddField("vel_x", velocity.x);
                 json.AddField("vel_y", velocity.y);
                 json.AddField("vel_z", velocity.z);
-
 
 
                 // I don't really know what is the usage of this

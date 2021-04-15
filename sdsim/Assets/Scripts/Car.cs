@@ -26,7 +26,7 @@ public class Car : MonoBehaviour, ICar {
 	private Quaternion gyro = Quaternion.identity;
 	public float length = 1.7f;
 
-	Rigidbody rb;
+	public Rigidbody rb;
 
 	//for logging
 	public float lastSteer = 0.0f;
