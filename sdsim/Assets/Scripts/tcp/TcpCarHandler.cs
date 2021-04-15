@@ -174,6 +174,11 @@ namespace tk
 
 
             Transform tm = car.GetTransform();
+            Vector3 eulerAngles = tm.rotation.eulerAngles;
+            json.AddField("pitch", eulerAngles.x);
+            json.AddField("yaw", eulerAngles.y);
+            json.AddField("roll", eulerAngles.z);
+
             if (pm != null)
             {
                 float cte = 0.0f;
@@ -201,12 +206,6 @@ namespace tk
                 json.AddField("pos_x", tm.position.x);
                 json.AddField("pos_y", tm.position.y);
                 json.AddField("pos_z", tm.position.z);
-
-                Vector3 eulerAngles = tm.rotation.eulerAngles;
-                json.AddField("pitch", eulerAngles.x);
-                json.AddField("yaw", eulerAngles.y);
-                json.AddField("roll", eulerAngles.z);
-
 
                 Vector3 velocity = car.GetVelocity();
                 json.AddField("vel_x", velocity.x);
