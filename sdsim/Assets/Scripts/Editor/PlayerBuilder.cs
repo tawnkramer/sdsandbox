@@ -20,7 +20,7 @@ public class PlayerBuilder : Editor
     {
         EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
 
-        BuildReport report = BuildPipeline.BuildPlayer(scenes, "Builds/DonkeySimWin/donkey_sim.exe", BuildTarget.StandaloneOSX, BuildOptions.None);
+        BuildReport report = BuildPipeline.BuildPlayer(scenes, "Builds/DonkeySimWin/donkey_sim.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
         BuildSummary summary = report.summary;
 
 
