@@ -143,12 +143,9 @@ MonoBehaviour:
   roadPrefabMesh: {fileID: 1121773054233654, guid: da08699e1e14b469d86012dbd9ae3314,
     type: 3}
   iRoadTexture: 0
-  roadTextures:
-  - {fileID: 2800000, guid: 3ba8d7480476d42a5949d182be76def3, type: 3}
-  - {fileID: 2800000, guid: 7e6c18473bcb640aea31fc8e11bc31e1, type: 3}
-  - {fileID: 2800000, guid: bb6ef052c0c8941198bb2c7f2c9e1e0d, type: 3}
-  - {fileID: 2800000, guid: d82e04333e4dd464aaf72e160422e14f, type: 3}
-  - {fileID: 2800000, guid: caaf267a0b3b54bec90355a5a049d1b2, type: 3}
+  roadMaterials:
+  - {fileID: 2100000, guid: 665c5390ee81f314b87ec4054073b845, type: 2}
+  - {fileID: 2100000, guid: 938f9edd8aa7246489c24bcfd9bcefac, type: 2}
   roadOffsets:
   - 2
   - 6
@@ -291,7 +288,8 @@ MonoBehaviour:
   yOffset: []
   xOffset: []
   rotateYOffset: []
-  objectScaling: 100
+  rotateXOffset: []
+  MeshScale: {x: 1, y: 1, z: 1}
   placeEvery: 5
   generateAtRuntime: 1
   leftside: 1
