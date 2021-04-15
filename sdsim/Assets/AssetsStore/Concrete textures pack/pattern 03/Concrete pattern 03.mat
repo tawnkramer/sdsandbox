@@ -21,14 +21,14 @@ Material:
     m_TexEnvs:
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: a4b3c4b19bb248240b69534d0d290fa6, type: 3}
-        m_Scale: {x: 3, y: 3}
+        m_Scale: {x: 0.1538462, y: 0.1538462}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: a0abf4a2000b8db4b839f1a048fafbc8, type: 3}
-        m_Scale: {x: 3, y: 3}
+        m_Scale: {x: 0.15384616, y: 0.1538462}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Shininess: 0.07858093
+    - _Shininess: 0.1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
