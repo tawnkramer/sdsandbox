@@ -15,13 +15,24 @@ public class startingLine : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.name != target || privateAPI == null) { return; }
+        if (col.gameObject.name != target) { return; }
+
+        float time = Time.realtimeSinceStartup;
 
         Transform parent = col.transform.parent;
         if (parent == null) { return; }
-        string carName = parent.name;
 
-        if (privateAPI == null) { return; }
-        privateAPI.CollisionWithStatingLine(carName, index, Time.realtimeSinceStartup);
+        string carName = parent.name;
+        tk.TcpCarHandler client = parent.GetComponentInChildren<tk.TcpCarHandler>();
+
+        if (client != null)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(client.SendCollisionWithStartingLine(index, time));
+        }
+
+        if (privateAPI != null)
+        {
+            privateAPI.CollisionWithStatingLine(carName, index, time);
+        }
     }
 }

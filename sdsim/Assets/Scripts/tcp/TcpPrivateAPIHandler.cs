@@ -24,6 +24,7 @@ namespace tk
             _client.dispatchInMainThread = false; //too slow to wait.
             _client.dispatcher.Register("verify", new tk.Delegates.OnMsgRecv(OnVerify));
             _client.dispatcher.Register("set_random_seed", new tk.Delegates.OnMsgRecv(OnSetRandomSeed));
+            _client.dispatcher.Register("reset_challenges", new tk.Delegates.OnMsgRecv(OnResetChallenges));
         }
 
         public tk.JsonTcpClient GetClients()
@@ -53,6 +54,8 @@ namespace tk
         {
             if (isVerified)
             {
+                if (pathManager == null) { pathManager = GameObject.FindObjectOfType<PathManager>(); }
+
                 int new_seed;
                 int.TryParse(json.GetField("seed").str, out new_seed);
 
@@ -61,6 +64,12 @@ namespace tk
 
                 if (pathManager != null) { UnityMainThreadDispatcher.Instance().Enqueue(pathManager.InitAfterCarPathLoaded(pathManager.challenges)); }
             }
+            else { UnityMainThreadDispatcher.Instance().Enqueue(sendErrorMessage("private_key_error", "private_key doesn't correspond, please ensure you entered the right one")); }
+        }
+
+        void OnResetChallenges(JSONObject json)
+        {
+            if (isVerified) { UnityMainThreadDispatcher.Instance().Enqueue(pathManager.InitAfterCarPathLoaded(pathManager.challenges)); }
             else { UnityMainThreadDispatcher.Instance().Enqueue(sendErrorMessage("private_key_error", "private_key doesn't correspond, please ensure you entered the right one")); }
         }
 

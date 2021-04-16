@@ -19,7 +19,6 @@ public class RaceCameras : MonoBehaviour, IWaitCarPath
     public float startIndexOffset = 0.0f;
 
     float distance;
-    int lastTriggered = 0;
 
     public void Init()
     {

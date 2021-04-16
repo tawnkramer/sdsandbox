@@ -13,8 +13,8 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
     public float roadHeightOffset = 0.0f;
     public float roadOffsetW = 0.0f;
     public GameObject roadPrefabMesh;
-    public int iRoadTexture = 0;
-    public Texture2D[] roadTextures;
+    public int iRoadMaterial = 0;
+    public Material[] roadMaterials;
     public float[] roadOffsets;
     public float[] roadWidths;
 
@@ -30,7 +30,7 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
     [Header("Aux")]
     public string savePath = "Assets\\generated_mesh.asset";
 
-    Texture2D customRoadTexure;
+    Texture customRoadTexure;
     public GameObject createdRoad;
 
     void Start()
@@ -60,13 +60,13 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
             Destroy(g);
 
         //advance road index into texture list.
-        iRoadTexture += 1;
+        iRoadMaterial += 1;
     }
 
     public void SetNewRoadVariation(int iVariation)
     {
-        if (roadTextures.Length > 0)
-            customRoadTexure = roadTextures[iVariation % roadTextures.Length];
+        if (roadMaterials.Length > 0)
+            customRoadTexure = roadMaterials[iVariation % roadMaterials.Length].mainTexture;
 
         if (roadOffsets.Length > 0)
             roadOffsetW = roadOffsets[iVariation % roadOffsets.Length];
@@ -118,13 +118,13 @@ public class RoadBuilder : MonoBehaviour, IWaitCarPath
         {
             mr.material.mainTexture = customRoadTexure;
         }
-        else if (roadTextures != null && iRoadTexture < roadTextures.Length)
+        else if (roadMaterials != null && iRoadMaterial < roadMaterials.Length)
         {
-            Texture2D t = roadTextures[iRoadTexture];
+            Material material = roadMaterials[iRoadMaterial];
 
-            if (mr != null && t != null)
+            if (mr != null && material != null)
             {
-                mr.material.mainTexture = t;
+                mr.material = material;
             }
         }
 

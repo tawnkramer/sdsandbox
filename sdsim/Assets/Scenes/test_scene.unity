@@ -322,61 +322,61 @@ MonoBehaviour:
     _bezierPath:
       points:
       - {x: -10.877625, y: 0, z: 6.910418}
-      - {x: -10.233706, y: 0, z: 9.483442}
-      - {x: -8.535856, y: 0, z: 9.089573}
-      - {x: -5.835854, y: 0, z: 8.559932}
-      - {x: -2.4133542, y: 0, z: 7.888562}
-      - {x: -3.2923312, y: 0, z: 6.3558054}
+      - {x: -9.756813, y: 0.35306513, z: 9.358545}
+      - {x: -9.322473, y: 0, z: 10.450347}
+      - {x: -6.6127176, y: 0, z: 10.273061}
+      - {x: -2.387774, y: 0, z: 9.996643}
+      - {x: -3.8298025, y: 0, z: 7.0630293}
       - {x: -0.7028354, y: 0, z: 4.2084484}
-      - {x: 3.4616792, y: 0, z: 0.75499606}
-      - {x: 3.5873475, y: 0, z: -4.6902714}
+      - {x: 3.290552, y: 0, z: 0.56292033}
+      - {x: 3.1221714, y: 0, z: -5.487624}
       - {x: 7.696065, y: 0, z: -2.603787}
-      - {x: 11.262734, y: 0, z: -0.79256487}
-      - {x: 6.583558, y: 0, z: 1.797473}
+      - {x: 11.424065, y: 0, z: -0.25328517}
+      - {x: 6.6108737, y: 0, z: 1.6684213}
       - {x: 5.6372385, y: 0, z: 5.9666624}
-      - {x: 4.7923765, y: 0, z: 9.688862}
-      - {x: 1.0808156, y: 0, z: 11.471041}
+      - {x: 4.824586, y: 0, z: 9.554225}
+      - {x: 1.1698358, y: 0, z: 10.945562}
       - {x: 4.1053195, y: 0, z: 13.162304}
-      - {x: 8.492713, y: 0, z: 15.615678}
-      - {x: 12.542641, y: 0, z: 12.977516}
+      - {x: 8.949469, y: 0, z: 16.820381}
+      - {x: 12.673134, y: 0, z: 13.15353}
       - {x: 14.834415, y: 0, z: 7.481124}
-      - {x: 18.594505, y: 0, z: -1.5367479}
-      - {x: 17.129019, y: 0, z: -7.0257964}
+      - {x: 18.138079, y: 0, z: -1.1895266}
+      - {x: 17.073086, y: 0, z: -6.694352}
       - {x: 8.371011, y: 0, z: -9.9143305}
-      - {x: 5.0275793, y: 0, z: -11.017049}
-      - {x: 5.5581045, y: 0, z: -6.3432007}
+      - {x: 4.8377166, y: 0, z: -11.221735}
+      - {x: 5.5486317, y: 0, z: -6.2783213}
       - {x: 1.7812501, y: 0, z: -6.260709}
-      - {x: -1.2007192, y: 0, z: -6.195578}
+      - {x: -1.0126716, y: 0, z: -6.2476473}
       - {x: -0.5028293, y: 0, z: -7.9760585}
       - {x: -3.1308923, y: 0, z: -8.924455}
       - {x: -9.508133, y: 0, z: -11.225827}
       - {x: -11.48844, y: 0, z: -16.202213}
       - {x: -16.431479, y: 0, z: -11.561967}
       - {x: -19.430359, y: 0, z: -8.746786}
-      - {x: -19.337948, y: 0, z: -4.2529926}
+      - {x: -19.37198, y: 0, z: -4.2403955}
       - {x: -15.343926, y: 0, z: -3.4077442}
-      - {x: -13.395126, y: 0, z: -2.9953227}
-      - {x: -15.158307, y: 0, z: -6.118844}
+      - {x: -13.384984, y: 0, z: -3.0028052}
+      - {x: -15.15239, y: 0, z: -6.118699}
       - {x: -13.286074, y: 0, z: -6.8386273}
-      - {x: -7.9059377, y: 0, z: -8.90703}
-      - {x: -5.7851806, y: 0, z: -8.052044}
+      - {x: -7.9073887, y: 0, z: -8.913446}
+      - {x: -3.952795, y: 0.29357696, z: -8.995628}
       - {x: -2.251486, y: 0, z: -3.4952204}
-      - {x: -0.9081098, y: 0, z: -1.7628894}
-      - {x: -0.6767595, y: 0, z: -0.8761171}
-      - {x: -2.0634372, y: 0, z: 0.8857504}
-      - {x: -3.2814832, y: 0, z: 2.43336}
-      - {x: -4.223549, y: 0, z: 0.79517287}
-      - {x: -5.963705, y: 0, z: 1.7832228}
-      - {x: -9.051548, y: 0, z: 3.536481}
-      - {x: -11.739674, y: 0, z: 3.4657757}
+      - {x: -1.0603311, y: -0.20554504, z: 0.3558364}
+      - {x: -4.0340915, y: -0.20951864, z: 0.4363978}
+      - {x: -7.313359, y: -0.45967886, z: 2.7763903}
+      - {x: -8.782722, y: -0.57176983, z: 3.8248866}
+      - {x: -9.619767, y: -0.86808556, z: 2.5731194}
+      - {x: -10.707378, y: -0.6856451, z: 4.0065613}
+      - {x: -11.605984, y: -0.5349092, z: 5.190899}
+      - {x: -11.494372, y: -0.19428042, z: 5.5632925}
       isClosed: 1
       space: 0
       controlMode: 3
       autoControlLength: 0.5
       boundsUpToDate: 0
       bounds:
-        m_Center: {x: -0.87619877, y: 0, z: 0.30464697}
-        m_Extent: {x: 17.652569, y: 0, z: 13.778288}
+        m_Center: {x: -0.98973465, y: -0.30405718, z: 0.57774353}
+        m_Extent: {x: 17.55065, y: 0.5708309, z: 14.051385}
       perAnchorNormalsAngle:
       - 0
       - 0
@@ -396,7 +396,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 90
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -508,7 +508,7 @@ GameObject:
   - component: {fileID: 1987967352}
   - component: {fileID: 1987967351}
   - component: {fileID: 1987967355}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: starting_line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -522,13 +522,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987967349}
-  m_LocalRotation: {x: 0.70167834, y: 0.08745007, z: -0.08745007, w: 0.70167834}
-  m_LocalPosition: {x: -11.108, y: 0.011, z: 6.986}
+  m_LocalRotation: {x: 0.6903498, y: 0.15302671, z: -0.15302671, w: 0.6903498}
+  m_LocalPosition: {x: -11.152, y: 0.011000009, z: 7.009}
   m_LocalScale: {x: 1.5663245, y: 0.1254292, z: 0.1538461}
   m_Children: []
   m_Father: {fileID: 2302682412636137706}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: -14.208001}
+  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: -24.997002}
 --- !u!65 &1987967351
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -615,6 +615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99dd490a05b4e1149964cbad9755353d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
 --- !u!1 &2083905429 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8458392223600906752, guid: 89b891dc9d0fe46ffba6fbc78477652f,
@@ -915,6 +916,16 @@ PrefabInstance:
       propertyPath: invertNodes
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: doShowCenterNodePath
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: doShowNodePath
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: conePrefabs.Array.size
@@ -1104,7 +1115,7 @@ PrefabInstance:
     - target: {fileID: 8458392223600906752, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8458392223600906752, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -2097,13 +2108,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4049606003955410979}
-  m_LocalRotation: {x: -0, y: 0.12383608, z: -0, w: 0.9923027}
-  m_LocalPosition: {x: -11.05, y: 0.1, z: 6.23}
+  m_LocalRotation: {x: -0, y: 0.2209914, z: -0, w: 0.97527575}
+  m_LocalPosition: {x: -11.211, y: 0.1, z: 6.314}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 2302682412636137706}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 14.227, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 25.535002, z: 0}
 --- !u!23 &8771154756593689353
 MeshRenderer:
   m_ObjectHideFlags: 0

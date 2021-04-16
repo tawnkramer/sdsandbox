@@ -39,7 +39,7 @@ def test_clients():
     # test params
     host = "127.0.0.1"
     port = 9092
-    private_key = "54082524"  # please enter your private key (provided in the menu of the simulator)
+    private_key = "70888560"  # please enter your private key (provided in the menu of the simulator)
 
     client = PrivateAPIClient((host, port), private_key)
     client.send_verify()

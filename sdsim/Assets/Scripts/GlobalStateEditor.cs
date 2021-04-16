@@ -31,6 +31,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.generateTrees; }
         set { GlobalState.generateTrees = value; }
     }
+    public bool extendedTelemetry
+    {
+        get { return GlobalState.extendedTelemetry; }
+        set { GlobalState.extendedTelemetry = value; }
+    }
     public bool generateRandomCones
     {
         get { return GlobalState.generateRandomCones; }
@@ -45,7 +50,12 @@ public class GlobalStateEditor : MonoBehaviour
     {
         get { return GlobalState.raceCameras; }
         set { GlobalState.raceCameras = value; }
-    }    
+    }
+    public bool drawLidar
+    {
+        get { return GlobalState.drawLidar; }
+        set { GlobalState.drawLidar = value; }
+    }
     public bool useSeed
     {
         get { return GlobalState.useSeed; }
@@ -60,6 +70,12 @@ public class GlobalStateEditor : MonoBehaviour
     {
         get { return GlobalState.privateKey; }
         set { GlobalState.privateKey = value; }
+    }
+
+    public string additionnalContentPath
+    {
+        get { return GlobalState.additionnalContentPath; }
+        set { GlobalState.additionnalContentPath = value; }
     }
 
     private bool showPrivateKey = false;
@@ -123,11 +139,15 @@ public class GlobalStateEditor : MonoBehaviour
 
         generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
         YOffset += Ysteps;
+        extendedTelemetry = GUI.Toggle(new Rect(0, YOffset, width, 20), extendedTelemetry, "extendedTelemetry");
+        YOffset += Ysteps;
         generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
         YOffset += Ysteps;
         randomLight = GUI.Toggle(new Rect(0, YOffset, width, 20), randomLight, "randomLight");
         YOffset += Ysteps;
         raceCameras = GUI.Toggle(new Rect(0, YOffset, width, 20), raceCameras, "raceCameras");
+        YOffset += Ysteps;
+        drawLidar = GUI.Toggle(new Rect(0, YOffset, width, 20), drawLidar, "drawLidar");
         YOffset += Ysteps;
 
         useSeed = GUI.Toggle(new Rect(0, YOffset, width, 20), useSeed, "useSeed");
@@ -174,9 +194,11 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
+        PlayerPrefs.SetInt("extendedTelemetry", extendedTelemetry ? 1 : 0);
         PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
         PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
+        PlayerPrefs.SetInt("drawLidar", drawLidar ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
 
@@ -189,12 +211,15 @@ public class GlobalStateEditor : MonoBehaviour
         portPrivateAPI = PlayerPrefs.GetInt("portPrivateAPI", portPrivateAPI);
         fps = PlayerPrefs.GetInt("fps", fps);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
-        generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees? 1 : 0) == 1 ? true : false;
-        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones? 1 : 0) == 1 ? true : false;
-        randomLight = PlayerPrefs.GetInt("randomLight", randomLight? 1 : 0) == 1 ? true : false;
+        generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees ? 1 : 0) == 1 ? true : false;
+        extendedTelemetry = PlayerPrefs.GetInt("extendedTelemetry", extendedTelemetry ? 1 : 0) == 1 ? true : false;
+        generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones ? 1 : 0) == 1 ? true : false;
+        randomLight = PlayerPrefs.GetInt("randomLight", randomLight ? 1 : 0) == 1 ? true : false;
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
+        drawLidar = PlayerPrefs.GetInt("drawLidar", drawLidar ? 1 : 0) == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());
+        additionnalContentPath = Application.streamingAssetsPath;
     }
 
     void RandomizePrivateKey()

@@ -223,6 +223,10 @@ public class CarSpawner : MonoBehaviour {
 
             // set target to the corresponding car
             Camera splitScreenCam = splitScreenCamGo.GetComponent<Camera>();
+            
+            DrawLidar dLidar = splitScreenCamGo.GetComponent<DrawLidar>();
+            dLidar.car = car;
+
             CameraFollow cameraFollow = splitScreenCam.GetComponent<CameraFollow>();
             cameraFollow.target = getChildGameObject(car, "CameraFollowTm").transform;
 

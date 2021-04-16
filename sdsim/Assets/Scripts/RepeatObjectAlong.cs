@@ -17,9 +17,10 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
     public float[] yOffset;
     public float[] xOffset;
     public float[] rotateYOffset;
+    public float[] rotateXOffset;
 
     [Header("Repeating params")]
-    public float objectScaling = 1f;
+    public Vector3 MeshScale = new Vector3(1, 1, 1);
     public float placeEvery = 5f;
 
     [Header("Generation params")]
@@ -51,12 +52,17 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
             {
                 rotateYOffset = new float[meshesToRepeat.Length];
             }
+            
+            if (rotateXOffset.Length != meshesToRepeat.Length)
+            {
+                rotateXOffset = new float[meshesToRepeat.Length];
+            }
 
 
             combineInstances = new List<CombineInstance>();
 
-            Vector3 leftScaling = Vector3.one * objectScaling;
-            Vector3 rightScaling = Vector3.one * objectScaling;
+            Vector3 leftScaling = MeshScale;
+            Vector3 rightScaling = MeshScale;
             if (mirrorRotateObject)
             {
                 rightScaling.x = -rightScaling.x;
@@ -127,7 +133,7 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
                     Vector3 position = leftPositions[iM][i];
                     Vector3 nextPosition = leftPositions[iM][(i + 1) % leftPositions[iM].Count];
 
-                    Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * Quaternion.AngleAxis(rotateYOffset[iM], Vector3.up); ;
+                    Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * Quaternion.AngleAxis(rotateYOffset[iM], Vector3.up) * Quaternion.AngleAxis(rotateXOffset[iM], Vector3.left);
                     Matrix4x4 transform = Matrix4x4.TRS((nextPosition + position) / 2, rot, leftScaling);
 
                     Mesh mesh = Instantiate(meshesToRepeat[iM]);
@@ -147,7 +153,7 @@ public class RepeatObjectAlong : MonoBehaviour, IWaitCarPath
                     Vector3 position = rightPositions[iM][i];
                     Vector3 nextPosition = rightPositions[iM][(i + 1) % rightPositions[iM].Count];
 
-                    Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * Quaternion.AngleAxis(-rotateYOffset[iM], Vector3.up); ;
+                    Quaternion rot = Quaternion.LookRotation(nextPosition - position, Vector3.up) * Quaternion.AngleAxis(-rotateYOffset[iM], Vector3.up) * Quaternion.AngleAxis(rotateXOffset[iM], Vector3.left);
                     Matrix4x4 transform = Matrix4x4.TRS((nextPosition + position) / 2, rot, rightScaling);
 
                     Mesh mesh = Instantiate(meshesToRepeat[iM]);

@@ -16,3 +16,6 @@ sdsim/Logs
 /debug.log
 /camera_a.png
 /camera_b.png
+/sdsim/.vscode
+/sdsim/Assets/AssetBundles
+/sdsim/Builds
