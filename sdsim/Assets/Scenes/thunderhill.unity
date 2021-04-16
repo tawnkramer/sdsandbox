@@ -498,12 +498,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 243269272}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &653076001 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5042952344224196374, guid: 07f0ed3f4d97ab546b616cad407a0b96,
-    type: 3}
-  m_PrefabInstance: {fileID: 4944453001452044618}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &709595429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1074,6 +1068,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1380131101}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1616963366 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8037181034751879481, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 4944453001452044618}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1803016464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1392,7 +1392,7 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: challenges.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
@@ -1483,7 +1483,7 @@ PrefabInstance:
         type: 3}
       propertyPath: challenges.Array.data[1]
       value: 
-      objectReference: {fileID: 653076001}
+      objectReference: {fileID: 1616963366}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: challenges.Array.data[2]
@@ -1528,6 +1528,11 @@ PrefabInstance:
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doShowCenterNodePath
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: doShowNodePath
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
@@ -1950,6 +1955,16 @@ PrefabInstance:
       propertyPath: pathManager
       value: 
       objectReference: {fileID: 325930972}
+    - target: {fileID: 1685762601780632596, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: nodesAfterStart
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1685762601780632596, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: coneHeightOffset
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4250907045257525364, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
       propertyPath: m_RootOrder

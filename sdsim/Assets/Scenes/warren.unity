@@ -3439,6 +3439,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572457, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.25
+      objectReference: {fileID: 0}
     - target: {fileID: 768661596986572458, guid: 90ee85060de90764a8fb11fed079ff80,
         type: 3}
       propertyPath: m_Name
@@ -3448,6 +3453,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572463, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572463, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 2.9999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572463, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572463, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_Center.y
+      value: -7.5043286e-16
+      objectReference: {fileID: 0}
+    - target: {fileID: 768661596986572463, guid: 90ee85060de90764a8fb11fed079ff80,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -1.5000001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 90ee85060de90764a8fb11fed079ff80, type: 3}
@@ -3694,7 +3724,7 @@ PrefabInstance:
     - target: {fileID: 4226137143079575908, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -5.0000153
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 4226500186136556145, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
@@ -4665,6 +4695,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
+      propertyPath: roadTextures.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: roadMaterials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
       propertyPath: roadHeightOffset
       value: 0
       objectReference: {fileID: 0}
@@ -4698,6 +4738,31 @@ PrefabInstance:
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doBuildRoad
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: roadTextures.Array.data[5]
+      value: 
+      objectReference: {fileID: 2800000, guid: 3d12989ade3f1624e86ca696aa6e4aea, type: 3}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: iRoadTexture
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: roadMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 665c5390ee81f314b87ec4054073b845, type: 2}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: roadMaterials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 938f9edd8aa7246489c24bcfd9bcefac, type: 2}
+    - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: iRoadMaterial
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3155280883320326495, guid: 89b891dc9d0fe46ffba6fbc78477652f,
