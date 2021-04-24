@@ -199,7 +199,7 @@ public class CarSpawner : MonoBehaviour {
     public void UpdateSplitScreenCams()
     {   
         // check if the number of cameras match the number of cars
-        if ((cameras.Count != cars.Count && cars.Count <= GlobalState.maxSplitScreen) && !GlobalState.raceCameras)
+        if ((cameras.Count != cars.Count) && !GlobalState.raceCameras)
         {   
             // remove all cameras in there
             foreach(GameObject splitScreenCamGo in cameras)
@@ -209,7 +209,8 @@ public class CarSpawner : MonoBehaviour {
             cameras.Clear();
 
             // and recreate some new ones
-            for (int i = 0; i < cars.Count; i++)
+            
+            for (int i = 0; i <Math.Min(cameras.Count, GlobalState.maxSplitScreen); i++)
             { 
                 AddSplitScreenCam();
             }
