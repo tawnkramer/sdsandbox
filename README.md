@@ -138,6 +138,3 @@ python predict_client.py --model=../outputs/mymodel.h5
 **Note: pygame only needed if using mon_and_predict_server.py which gives a live camera feed during inferencing.
 
 
-## Credits
-
-Tawn Kramer  
