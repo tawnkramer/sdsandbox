@@ -198,6 +198,10 @@ public class CarSpawner : MonoBehaviour {
 
     public void UpdateSplitScreenCams()
     {   
+
+        int num_cameras = cars.Count;
+        if (num_cameras > GlobalState.maxSplitScreen) { num_cameras = GlobalState.maxSplitScreen;}
+
         // check if the number of cameras match the number of cars
         if ((cameras.Count != cars.Count) && !GlobalState.raceCameras)
         {   
@@ -209,15 +213,14 @@ public class CarSpawner : MonoBehaviour {
             cameras.Clear();
 
             // and recreate some new ones
-            
-            for (int i = 0; i <Math.Min(cameras.Count, GlobalState.maxSplitScreen); i++)
+            for (int i = 0; i < num_cameras; i++)
             { 
                 AddSplitScreenCam();
             }
         }
 
         // for each camera, update the rect
-        for (int i = 0; i < cameras.Count; i++)
+        for (int i = 0; i < num_cameras; i++)
         {   
             GameObject splitScreenCamGo = cameras[i];
             GameObject car = cars[i];
