@@ -82,7 +82,7 @@ class SimpleClient(SDClient):
             'guid' : guid }
         self.send_now(json.dumps(msg))
         time.sleep(0.2)
-        
+
         # Car config
         # body_style = "donkey" | "bare" | "car01" choice of string
         # body_rgb  = (128, 128, 128) tuple of ints
