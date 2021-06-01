@@ -30,7 +30,7 @@ MonoBehaviour:
     m_Settings:
       excludeSkybox: 1
   antialiasing:
-    m_Enabled: 1
+    m_Enabled: 0
     m_Settings:
       method: 0
       fxaaSettings:
@@ -43,7 +43,7 @@ MonoBehaviour:
   ambientOcclusion:
     m_Enabled: 0
     m_Settings:
-      intensity: 0.2
+      intensity: 0
       radius: 0.3
       sampleCount: 16
       downsampling: 1
@@ -72,13 +72,13 @@ MonoBehaviour:
   depthOfField:
     m_Enabled: 0
     m_Settings:
-      focusDistance: 4.79
-      aperture: 5.3
+      focusDistance: 10
+      aperture: 5.6
       focalLength: 50
       useCameraFov: 0
       kernelSize: 1
   motionBlur:
-    m_Enabled: 1
+    m_Enabled: 0
     m_Settings:
       shutterAngle: 270
       sampleCount: 32
@@ -86,29 +86,29 @@ MonoBehaviour:
   eyeAdaptation:
     m_Enabled: 0
     m_Settings:
-      lowPercent: 1
-      highPercent: 51.00001
-      minLuminance: -14.3
-      maxLuminance: -3.6
-      keyValue: 0.25
-      dynamicKeyValue: 1
-      adaptationType: 0
+      lowPercent: 45
+      highPercent: 95
+      minLuminance: -5
+      maxLuminance: 1
+      keyValue: 0.5
+      dynamicKeyValue: 0
+      adaptationType: 1
       speedUp: 2
       speedDown: 1
-      logMin: -3
-      logMax: 2
+      logMin: -8
+      logMax: 8
   bloom:
     m_Enabled: 1
     m_Settings:
       bloom:
-        intensity: 1.14
-        threshold: 1.05
+        intensity: 3
+        threshold: 1.18
         softKnee: 0.5
-        radius: 1
+        radius: 7
         antiFlicker: 1
       lensDirt:
         texture: {fileID: 0}
-        intensity: 3
+        intensity: 1
   colorGrading:
     m_Enabled: 0
     m_Settings:
@@ -121,7 +121,7 @@ MonoBehaviour:
         neutralWhiteLevel: 5.3
         neutralWhiteClip: 10
       basic:
-        postExposure: 3
+        postExposure: 0
         temperature: 0
         tint: 0
         hueShift: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
         red: {x: 1, y: 0, z: 0}
         green: {x: 0, y: 1, z: 0}
         blue: {x: 0, y: 0, z: 1}
-        currentEditingChannel: 0
+        currentEditingChannel: 2
       colorWheels:
         mode: 1
         log:
@@ -309,7 +309,7 @@ MonoBehaviour:
     m_Enabled: 0
     m_Settings:
       spectralTexture: {fileID: 0}
-      intensity: 0.1
+      intensity: 1
   grain:
     m_Enabled: 0
     m_Settings:
@@ -333,7 +333,7 @@ MonoBehaviour:
     m_Enabled: 0
   monitors:
     currentMonitorID: 0
-    refreshOnPlay: 0
+    refreshOnPlay: 1
     histogramMode: 3
     waveformExposure: 0.12
     waveformY: 0

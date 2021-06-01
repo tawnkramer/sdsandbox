@@ -19,3 +19,6 @@ sdsim/Logs
 /sdsim/.vscode
 /sdsim/Assets/AssetBundles
 /sdsim/Builds
+/src/camera_a.png
+/src/camera_b.png
+/sdsim/UIElementsSchema
