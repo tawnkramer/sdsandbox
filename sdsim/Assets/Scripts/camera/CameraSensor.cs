@@ -34,9 +34,11 @@ public class CameraSensor : MonoBehaviour {
 
 		if(offset_x != 0.0f || offset_y != 0.0f || offset_z != 0.0f)
 			transform.localPosition = new Vector3(offset_x, offset_y, offset_z);
-	
-		if(rot_x != 0.0f || rot_y != 0.0f || rot_z != 0.0f)
+
+		if (rot_x != 0.0f || rot_y != 0.0f || rot_z != 0.0f)
+		{
 			transform.localEulerAngles = new Vector3(rot_x, rot_y, rot_z);
+		}
 
 		if (rot_x != 0.0f || rot_y != 0.0f || rot_z != 0.0f)
 		{
