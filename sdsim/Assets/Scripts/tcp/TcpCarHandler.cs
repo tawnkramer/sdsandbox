@@ -428,6 +428,8 @@ namespace tk
             float offset_y = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
             float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
             float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
+            float rot_y = float.Parse(json.GetField("rot_y").str, CultureInfo.InvariantCulture.NumberFormat);
+            float rot_z = float.Parse(json.GetField("rot_z").str, CultureInfo.InvariantCulture.NumberFormat);
             float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str, CultureInfo.InvariantCulture.NumberFormat);
             float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str, CultureInfo.InvariantCulture.NumberFormat);
             int img_w = int.Parse(json.GetField("img_w").str);
@@ -436,11 +438,11 @@ namespace tk
             string img_enc = json.GetField("img_enc").str;
 
             if (carObj != null)
-                UnityMainThreadDispatcher.Instance().Enqueue(SetCamConfig(iCamera, fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc, fish_eye_x, fish_eye_y));
+                UnityMainThreadDispatcher.Instance().Enqueue(SetCamConfig(iCamera, fov, offset_x, offset_y, offset_z, rot_x, rot_y, rot_z, img_w, img_h, img_d, img_enc, fish_eye_x, fish_eye_y));
         }
 
         IEnumerator SetCamConfig(int iCamera, float fov, float offset_x, float offset_y, float offset_z, float rot_x,
-            int img_w, int img_h, int img_d, string img_enc, float fish_eye_x, float fish_eye_y)
+            float rot_y, float rot_z, int img_w, int img_h, int img_d, string img_enc, float fish_eye_x, float fish_eye_y)
         {
             CameraSensor cam = null;
 
@@ -458,7 +460,7 @@ namespace tk
 
             if (cam)
             {
-                cam.SetConfig(fov, offset_x, offset_y, offset_z, rot_x, img_w, img_h, img_d, img_enc);
+                cam.SetConfig(fov, offset_x, offset_y, offset_z, rot_x, rot_y, rot_z, img_w, img_h, img_d, img_enc);
 
                 Fisheye fe = cam.gameObject.GetComponent<Fisheye>();
 
