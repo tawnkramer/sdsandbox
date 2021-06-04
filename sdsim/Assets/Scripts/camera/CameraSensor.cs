@@ -40,11 +40,6 @@ public class CameraSensor : MonoBehaviour {
 			transform.localEulerAngles = new Vector3(rot_x, rot_y, rot_z);
 		}
 
-		if (rot_x != 0.0f || rot_y != 0.0f || rot_z != 0.0f)
-		{
-			transform.localEulerAngles = new Vector3(rot_x, rot_y, rot_z);
-		}
-
 		if(fov != 0.0f)
 			sensorCam.fieldOfView = fov;
 	}
