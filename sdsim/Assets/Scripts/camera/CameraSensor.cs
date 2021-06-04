@@ -14,7 +14,7 @@ public class CameraSensor : MonoBehaviour {
 	RenderTexture ren;
 	Rect ImageRect;
 
-	public void SetConfig(float fov, float offset_x, float offset_y, float offset_z, float rot_x, int img_w, int img_h, int img_d, string _img_enc)
+	public void SetConfig(float fov, float offset_x, float offset_y, float offset_z, float rot_x, float rot_y, float rot_z, int img_w, int img_h, int img_d, string _img_enc)
 	{
 		if (img_d != 0)
 		{
@@ -34,9 +34,11 @@ public class CameraSensor : MonoBehaviour {
 
 		if(offset_x != 0.0f || offset_y != 0.0f || offset_z != 0.0f)
 			transform.localPosition = new Vector3(offset_x, offset_y, offset_z);
-	
-		if(rot_x != 0.0f)
-			transform.localEulerAngles = new Vector3(rot_x, 0.0f, 0.0f);
+
+		if (rot_x != 0.0f || rot_y != 0.0f || rot_z != 0.0f)
+		{
+			transform.localEulerAngles = new Vector3(rot_x, rot_y, rot_z);
+		}
 
 		if(fov != 0.0f)
 			sensorCam.fieldOfView = fov;
