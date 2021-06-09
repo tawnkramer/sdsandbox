@@ -428,8 +428,10 @@ namespace tk
             float offset_y = float.Parse(json.GetField("offset_y").str, CultureInfo.InvariantCulture.NumberFormat);
             float offset_z = float.Parse(json.GetField("offset_z").str, CultureInfo.InvariantCulture.NumberFormat);
             float rot_x = float.Parse(json.GetField("rot_x").str, CultureInfo.InvariantCulture.NumberFormat);
-            float rot_y = float.Parse(json.GetField("rot_y").str, CultureInfo.InvariantCulture.NumberFormat);
-            float rot_z = float.Parse(json.GetField("rot_z").str, CultureInfo.InvariantCulture.NumberFormat);
+            float rot_y = 0f;
+            float rot_z = 0f;
+            if (json.HasField("rot_y")) { rot_y = float.Parse(json.GetField("rot_y").str, CultureInfo.InvariantCulture.NumberFormat); }
+            if (json.HasField("rot_z")) { rot_z = float.Parse(json.GetField("rot_z").str, CultureInfo.InvariantCulture.NumberFormat); }
             float fish_eye_x = float.Parse(json.GetField("fish_eye_x").str, CultureInfo.InvariantCulture.NumberFormat);
             float fish_eye_y = float.Parse(json.GetField("fish_eye_y").str, CultureInfo.InvariantCulture.NumberFormat);
             int img_w = int.Parse(json.GetField("img_w").str);
