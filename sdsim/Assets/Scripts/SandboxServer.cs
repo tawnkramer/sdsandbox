@@ -18,34 +18,38 @@ public class SandboxServer : MonoBehaviour
     public Transform spawn_pt;
     public bool spawnCarswClients = true;
     public bool privateAPI = false;
+    bool argHost = false;
+    bool argPort = false;
 
     public void CheckCommandLineConnectArgs()
     {
         string[] args = System.Environment.GetCommandLineArgs();
-        for (int i = 0; i < args.Length; i++)
+
+        if (privateAPI)
         {
-            if (args[i] == "--host")
+            host = GlobalState.host;
+            port = GlobalState.portPrivateAPI;
+        }
+
+        else
+        {
+            for (int i = 0; i < args.Length; i++)
             {
-                host = args[i + 1];
-            }
-            else if (args[i] == "--port")
-            {
-                port = int.Parse(args[i + 1]);
-            }
-            else
-            {
-                if (privateAPI)
+                if (args[i] == "--host")
                 {
-                    host = GlobalState.host;
-                    port = GlobalState.portPrivateAPI;
+                    host = args[i + 1];
+                    argHost = true;
                 }
-                else
+                else if (args[i] == "--port")
                 {
-                    host = GlobalState.host;
-                    port = GlobalState.port;
+                    port = int.Parse(args[i + 1]);
+                    argPort = true;
                 }
             }
         }
+
+        if (argHost == false) { host = GlobalState.host; }
+        if (argPort == false) { port = GlobalState.port; }
     }
 
     private void Awake()
