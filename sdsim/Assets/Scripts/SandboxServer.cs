@@ -25,13 +25,8 @@ public class SandboxServer : MonoBehaviour
     {
         string[] args = System.Environment.GetCommandLineArgs();
 
-        if (privateAPI)
-        {
-            host = GlobalState.host;
-            port = GlobalState.portPrivateAPI;
-        }
 
-        else
+        if (!privateAPI)
         {
             for (int i = 0; i < args.Length; i++)
             {
@@ -50,6 +45,12 @@ public class SandboxServer : MonoBehaviour
 
         if (argHost == false) { host = GlobalState.host; }
         if (argPort == false) { port = GlobalState.port; }
+        
+        if (privateAPI)
+        {
+            port = GlobalState.portPrivateAPI;
+        }
+
     }
 
     private void Awake()

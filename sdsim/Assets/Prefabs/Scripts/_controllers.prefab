@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7b37e7667e6449eb95452eb5655f48f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathManager: {fileID: 114576669822105592}
   carPrefab: {fileID: 1382209123900052, guid: f15848a2f31588e4fbc6c42244f0b989, type: 3}
   startsTm:
   - {fileID: 0}
@@ -87,6 +88,8 @@ MonoBehaviour:
   distCarRows: 5
   mainCamera: {fileID: 0}
   splitScreenCamPrefab: {fileID: 934845466505157398, guid: c7ca5f9e5f6eaa74499815ad315056df,
+    type: 3}
+  splitScreenOHCamPrefab: {fileID: 2624446197184848003, guid: a13c1e3683bfd174f9c810a6ad7d1244,
     type: 3}
   SplitScreenWidth: 2
   raceCameras: {fileID: 3155280883320326495}
@@ -142,7 +145,7 @@ MonoBehaviour:
   roadOffsetW: 2.2
   roadPrefabMesh: {fileID: 1121773054233654, guid: da08699e1e14b469d86012dbd9ae3314,
     type: 3}
-  iRoadTexture: 0
+  iRoadMaterial: 0
   roadMaterials:
   - {fileID: 2100000, guid: 665c5390ee81f314b87ec4054073b845, type: 2}
   - {fileID: 2100000, guid: 938f9edd8aa7246489c24bcfd9bcefac, type: 2}
@@ -319,6 +322,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -343,6 +347,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &8041275786197272087
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -353,7 +358,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
@@ -371,6 +376,11 @@ PrefabInstance:
       objectReference: {fileID: 114576669822105592}
     - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -386,6 +396,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
@@ -398,16 +413,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
         type: 3}

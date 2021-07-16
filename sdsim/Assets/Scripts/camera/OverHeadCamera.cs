@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OverHeadCamera : MonoBehaviour, IWaitCarPath
+public class OverHeadCamera : MonoBehaviour
 {
     public PathManager pathManager;
-    public float margin = 0;
+    public float margin = 5;
     public float height = 10;
     Camera cam;
 
-    public void Init()
+    public void Init ()
     {
         if (pathManager == null) { return; }
 
@@ -40,26 +40,14 @@ public class OverHeadCamera : MonoBehaviour, IWaitCarPath
         }
 
         // place the camera in the center of the path
-        Vector3 centroid = Vector3Average(points.ToArray());
-        transform.position = centroid + Vector3.up*height;
+        Vector3 center = new Vector3((xmin + xmax) / 2.0f, 0, (zmin + zmax) / 2.0f);
+        transform.position = center + Vector3.up * height;
 
         float xSize = Mathf.Abs(xmax - xmin);
         float zSize = Mathf.Abs(zmax - zmin);
         float camSize = Mathf.Max(xSize, zSize);
 
         cam.orthographicSize = (camSize / 2) + margin;
-    }
-
-    Vector3 Vector3Average(Vector3[] values)
-    {
-        Vector3 sum = new Vector3();
-        int length = values.Length;
-
-        for (int i = 0; i < length; i++)
-        {
-            sum += values[i];
-        }
-
-        return sum / length;
+        // try to best fit the camera to the screen
     }
 }

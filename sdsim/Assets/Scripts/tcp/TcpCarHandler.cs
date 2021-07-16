@@ -565,11 +565,15 @@ namespace tk
 
         public IEnumerator SendCollisionWithStartingLine(int startingLineIndex, float timeStamp)
         {
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "collision_with_starting_line");
-            json.AddField("starting_line_index", startingLineIndex);
-            json.AddField("timeStamp", timeStamp);
-            client.SendMsg(json);
+            if (client != null)
+            {
+                JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
+                json.AddField("msg_type", "collision_with_starting_line");
+                json.AddField("starting_line_index", startingLineIndex);
+                json.AddField("timeStamp", timeStamp);
+                client.SendMsg(json);
+            }
+
             yield return null;
         }
 
