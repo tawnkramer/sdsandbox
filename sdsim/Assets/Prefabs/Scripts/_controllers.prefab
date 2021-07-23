@@ -371,9 +371,24 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
         type: 3}
+      propertyPath: roadWidth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
       propertyPath: pathManager
       value: 
       objectReference: {fileID: 114576669822105592}
+    - target: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: layerMaskNames.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050126385724064509, guid: 436d25813b67c5248895bd906ed52f84,
+        type: 3}
+      propertyPath: layerMaskNames.Array.data[0]
+      value: OverHead
+      objectReference: {fileID: 0}
     - target: {fileID: 4050126385724064510, guid: 436d25813b67c5248895bd906ed52f84,
         type: 3}
       propertyPath: m_RootOrder

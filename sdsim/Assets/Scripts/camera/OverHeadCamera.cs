@@ -15,6 +15,7 @@ public class OverHeadCamera : MonoBehaviour
     public void Init()
     {
         if (pathManager == null) { return; }
+        if (pathManager.carPath == null) { return; }
 
         cam = GetComponent<Camera>();
         if (cam == null) { return; }

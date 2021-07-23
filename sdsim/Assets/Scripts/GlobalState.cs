@@ -18,6 +18,7 @@ public static class GlobalState
     public static bool generateTrees = true;
     public static bool generateRandomCones = true;
     public static bool randomLight = true;
+    public static bool overheadCamera = true;
     public static bool raceCameras = false;
     public static string privateKey = "";
     public static bool useSeed = false;

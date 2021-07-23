@@ -66,11 +66,10 @@ public class RandAssetsChallenge : MonoBehaviour, IWaitCarPath
                     Vector3 xyz_coords = new Vector3(random_node.pos.x, random_node.pos.y + heightOffset, random_node.pos.z); // height variation is not supported yet
                     Vector3 new_point = rand_pos_offset + xyz_coords + asset.transform.position;
 
-                    asset.transform.RotateAround(Vector3.zero, Vector3.up, Random.Range(0, 180));
-
                     if (IsValid(pathManager.carPath, new_point))
                     {
                         GameObject go = Instantiate(asset, new_point, asset.transform.rotation);
+                        go.transform.RotateAround(go.transform.position, Vector3.up, Random.Range(0, 180));
                         if (parentGameObject != null)
                         {
                             go.transform.parent = parentGameObject.transform;
