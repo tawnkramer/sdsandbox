@@ -19868,6 +19868,11 @@ PrefabInstance:
       objectReference: {fileID: 1560962243881880085}
     - target: {fileID: 1685762601780632596, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
+      propertyPath: coneHeightOffset
+      value: -0.4662475
+      objectReference: {fileID: 0}
+    - target: {fileID: 1685762601780632596, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
       propertyPath: conePrefabs.Array.size
       value: 3
       objectReference: {fileID: 0}
