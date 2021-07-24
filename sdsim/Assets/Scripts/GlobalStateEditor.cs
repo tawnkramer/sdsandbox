@@ -142,9 +142,9 @@ public class GlobalStateEditor : MonoBehaviour
             maxSplitScreen = tmp_maxsp;
         YOffset += Ysteps;
 
-        generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
-        YOffset += Ysteps;
         extendedTelemetry = GUI.Toggle(new Rect(0, YOffset, width, 20), extendedTelemetry, "extendedTelemetry");
+        YOffset += Ysteps;
+        generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
         YOffset += Ysteps;
         generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
         YOffset += Ysteps;

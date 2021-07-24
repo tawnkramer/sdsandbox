@@ -31,8 +31,8 @@ public class CarSpawner : MonoBehaviour
     int raceStatusHeight = 100;
     int n_columns = 2; // number of columns in the RaceStatus panel
 
-    private List<GameObject> cars = new List<GameObject>();
-    private List<GameObject> cameras = new List<GameObject>();
+    public List<GameObject> cars = new List<GameObject>();
+    public List<GameObject> cameras = new List<GameObject>();
 
     static public GameObject getChildGameObject(GameObject fromGameObject, string withName)
     {

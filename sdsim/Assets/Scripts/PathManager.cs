@@ -200,17 +200,6 @@ public class PathManager : MonoBehaviour
         yield return null;
     }
 
-    public void DestroyRoad() // old, need refactoring in RoadBuilder
-    {
-        GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
-
-        foreach (GameObject g in prev)
-            Destroy(g);
-
-        // if (roadBuilder != null)
-        //     roadBuilder.DestroyRoad();
-    }
-
     public Vector3 GetPathStart()
     {
         return startPos.position;
@@ -485,8 +474,6 @@ public class PathManager : MonoBehaviour
         GameObject[] prev = GameObject.FindGameObjectsWithTag("pathNode");
 
         Debug.Log(string.Format("Cleaning up {0} old nodes. {1} new ones.", prev.Length, p.nodes.Count));
-
-        DestroyRoad();
 
         foreach (PathNode pn in carPath.nodes)
         {

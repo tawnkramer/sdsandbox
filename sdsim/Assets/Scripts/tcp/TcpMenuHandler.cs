@@ -44,7 +44,7 @@ namespace tk
                     }
 
                 }
-                catch (Exception e) { Debug.LogError(e.ToString());}
+                catch (Exception e) { Debug.LogError(e); }
 
                 GlobalState.sceneNames = scene_names.ToArray();
 

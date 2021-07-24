@@ -6045,6 +6045,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 529130805}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &540966779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8037181034751879481, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 5307157098835297523}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &552141048
 Mesh:
   m_ObjectHideFlags: 0
@@ -19498,6 +19504,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
+      propertyPath: challenges.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[0]
+      value: 
+      objectReference: {fileID: 540966779}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[1]
+      value: 
+      objectReference: {fileID: 5307157098835297525}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: challenges.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
       propertyPath: challenges_obj.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -19908,9 +19934,40 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
+      propertyPath: minRange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: numAssets
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
       propertyPath: pathManager
       value: 
       objectReference: {fileID: 1560962243881880085}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: parentGameObject
+      value: 
+      objectReference: {fileID: 5307157098835297525}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: prefabList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: prefabList.Array.data[0]
+      value: 
+      objectReference: {fileID: 1077483293577462, guid: 6ed6b26f3b530104d8e40fee1a88cf1b,
+        type: 3}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: prefabList.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6818656474563703977, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
       propertyPath: lightSource
@@ -19926,6 +19983,12 @@ PrefabInstance:
 --- !u!4 &5307157098835297524 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4250907045257525364, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+    type: 3}
+  m_PrefabInstance: {fileID: 5307157098835297523}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5307157098835297525 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5042952344224196374, guid: 07f0ed3f4d97ab546b616cad407a0b96,
     type: 3}
   m_PrefabInstance: {fileID: 5307157098835297523}
   m_PrefabAsset: {fileID: 0}
