@@ -6981,6 +6981,11 @@ PrefabInstance:
       propertyPath: initAfterCarPathLoaded.Array.data[1]
       value: 
       objectReference: {fileID: 865014891}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: coneOffset

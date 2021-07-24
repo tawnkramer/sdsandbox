@@ -224,7 +224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 432320, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 432320, guid: 645f2a68cf8d04ca49cec5a0b2dbeae6, type: 3}
       propertyPath: m_LocalScale.x
@@ -516,7 +516,7 @@ Transform:
   m_LocalScale: {x: 153.84613, y: 0.15384613, z: 153.84613}
   m_Children: []
   m_Father: {fileID: 8985904831852787701}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &419255368
 PrefabInstance:
@@ -1337,7 +1337,7 @@ Transform:
   m_LocalScale: {x: 0.15384614, y: 0.15384613, z: 0.15384614}
   m_Children: []
   m_Father: {fileID: 8985904831852787701}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1193146233
 GameObject:
@@ -1915,80 +1915,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 889593594}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2068664630
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2068664631}
-  - component: {fileID: 2068664635}
-  m_Layer: 0
-  m_Name: OverHeadCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2068664631
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2068664630}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 7.6923075, y: 150.19691, z: 84.61537}
-  m_LocalScale: {x: 0.15384613, y: 153.8462, z: 0.00015384634}
-  m_Children: []
-  m_Father: {fileID: 8985904831852787701}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!20 &2068664635
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2068664630}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 900
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 688b2abee30e9404785efb2aaa7d44cb, type: 2}
-  m_TargetDisplay: 1
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
 --- !u!1001 &81764684631796553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2095,6 +2021,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3090279442421596089}
     m_Modifications:
+    - target: {fileID: 2521743496535695185, guid: b4bfaf4102a71204692041cf5b06c6bb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4160164102731652162, guid: b4bfaf4102a71204692041cf5b06c6bb,
         type: 3}
       propertyPath: m_Name
@@ -2745,6 +2676,16 @@ PrefabInstance:
       propertyPath: challenges_obj.Array.data[0]
       value: 
       objectReference: {fileID: 1400255536}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114576669822105592, guid: 89b891dc9d0fe46ffba6fbc78477652f,
+        type: 3}
+      propertyPath: initAfterCarPathLoaded.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 114798992687500020, guid: 89b891dc9d0fe46ffba6fbc78477652f,
         type: 3}
       propertyPath: doBuildRoad
@@ -2788,7 +2729,6 @@ Transform:
   - {fileID: 1356398672}
   - {fileID: 1599794893}
   - {fileID: 1684290114}
-  - {fileID: 2068664631}
   - {fileID: 364146826}
   - {fileID: 1130312165}
   - {fileID: 319193530}

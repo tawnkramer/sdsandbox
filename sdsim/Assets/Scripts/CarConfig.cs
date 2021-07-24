@@ -7,22 +7,23 @@ public class CarConfig : MonoBehaviour
 {
     public GameObject bodyStyles;
     public GameObject car_name_base;
+    public GameObject OverheadViewSphere;
     public TextMesh car_name_text;
     public Timer timer;
 
     public void SetStyle(string body_style, int r, int g, int b, string car_name, int font_size)
     {
         Debug.Log("Setting car config.");
-        
-        if(car_name.Length > 1)
+
+        if (car_name.Length > 1)
         {
             car_name_base.SetActive(true);
             car_name_text.text = car_name;
             car_name_text.fontSize = font_size;
             transform.name = car_name; // rename the gameobject name
         }
-        
-        if(timer != null)
+
+        if (timer != null)
         {
             timer.racerName = car_name;
         }
@@ -36,12 +37,17 @@ public class CarConfig : MonoBehaviour
         col.g = g / 255.0f;
         col.b = b / 255.0f;
 
+        Renderer rend = OverheadViewSphere.GetComponent<Renderer>();
+        Material[] materials = rend.materials;
+        materials[0].SetColor("_Color", col);
+
+
         GameObject bodyStyle;
-        for(int i = 0; i < bodyStyles.transform.childCount; i++) // go through each bodyStyles to find the desired body style
-        {   
+        for (int i = 0; i < bodyStyles.transform.childCount; i++) // go through each bodyStyles to find the desired body style
+        {
             bodyStyle = bodyStyles.transform.GetChild(i).gameObject;
             if (bodyStyle.name == body_style) // check if it's the requested body style
-            {   
+            {
                 bodyStyle.SetActive(true);
                 var carBodyStyle = bodyStyle.GetComponent<CarBodyStyle>();
                 if (carBodyStyle != null)
@@ -50,7 +56,7 @@ public class CarConfig : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning(bodyStyle.name+" doesn't have a CarBodyStyle component");
+                    Debug.LogWarning(bodyStyle.name + " doesn't have a CarBodyStyle component");
                 }
                 return;
             }
