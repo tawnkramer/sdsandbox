@@ -147,9 +147,11 @@ MonoBehaviour:
   coneHeightOffset: 0
   coneOffset: 5
   iConePrefab: 0
+  nodesAfterStart: 10
   conePrefabs:
   - {fileID: 1702004190242720, guid: c8afaba7fce53904d8f9b59644394304, type: 3}
   - {fileID: 4833816978664631217, guid: 7b352c1be3b4a64498373a6f9cca2e26, type: 3}
+  - {fileID: 4803252637000801731, guid: 0bd1b58c20660be45a06f6defc13eae5, type: 3}
 --- !u!1 &8136637617633944258
 GameObject:
   m_ObjectHideFlags: 0

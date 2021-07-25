@@ -31,8 +31,8 @@ public class CarSpawner : MonoBehaviour
     int raceStatusHeight = 100;
     int n_columns = 2; // number of columns in the RaceStatus panel
 
-    private List<GameObject> cars = new List<GameObject>();
-    private List<GameObject> cameras = new List<GameObject>();
+    public List<GameObject> cars = new List<GameObject>();
+    public List<GameObject> cameras = new List<GameObject>();
 
     static public GameObject getChildGameObject(GameObject fromGameObject, string withName)
     {
@@ -66,7 +66,8 @@ public class CarSpawner : MonoBehaviour
 
         if (toRemove != null)
         {
-            int iSplitScreenCam = cars.IndexOf(toRemove) + 1;
+            int iSplitScreenCam = cars.IndexOf(toRemove);
+            if (GlobalState.overheadCamera) { iSplitScreenCam += 1; }
 
             if (raceCameras != null)
             {
@@ -188,7 +189,7 @@ public class CarSpawner : MonoBehaviour
     {
         if (cameras.Count < GlobalState.maxSplitScreen && !GlobalState.raceCameras)
         {
-            if (index == 0)
+            if (index == 0 && GlobalState.overheadCamera)
             {
                 GameObject splitScreenOHCamGo = Instantiate(splitScreenOHCamPrefab);
                 OverHeadCamera OHCam = splitScreenOHCamGo.GetComponent<OverHeadCamera>();
@@ -216,11 +217,18 @@ public class CarSpawner : MonoBehaviour
     public void UpdateSplitScreenCams()
     {
 
-        int num_cameras = cars.Count + 1;
+        if (GlobalState.raceCameras)
+        {
+            if (mainCamera != null) { mainCamera.SetActive(false); }
+            return;
+        }
+
+        int num_cameras = cars.Count;
+        if (GlobalState.overheadCamera) { num_cameras += 1; }
         if (num_cameras > GlobalState.maxSplitScreen) { num_cameras = GlobalState.maxSplitScreen; }
 
         // check if the number of cameras match the number of cars
-        if ((cameras.Count != num_cameras) && !GlobalState.raceCameras)
+        if ((cameras.Count != num_cameras))
         {
             // remove all cameras in there
             foreach (GameObject splitScreenCamGo in cameras)
@@ -240,10 +248,12 @@ public class CarSpawner : MonoBehaviour
         for (int i = 0; i < num_cameras; i++)
         {
 
-            if (i > 0) // if the camera isn't overhead, assign a car to it
+            if (i > 0 || !GlobalState.overheadCamera) // if the camera isn't overhead, assign a car to it
             {
                 GameObject splitScreenCamGo = cameras[i];
-                GameObject car = cars[i - 1];
+                GameObject car;
+                if (GlobalState.overheadCamera) { car = cars[i - 1]; }
+                else { car = cars[i]; }
 
                 // set target to the corresponding car
                 Camera splitScreenCam = splitScreenCamGo.GetComponent<Camera>();

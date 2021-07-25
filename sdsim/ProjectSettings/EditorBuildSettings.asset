@@ -38,4 +38,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ironcar.unity
     guid: a945785e2aa7ea7468cfc040f2063ad8
+  - enabled: 1
+    path: Assets/Scenes/circuit_launch.unity
+    guid: 574a0b2d2b3bf6641bf9a81ed0cb3e1d
   m_configObjects: {}

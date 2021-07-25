@@ -51,6 +51,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.raceCameras; }
         set { GlobalState.raceCameras = value; }
     }
+    public bool overheadCamera
+    {
+        get { return GlobalState.overheadCamera; }
+        set { GlobalState.overheadCamera = value; }
+    }
     public bool drawLidar
     {
         get { return GlobalState.drawLidar; }
@@ -137,15 +142,17 @@ public class GlobalStateEditor : MonoBehaviour
             maxSplitScreen = tmp_maxsp;
         YOffset += Ysteps;
 
-        generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
-        YOffset += Ysteps;
         extendedTelemetry = GUI.Toggle(new Rect(0, YOffset, width, 20), extendedTelemetry, "extendedTelemetry");
+        YOffset += Ysteps;
+        generateTrees = GUI.Toggle(new Rect(0, YOffset, width, 20), generateTrees, "generateTrees");
         YOffset += Ysteps;
         generateRandomCones = GUI.Toggle(new Rect(0, YOffset, width, 20), generateRandomCones, "generateRandomCones");
         YOffset += Ysteps;
         randomLight = GUI.Toggle(new Rect(0, YOffset, width, 20), randomLight, "randomLight");
         YOffset += Ysteps;
         raceCameras = GUI.Toggle(new Rect(0, YOffset, width, 20), raceCameras, "raceCameras");
+        YOffset += Ysteps;
+        overheadCamera = GUI.Toggle(new Rect(0, YOffset, width, 20), overheadCamera, "overheadCamera");
         YOffset += Ysteps;
         drawLidar = GUI.Toggle(new Rect(0, YOffset, width, 20), drawLidar, "drawLidar");
         YOffset += Ysteps;
@@ -198,6 +205,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("generateRandomCones", generateRandomCones ? 1 : 0);
         PlayerPrefs.SetInt("randomLight", randomLight ? 1 : 0);
         PlayerPrefs.SetInt("raceCameras", raceCameras ? 1 : 0);
+        PlayerPrefs.SetInt("overheadCamera", overheadCamera ? 1 : 0);
         PlayerPrefs.SetInt("drawLidar", drawLidar ? 1 : 0);
         PlayerPrefs.SetInt("useSeed", useSeed ? 1 : 0);
         PlayerPrefs.SetString("privateKey", privateKey);
@@ -216,6 +224,7 @@ public class GlobalStateEditor : MonoBehaviour
         generateRandomCones = PlayerPrefs.GetInt("generateRandomCones", generateRandomCones ? 1 : 0) == 1 ? true : false;
         randomLight = PlayerPrefs.GetInt("randomLight", randomLight ? 1 : 0) == 1 ? true : false;
         raceCameras = PlayerPrefs.GetInt("raceCameras", raceCameras ? 1 : 0) == 1 ? true : false;
+        overheadCamera = PlayerPrefs.GetInt("overheadCamera", overheadCamera ? 1 : 0) == 1 ? true : false;
         drawLidar = PlayerPrefs.GetInt("drawLidar", drawLidar ? 1 : 0) == 1 ? true : false;
         useSeed = PlayerPrefs.GetInt("useSeed", useSeed ? 1 : 0) == 1 ? true : false;
         privateKey = PlayerPrefs.GetString("privateKey", Random.Range(10000000, 99999999).ToString());

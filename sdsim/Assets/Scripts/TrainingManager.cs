@@ -2,103 +2,91 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrainingManager : MonoBehaviour {
+public class TrainingManager : MonoBehaviour
+{
 
-	public PIDController controller;
-	public GameObject carObj;
-	public ICar car;
-	public Logger logger;
-	public RoadBuilder roadBuilder;
+    public PIDController controller;
+    public GameObject carObj;
+    public ICar car;
+    public Logger logger;
+    public RoadBuilder roadBuilder;
 
     public Camera overheadCamera;
 
     public PathManager pathManager;
+    public CarSpawner carSpawner;
 
-	public int numTrainingRuns = 1;
-	int iRun = 0;
+    public int numTrainingRuns = 1;
+    int iRun = 0;
 
-	void Awake()
-	{
-		
-    }
 
     void LinkObj()
     {
         car = carObj.GetComponent<ICar>();
-        if(car == null)
+        if (car == null)
             Debug.LogError("TrainingManager needs car object");
 
         roadBuilder = GameObject.FindObjectOfType<RoadBuilder>();
         pathManager = GameObject.FindObjectOfType<PathManager>();
-
-        Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
-        foreach (Camera cam in cameras)
-        {
-            if (cam.name == "OverHeadCamera")
-            {
-                overheadCamera = cam;
-            }
-        }
+		carSpawner = GameObject.FindObjectOfType<CarSpawner>();
     }
 
-	// Use this for initialization
-	void Start () 
-	{
+    // Use this for initialization
+    void Start()
+    {
         LinkObj();
-
         controller.endOfPathCB += new PIDController.OnEndOfPathCB(OnPathDone);
+    }
 
+    public void SetRoadStyle(int style)
+    {
+        iRun = style;
+    }
+
+    void SwapRoadToNewTextureVariation()
+    {
+        if (roadBuilder == null)
+            return;
+
+        roadBuilder.SetNewRoadVariation(iRun);
+    }
+
+    void StartNewRun()
+    {
+        car.RestorePosRot();
+        roadBuilder.DestroyRoad();
+        SwapRoadToNewTextureVariation();
+        pathManager.InitCarPath();
+        controller.StartDriving();
         RepositionOverheadCamera();
-	}
-
-	public void SetRoadStyle(int style)
-	{
-		iRun = style;
-	}
-
-	void SwapRoadToNewTextureVariation()
-	{
-		if(roadBuilder == null)
-			return;
-
-		roadBuilder.SetNewRoadVariation(iRun);
-	}
-
-	void StartNewRun()
-	{
-		car.RestorePosRot();
-		pathManager.DestroyRoad();
-		SwapRoadToNewTextureVariation();
-		pathManager.InitCarPath();
-		controller.StartDriving();
-        RepositionOverheadCamera();
-	}
+    }
 
     public void RepositionOverheadCamera()
     {
-        if(overheadCamera == null)
+        if (carSpawner == null)
             return;
 
-        Vector3 pathStart = pathManager.GetPathStart();
-        Vector3 pathEnd = pathManager.GetPathEnd();
-        Vector3 avg = (pathStart + pathEnd) / 2.0f;
-        avg.y = overheadCamera.transform.position.y;
-        overheadCamera.transform.position = avg;
+        if (GlobalState.overheadCamera)
+        {
+            GameObject OHCamGo = carSpawner.cameras[0];
+            OverHeadCamera overheadCamera = OHCamGo.GetComponent<OverHeadCamera>();
+            overheadCamera.Init();
+        }
     }
 
 
-	void OnLastRunCompleted()
-	{
-		car.RequestFootBrake(1.0f);
-		controller.StopDriving();
-		logger.Shutdown();
-	}
+    void OnLastRunCompleted()
+    {
+        car.RequestFootBrake(1.0f);
+        controller.StopDriving();
+        logger.Shutdown();
+    }
 
     public void OnMenuNextTrack()
     {
         iRun += 1;
 
-		if(iRun >= numTrainingRuns)
+        if (iRun >= numTrainingRuns)
             iRun = 0;
 
         StartNewRun();
@@ -111,36 +99,36 @@ public class TrainingManager : MonoBehaviour {
         car.RequestFootBrake(1);
     }
 
-	void OnPathDone()
-	{
-		iRun += 1;
+    void OnPathDone()
+    {
+        iRun += 1;
 
-		if(iRun >= numTrainingRuns)
-		{
-			OnLastRunCompleted();
-		}
-		else
-		{
-			StartNewRun();
-		}
-	}
+        if (iRun >= numTrainingRuns)
+        {
+            OnLastRunCompleted();
+        }
+        else
+        {
+            StartNewRun();
+        }
+    }
 
-	void Update()
-	{
+    void Update()
+    {
         if (car == null)
             return;
 
-		//watch the car and if we fall off the road, reset things.
-		if(car.GetTransform().position.y < -1.0f)
-		{
-			OnPathDone();
-		}
+        //watch the car and if we fall off the road, reset things.
+        if (car.GetTransform().position.y < -1.0f)
+        {
+            OnPathDone();
+        }
 
-		if(logger.frameCounter + 1 % 1000 == 0)
-		{
-			//swap road texture left to right. or Y
-			roadBuilder.NegateYTiling();
-		}
-	}
+        if (logger.frameCounter + 1 % 1000 == 0)
+        {
+            //swap road texture left to right. or Y
+            roadBuilder.NegateYTiling();
+        }
+    }
 
 }

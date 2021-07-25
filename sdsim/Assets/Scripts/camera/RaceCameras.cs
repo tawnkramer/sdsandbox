@@ -18,7 +18,22 @@ public class RaceCameras : MonoBehaviour, IWaitCarPath
     public float laneXOffset = 0.0f;
     public float startIndexOffset = 0.0f;
 
+    public string[] layerMaskNames;
+    int cullMask = 0;
+
     float distance;
+
+    public void Awake()
+    {
+        int v = 0;
+        foreach (string layerName in layerMaskNames)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            v |= 1 << layer;
+        }
+
+        cullMask |= ~v;
+    }
 
     public void Init()
     {
@@ -76,6 +91,7 @@ public class RaceCameras : MonoBehaviour, IWaitCarPath
             cmp.SetCameraTrigger(nodepos, node.rotation * Quaternion.AngleAxis(90, Vector3.up), new Vector3(0.1f, roadHeight, roadWidth));
             cmp.SetCam(midNodepos + midNode.rotation * (6f * sign * Vector3.right) + (cameraHeight * Vector3.up), midNodepos);
             cmp.index = i;
+            cmp.camera.cullingMask = cullMask;
             raceCameras.Add(cmp);
         }
 
