@@ -23,7 +23,7 @@ public class ColCone : MonoBehaviour
         string carName = parent.name;
 
         if (privateAPI == null) { return; }
-        privateAPI.CollisionWithCone(carName, index, Time.realtimeSinceStartup);
+        privateAPI.CollisionWithCone(carName, index, Time.fixedTime);
 
         Timer[] status = parent.gameObject.GetComponentsInChildren<Timer>();
         foreach (Timer t in status)
