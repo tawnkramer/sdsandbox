@@ -34,6 +34,8 @@ namespace tk
         float ai_throttle = 0.0f;
         float ai_brake = 0.0f;
 
+        int iActiveSpan = 0;
+
         bool asynchronous = true;
         float time_step = 0.1f;
         bool bResetCar = false;
@@ -63,7 +65,7 @@ namespace tk
 
             if (pm != null && carObj != null)
             {
-                pm.carPath.GetClosestSpan(carObj.transform.position);
+                iActiveSpan = pm.carPath.GetClosestSpanIndex(carObj.transform.position);
             }
         }
 
@@ -181,13 +183,12 @@ namespace tk
 
             if (pm != null)
             {
-                
-                int activeNode = pm.carPath.GetClosestSpanIndex(tm.position);
-                json.AddField("activeNode", activeNode);
-                json.AddField("totalNodes", pm.carPath.nodes.Count);
-
-                float cte = Vector3.Distance(tm.position, pm.carPath.nodes[activeNode].pos);
+                float cte = 0.0f;
+                pm.carPath.GetCrossTrackErr(tm.position, ref iActiveSpan, ref cte); // get distance to closest node
                 if (GlobalState.extendedTelemetry) { json.AddField("cte", cte); }
+
+                json.AddField("activeNode", iActiveSpan);
+                json.AddField("totalNodes", pm.carPath.nodes.Count);
             }
 
             // not intended to use in races, just to train 
@@ -584,7 +585,6 @@ namespace tk
                 if (bResetCar)
                 {
                     car.RestorePosRot();
-                    pm.carPath.ResetActiveSpan();
 
                     if (carObj != null)
                     {
