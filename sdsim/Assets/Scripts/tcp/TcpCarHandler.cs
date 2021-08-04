@@ -181,23 +181,13 @@ namespace tk
 
             if (pm != null)
             {
-                float cte = 0.0f;
-                (bool, bool) cte_ret = pm.carPath.GetCrossTrackErr(tm.position, ref cte);
-
-                if (cte_ret.Item1 == true)
-                {
-                    pm.carPath.ResetActiveSpan();
-                }
-                else if (cte_ret.Item2 == true)
-                {
-                    pm.carPath.ResetActiveSpan(false);
-                }
-
-                if (GlobalState.extendedTelemetry) { json.AddField("cte", cte); }
-
-                // need to refactor this to be relative to the car
-                json.AddField("activeNode", pm.carPath.GetClosestSpanIndex(carObj.transform.position));
+                
+                int activeNode = pm.carPath.GetClosestSpanIndex(tm.position);
+                json.AddField("activeNode", activeNode);
                 json.AddField("totalNodes", pm.carPath.nodes.Count);
+
+                float cte = Vector3.Distance(tm.position, pm.carPath.nodes[activeNode].pos);
+                if (GlobalState.extendedTelemetry) { json.AddField("cte", cte); }
             }
 
             // not intended to use in races, just to train 
