@@ -36,7 +36,7 @@ public class HUDFPS : MonoBehaviour
 	
 	void Update()
 	{
-		accum += Time.deltaTime;
+		accum += Time.unscaledDeltaTime;
 		++frames;
 		
 		// Interval ended - update GUI text and start new interval

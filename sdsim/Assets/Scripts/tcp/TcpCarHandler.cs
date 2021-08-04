@@ -196,7 +196,7 @@ namespace tk
                 if (GlobalState.extendedTelemetry) { json.AddField("cte", cte); }
 
                 // need to refactor this to be relative to the car
-                json.AddField("activeNode", pm.carPath.iActiveSpan);
+                json.AddField("activeNode", pm.carPath.GetClosestSpanIndex(carObj.transform.position));
                 json.AddField("totalNodes", pm.carPath.nodes.Count);
             }
 
@@ -211,35 +211,6 @@ namespace tk
                 json.AddField("vel_x", velocity.x);
                 json.AddField("vel_y", velocity.y);
                 json.AddField("vel_z", velocity.z);
-
-
-                // I don't really know what is the usage of this
-                if (pm.carPath.nodes.Count > 10)
-                {
-                    NavMeshHit hit = new NavMeshHit();
-                    Vector3 position = carObj.transform.position;
-                    bool onNavMesh = NavMesh.SamplePosition(position, out hit, 5, NavMesh.AllAreas);
-                    json.AddField("on_road", onNavMesh ? 1 : 0);
-                    if (onNavMesh)
-                    {
-                        Vector3 target = pm.carPath.nodes[(pm.carPath.iActiveSpan + pm.carPath.nodes.Count + pm.carPath.nodes.Count / 3) % (pm.carPath.nodes.Count)].pos;
-                        double currentDistance = pm.carPath.getDistance(position, target);
-                        double distanceToLastTarget = pm.carPath.getDistance(position, this.lastTarget);
-                        if (this.lastTarget.x == 0 || Math.Abs(currentDistance) < 0.001 || Math.Abs(distanceToLastTarget) < 0.001 || Math.Abs(this.lastDistance) < 0.001)
-                        {
-                            this.lastDistance = currentDistance;
-                        }
-                        json.AddField("progress_on_shortest_path", (float)(this.lastDistance - distanceToLastTarget));
-                        this.lastDistance = currentDistance;
-                        this.lastTarget = target;
-                    }
-                    else
-                    {
-                        this.lastTarget = new Vector3(0, 0, 0);
-                        this.lastDistance = 0.0;
-                        json.AddField("progress_on_shortest_path", 0.0f);
-                    }
-                }
             }
             client.SendMsg(json);
         }
