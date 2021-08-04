@@ -87,6 +87,9 @@ public class CarPath
 
     public bool GetCrossTrackErr(Vector3 pos, ref int iActiveSpan, ref float err)
     {
+        int oldActiveSpan = iActiveSpan ; 
+        iActiveSpan = GetClosestSpanIndex(pos); // update the index to closest point
+
         PathNode a = nodes[iActiveSpan];
         PathNode b = nodes[iActiveSpan + 1];
 
@@ -110,8 +113,6 @@ public class CarPath
             sign = -1f;
 
         err = errVec.magnitude * sign;
-        int oldActiveSpan = iActiveSpan ; 
-        iActiveSpan = GetClosestSpanIndex(pos); // update the index to closest point
 
         if (iActiveSpan - oldActiveSpan <= 0) { return true; } // we lapped
         return false; // we are on the same lap
