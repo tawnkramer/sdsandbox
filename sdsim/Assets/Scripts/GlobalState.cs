@@ -8,6 +8,7 @@ public static class GlobalState
     public static int port = 9091;
     public static int portPrivateAPI = 9092;
     public static int fps = 60;
+    public static float timeScale = 1.0f;
     public static int maxSplitScreen = 4;
     public static bool bAutoHideSceneMenu = false;
 

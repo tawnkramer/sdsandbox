@@ -16,8 +16,7 @@ public class startingLine : MonoBehaviour
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.name != target) { return; }
-
-        float time = Time.realtimeSinceStartup;
+        float time = Time.fixedTime;
 
         Transform parent = col.transform.parent;
         if (parent == null) { return; }

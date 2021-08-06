@@ -23,18 +23,9 @@ public class CarPath
         nodes = new List<PathNode>();
         centerNodes = new List<PathNode>();
         navMeshPath = new NavMeshPath();
-        ResetActiveSpan();
     }
 
-    public void ResetActiveSpan(bool sign = true)
-    {
-        if (sign)
-            iActiveSpan = 0;
-        else
-            iActiveSpan = nodes.Count - 2;
-    }
-
-    public void GetClosestSpan(Vector3 carPos)
+    public int GetClosestSpanIndex(Vector3 carPos)
     {
         float minDistance = float.MaxValue;
         int minDistanceIndex = -1;
@@ -47,14 +38,13 @@ public class CarPath
                 minDistanceIndex = i;
             }
         }
-
-        iActiveSpan = minDistanceIndex;
+        return minDistanceIndex;
     }
 
-    public PathNode GetActiveNode()
+    public PathNode GetNode(int index)
     {
-        if (iActiveSpan < nodes.Count)
-            return nodes[iActiveSpan];
+        if (index < nodes.Count)
+            return nodes[index];
 
         return null;
     }
@@ -95,8 +85,11 @@ public class CarPath
         return distance;
     }
 
-    public (bool, bool) GetCrossTrackErr(Vector3 pos, ref float err)
+    public bool GetCrossTrackErr(Vector3 pos, ref int iActiveSpan, ref float err)
     {
+        int oldActiveSpan = iActiveSpan ; 
+        iActiveSpan = GetClosestSpanIndex(pos); // update the index to closest point
+
         PathNode a = nodes[iActiveSpan];
         PathNode b = nodes[iActiveSpan + 1];
 
@@ -121,22 +114,8 @@ public class CarPath
 
         err = errVec.magnitude * sign;
 
-        if (segRes == LineSeg3d.SegResult.GreaterThanEnd)
-        {
-            if (iActiveSpan < nodes.Count - 2)
-                iActiveSpan++;
-            else
-                return (true, false);
-        }
-        else if (segRes == LineSeg3d.SegResult.LessThanOrigin)
-        {
-            if (iActiveSpan > 0)
-                iActiveSpan--;
-            else
-                return (false, true);
-        }
-
-        return (false, false);
+        if (iActiveSpan - oldActiveSpan <= 0) { return true; } // we lapped
+        return false; // we are on the same lap
     }
 
     public (float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) GetPathBounds()

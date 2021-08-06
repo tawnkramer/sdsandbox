@@ -76,11 +76,15 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.privateKey; }
         set { GlobalState.privateKey = value; }
     }
-
     public string additionnalContentPath
     {
         get { return GlobalState.additionnalContentPath; }
         set { GlobalState.additionnalContentPath = value; }
+    }
+    public float timeScale
+    {
+        get { return GlobalState.timeScale; }
+        set { GlobalState.timeScale = value; Time.timeScale = value; }
     }
 
     private bool showPrivateKey = false;
@@ -131,6 +135,15 @@ public class GlobalStateEditor : MonoBehaviour
         int.TryParse(fpsString, out tmp_fps);
         if (tmp_fps != fps)
             fps = tmp_fps;
+        YOffset += Ysteps;
+
+        
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "timeScale");
+        string timeScaleString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), timeScale.ToString());
+        float tmp_timeScale = timeScale;
+        float.TryParse(timeScaleString, out tmp_timeScale);
+        if (tmp_timeScale != timeScale)
+            timeScale = tmp_timeScale;
         YOffset += Ysteps;
 
 
@@ -199,6 +212,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("port", port);
         PlayerPrefs.SetInt("portPrivateAPI", portPrivateAPI);
         PlayerPrefs.SetInt("fps", fps);
+        PlayerPrefs.SetFloat("timeScale", timeScale);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
         PlayerPrefs.SetInt("extendedTelemetry", extendedTelemetry ? 1 : 0);
@@ -218,6 +232,7 @@ public class GlobalStateEditor : MonoBehaviour
         port = PlayerPrefs.GetInt("port", port);
         portPrivateAPI = PlayerPrefs.GetInt("portPrivateAPI", portPrivateAPI);
         fps = PlayerPrefs.GetInt("fps", fps);
+        timeScale = PlayerPrefs.GetFloat("timeScale", timeScale);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
         generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees ? 1 : 0) == 1 ? true : false;
         extendedTelemetry = PlayerPrefs.GetInt("extendedTelemetry", extendedTelemetry ? 1 : 0) == 1 ? true : false;
