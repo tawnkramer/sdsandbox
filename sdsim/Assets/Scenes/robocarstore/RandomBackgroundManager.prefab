@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8773855708782363942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8773855708782363944}
+  - component: {fileID: 8773855708782363945}
+  m_Layer: 0
+  m_Name: Random Background Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8773855708782363944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8773855708782363942}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8773855708782363945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8773855708782363942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c82dff0b851484681b7e0bd9af7459, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enable: 0
+  speed: 0.1
+  defaultSky: {fileID: 2100000, guid: bcefcccd6dbe74033b82fd900609beae, type: 2}
+  HDRISky: {fileID: 2100000, guid: bcefcccd6dbe74033b82fd900609beae, type: 2}
+  Skys:
+  - {fileID: 2800000, guid: b02fb9db9bca443c39d683267fb86d84, type: 3}
+  - {fileID: 2800000, guid: 79c8c728c50684bcab2f45ae73397c68, type: 3}
+  - {fileID: 2800000, guid: 7e065a9136bd9462ebce3da6b17c9ed5, type: 3}
+  - {fileID: 2800000, guid: 56a391cd92c7e4400aa56a1166c6b12b, type: 3}
+  - {fileID: 2800000, guid: 8e3efba149f724711af68fe609ff99c9, type: 3}
+  - {fileID: 2800000, guid: 3d1a9c7d4ac9c4711abfb6cd2ee9f117, type: 3}
+  - {fileID: 2800000, guid: 5088398be89cb496bac1940f505d8221, type: 3}
+  - {fileID: 2800000, guid: 16740a88aa7264525af0b4b90a6503a9, type: 3}
+  - {fileID: 2800000, guid: 7bdbce85178f0431fa4033390e6927c3, type: 3}
+  - {fileID: 2800000, guid: 084b077996ee643498e6962a00b299ec, type: 3}
