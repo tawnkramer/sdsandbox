@@ -526,7 +526,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1.4, y: 1}
-  m_AnchoredPosition: {x: 1.6693115, y: 0}
+  m_AnchoredPosition: {x: 1.6988525, y: 0}
   m_SizeDelta: {x: 4, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &126483966
@@ -2866,8 +2866,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1787907216}
   m_HandleRect: {fileID: 1787907214}
   m_Direction: 0
-  m_Value: 0.0006288582
-  m_Size: 0.71272427
+  m_Value: 0.000623748
+  m_Size: 0.71258485
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3534,6 +3534,7 @@ MonoBehaviour:
   - mini_monaco
   - warren
   - circuit_launch
+  - robocarstore_standard_track
   loader: {fileID: 2140273047}
   ButtonGridLayout: {fileID: 126483964}
   ButtonPrefab: {fileID: 5466719870426124411, guid: fb93d9878115b39438221fec2f89f2ae,
