@@ -571,8 +571,7 @@ namespace tk
             Application.Quit();
         }
 
-        // Update is called once per frame
-        void Update()
+        void FixedUpdate()
         {
             if (bExitScene)
             {
@@ -597,10 +596,8 @@ namespace tk
                     bResetCar = false;
                 }
 
-
-                timeSinceLastCapture += Time.deltaTime;
-
-                if (timeSinceLastCapture > 1.0f / limitFPS)
+                timeSinceLastCapture += Time.fixedDeltaTime;
+                if (timeSinceLastCapture >= 1.0f / limitFPS)
                 {
                     timeSinceLastCapture -= (1.0f / limitFPS);
                     SendTelemetry();

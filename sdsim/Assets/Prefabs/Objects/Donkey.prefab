@@ -2910,7 +2910,7 @@ MonoBehaviour:
   carObj: {fileID: 1382209123900052}
   pm: {fileID: 0}
   conf: {fileID: 0}
-  camSensor: {fileID: 5511558235460327953}
+  camSensor: {fileID: 114024581143197506}
   camSensorB: {fileID: 4720922310813553762}
   lidar: {fileID: 8710680940541415216}
   odom: []
@@ -3394,7 +3394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4304453298484376
 Transform:
   m_ObjectHideFlags: 0
@@ -6857,7 +6857,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &406353003979381264
 Transform:
   m_ObjectHideFlags: 0
@@ -37302,7 +37302,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 120082, guid: 8c8a8f77e8699403ab6c0d4b8fe24c16, type: 3}
       propertyPath: m_Name
-      value: Dome Projector
+      value: fisheeye
+      objectReference: {fileID: 0}
+    - target: {fileID: 120082, guid: 8c8a8f77e8699403ab6c0d4b8fe24c16, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 149398, guid: 8c8a8f77e8699403ab6c0d4b8fe24c16, type: 3}
       propertyPath: m_Name
