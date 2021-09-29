@@ -279,6 +279,8 @@ public class CarSpawner : MonoBehaviour
             GameObject go = cameras[i];
             Camera camera = go.GetComponent<Camera>();
             camera.rect = new Rect(x, y, w, h);
+
+            if (GlobalState.overheadCamera && i == 0) {OverHeadCamera ohcam = go.GetComponent<OverHeadCamera>(); ohcam.Init();}
         }
 
         if (cameras.Count == 0 && mainCamera != null && !GlobalState.raceCameras)
