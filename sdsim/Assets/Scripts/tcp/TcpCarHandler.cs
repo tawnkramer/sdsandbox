@@ -28,7 +28,7 @@ namespace tk
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
 
-        float steer_to_angle = 25.0f;
+        float steer_to_angle = 16.0f;
 
         float ai_steering = 0.0f;
         float ai_throttle = 0.0f;
@@ -40,9 +40,6 @@ namespace tk
         float time_step = 0.1f;
         bool bResetCar = false;
         bool bExitScene = false;
-        bool extendedTelemetry = true;
-        Vector3 lastTarget = new Vector3(0, 0, 0);
-        double lastDistance = 0.0;
 
         public enum State
         {
@@ -607,6 +604,7 @@ namespace tk
                     ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
 
             }
+
         }
     }
 }

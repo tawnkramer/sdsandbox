@@ -1564,13 +1564,11 @@ MonoBehaviour:
   prevVel: {x: 0, y: 0, z: 0}
   startPos: {x: 0, y: 0, z: 0}
   startRot: {x: 0, y: 0, z: 0, w: 0}
-  length: 1.7
   rb: {fileID: 0}
   lastSteer: 0
   lastAccel: 0
   activity: keep_lane
   maxSteer: 16
-  SteerSpeed: 10000000
   last_collision: none
 --- !u!114 &114314152752413966
 MonoBehaviour:
@@ -2251,7 +2249,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.6
+    m_Stiffness: 1.75
   m_Enabled: 1
 --- !u!1 &1477061125221046
 GameObject:
@@ -2393,7 +2391,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.6
+    m_Stiffness: 1.85
   m_Enabled: 1
 --- !u!1 &1492330652998922
 GameObject:
@@ -4103,7 +4101,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.6
+    m_Stiffness: 1.85
   m_Enabled: 1
 --- !u!1 &1869755540700278
 GameObject:
@@ -4571,7 +4569,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.6
+    m_Stiffness: 1.75
   m_Enabled: 1
 --- !u!1 &1994745762937128
 GameObject:

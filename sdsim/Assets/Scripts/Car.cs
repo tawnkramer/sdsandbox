@@ -4,6 +4,7 @@ using System.Collections;
 
 public class Car : MonoBehaviour, ICar {
 
+	public CarSpawner carSpawner;
 	public WheelCollider[] wheelColliders;
 	public Transform[] wheelMeshes;
 
@@ -24,7 +25,6 @@ public class Car : MonoBehaviour, ICar {
 	public Quaternion startRot;
 	private Quaternion rotation = Quaternion.identity;
 	private Quaternion gyro = Quaternion.identity;
-	public float length = 1.7f;
 
 	public Rigidbody rb;
 
@@ -37,10 +37,15 @@ public class Car : MonoBehaviour, ICar {
 	public string activity = "keep_lane";
 
     public float maxSteer = 16.0f;
-	public float SteerSpeed = 10000000.0f;
 
 	//name of the last object we hit.
 	public string last_collision = "none";
+
+	// track the movements of the car, if it's not moving boot the car
+	public float timeSinceLastMoved = 0.0f;
+	public Vector3 lastPos = Vector3.zero;
+	public float lastDistanceTraveled = 0.0f;
+
 
 	// Use this for initialization
 	void Awake () 
@@ -208,14 +213,12 @@ public class Car : MonoBehaviour, ICar {
 
 		float throttle = requestTorque * maxTorque;
 		float steerAngle = requestSteering;
-		// float deltaSteerAngle = Mathf.Clamp(steerAngle - wheelColliders[2].steerAngle, -SteerSpeed*Time.fixedDeltaTime, SteerSpeed*Time.fixedDeltaTime);
-		float deltaSteerAngle = steerAngle - wheelColliders[2].steerAngle;
-        float brake = requestBrake;
+        float brake = requestBrake * maxTorque;
 
 
 		//front two tires.
-		wheelColliders[2].steerAngle += deltaSteerAngle;
-		wheelColliders[3].steerAngle += deltaSteerAngle;
+		wheelColliders[2].steerAngle = steerAngle;
+		wheelColliders[3].steerAngle = steerAngle;
 
 		//four wheel drive at the moment
 		foreach(WheelCollider wc in wheelColliders)
@@ -229,7 +232,7 @@ public class Car : MonoBehaviour, ICar {
 				wc.motorTorque = 0.0f;
 			}
 
-			wc.brakeTorque = 400f * brake;
+			wc.brakeTorque = brake;
 		}
 
 		prevVel = velocity;
@@ -237,6 +240,24 @@ public class Car : MonoBehaviour, ICar {
 		acceleration = (velocity - prevVel)/Time.deltaTime;
 		gyro = rb.rotation * Quaternion.Inverse(rotation);
 		rotation = rb.rotation;
+
+		// check whether the car has roughly move since a given time, if not, boot the client
+		Vector3 currentPos = transform.position;
+		float distance = Vector3.Distance(currentPos, lastPos) + lastDistanceTraveled;
+
+		if (distance < 1f)
+		{
+			timeSinceLastMoved += Time.fixedDeltaTime;
+		}
+		else
+		{   
+			timeSinceLastMoved = 0.0f;
+		}
+		lastPos = currentPos;
+		if (timeSinceLastMoved >= 20f && carSpawner != null)
+		{
+			// Add here the code to boot the car & client
+		}
 	}
 
 	void FlipUpright()
