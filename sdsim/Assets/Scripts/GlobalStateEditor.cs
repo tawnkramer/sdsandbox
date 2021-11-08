@@ -86,6 +86,11 @@ public class GlobalStateEditor : MonoBehaviour
         get { return GlobalState.timeScale; }
         set { GlobalState.timeScale = value; Time.timeScale = value; }
     }
+    public float timeOut
+    {
+        get { return GlobalState.timeOut; }
+        set { GlobalState.timeOut = value; }
+    }
 
     private bool showPrivateKey = false;
     void Awake()
@@ -129,7 +134,7 @@ public class GlobalStateEditor : MonoBehaviour
             portPrivateAPI = tmp_portPrivateAPI;
         YOffset += Ysteps;
 
-        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "fps limit");
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "FPS limit");
         string fpsString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), fps.ToString());
         int tmp_fps = fps;
         int.TryParse(fpsString, out tmp_fps);
@@ -137,8 +142,7 @@ public class GlobalStateEditor : MonoBehaviour
             fps = tmp_fps;
         YOffset += Ysteps;
 
-        
-        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "timeScale");
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Time scale");
         string timeScaleString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), timeScale.ToString());
         float tmp_timeScale = timeScale;
         float.TryParse(timeScaleString, out tmp_timeScale);
@@ -146,6 +150,13 @@ public class GlobalStateEditor : MonoBehaviour
             timeScale = tmp_timeScale;
         YOffset += Ysteps;
 
+        GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Time out");
+        string timeOutString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), timeOut.ToString());
+        float tmp_timeOut = timeOut;
+        float.TryParse(timeOutString, out tmp_timeOut);
+        if (tmp_timeOut != timeOut)
+            timeOut = tmp_timeOut;
+        YOffset += Ysteps;
 
         GUI.Label(new Rect(0, YOffset, LabelXOffset, 20), "Max SplitScreen");
         string maxspString = GUI.TextField(new Rect(LabelXOffset, YOffset, width, 20), maxSplitScreen.ToString());
@@ -213,6 +224,7 @@ public class GlobalStateEditor : MonoBehaviour
         PlayerPrefs.SetInt("portPrivateAPI", portPrivateAPI);
         PlayerPrefs.SetInt("fps", fps);
         PlayerPrefs.SetFloat("timeScale", timeScale);
+        PlayerPrefs.SetFloat("timeOut", timeOut);
         PlayerPrefs.SetInt("maxSplitScreen", maxSplitScreen);
         PlayerPrefs.SetInt("generateTrees", generateTrees ? 1 : 0);
         PlayerPrefs.SetInt("extendedTelemetry", extendedTelemetry ? 1 : 0);
@@ -233,6 +245,7 @@ public class GlobalStateEditor : MonoBehaviour
         portPrivateAPI = PlayerPrefs.GetInt("portPrivateAPI", portPrivateAPI);
         fps = PlayerPrefs.GetInt("fps", fps);
         timeScale = PlayerPrefs.GetFloat("timeScale", timeScale);
+        timeOut = PlayerPrefs.GetFloat("timeOut", timeOut);
         maxSplitScreen = PlayerPrefs.GetInt("maxSplitScreen", maxSplitScreen);
         generateTrees = PlayerPrefs.GetInt("generateTrees", generateTrees ? 1 : 0) == 1 ? true : false;
         extendedTelemetry = PlayerPrefs.GetInt("extendedTelemetry", extendedTelemetry ? 1 : 0) == 1 ? true : false;

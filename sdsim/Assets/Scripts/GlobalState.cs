@@ -28,4 +28,5 @@ public static class GlobalState
     public static string[] sceneNames;
     public static List<AssetBundle> bundleScenes = new List<AssetBundle>();
     public static bool drawLidar = true;
+    public static float timeOut = 300f;
 }

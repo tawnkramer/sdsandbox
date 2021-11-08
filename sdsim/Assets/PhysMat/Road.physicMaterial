@@ -6,9 +6,9 @@ PhysicMaterial:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Slippery
-  dynamicFriction: 0.1
-  staticFriction: 0.1
+  m_Name: Road
+  dynamicFriction: 1
+  staticFriction: 0.8
   bounciness: 0
-  frictionCombine: 1
-  bounceCombine: 1
+  frictionCombine: 0
+  bounceCombine: 0

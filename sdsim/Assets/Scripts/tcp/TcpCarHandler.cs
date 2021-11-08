@@ -16,17 +16,24 @@ namespace tk
 
         public GameObject carObj;
         public ICar car;
+        public CarSpawner carSpawner;
         public PathManager pm;
         public CarConfig conf;
+
+        // Sensors
         public CameraSensor camSensor;
         public CameraSensor camSensorB;
         public Lidar lidar;
         public Odometry[] odom;
+
         private tk.JsonTcpClient client;
         public Text ai_text;
 
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
+        public float timeSinceLastMoved = 0.0f;
+        public Vector3 lastPos = Vector3.zero;
+        public float lastDistanceTraveled = 0.0f;
 
         float steer_to_angle = 16.0f;
 
@@ -55,6 +62,7 @@ namespace tk
             car = carObj.GetComponent<ICar>();
             conf = carObj.GetComponent<CarConfig>();
             pm = GameObject.FindObjectOfType<PathManager>();
+            carSpawner = GameObject.FindObjectOfType<CarSpawner>();
             Canvas canvas = GameObject.FindObjectOfType<Canvas>();
             GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
             if (go != null)
@@ -109,6 +117,15 @@ namespace tk
         void Disconnect()
         {
             client.Disconnect();
+        }
+
+        void Boot()
+        {
+            if (carSpawner != null)
+            {
+                Disconnect();
+                carSpawner.RemoveCar(client);
+            }
         }
 
         void OnProtocolVersion(JSONObject msg)
@@ -605,6 +622,23 @@ namespace tk
 
             }
 
+            // check whether the car has roughly move since a given time, if not, boot the client
+            Vector3 currentPos = car.GetTransform().position;
+            float distance = Vector3.Distance(currentPos, lastPos);
+
+            if (distance < 1f)
+            {
+                timeSinceLastMoved += Time.fixedDeltaTime;
+            }
+            else
+            {
+                timeSinceLastMoved = 0.0f;
+                lastPos = currentPos;
+            }
+            if (timeSinceLastMoved >= GlobalState.timeOut && carSpawner != null)
+            {
+                Boot();
+            }
         }
     }
 }

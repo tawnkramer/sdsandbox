@@ -1543,6 +1543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3484103f28341d0a2099af385e1610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  carSpawner: {fileID: 0}
   wheelColliders:
   - {fileID: 146079781510113984}
   - {fileID: 146289448378786240}
@@ -1554,7 +1555,6 @@ MonoBehaviour:
   - {fileID: 4787735650332140}
   - {fileID: 4598096429093340}
   maxTorque: 450
-  maxSpeed: 50
   centrOfMass: {fileID: 4643361974781834}
   requestTorque: 0
   requestBrake: 0
@@ -1564,13 +1564,11 @@ MonoBehaviour:
   prevVel: {x: 0, y: 0, z: 0}
   startPos: {x: 0, y: 0, z: 0}
   startRot: {x: 0, y: 0, z: 0, w: 0}
-  length: 1.7
   rb: {fileID: 0}
   lastSteer: 0
   lastAccel: 0
   activity: keep_lane
   maxSteer: 16
-  SteerSpeed: 10000000
   last_collision: none
 --- !u!114 &114314152752413966
 MonoBehaviour:
@@ -2908,6 +2906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carObj: {fileID: 1382209123900052}
+  carSpawner: {fileID: 0}
   pm: {fileID: 0}
   conf: {fileID: 0}
   camSensor: {fileID: 114024581143197506}
@@ -2916,6 +2915,9 @@ MonoBehaviour:
   odom: []
   ai_text: {fileID: 0}
   limitFPS: 20
+  timeSinceLastMoved: 0
+  lastPos: {x: 0, y: 0, z: 0}
+  lastDistanceTraveled: 0
   state: 0
 --- !u!1 &1675052834431110
 GameObject:

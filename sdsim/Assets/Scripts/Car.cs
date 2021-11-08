@@ -2,14 +2,13 @@
 using System.Collections;
 
 
-public class Car : MonoBehaviour, ICar {
+public class Car : MonoBehaviour, ICar{
 
 	public CarSpawner carSpawner;
 	public WheelCollider[] wheelColliders;
 	public Transform[] wheelMeshes;
 
 	public float maxTorque = 50f;
-	public float maxSpeed = 10f;
 
 	public Transform centrOfMass;
 
@@ -41,10 +40,6 @@ public class Car : MonoBehaviour, ICar {
 	//name of the last object we hit.
 	public string last_collision = "none";
 
-	// track the movements of the car, if it's not moving boot the car
-	public float timeSinceLastMoved = 0.0f;
-	public Vector3 lastPos = Vector3.zero;
-	public float lastDistanceTraveled = 0.0f;
 
 
 	// Use this for initialization
@@ -215,7 +210,6 @@ public class Car : MonoBehaviour, ICar {
 		float steerAngle = requestSteering;
         float brake = requestBrake * maxTorque;
 
-
 		//front two tires.
 		wheelColliders[2].steerAngle = steerAngle;
 		wheelColliders[3].steerAngle = steerAngle;
@@ -223,15 +217,7 @@ public class Car : MonoBehaviour, ICar {
 		//four wheel drive at the moment
 		foreach(WheelCollider wc in wheelColliders)
 		{
-			if(rb.velocity.magnitude < maxSpeed)
-			{
-				wc.motorTorque = throttle;
-			}
-			else
-			{
-				wc.motorTorque = 0.0f;
-			}
-
+			wc.motorTorque = throttle;
 			wc.brakeTorque = brake;
 		}
 
@@ -241,23 +227,6 @@ public class Car : MonoBehaviour, ICar {
 		gyro = rb.rotation * Quaternion.Inverse(rotation);
 		rotation = rb.rotation;
 
-		// check whether the car has roughly move since a given time, if not, boot the client
-		Vector3 currentPos = transform.position;
-		float distance = Vector3.Distance(currentPos, lastPos) + lastDistanceTraveled;
-
-		if (distance < 1f)
-		{
-			timeSinceLastMoved += Time.fixedDeltaTime;
-		}
-		else
-		{   
-			timeSinceLastMoved = 0.0f;
-		}
-		lastPos = currentPos;
-		if (timeSinceLastMoved >= 20f && carSpawner != null)
-		{
-			// Add here the code to boot the car & client
-		}
 	}
 
 	void FlipUpright()

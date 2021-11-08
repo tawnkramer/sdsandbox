@@ -10083,7 +10083,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17158
+  m_Name: pb_Mesh679996
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -17366,6 +17366,7 @@ GameObject:
   - component: {fileID: 1641726570}
   - component: {fileID: 1641726569}
   - component: {fileID: 1641726568}
+  - component: {fileID: 1641726571}
   m_Layer: 0
   m_Name: circuit
   m_TagString: Untagged
@@ -40944,6 +40945,20 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1641726566}
+  m_Mesh: {fileID: 1005238758}
+--- !u!64 &1641726571
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641726566}
+  m_Material: {fileID: 13400000, guid: 74598d4059c7744189b5bd5aa42665e1, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1005238758}
 --- !u!43 &1656912686
 Mesh:
