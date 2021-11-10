@@ -8,7 +8,10 @@ public class Car : MonoBehaviour, ICar{
 	public WheelCollider[] wheelColliders;
 	public Transform[] wheelMeshes;
 
+	public float maxSpeed = 30f;
 	public float maxTorque = 50f;
+	public float maxBreakTorque = 50f;
+	public AnimationCurve torqueCurve;
 
 	public Transform centrOfMass;
 
@@ -205,10 +208,16 @@ public class Car : MonoBehaviour, ICar{
 	{
 		lastSteer = requestSteering;
 		lastAccel = requestTorque;
+		prevVel = velocity;
+		velocity = transform.InverseTransformDirection(rb.velocity);
+		acceleration = (velocity - prevVel)/Time.deltaTime;
+		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		rotation = rb.rotation;
 
-		float throttle = requestTorque * maxTorque;
+		// use the torque curve
+		float throttle = torqueCurve.Evaluate(velocity.magnitude / maxSpeed) * requestTorque * maxTorque;
 		float steerAngle = requestSteering;
-        float brake = requestBrake * maxTorque;
+        float brake = requestBrake * maxBreakTorque;
 
 		//front two tires.
 		wheelColliders[2].steerAngle = steerAngle;
@@ -220,13 +229,6 @@ public class Car : MonoBehaviour, ICar{
 			wc.motorTorque = throttle;
 			wc.brakeTorque = brake;
 		}
-
-		prevVel = velocity;
-		velocity = transform.InverseTransformDirection(rb.velocity);
-		acceleration = (velocity - prevVel)/Time.deltaTime;
-		gyro = rb.rotation * Quaternion.Inverse(rotation);
-		rotation = rb.rotation;
-
 	}
 
 	void FlipUpright()

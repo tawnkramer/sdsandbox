@@ -55,7 +55,6 @@ namespace tk
         }
 
         public State state = State.UnConnected;
-        // State prev_state = State.UnConnected;
 
         void Awake()
         {
@@ -620,24 +619,22 @@ namespace tk
                 if (ai_text != null)
                     ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
 
-            }
+                Vector3 currentPos = car.GetTransform().position;
+                float distance = Vector3.Distance(currentPos, lastPos);
 
-            // check whether the car has roughly move since a given time, if not, boot the client
-            Vector3 currentPos = car.GetTransform().position;
-            float distance = Vector3.Distance(currentPos, lastPos);
-
-            if (distance < 1f)
-            {
-                timeSinceLastMoved += Time.fixedDeltaTime;
-            }
-            else
-            {
-                timeSinceLastMoved = 0.0f;
-                lastPos = currentPos;
-            }
-            if (timeSinceLastMoved >= GlobalState.timeOut && carSpawner != null)
-            {
-                Boot();
+                if (distance < 1f)
+                {
+                    timeSinceLastMoved += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    timeSinceLastMoved = 0.0f;
+                    lastPos = currentPos;
+                }
+                if (timeSinceLastMoved >= GlobalState.timeOut && carSpawner != null)
+                {
+                    Boot();
+                }
             }
         }
     }

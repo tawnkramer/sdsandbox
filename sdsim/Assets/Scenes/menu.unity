@@ -1795,6 +1795,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2013390457}
   - component: {fileID: 2013390456}
+  - component: {fileID: 2013390458}
   m_Layer: 0
   m_Name: GlobalState
   m_TagString: Untagged
@@ -1834,6 +1835,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2013390458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013390455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00af98866b2653642870117c27793fa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2057257162
 GameObject:
   m_ObjectHideFlags: 0
@@ -2104,6 +2117,7 @@ MonoBehaviour:
   - mini_monaco
   - warren
   - circuit_launch
+  - mountain_track
   loader: {fileID: 2140273047}
   ButtonGridLayout: {fileID: 126483964}
   ButtonPrefab: {fileID: 5466719870426124411, guid: fb93d9878115b39438221fec2f89f2ae,

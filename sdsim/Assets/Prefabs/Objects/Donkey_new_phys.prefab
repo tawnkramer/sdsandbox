@@ -1360,7 +1360,42 @@ MonoBehaviour:
   - {fileID: 4122056538531734}
   - {fileID: 4787735650332140}
   - {fileID: 4598096429093340}
-  maxTorque: 40
+  maxSpeed: 40
+  maxTorque: 50
+  maxBreakTorque: 50
+  torqueCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0
+      value: 0.9996404
+      inSlope: -0.023517786
+      outSlope: -0.023517786
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.07546696
+    - serializedVersion: 3
+      time: 0.62
+      value: 0.8962091
+      inSlope: -0.6331033
+      outSlope: -0.6331033
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.072049834
+      outWeight: 0.103230916
+    - serializedVersion: 3
+      time: 1
+      value: 0.5012452
+      inSlope: -0.6048433
+      outSlope: -0.6048433
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11450946
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   centrOfMass: {fileID: 4643361974781834}
   requestTorque: 0
   requestBrake: 0
@@ -2050,13 +2085,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_Enabled: 1
 --- !u!114 &5018088806737268595
 MonoBehaviour:
@@ -2205,13 +2240,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_Enabled: 1
 --- !u!114 &133823540871659070
 MonoBehaviour:
@@ -3742,13 +3777,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_Enabled: 1
 --- !u!114 &80376271229383733
 MonoBehaviour:
@@ -4223,13 +4258,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3.33
   m_Enabled: 1
 --- !u!114 &1337556615963915334
 MonoBehaviour:
