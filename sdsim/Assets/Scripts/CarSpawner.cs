@@ -452,11 +452,12 @@ public class CarSpawner : MonoBehaviour
             }
         }
 
-        GameObject pidController_go = getChildGameObject(go, "PIDController");
-        if (paceCar) { pidController_go.SetActive(true); }
-
-        // if not paceCar, manual driving
-        if (!paceCar)
+        if (paceCar && !GlobalState.manualDriving)
+        {
+            GameObject pidController_go = getChildGameObject(go, "PIDController");
+            pidController_go.SetActive(true);
+        }
+        else if (paceCar && GlobalState.manualDriving)
         {
             GameObject jsController = getChildGameObject(go, "JoyStickCarContoller");
             jsController.SetActive(true);
@@ -479,6 +480,7 @@ public class CarSpawner : MonoBehaviour
 
     internal void EnsureOneCar()
     {
+        // pace car doesn't always mean cars.Count = 0, so will need to refactor that
         if (cars.Count == 0)
             Spawn(null, GlobalState.paceCar);
     }

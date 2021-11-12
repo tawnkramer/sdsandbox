@@ -3045,27 +3045,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carObj: {fileID: 1382209123900052}
   pm: {fileID: 0}
-  Kp: 10
-  Kd: 60
-  Ki: 0.02
   Kv: 0
   Kt: 0
   prevErr: 0
   steeringReq: 0
-  throttleVal: 0.3
+  throttleVal: 0.2
   totalError: 0
   absTotalError: 0
   totalAcc: 0
   totalOscilation: 0
   AccelErrFactor: 5
   OscilErrFactor: 1
-  waitForStill: 1
-  startOnWake: 1
+  isDriving: 1
   brakeOnEnd: 0
   looping: 1
-  doDrive: 1
   maxSpeed: 6
   iActiveSpan: 0
+  lookAhead: 2
   pid_steering: {fileID: 0}
 --- !u!1 &1789125081305024
 GameObject:

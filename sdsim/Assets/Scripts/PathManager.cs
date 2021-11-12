@@ -118,9 +118,9 @@ public class PathManager : MonoBehaviour
                     new_carPath.centerNodes.Add(node);
 
                 }
-                // close the loop
-                new_carPath.nodes.Add(new_carPath.nodes[0]);
-                new_carPath.centerNodes.Add(new_carPath.nodes[0]);
+                // // close the loop
+                // new_carPath.nodes.Add(new_carPath.nodes[0]);
+                // new_carPath.centerNodes.Add(new_carPath.nodes[0]);
 
                 carPath = new_carPath;
             }

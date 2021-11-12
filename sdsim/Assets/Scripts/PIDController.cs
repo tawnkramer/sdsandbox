@@ -25,7 +25,7 @@ public class PIDController : MonoBehaviour
     float diffErr = 0f;
     public float prevErr = 0f;
     public float steeringReq = 0.0f;
-    public float throttleVal = 0.3f;
+    public float throttleVal = 0.2f;
     public float totalError = 0f;
     public float absTotalError = 0f;
     public float totalAcc = 0f;
@@ -34,20 +34,15 @@ public class PIDController : MonoBehaviour
     public float OscilErrFactor = 10f;
 
     public delegate void OnEndOfPathCB();
-
     public OnEndOfPathCB endOfPathCB;
 
-    bool isDriving = false;
-    public bool waitForStill = true;
-
-    public bool startOnWake = false;
-
-    public bool brakeOnEnd = true;
-
-    public bool looping = false;
+    public bool isDriving = true;
+    public bool brakeOnEnd = false;
+    public bool looping = true;
 
     public float maxSpeed = 5.0f;
     public int iActiveSpan = 0;
+	public int lookAhead = 1;
 
     public Text pid_steering;
 
@@ -81,6 +76,7 @@ public class PIDController : MonoBehaviour
         if (pm == null || !pm.isActiveAndEnabled || pm.carPath == null)
             return;
 
+        isDriving = true;
         steeringReq = 0f;
         prevErr = 0f;
         totalError = 0f;
@@ -102,27 +98,42 @@ public class PIDController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isDriving) { return; }
 
-        //set the activity from the path node.
         PathNode n = pm.carPath.GetNode(iActiveSpan);
 
         float velMag = car.GetVelocity().magnitude;
         Vector3 samplePos = car.GetTransform().position + (car.GetTransform().forward * velMag * Kv);
 
         float err = 0.0f;
-        bool cte_ret = pm.carPath.GetCrossTrackErr(samplePos, ref iActiveSpan, ref err);
-        if (cte_ret != false) // check wether we lapped
+        bool cte_ret = pm.carPath.GetCrossTrackErr(samplePos, ref iActiveSpan, ref err, lookAhead);
+
+        diffErr = (err - prevErr) / Time.deltaTime;
+        steeringReq = -(Kp * err) - (Kd * diffErr) - (Ki * totalError);
+        Debug.Log(steeringReq);
+        steeringReq = Mathf.Clamp(steeringReq, -car.GetMaxSteering(), car.GetMaxSteering());
+
+        car.RequestSteering(steeringReq);
+
+        // need to refactor this
+        if (car.GetVelocity().magnitude < maxSpeed)
+            car.RequestThrottle(throttleVal);
+
+
+        if (pid_steering != null)
+            pid_steering.text = string.Format("PID: {0}", steeringReq);
+
+        totalError += err;
+        prevErr = err;
+
+        if (cte_ret) // check wether we lapped
         {
             if (looping)
             {
                 var foundObjects = FindObjectsOfType<Logger>();
 
-                if (cte_ret) // if we lapped
-                {
-                    foreach (var logger in foundObjects)
-                        logger.lapCounter++;
-                }
-
+                foreach (var logger in foundObjects)
+                    logger.lapCounter++;
             }
             else if (brakeOnEnd)
             {
@@ -143,26 +154,6 @@ public class PIDController : MonoBehaviour
                 if (endOfPathCB != null)
                     endOfPathCB.Invoke();
             }
-
-            return;
         }
-
-        diffErr = (err - prevErr) / Time.deltaTime;
-        steeringReq = - (Kp * err) - (Kd * diffErr) - (Ki * totalError);
-		Debug.Log(steeringReq);
-        steeringReq = Mathf.Clamp(steeringReq, -car.GetMaxSteering(), car.GetMaxSteering());
-
-        car.RequestSteering(steeringReq);
-
-        // need to refactor this
-        if (car.GetVelocity().magnitude < maxSpeed)
-            car.RequestThrottle(throttleVal);
-
-        
-		if (pid_steering != null)
-            pid_steering.text = string.Format("PID: {0}", steeringReq);
-
-        totalError += err;
-        prevErr = err;
     }
 }
