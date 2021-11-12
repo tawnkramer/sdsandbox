@@ -118,11 +118,11 @@ namespace tk
             client.Disconnect();
         }
 
-        void Boot()
+        public void Boot()
         {
             if (carSpawner != null)
             {
-                Disconnect();
+                if (client != null) { Disconnect(); }
                 carSpawner.RemoveCar(client);
             }
         }
@@ -636,6 +636,12 @@ namespace tk
                     Boot();
                 }
             }
+        }
+
+        public bool IsGhostCar()
+        {
+            if (client == null) { return true; }
+            else { return false; }
         }
     }
 }

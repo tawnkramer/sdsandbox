@@ -87,11 +87,10 @@ public class CarPath
 
     public bool GetCrossTrackErr(Vector3 pos, ref int iActiveSpan, ref float err)
     {
-        int oldActiveSpan = iActiveSpan ; 
-        iActiveSpan = GetClosestSpanIndex(pos); // update the index to closest point
+        int nextIActiveSpan = (iActiveSpan + 1) % (nodes.Count);
 
         PathNode a = nodes[iActiveSpan];
-        PathNode b = nodes[iActiveSpan + 1];
+        PathNode b = nodes[nextIActiveSpan];
 
         //2d path.
         pos.y = a.pos.y;
@@ -113,6 +112,15 @@ public class CarPath
             sign = -1f;
 
         err = errVec.magnitude * sign;
+
+        int oldActiveSpan = iActiveSpan ; 
+
+        float dista = Vector3.Distance(a.pos, pos);
+        float distb = Vector3.Distance(b.pos, pos);
+        if (dista > distb)
+        {
+            iActiveSpan = nextIActiveSpan;
+        }
 
         if (iActiveSpan - oldActiveSpan <= 0) { return true; } // we lapped
         return false; // we are on the same lap

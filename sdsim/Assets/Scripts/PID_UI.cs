@@ -26,10 +26,6 @@ public class PID_UI : MonoBehaviour {
     {
         steerMaxSlider.interactable = !logger.isActiveAndEnabled;
 
-        OnMaxSpeedChanged(pid.maxSpeed);
-		OnPTermChanged(pid.Kp);
-		OnDTermChanged(pid.Kd);
-
         if (pid.car != null)
         {
             steerMaxSlider.value = pid.car.GetMaxSteering();
@@ -37,35 +33,27 @@ public class PID_UI : MonoBehaviour {
         }
 
 		SpeedSlider.value = pid.maxSpeed;
-		PropSlider.value = pid.Kp;
-		DiffSlider.value = pid.Kd;
     }
 
 	public void OnMaxSpeedChanged(float val)
 	{
 		maxSpeedText.text = "Max Speed: " + val;
 		pid.maxSpeed = val;
-        pid.SavePrefs();
 	}
 
 	public void OnPTermChanged(float val)
 	{
 		P_Term.text = "Prop: " + val;
-		pid.Kp = val;
-        pid.SavePrefs();
 	}
 
 	public void OnDTermChanged(float val)
 	{
 		D_Term.text = "Diff: " + val;
-		pid.Kd = val;
-        pid.SavePrefs();
 	}	
 	
     public void OnSteerMaxChanged(float val)
 	{
         val = steerMaxSlider.value;
 		steerMax.text = "Steer Max: " + val;
-		pid.car.SetMaxSteering(val);
 	}	
 }

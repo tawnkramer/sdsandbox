@@ -121,7 +121,7 @@ public class SandboxServer : MonoBehaviour
                     if (_server.debug)
                         Debug.Log("spawning car.");
 
-                    spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>());
+                    spawner.Spawn(client.gameObject.GetComponent<tk.JsonTcpClient>(), false);
                 }
             }
             else //we are in the menu
@@ -157,13 +157,9 @@ public class SandboxServer : MonoBehaviour
         if (GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
-
             if (spawner)
             {
-                if (_server.debug)
-                    Debug.Log("spawning car.");
-
-                spawner.Spawn(null);
+                spawner.EnsureOneCar();
             }
         }
     }

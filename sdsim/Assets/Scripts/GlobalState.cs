@@ -22,6 +22,11 @@ public static class GlobalState
     public static bool randomLight = true;
     public static bool overheadCamera = true;
     public static bool raceCameras = false;
+    public static bool paceCar = false;
+    public static bool manualDriving = false;
+    public static float kp = 2.0f;
+    public static float kd = 1.0f;
+    public static float ki = 0.5f;
     public static string privateKey = "";
     public static bool useSeed = false;
     public static int seed = 20432814;

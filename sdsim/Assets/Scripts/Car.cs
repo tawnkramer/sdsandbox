@@ -44,7 +44,6 @@ public class Car : MonoBehaviour, ICar{
 	public string last_collision = "none";
 
 
-
 	// Use this for initialization
 	void Awake () 
 	{
@@ -229,6 +228,7 @@ public class Car : MonoBehaviour, ICar{
 			wc.motorTorque = throttle;
 			wc.brakeTorque = brake;
 		}
+
 	}
 
 	void FlipUpright()
