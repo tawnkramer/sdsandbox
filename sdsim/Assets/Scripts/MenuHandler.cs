@@ -17,12 +17,6 @@ public class MenuHandler : MonoBehaviour {
 
     public void Awake()
     {
-        //keep it processing even when not in focus.
-        Application.runInBackground = true;
-
-        //Set desired frame rate as high as possible.
-        Application.targetFrameRate = GlobalState.fps;
-
         //auto link
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         menuPanel = getChildGameObject(canvas.gameObject, "Panel Menu");
@@ -100,7 +94,7 @@ public class MenuHandler : MonoBehaviour {
         CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
 
         if (spawner)
-            spawner.RemoveAllCars();
+            spawner.RemoveGhostCars();
     }
 
 	public void OnPidDrive()

@@ -590,6 +590,11 @@ PrefabInstance:
       propertyPath: pathManager
       value: 
       objectReference: {fileID: 1253871492}
+    - target: {fileID: 4426395948619357423, guid: 07f0ed3f4d97ab546b616cad407a0b96,
+        type: 3}
+      propertyPath: parentGameObject
+      value: 
+      objectReference: {fileID: 419255370}
     - target: {fileID: 6818656474563703977, guid: 07f0ed3f4d97ab546b616cad407a0b96,
         type: 3}
       propertyPath: lightSource

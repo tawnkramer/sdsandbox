@@ -2,13 +2,16 @@
 using System.Collections;
 
 
-public class Car : MonoBehaviour, ICar {
+public class Car : MonoBehaviour, ICar{
 
+	public CarSpawner carSpawner;
 	public WheelCollider[] wheelColliders;
 	public Transform[] wheelMeshes;
 
+	public float maxSpeed = 30f;
 	public float maxTorque = 50f;
-	public float maxSpeed = 10f;
+	public float maxBreakTorque = 50f;
+	public AnimationCurve torqueCurve;
 
 	public Transform centrOfMass;
 
@@ -24,7 +27,6 @@ public class Car : MonoBehaviour, ICar {
 	public Quaternion startRot;
 	private Quaternion rotation = Quaternion.identity;
 	private Quaternion gyro = Quaternion.identity;
-	public float length = 1.7f;
 
 	public Rigidbody rb;
 
@@ -37,10 +39,10 @@ public class Car : MonoBehaviour, ICar {
 	public string activity = "keep_lane";
 
     public float maxSteer = 16.0f;
-	public float SteerSpeed = 10000000.0f;
 
 	//name of the last object we hit.
 	public string last_collision = "none";
+
 
 	// Use this for initialization
 	void Awake () 
@@ -205,38 +207,28 @@ public class Car : MonoBehaviour, ICar {
 	{
 		lastSteer = requestSteering;
 		lastAccel = requestTorque;
-
-		float throttle = requestTorque * maxTorque;
-		float steerAngle = requestSteering;
-		// float deltaSteerAngle = Mathf.Clamp(steerAngle - wheelColliders[2].steerAngle, -SteerSpeed*Time.fixedDeltaTime, SteerSpeed*Time.fixedDeltaTime);
-		float deltaSteerAngle = steerAngle - wheelColliders[2].steerAngle;
-        float brake = requestBrake;
-
-
-		//front two tires.
-		wheelColliders[2].steerAngle += deltaSteerAngle;
-		wheelColliders[3].steerAngle += deltaSteerAngle;
-
-		//four wheel drive at the moment
-		foreach(WheelCollider wc in wheelColliders)
-		{
-			if(rb.velocity.magnitude < maxSpeed)
-			{
-				wc.motorTorque = throttle;
-			}
-			else
-			{
-				wc.motorTorque = 0.0f;
-			}
-
-			wc.brakeTorque = 400f * brake;
-		}
-
 		prevVel = velocity;
 		velocity = transform.InverseTransformDirection(rb.velocity);
 		acceleration = (velocity - prevVel)/Time.deltaTime;
 		gyro = rb.rotation * Quaternion.Inverse(rotation);
 		rotation = rb.rotation;
+
+		// use the torque curve
+		float throttle = torqueCurve.Evaluate(velocity.magnitude / maxSpeed) * requestTorque * maxTorque;
+		float steerAngle = requestSteering;
+        float brake = requestBrake * maxBreakTorque;
+
+		//front two tires.
+		wheelColliders[2].steerAngle = steerAngle;
+		wheelColliders[3].steerAngle = steerAngle;
+
+		//four wheel drive at the moment
+		foreach(WheelCollider wc in wheelColliders)
+		{
+			wc.motorTorque = throttle;
+			wc.brakeTorque = brake;
+		}
+
 	}
 
 	void FlipUpright()

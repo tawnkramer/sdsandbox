@@ -95,6 +95,8 @@ MonoBehaviour:
   raceCameras: {fileID: 3155280883320326495}
   racerStatusPrefab: {fileID: 0}
   raceStatusPanel: {fileID: 0}
+  cars: []
+  cameras: []
 --- !u!1 &1612042024290732
 GameObject:
   m_ObjectHideFlags: 0

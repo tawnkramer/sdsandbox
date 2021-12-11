@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraFollow : MonoBehaviour {
+public class CameraFollow : MonoBehaviour
+{
 
-	public Transform target;
+    public Transform target;
 
-	public float approachPosRate = 0.1f;
-	public float approachRotRate = 0.03f;
-	
-	// Update is called once per frame
-	void FixedUpdate () 
-	{
-        if(target != null)
+    public float approachPosRate = 0.1f;
+    public float approachRotRate = 0.05f;
+
+    void FixedUpdate()
+    {
+        if (target != null)
         {
-            transform.position = Vector3.Lerp(transform.position, target.position, approachPosRate);
-            transform.rotation = Quaternion.Lerp(transform.rotation, target.rotation, approachRotRate);
+            float fixedDeltaTimeRate = (Time.fixedDeltaTime / 0.02f);
+            transform.position = Vector3.Lerp(transform.position, target.position, approachPosRate * fixedDeltaTimeRate);
+            transform.rotation = Quaternion.Lerp(transform.rotation, target.rotation, approachRotRate * fixedDeltaTimeRate);
         }
     }
 }

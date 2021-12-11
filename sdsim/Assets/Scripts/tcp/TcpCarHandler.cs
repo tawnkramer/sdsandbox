@@ -16,19 +16,26 @@ namespace tk
 
         public GameObject carObj;
         public ICar car;
+        public CarSpawner carSpawner;
         public PathManager pm;
         public CarConfig conf;
+
+        // Sensors
         public CameraSensor camSensor;
         public CameraSensor camSensorB;
         public Lidar lidar;
         public Odometry[] odom;
+
         private tk.JsonTcpClient client;
         public Text ai_text;
 
         public float limitFPS = 20.0f;
         float timeSinceLastCapture = 0.0f;
+        public float timeSinceLastMoved = 0.0f;
+        public Vector3 lastPos = Vector3.zero;
+        public float lastDistanceTraveled = 0.0f;
 
-        float steer_to_angle = 25.0f;
+        float steer_to_angle = 16.0f;
 
         float ai_steering = 0.0f;
         float ai_throttle = 0.0f;
@@ -40,9 +47,6 @@ namespace tk
         float time_step = 0.1f;
         bool bResetCar = false;
         bool bExitScene = false;
-        bool extendedTelemetry = true;
-        Vector3 lastTarget = new Vector3(0, 0, 0);
-        double lastDistance = 0.0;
 
         public enum State
         {
@@ -51,13 +55,13 @@ namespace tk
         }
 
         public State state = State.UnConnected;
-        // State prev_state = State.UnConnected;
 
         void Awake()
         {
             car = carObj.GetComponent<ICar>();
             conf = carObj.GetComponent<CarConfig>();
             pm = GameObject.FindObjectOfType<PathManager>();
+            carSpawner = GameObject.FindObjectOfType<CarSpawner>();
             Canvas canvas = GameObject.FindObjectOfType<Canvas>();
             GameObject go = CarSpawner.getChildGameObject(canvas.gameObject, "AISteering");
             if (go != null)
@@ -112,6 +116,15 @@ namespace tk
         void Disconnect()
         {
             client.Disconnect();
+        }
+
+        public void Boot()
+        {
+            if (carSpawner != null)
+            {
+                if (client != null) { Disconnect(); }
+                carSpawner.RemoveCar(client);
+            }
         }
 
         void OnProtocolVersion(JSONObject msg)
@@ -571,8 +584,7 @@ namespace tk
             Application.Quit();
         }
 
-        // Update is called once per frame
-        void Update()
+        void FixedUpdate()
         {
             if (bExitScene)
             {
@@ -597,10 +609,8 @@ namespace tk
                     bResetCar = false;
                 }
 
-
-                timeSinceLastCapture += Time.deltaTime;
-
-                if (timeSinceLastCapture > 1.0f / limitFPS)
+                timeSinceLastCapture += Time.fixedDeltaTime;
+                if (timeSinceLastCapture >= 1.0f / limitFPS)
                 {
                     timeSinceLastCapture -= (1.0f / limitFPS);
                     SendTelemetry();
@@ -609,7 +619,29 @@ namespace tk
                 if (ai_text != null)
                     ai_text.text = string.Format("NN: {0} : {1}", ai_steering, ai_throttle);
 
+                Vector3 currentPos = car.GetTransform().position;
+                float distance = Vector3.Distance(currentPos, lastPos);
+
+                if (distance < 1f)
+                {
+                    timeSinceLastMoved += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    timeSinceLastMoved = 0.0f;
+                    lastPos = currentPos;
+                }
+                if (timeSinceLastMoved >= GlobalState.timeOut && carSpawner != null)
+                {
+                    Boot();
+                }
             }
+        }
+
+        public bool IsGhostCar()
+        {
+            if (client == null) { return true; }
+            else { return false; }
         }
     }
 }

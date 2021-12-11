@@ -90,7 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   approachPosRate: 0.1
-  approachRotRate: 0.03
+  approachRotRate: 0.06
 --- !u!114 &1904078798318189506
 MonoBehaviour:
   m_ObjectHideFlags: 0

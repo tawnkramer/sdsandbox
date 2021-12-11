@@ -99,6 +99,18 @@ public class CarSpawner : MonoBehaviour
         }
     }
 
+    public void RemoveGhostCars()
+    {
+        foreach (GameObject car in cars)
+        {
+            tk.TcpCarHandler tcpCarHandler = car.GetComponentInChildren<tk.TcpCarHandler>();
+            if (tcpCarHandler != null && tcpCarHandler.IsGhostCar())
+            {
+                tcpCarHandler.Boot();
+            }
+        }
+    }
+
     public void RemoveAllCars()
     {
         // Remove each car one by one
@@ -279,6 +291,8 @@ public class CarSpawner : MonoBehaviour
             GameObject go = cameras[i];
             Camera camera = go.GetComponent<Camera>();
             camera.rect = new Rect(x, y, w, h);
+
+            if (GlobalState.overheadCamera && i == 0) { OverHeadCamera ohcam = go.GetComponent<OverHeadCamera>(); ohcam.Init(); }
         }
 
         if (cameras.Count == 0 && mainCamera != null && !GlobalState.raceCameras)
@@ -360,7 +374,7 @@ public class CarSpawner : MonoBehaviour
     }
 
 
-    public GameObject Spawn(tk.JsonTcpClient client)
+    public GameObject Spawn(tk.JsonTcpClient client, bool paceCar)
     {
         if (carPrefab == null)
         {
@@ -410,12 +424,8 @@ public class CarSpawner : MonoBehaviour
         MenuHandler menuHandler = GameObject.FindObjectOfType<MenuHandler>();
         Canvas canvas = GameObject.FindObjectOfType<Canvas>();
         GameObject panelMenu = getChildGameObject(canvas.gameObject, "Panel Menu");
-        PID_UI pid_ui = null;
         GameObject pidPanel = getChildGameObject(canvas.gameObject, "PIDPanel");
         ///////////////////////////////////////////////
-
-        if (pidPanel)
-            pid_ui = pidPanel.GetComponent<PID_UI>();
 
         // set camera target follow tm
 
@@ -442,15 +452,15 @@ public class CarSpawner : MonoBehaviour
             }
         }
 
-        // Set the PID ui hooks
-        if (pid_ui != null)
+        if (paceCar && !GlobalState.manualDriving)
         {
-            pid_ui.pid = getChildGameObject(go, "PIDController").GetComponent<PIDController>();
-            pid_ui.logger = getChildGameObject(go, "Logger").GetComponent<Logger>();
+            GameObject pidController_go = getChildGameObject(go, "PIDController");
+            pidController_go.SetActive(true);
         }
-        else
+        else if (paceCar && GlobalState.manualDriving)
         {
-            Debug.LogError("failed to find PID_UI");
+            GameObject jsController = getChildGameObject(go, "JoyStickCarContoller");
+            jsController.SetActive(true);
         }
 
         // Add race status, if possible.
@@ -470,8 +480,9 @@ public class CarSpawner : MonoBehaviour
 
     internal void EnsureOneCar()
     {
+        // pace car doesn't always mean cars.Count = 0, so will need to refactor that
         if (cars.Count == 0)
-            Spawn(null);
+            Spawn(null, GlobalState.paceCar);
     }
 
     public void RemoveUiReferences()

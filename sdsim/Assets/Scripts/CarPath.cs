@@ -85,18 +85,19 @@ public class CarPath
         return distance;
     }
 
-    public bool GetCrossTrackErr(Vector3 pos, ref int iActiveSpan, ref float err)
+    public bool GetCrossTrackErr(Vector3 pos, ref int iActiveSpan, ref float err, int lookAhead = 1)
     {
-        int oldActiveSpan = iActiveSpan ; 
-        iActiveSpan = GetClosestSpanIndex(pos); // update the index to closest point
+        int nextIActiveSpan = (iActiveSpan + 1) % (nodes.Count);
+        int aheadIActiveSpan = (iActiveSpan + lookAhead) % (nodes.Count);
 
         PathNode a = nodes[iActiveSpan];
-        PathNode b = nodes[iActiveSpan + 1];
+        PathNode b = nodes[nextIActiveSpan];
+        PathNode c = nodes[aheadIActiveSpan];
 
         //2d path.
         pos.y = a.pos.y;
 
-        LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref b.pos);
+        LineSeg3d pathSeg = new LineSeg3d(ref a.pos, ref c.pos);
         LineSeg3d.SegResult segRes = new LineSeg3d.SegResult();
         Vector3 closePt = pathSeg.ClosestPointOnSegmentTo(ref pos, ref segRes);
         Vector3 errVec = pathSeg.ClosestVectorTo(ref pos);
@@ -114,7 +115,16 @@ public class CarPath
 
         err = errVec.magnitude * sign;
 
-        if (iActiveSpan - oldActiveSpan <= 0) { return true; } // we lapped
+        int oldActiveSpan = iActiveSpan ; 
+
+        float dista = Vector3.Distance(a.pos, pos);
+        float distb = Vector3.Distance(b.pos, pos);
+        if (dista > distb)
+        {
+            iActiveSpan = (iActiveSpan + 1) % (nodes.Count);
+        }
+
+        // if (iActiveSpan - oldActiveSpan <= 0) { return true; } // we lapped
         return false; // we are on the same lap
     }
 

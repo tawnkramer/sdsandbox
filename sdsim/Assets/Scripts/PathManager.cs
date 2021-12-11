@@ -118,9 +118,9 @@ public class PathManager : MonoBehaviour
                     new_carPath.centerNodes.Add(node);
 
                 }
-                // close the loop
-                new_carPath.nodes.Add(new_carPath.nodes[0]);
-                new_carPath.centerNodes.Add(new_carPath.nodes[0]);
+                // // close the loop
+                // new_carPath.nodes.Add(new_carPath.nodes[0]);
+                // new_carPath.centerNodes.Add(new_carPath.nodes[0]);
 
                 carPath = new_carPath;
             }
@@ -310,13 +310,14 @@ public class PathManager : MonoBehaviour
     public List<Vector3> Chaikin(List<Vector3> pts)
     {
         List<Vector3> newPts = new List<Vector3>();
+        int ptsCount = pts.Count;
 
-        newPts.Add(pts[0]);
-
-        for (int i = 0; i < pts.Count - 2; i++)
+        for (int j = 0; j < ptsCount; j++)
         {
-            newPts.Add(pts[i] + (pts[i + 1] - pts[i]) * 0.75f);
-            newPts.Add(pts[i + 1] + (pts[i + 2] - pts[i + 1]) * 0.25f);
+            int i = j;
+            if (j < 0) { i = j + ptsCount; }
+            newPts.Add(pts[i] + (pts[(i + 1)%ptsCount] - pts[i]) * 0.75f);
+            newPts.Add(pts[(i + 1)%ptsCount] + (pts[(i + 2)%ptsCount] - pts[(i + 1)%ptsCount]) * 0.25f);
         }
 
         // newPts.Add(pts[pts.Count - 1]);
