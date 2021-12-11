@@ -154,7 +154,7 @@ public class SandboxServer : MonoBehaviour
             InitClient(client);
         }
 
-        if (GlobalState.bCreateCarWithoutNetworkClient && !bFrontEnd && clients.Count == 0)
+        if (GlobalState.paceCar && !bFrontEnd) // && clients.Count == 0
         {
             CarSpawner spawner = GameObject.FindObjectOfType<CarSpawner>();
             if (spawner)

@@ -110,7 +110,7 @@ public class PIDController : MonoBehaviour
 
         diffErr = (err - prevErr) / Time.deltaTime;
         steeringReq = -(Kp * err) - (Kd * diffErr) - (Ki * totalError);
-        Debug.Log(steeringReq);
+        // Debug.Log(steeringReq);
         steeringReq = Mathf.Clamp(steeringReq, -car.GetMaxSteering(), car.GetMaxSteering());
 
         car.RequestSteering(steeringReq);
