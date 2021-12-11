@@ -35,7 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/thunderhill.unity
     guid: 448a6171da9da33418cad0e20a23f49e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ironcar.unity
     guid: a945785e2aa7ea7468cfc040f2063ad8
   - enabled: 1
