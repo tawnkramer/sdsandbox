@@ -157,7 +157,7 @@ public class Car : MonoBehaviour, ICar{
 	{
 		return acceleration;
 	}
-	public Quaternion GetGyro()
+	public Vector3 GetGyro()
 	{
 	  return gyro;
   	}
@@ -210,7 +210,7 @@ public class Car : MonoBehaviour, ICar{
 		prevVel = velocity;
 		velocity = transform.InverseTransformDirection(rb.velocity);
 		acceleration = (velocity - prevVel)/Time.deltaTime;
-		gyro = rb.rotation * Quaternion.Inverse(rotation);
+		gyro = angularVelocity; // rb.rotation * Quaternion.Inverse(rotation);
 		rotation = rb.rotation;
 
 		// use the torque curve
