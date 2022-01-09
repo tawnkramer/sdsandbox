@@ -26,7 +26,7 @@ public class Car : MonoBehaviour, ICar{
 	public Vector3 startPos;
 	public Quaternion startRot;
 	private Quaternion rotation = Quaternion.identity;
-	private Quaternion gyro = Quaternion.identity;
+	private Vector3 gyro = Vector3.zero;
 
 	public Rigidbody rb;
 
@@ -210,7 +210,7 @@ public class Car : MonoBehaviour, ICar{
 		prevVel = velocity;
 		velocity = transform.InverseTransformDirection(rb.velocity);
 		acceleration = (velocity - prevVel)/Time.deltaTime;
-		gyro = angularVelocity; // rb.rotation * Quaternion.Inverse(rotation);
+		gyro = rb.angularVelocity;
 		rotation = rb.rotation;
 
 		// use the torque curve
