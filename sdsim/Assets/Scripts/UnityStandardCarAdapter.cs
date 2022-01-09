@@ -111,7 +111,7 @@ public class UnityStandardCarAdapter : MonoBehaviour, ICar {
 		vel = rb.velocity;
 
 		unityCar.Move(steering / MaximumSteerAngle, throttle, footBrake, handBrake);
-		gyro = -rb.angularVelocity;
+		gyro = rb.angularVelocity;
 		rotation = rb.rotation;
 	}
 
