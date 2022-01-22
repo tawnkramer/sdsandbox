@@ -604,6 +604,10 @@ namespace tk
                         car.RequestSteering(0.0f);
                         car.RequestThrottle(0.0f);
                         car.RequestFootBrake(10.0f);
+                        
+                        // Reset closest point of car path
+                        if (pm)
+                            iActiveSpan = 0;
                     }
 
                     bResetCar = false;
