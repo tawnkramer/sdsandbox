@@ -2,7 +2,7 @@
 
 ## guides
 Those guides are made if you want to change or tweak the simulator. <br>
-prior to reading the guides, have a look at [Get Started With Unity](../get_started.md)
+prior to reading the guides, have a look at [Get Started With Unity](../get_started_with_unity.md)
 * [Create a track](guide/create_a_track.md)
 * [Share a track](guide/share_a_track.md)
 

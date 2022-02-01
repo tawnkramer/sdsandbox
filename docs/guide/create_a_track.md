@@ -17,9 +17,9 @@ your build settings should look like that: <br>
 <img src="../assets/create_a_track/build_settings.png" height="512">
 
 ## Apply the scene prefab
-1) In "Assets/Prefabs/" you will find a Prefab called "ScenePrefab".
+1) In "Assets/Prefabs/" you will find a Prefab called "ScenePrefab". (if not maybe you can find it in Assets/Scenes)
 2) Drag and drop this prefab into the Hierarchy tab of your new scene, you should see the prefab appear.
-3) Right click on the prefab and select "Unpack Prefab", this will disociate the object in your scene from the Prefab stored in "Assets/Scenes/".
+3) Right click on the prefab and select "Unpack Prefab" (Unpack -> unpack completely), this will disociate the object in your scene from the Prefab stored in "Assets/Scenes/".
 
 you should be then leaved with something that looks like that: <br>
 <img src="../assets/create_a_track/scene_prefab.png" height="512">
@@ -33,9 +33,9 @@ But what will interest you the most here is in "ScenePrefab/world/", in there yo
 ## Add your new scene to the menu !
 Before adding some fancy textures and add some objects to your scene, I recommend adding your scene to the menu; this could be done at any moment of the scene creation process. <br>
 
-1) So now lets load the "menu" Scene located in "Assets/Scenes/", double click on it
+1) So now lets load the "menu" Scene located in "Assets/Scenes/", double click on it (if it doesn't work, right click and open it)
 2) Click on the "_TcpMenuController" object in the Hierarchy tab
-3) In the Inspector tab,, look at the "Tcp Menu Handler" script, click on the "Scene_names" component to develop it.
+3) In the Inspector tab, look at the "Tcp Menu Handler" script, click on the "Scene_names" component to develop it.
 4) Enlarge the list by 1 element and add the name of your scene in the last element of the list
 
 From there, you are all set to continue developping your scene. <br>
