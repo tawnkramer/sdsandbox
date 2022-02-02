@@ -17,9 +17,9 @@ your build settings should look like that: <br>
 <img src="../assets/create_a_track/build_settings.png" height="512">
 
 ## Apply the scene prefab
-1) In "Assets/Prefabs/" you will find a Prefab called "ScenePrefab". (if not maybe you can find it in Assets/Scenes)
+1) In "Assets/Scenes/" you will find a Prefab called "ScenePrefab".
 2) Drag and drop this prefab into the Hierarchy tab of your new scene, you should see the prefab appear.
-3) Right click on the prefab and select "Unpack Prefab" (Unpack -> unpack completely), this will disociate the object in your scene from the Prefab stored in "Assets/Scenes/".
+3) Right click on the prefab and select "Unpack Prefab", this will disociate the object in your scene from the Prefab stored in "Assets/Scenes/".
 
 you should be then leaved with something that looks like that: <br>
 <img src="../assets/create_a_track/scene_prefab.png" height="512">
