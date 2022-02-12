@@ -38,7 +38,7 @@ public interface ICar
 
 	Vector3 GetAccel();
 
-	Quaternion GetGyro();
+	Vector3 GetGyro();
 
 	//mark the current activity for partial selections when creating training sets later.
 	string GetActivity();

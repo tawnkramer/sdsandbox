@@ -181,12 +181,10 @@ namespace tk
             json.AddField("accel_y", accel.y);
             json.AddField("accel_z", accel.z);
 
-            Quaternion gyro = car.GetGyro();
+            Vector3 gyro = car.GetGyro();
             json.AddField("gyro_x", gyro.x);
             json.AddField("gyro_y", gyro.y);
             json.AddField("gyro_z", gyro.z);
-            json.AddField("gyro_w", gyro.w);
-
 
             Transform tm = car.GetTransform();
             Vector3 eulerAngles = tm.rotation.eulerAngles;
