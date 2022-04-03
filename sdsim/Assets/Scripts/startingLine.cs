@@ -18,20 +18,16 @@ public class startingLine : MonoBehaviour
         if (col.gameObject.name != target) { return; }
         float time = Time.fixedTime;
 
-        Transform parent = col.transform.parent;
+        Transform parent = col.transform.parent.parent;
         if (parent == null) { return; }
 
         string carName = parent.name;
         tk.TcpCarHandler client = parent.GetComponentInChildren<tk.TcpCarHandler>();
 
         if (client != null)
-        {
             UnityMainThreadDispatcher.Instance().Enqueue(client.SendCollisionWithStartingLine(index, time));
-        }
 
         if (privateAPI != null)
-        {
             privateAPI.CollisionWithStatingLine(carName, index, time);
-        }
     }
 }
