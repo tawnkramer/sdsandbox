@@ -44,4 +44,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/mountain_track.unity
     guid: fa958af1d4fc8ef449b0c7b710692aad
+  - enabled: 1
+    path: Assets/Scenes/makerspace.unity
+    guid: 8069c9603ac9878408689c89d0e2d8cb
   m_configObjects: {}
