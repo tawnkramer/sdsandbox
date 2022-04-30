@@ -22,7 +22,7 @@ public static class GlobalState
     public static bool randomLight = true;
     public static bool overheadCamera = false;
     public static bool raceCameras = false;
-    public static bool paceCar = true;
+    public static bool paceCar = false;
     public static bool manualDriving = false;
     public static float kp = 5.0f;
     public static float kd = 5.0f;

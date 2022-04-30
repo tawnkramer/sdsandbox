@@ -1,6 +1,6 @@
 #define PRETTY		//Comment out when you no longer need to read JSON to disable pretty Print system-wide
 //Using doubles will cause errors in VectorTemplates.cs; Unity speaks floats
-#define USEFLOAT	//Use floats for numbers instead of doubles	(enable if you're getting too many significant digits in string output)
+//#define USEFLOAT	//Use floats for numbers instead of doubles	(enable if you're getting too many significant digits in string output)
 //#define POOLING	//Currently using a build setting for this one (also it's experimental)
 
 using System.Diagnostics;
@@ -166,6 +166,12 @@ public class JSONObject {
 		return obj;
 	}
 	public static JSONObject Create(float val) {
+		JSONObject obj = Create();
+		obj.type = Type.NUMBER;
+		obj.n = val;
+		return obj;
+	}
+	public static JSONObject Create(double val) {
 		JSONObject obj = Create();
 		obj.type = Type.NUMBER;
 		obj.n = val;
@@ -413,6 +419,9 @@ public class JSONObject {
 		AddField(name, Create(val));
 	}
 	public void AddField(string name, float val) {
+		AddField(name, Create(val));
+	}
+	public void AddField(string name, double val) {
 		AddField(name, Create(val));
 	}
 	public void AddField(string name, int val) {
