@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d5e8d803e252f4499b52e657f8e1a2, type: 3}
   m_Name: GlobalDisplaySettings
   m_EditorClassIdentifier: 
-  anchorSize: 10
+  anchorSize: 5
   controlSize: 7
   visibleBehindObjects: 1
   visibleWhenNotSelected: 1

@@ -1554,7 +1554,15 @@ MonoBehaviour:
   - {fileID: 4122056538531734}
   - {fileID: 4787735650332140}
   - {fileID: 4598096429093340}
+  maxSpeed: 30
   maxTorque: 450
+  maxBreakTorque: 50
+  torqueCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   centrOfMass: {fileID: 4643361974781834}
   requestTorque: 0
   requestBrake: 0
@@ -2742,7 +2750,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1605732627735106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.122, z: 0.085}
+  m_LocalPosition: {x: 0, y: 0.0, z: 0.085}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4114418689829218}
@@ -3273,9 +3281,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carObj: {fileID: 1382209123900052}
   pm: {fileID: 0}
-  Kp: 10
-  Kd: 60
-  Ki: 0.02
   Kv: 0
   Kt: 0
   prevErr: 0
@@ -3287,13 +3292,12 @@ MonoBehaviour:
   totalOscilation: 0
   AccelErrFactor: 5
   OscilErrFactor: 1
-  waitForStill: 1
-  startOnWake: 1
+  isDriving: 1
   brakeOnEnd: 0
   looping: 1
-  doDrive: 1
   maxSpeed: 6
   iActiveSpan: 0
+  lookAhead: 1
   pid_steering: {fileID: 0}
 --- !u!1 &1789125081305024
 GameObject:

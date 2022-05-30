@@ -146,7 +146,7 @@ namespace tk
 
             json.AddField("steering_angle", car.GetSteering() / steer_to_angle);
             json.AddField("throttle", car.GetThrottle());
-            json.AddField("speed", car.GetVelocity().magnitude);
+
             json.AddField("image", Convert.ToBase64String(camSensor.GetImageBytes()));
 
             if (camSensorB != null && camSensorB.gameObject.activeInHierarchy)
@@ -159,24 +159,20 @@ namespace tk
                 json.AddField("lidar", lidar.GetOutputAsJson());
             }
 
-            if (odom.Length > 0)
+            foreach (Odometry o in odom)
             {
-                JSONObject odom_arr = JSONObject.Create();
-
-                foreach (Odometry o in odom)
-                {
-                    odom_arr.Add(o.GetOutputAsJson());
-                }
-
-                json.AddField("odom", odom_arr);
-
+                json.AddField(o.Label, o.GetNumberRotations());
             }
+
 
             json.AddField("hit", car.GetLastCollision());
             car.ClearLastCollision();
             json.AddField("time", Time.timeSinceLevelLoad);
 
-            Vector3 accel = car.GetAccel();
+            Vector3 velocity = car.GetVelocity() / 8.0f;
+            json.AddField("speed", velocity.magnitude);
+
+            Vector3 accel = car.GetAccel() / 8.0f;
             json.AddField("accel_x", accel.x);
             json.AddField("accel_y", accel.y);
             json.AddField("accel_z", accel.z);
@@ -205,11 +201,11 @@ namespace tk
             // not intended to use in races, just to train 
             if (GlobalState.extendedTelemetry)
             {
-                json.AddField("pos_x", tm.position.x);
-                json.AddField("pos_y", tm.position.y);
-                json.AddField("pos_z", tm.position.z);
+                Vector3 pos = tm.position / 8.0f;
+                json.AddField("pos_x", pos.x);
+                json.AddField("pos_y", pos.y);
+                json.AddField("pos_z", pos.z);
 
-                Vector3 velocity = car.GetVelocity();
                 json.AddField("vel_x", velocity.x);
                 json.AddField("vel_y", velocity.y);
                 json.AddField("vel_z", velocity.z);
@@ -260,47 +256,6 @@ namespace tk
             {
                 Debug.Log(e.ToString());
             }
-        }
-
-        internal void SendStartRaceMsg()
-        {
-            if (client == null)
-                return;
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "race_start");
-            client.SendMsg(json);
-        }
-
-        internal void SendStopRaceMsg()
-        {
-            if (client == null)
-                return;
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "race_stop");
-            client.SendMsg(json);
-        }
-
-        internal void SendDQRaceMsg()
-        {
-            if (client == null)
-                return;
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "DQ");
-            client.SendMsg(json);
-        }
-
-        internal void SendCrosStartRaceMsg(float lap_time)
-        {
-            if (client == null)
-                return;
-
-            JSONObject json = new JSONObject(JSONObject.Type.OBJECT);
-            json.AddField("msg_type", "cross_start");
-            json.AddField("lap_time", lap_time.ToString());
-            client.SendMsg(json);
         }
 
         void OnExitSceneRecv(JSONObject json)
@@ -602,7 +557,7 @@ namespace tk
                         car.RequestSteering(0.0f);
                         car.RequestThrottle(0.0f);
                         car.RequestFootBrake(10.0f);
-                        
+
                         // Reset closest point of car path
                         if (pm)
                             iActiveSpan = 0;

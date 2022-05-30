@@ -33,12 +33,6 @@ EditorBuildSettings:
     path: Assets/Scenes/warren.unity
     guid: a65aa29f80d4f97458c095f4838a8d36
   - enabled: 1
-    path: Assets/Scenes/thunderhill.unity
-    guid: 448a6171da9da33418cad0e20a23f49e
-  - enabled: 0
-    path: Assets/Scenes/ironcar.unity
-    guid: a945785e2aa7ea7468cfc040f2063ad8
-  - enabled: 1
     path: Assets/Scenes/circuit_launch.unity
     guid: 574a0b2d2b3bf6641bf9a81ed0cb3e1d
   - enabled: 1

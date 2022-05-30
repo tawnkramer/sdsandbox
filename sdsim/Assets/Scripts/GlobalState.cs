@@ -20,7 +20,7 @@ public static class GlobalState
     public static bool generateTrees = true;
     public static bool generateRandomCones = true;
     public static bool randomLight = true;
-    public static bool overheadCamera = true;
+    public static bool overheadCamera = false;
     public static bool raceCameras = false;
     public static bool paceCar = false;
     public static bool manualDriving = false;

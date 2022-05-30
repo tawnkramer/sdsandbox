@@ -80,7 +80,7 @@ public class PathManager : MonoBehaviour
         if (invertNodes)
         {
             CarPath new_carPath = new CarPath();
-            for (int i = carPath.nodes.Count - 1; i >= 0; i--)
+            for (int i = carPath.nodes.Count - 1; i > 0; i--)
             {
                 PathNode node = carPath.nodes[i];
                 node.rotation = node.rotation * Quaternion.AngleAxis(180, Vector3.up);
@@ -227,11 +227,10 @@ public class PathManager : MonoBehaviour
         List<Vector3> points = new List<Vector3>();
 
         float stepping = 1 / (pathCreator.path.length * precision);
-        for (float i = 0; i <= 1; i += stepping)
+        for (float i = 0; i < 1; i += stepping)
         {
             points.Add(pathCreator.path.GetPointAtTime(i));
         }
-        points.Add(pathCreator.path.GetPointAtTime(0));
 
 
         while (smoothPathIter > 0) // not working for the moment, looking forward using the same system as MakePointPath with LookAt
