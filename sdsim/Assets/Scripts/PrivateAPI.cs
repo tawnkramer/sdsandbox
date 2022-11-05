@@ -20,11 +20,11 @@ public class PrivateAPI : MonoBehaviour
             UnityMainThreadDispatcher.Instance().Enqueue(client.SendCollisionWithStartingLine(name, startingLineIndex, timeStamp));
         }
     }
-    public void CollisionWithCone(string name, int coneIndex, float timeStamp)
+    public void CollisionWithChallenge(string name, int coneIndex, float timeStamp)
     {
         foreach (tk.TcpPrivateAPIHandler client in clients)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(client.SendCollisionWithCone(name, coneIndex, timeStamp));
+            UnityMainThreadDispatcher.Instance().Enqueue(client.SendCollisionWithChallenge(name, coneIndex, timeStamp));
         }
     }
 }

@@ -94,7 +94,7 @@ namespace tk
             }
             yield return null;
         }
-        public IEnumerator SendCollisionWithCone(string name, int coneIndex, float timeStamp)
+        public IEnumerator SendCollisionWithChallenge(string name, int coneIndex, float timeStamp)
         {
             if (isVerified)
             {
