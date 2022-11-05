@@ -6,7 +6,7 @@ public class ColCone : MonoBehaviour
 {
     public int index = 0;
     string target = "body";
-    float penalty = 1;
+    public float penalty = 1;
     PrivateAPI privateAPI;
 
     void Start()
@@ -18,18 +18,18 @@ public class ColCone : MonoBehaviour
     {
         if (col.gameObject.name != target || privateAPI == null) { return; }
 
-        Transform parent = col.transform.parent;
+        Transform parent = col.transform.parent.parent;
         if (parent == null) { return; }
         string carName = parent.name;
 
         if (privateAPI == null) { return; }
-        privateAPI.CollisionWithCone(carName, index, Time.fixedTime);
+        privateAPI.CollisionWithChallenge(carName, index, Time.fixedTime);
 
         Timer[] status = parent.gameObject.GetComponentsInChildren<Timer>();
         foreach (Timer t in status)
         {
-            Debug.Log("Collision with penalty cone");
-            t.OnCollideCone(penalty);
+            Debug.Log("Collision with Challenge");
+            t.OnCollideChallenge(penalty);
         }
     }
 }

@@ -72,7 +72,7 @@ public class Timer : MonoBehaviour
         return (GetTime() - currentStart) + GetPenalties();
     }
 
-    public void OnCollideCone(float penalty)
+    public void OnCollideChallenge(float penalty)
     {   
         if(enabled_timer == false)
             return;
